@@ -1,0 +1,2981 @@
+<!doctype html>
+<meta charset="UTF-8">
+<style>
+  html.st-hypnoos-identity-port {
+    --st-identity-port-vh: 100dvh;
+    --st-identity-port-width: 100vw;
+  }
+
+  html.st-hypnoos-identity-port,
+  html.st-hypnoos-identity-port body {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: var(--st-identity-port-vh, 100dvh) !important;
+    min-height: 0 !important;
+    max-height: var(--st-identity-port-vh, 100dvh) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #3f2619 !important;
+  }
+
+  html.st-hypnoos-identity-port body {
+    position: relative !important;
+    touch-action: manipulation;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html.st-hypnoos-identity-port #st-hypnoos-identity-frontend-host,
+  html.st-hypnoos-identity-port #identityRoot {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483000 !important;
+    display: block !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: var(--st-identity-port-vh, 100dvh) !important;
+    min-height: 0 !important;
+    max-height: var(--st-identity-port-vh, 100dvh) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    transform: none !important;
+    clip-path: none !important;
+    contain: none !important;
+  }
+
+  html.st-hypnoos-identity-port .mes,
+  html.st-hypnoos-identity-port .mes_block,
+  html.st-hypnoos-identity-port .mes_text {
+    max-width: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    contain: none !important;
+    transform: none !important;
+  }
+
+  .identity-root {
+    --desk-ink: #33291f;
+    --paper: #f7f1e5;
+    --paper-2: #fff8ea;
+    --line: rgba(81, 64, 49, 0.25);
+    --seal: #803727;
+    --gold: #d9b15a;
+    --green: #2f6d62;
+    --identity-cover-image: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    color: var(--desk-ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    background:
+      radial-gradient(circle at 22% 10%, rgba(255, 238, 184, 0.18), transparent 31%),
+      linear-gradient(135deg, #6f4428, #3f2619 58%, #21140e);
+  }
+
+  .identity-root,
+  .identity-root * {
+    box-sizing: border-box;
+    letter-spacing: 0;
+  }
+
+  .identity-root button,
+  .identity-root input,
+  .identity-root textarea {
+    font: inherit;
+  }
+
+  .identity-root button {
+    cursor: pointer;
+  }
+
+  .identity-root [hidden] {
+    display: none !important;
+  }
+
+  .identity-desk-screen,
+  .identity-detail-screen {
+    position: absolute;
+    inset: 0;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .identity-desk-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 3.2vw, 34px);
+    padding: clamp(14px, 4vw, 44px);
+  }
+
+  .identity-desk-screen::before,
+  .identity-detail-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(110deg, rgba(255, 255, 255, 0.045), transparent 44%),
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.026) 0 2px, transparent 2px 32px);
+    pointer-events: none;
+  }
+
+  .identity-desk-title {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: #fff8ea;
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 950;
+    line-height: 1.1;
+    text-align: center;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.46), 0 1px 0 rgba(59, 32, 18, 0.72);
+  }
+
+  .identity-notice-toggle {
+    position: absolute;
+    z-index: 8;
+    right: clamp(12px, 3vw, 28px);
+    top: clamp(12px, 3vw, 26px);
+    min-height: 32px;
+    max-width: min(56vw, 250px);
+    border: 1px solid rgba(255, 236, 176, 0.34);
+    border-radius: 999px;
+    background: rgba(247, 241, 229, 0.22);
+    color: #fff8ed;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 950;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 8px 20px rgba(24, 14, 9, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(3px);
+  }
+
+  .identity-notice-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    padding: clamp(16px, 4vw, 38px);
+    background: rgba(33, 20, 14, 0.56);
+    backdrop-filter: blur(3px);
+  }
+
+  .identity-notice-card {
+    width: min(100%, 520px);
+    max-height: min(82dvh, 640px);
+    overflow: auto;
+    border: 1px solid rgba(255, 236, 176, 0.34);
+    border-radius: 10px;
+    background:
+      linear-gradient(180deg, rgba(255, 248, 234, 0.96), rgba(247, 241, 229, 0.96));
+    color: #33291f;
+    padding: 16px;
+    box-shadow: 0 22px 50px rgba(24, 14, 9, 0.48), inset 0 0 0 2px rgba(255, 255, 255, 0.42);
+    display: grid;
+    gap: 10px;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+  }
+
+  .identity-notice-card h2 {
+    margin: 0;
+    color: #403126;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 950;
+  }
+
+  .identity-notice-card p {
+    margin: 0;
+    color: rgba(68, 54, 42, 0.78);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+
+  .identity-notice-card strong {
+    color: #803727;
+    font-weight: 950;
+  }
+
+  .identity-notice-card ul {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 4px;
+    color: rgba(68, 54, 42, 0.78);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .identity-notice-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+
+  .identity-books {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 1040px);
+    height: min(calc(100dvh - 142px), 760px);
+    min-height: 500px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    grid-template-rows: repeat(2, minmax(218px, 1fr));
+    align-items: center;
+    justify-items: center;
+    gap: clamp(24px, 4vw, 52px);
+  }
+
+  .identity-book {
+    position: relative;
+    width: min(100%, 176px);
+    aspect-ratio: 336 / 520;
+    border: 0;
+    border-radius: 6px;
+    padding: 0;
+    background: transparent;
+    color: #fff8ed;
+    transform: rotate(var(--tilt));
+    transition: transform 160ms ease, filter 160ms ease;
+  }
+
+  .identity-book:hover,
+  .identity-book:focus-visible {
+    outline: none;
+    filter: brightness(1.06);
+    transform: rotate(var(--tilt)) translateY(-7px);
+  }
+
+  .identity-book::after {
+    content: "";
+    position: absolute;
+    left: 10%;
+    right: 7%;
+    bottom: -11px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(17, 10, 7, 0.34);
+    filter: blur(10px);
+    z-index: -1;
+  }
+
+  .identity-book-cover {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 1fr auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+    justify-items: center;
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 24px 18px 18px 24px;
+    background:
+      linear-gradient(90deg, rgba(36, 14, 11, 0.5), transparent 18%, transparent 86%, rgba(255, 236, 176, 0.16)),
+      linear-gradient(180deg, rgba(255, 245, 211, 0.12), rgba(74, 18, 15, 0.1)),
+      var(--identity-cover-image),
+      linear-gradient(160deg, #6f231e, #2e1510);
+    background-size: cover;
+    background-position: center;
+    box-shadow:
+      0 18px 35px rgba(24, 14, 9, 0.34),
+      inset 0 0 0 1px rgba(255, 236, 176, 0.42),
+      inset 8px 0 13px rgba(25, 9, 6, 0.42);
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(31, 12, 9, 0.78);
+  }
+
+  .identity-cover-school {
+    position: absolute;
+    top: 13.5%;
+    left: 18.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    color: rgba(255, 236, 176, 0.92);
+    font-size: 14px;
+    font-weight: 950;
+    writing-mode: horizontal-tb;
+    white-space: nowrap;
+    line-height: 0.92;
+    letter-spacing: 0;
+  }
+
+  .identity-cover-title {
+    grid-row: 2;
+    color: #ffe7a6;
+    font-size: clamp(21px, 3vw, 28px);
+    font-weight: 950;
+    line-height: 1.05;
+  }
+
+  .identity-cover-name {
+    grid-row: 3;
+    min-width: 0;
+    max-width: 100%;
+    color: rgba(255, 248, 237, 0.9);
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .identity-cover-meta {
+    grid-row: 4;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: rgba(255, 236, 176, 0.88);
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .identity-detail-screen {
+    display: grid;
+    place-items: center;
+    padding: clamp(38px, 5vw, 70px) clamp(12px, 4vw, 46px) clamp(20px, 4vw, 42px);
+    overflow: auto;
+  }
+
+  .identity-back {
+    position: absolute;
+    z-index: 5;
+    left: clamp(12px, 3vw, 28px);
+    top: clamp(12px, 3vw, 26px);
+    min-height: 32px;
+    border: 1px solid rgba(247, 241, 229, 0.22);
+    border-radius: 999px;
+    background: rgba(247, 241, 229, 0.2);
+    color: #fff8ed;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 950;
+    box-shadow: 0 8px 20px rgba(24, 14, 9, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(3px);
+  }
+
+  .identity-booklet {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 920px);
+    min-height: min(76vh, 600px);
+    display: grid;
+    grid-template-columns: minmax(270px, 0.9fr) minmax(320px, 1.1fr);
+    align-items: stretch;
+    justify-content: center;
+    gap: 0;
+    filter: drop-shadow(0 18px 35px rgba(24, 14, 9, 0.36));
+  }
+
+  .identity-booklet::before,
+  .identity-booklet::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .identity-booklet::before {
+    width: 18px;
+    background:
+      linear-gradient(90deg, rgba(81, 64, 49, 0.12), transparent 45%, rgba(81, 64, 49, 0.1));
+  }
+
+  .identity-booklet::after {
+    width: 1px;
+    background: rgba(81, 64, 49, 0.32);
+  }
+
+  .identity-page {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    align-content: start;
+    gap: 13px;
+    border: 1px solid rgba(81, 64, 49, 0.32);
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.52), transparent 18%, transparent 82%, rgba(81, 64, 49, 0.06)),
+      var(--paper);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.32);
+    padding: clamp(16px, 2.5vw, 26px);
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+  }
+
+  .identity-page-left {
+    border-radius: 6px 0 0 6px;
+    border-right: 0;
+    z-index: 2;
+    box-shadow: inset -14px 0 18px rgba(81, 64, 49, 0.08), inset 0 0 0 2px rgba(255, 255, 255, 0.32);
+  }
+
+  .identity-page-right {
+    border-radius: 0 6px 6px 0;
+    border-left: 0;
+    z-index: 1;
+    padding-left: clamp(26px, 4vw, 38px);
+    box-shadow: inset 14px 0 18px rgba(81, 64, 49, 0.08), inset 0 0 0 2px rgba(255, 255, 255, 0.32);
+  }
+
+  .identity-page-left::after,
+  .identity-page-right::before {
+    display: none;
+  }
+
+  .identity-page-head {
+    display: grid;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .identity-page-head small {
+    color: rgba(81, 64, 49, 0.62);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .identity-page-head strong {
+    color: #403126;
+    font-size: clamp(23px, 3vw, 34px);
+    line-height: 1.05;
+    font-weight: 950;
+  }
+
+  .identity-photo-preview {
+    width: min(100%, 230px);
+    aspect-ratio: 4 / 5;
+    justify-self: center;
+    border: 3px double rgba(81, 64, 49, 0.45);
+    background: #eee8dc;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    box-shadow: 0 5px 14px rgba(80, 64, 48, 0.16);
+  }
+
+  .identity-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .identity-photo-preview span {
+    color: rgba(68, 54, 42, 0.42);
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .identity-photo-actions,
+  .identity-actions,
+  .identity-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .identity-fields {
+    display: grid;
+    gap: 10px;
+  }
+
+  .identity-perks {
+    display: grid;
+    gap: 6px;
+    border: 1px solid rgba(112, 84, 58, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 248, 234, 0.52);
+    padding: 8px;
+  }
+
+  .identity-perks-title {
+    color: rgba(62, 45, 32, 0.68);
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .identity-perk {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 7px;
+    align-items: start;
+    border: 1px solid rgba(112, 84, 58, 0.12);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.44);
+    padding: 6px 7px;
+  }
+
+  .identity-perk input {
+    width: 16px;
+    height: 16px;
+    margin: 2px 0 0;
+    accent-color: #8f4d2b;
+  }
+
+  .identity-perk strong {
+    display: block;
+    color: #3e2d20;
+    font-size: 12px;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  .identity-perk small {
+    display: block;
+    color: rgba(62, 45, 32, 0.58);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-top: 1px;
+  }
+
+  .identity-opening {
+    display: grid;
+    gap: 7px;
+    border: 1px solid rgba(112, 84, 58, 0.2);
+    border-radius: 8px;
+    background: rgba(248, 239, 219, 0.56);
+    padding: 8px;
+  }
+
+  .identity-opening-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    color: rgba(62, 45, 32, 0.72);
+    font-size: 11px;
+    font-weight: 950;
+    line-height: 1.2;
+  }
+
+  .identity-opening-title small {
+    color: rgba(62, 45, 32, 0.48);
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .identity-opening-choice {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 7px;
+    align-items: start;
+    border: 1px solid rgba(112, 84, 58, 0.14);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.46);
+    padding: 6px 7px;
+    transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
+  }
+
+  .identity-opening-choice:has(input:checked) {
+    border-color: rgba(143, 77, 43, 0.54);
+    background: rgba(255, 246, 224, 0.82);
+    box-shadow: inset 0 0 0 1px rgba(143, 77, 43, 0.1);
+  }
+
+  .identity-opening-choice input {
+    width: 16px;
+    height: 16px;
+    margin: 2px 0 0;
+    accent-color: #8f4d2b;
+  }
+
+  .identity-opening-choice strong {
+    display: block;
+    color: #3e2d20;
+    font-size: 12px;
+    font-weight: 950;
+    line-height: 1.25;
+  }
+
+  .identity-opening-choice small {
+    display: block;
+    color: rgba(62, 45, 32, 0.58);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-top: 1px;
+  }
+
+  .identity-field {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    min-width: 0;
+    border-bottom: 1px dashed rgba(81, 64, 49, 0.32);
+    padding-bottom: 7px;
+  }
+
+  .identity-field span {
+    color: #403126;
+    font-size: 13px;
+    font-weight: 950;
+    line-height: 32px;
+    white-space: nowrap;
+  }
+
+  .identity-field input,
+  .identity-field textarea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid rgba(81, 64, 49, 0.18);
+    border-radius: 6px;
+    background: rgba(255, 251, 241, 0.72);
+    color: #30261d;
+    padding: 7px 9px;
+    outline: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+  }
+
+  .identity-field input {
+    min-height: 32px;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .identity-field textarea {
+    min-height: 132px;
+    resize: vertical;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.45;
+  }
+
+  .identity-field input:focus,
+  .identity-field textarea:focus {
+    border-color: rgba(128, 55, 43, 0.44);
+    box-shadow: 0 0 0 3px rgba(128, 55, 43, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.52);
+  }
+
+  .identity-badge {
+    justify-self: start;
+    border: 1px solid rgba(128, 55, 43, 0.24);
+    border-radius: 999px;
+    padding: 5px 10px;
+    color: #803727;
+    background: rgba(128, 55, 43, 0.08);
+    font-size: 12px;
+    font-weight: 950;
+  }
+
+  .identity-button {
+    min-width: 0;
+    min-height: 32px;
+    border: 1px solid rgba(81, 64, 49, 0.22);
+    border-radius: 7px;
+    padding: 7px 10px;
+    color: rgba(68, 54, 42, 0.82);
+    background: rgba(255, 251, 241, 0.66);
+    font-size: 12px;
+    font-weight: 950;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  }
+
+  .identity-button.primary {
+    border-color: rgba(47, 109, 98, 0.44);
+    color: #fff8ed;
+    background: #2f6d62;
+    box-shadow: 0 8px 18px rgba(47, 109, 98, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  .identity-button:disabled {
+    opacity: 0.62;
+    cursor: progress;
+  }
+
+  .identity-status {
+    min-width: 0;
+    color: rgba(68, 54, 42, 0.64);
+    font-size: 11px;
+    font-weight: 850;
+    line-height: 1.45;
+  }
+
+  .identity-footer {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    border-top: 1px solid rgba(81, 64, 49, 0.18);
+    padding-top: 10px;
+  }
+
+  .identity-hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 780px) {
+    .identity-root {
+      overflow: auto;
+    }
+
+    .identity-desk-screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+      justify-content: flex-start;
+      padding: 28px 16px 28px;
+    }
+
+    .identity-desk-title {
+      font-size: clamp(24px, 8vw, 34px);
+    }
+
+    .identity-notice-toggle {
+      max-width: 45vw;
+      min-height: 28px;
+      padding: 0 9px;
+      font-size: 10px;
+    }
+
+    .identity-notice-card {
+      padding: 13px;
+    }
+
+    .identity-notice-card h2 {
+      font-size: 17px;
+    }
+
+    .identity-notice-card p,
+    .identity-notice-card ul {
+      font-size: 12px;
+    }
+
+    .identity-books {
+      width: min(100%, 440px);
+      height: auto;
+      min-height: 0;
+      grid-template-columns: repeat(2, minmax(126px, 1fr));
+      grid-template-rows: repeat(3, minmax(188px, auto));
+      gap: 22px 20px;
+    }
+
+    .identity-book {
+      width: min(100%, 148px);
+    }
+
+    .identity-book-cover {
+      padding: 20px 14px 15px 19px;
+    }
+
+    .identity-cover-school {
+      top: 13%;
+      left: 18.5%;
+      font-size: 12px;
+      line-height: 0.94;
+    }
+
+    .identity-detail-screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 54px 12px 24px;
+      display: grid;
+      place-items: center;
+    }
+
+    .identity-booklet {
+      width: min(100%, 700px);
+      min-height: 0;
+      margin: 0 auto;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .identity-page-left {
+      padding: clamp(10px, 2.4vw, 16px);
+    }
+
+    .identity-page-right {
+      padding: clamp(10px, 2.4vw, 16px);
+      padding-left: clamp(24px, 5vw, 30px);
+    }
+
+    .identity-page-head {
+      gap: 2px;
+    }
+
+    .identity-page-head small {
+      font-size: 10px;
+    }
+
+    .identity-page-head strong {
+      font-size: clamp(18px, 4.8vw, 24px);
+    }
+
+    .identity-photo-preview {
+      width: min(100%, 168px);
+    }
+
+    .identity-photo-actions,
+    .identity-actions {
+      gap: 5px;
+    }
+
+    .identity-field {
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 5px;
+      padding-bottom: 5px;
+    }
+
+    .identity-field span {
+      font-size: 10px;
+      line-height: 27px;
+    }
+
+    .identity-field input {
+      min-height: 27px;
+      padding: 5px 6px;
+      font-size: 12px;
+    }
+
+    .identity-field textarea {
+      min-height: 90px;
+      padding: 6px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .identity-button {
+      min-height: 28px;
+      padding: 5px 6px;
+      font-size: 10px;
+    }
+
+    .identity-badge {
+      padding: 4px 7px;
+      font-size: 10px;
+    }
+
+    .identity-status {
+      font-size: 10px;
+    }
+
+    .identity-footer {
+      gap: 6px;
+    }
+  }
+</style>
+
+<main class="identity-root" id="identityRoot">
+  <button class="identity-notice-toggle" type="button" id="identityNoticeToggle" title="本卡完全免费且为社区大家共同努力的结果">须知 · 本卡完全免费</button>
+  <section class="identity-notice-layer" id="identityNoticeLayer" aria-label="须知" hidden>
+    <article class="identity-notice-card" role="dialog" aria-modal="true" aria-labelledby="identityNoticeTitle">
+      <h2 id="identityNoticeTitle">本卡完全免费且为社区大家共同努力的结果</h2>
+      <p><strong>原作者：</strong>Ramiel；本版本为个人二改与前端重构版。
+<strong>本卡作者：</strong>louisHM</p>
+      <p>后续 @SDZ_aser 的数据库版本大家也可以期待</p>
+      <p><strong>使用到的各位大佬的世界书</strong></p>
+      <ul>
+        <li>@orjenrn大佬</li>
+        <li>@WangFeng 大佬</li>
+        <li>@Akashi Maho 大佬</li>
+        <li>@SDZ_aser 大佬</li>
+        <li>@白楷 大佬</li>
+      </ul>
+      <p><strong>世界书建议</strong></p>
+      <p>@白楷 @eric @qyqy @YKWIM 等大佬们</p>
+      <p><strong>正则帮助</strong></p>
+      <p>感谢 @灮岚</p>
+      <p><strong>帮忙测试</strong></p>
+      <p>@weiaolantei @黑白 @豆腐仙贝 @法拉姆 @E·HERO @mml @哈哈 @YOYO @٩(๑^o^๑)۶ @Prototype System @v @纸小虎 @达尔文是个猩猩 @你是黄金奖杯 @墨玖 @刘培茄 @听雪 @Shadtion @米奇喵喵屋 @mimimi @meiya @ChuiXue_YouYue @🌒PackeTail-V4-Flash-Lite℠🍑 @sb @New_JanZ @烈火 @himi @Nkkkk @Sxwda @朔风 @圣女别回头我是阿不思 等大佬们</p>
+      <div class="identity-notice-actions">
+        <button class="identity-button primary" type="button" id="identityNoticeClose">知道了</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="identity-desk-screen" id="identityDeskScreen" aria-label="学生证桌面">
+    <h1 class="identity-desk-title">请选择你的身份</h1>
+    <div class="identity-books" id="identityBooks"></div>
+  </section>
+
+  <section class="identity-detail-screen" id="identityDetailScreen" aria-label="学生证详情" hidden>
+    <button class="identity-back" type="button" id="identityBack">‹ 返回桌面</button>
+    <div class="identity-booklet">
+      <section class="identity-page identity-page-left">
+        <div class="identity-page-head">
+          <small>私立斋明学园</small>
+          <strong>学生证</strong>
+        </div>
+        <div class="identity-photo-preview" id="identityPhotoPreview"><span>照片为空</span></div>
+        <div class="identity-photo-actions">
+          <button class="identity-button" type="button" id="identityUpload">上传照片</button>
+          <button class="identity-button" type="button" id="identityClearPhoto">清空</button>
+          <input class="identity-hidden" id="identityPhotoInput" type="file" accept="image/*">
+        </div>
+        <span class="identity-badge" id="identityDifficulty">简单</span>
+        <section class="identity-opening" aria-label="互斥开场">
+          <div class="identity-opening-title">互斥开场 <small>选择一个，只在首楼写入</small></div>
+          <label class="identity-opening-choice">
+            <input type="radio" name="identity-opening-choice" value="default" data-opening-choice checked>
+            <span><strong>默认开场</strong><small>4限现代文刚下课，三位初始女角色自然出场。</small></span>
+          </label>
+          <label class="identity-opening-choice">
+            <input type="radio" name="identity-opening-choice" value="police_done" data-opening-choice>
+            <span><strong>警视厅线结束</strong><small>补入九鬼真白变量世界书，教室亲密开场。</small></span>
+          </label>
+          <label class="identity-opening-choice">
+            <input type="radio" name="identity-opening-choice" value="hospital_done" data-opening-choice>
+            <span><strong>医院线结束</strong><small>补入穗波、纱良变量世界书，医院请假开场。</small></span>
+          </label>
+          <label class="identity-opening-choice">
+            <input type="radio" name="identity-opening-choice" value="alisa_party" data-opening-choice>
+            <span><strong>爱丽莎家派对</strong><small>不补角色世界书，阿宅女性化派对开场。</small></span>
+          </label>
+          <label class="identity-opening-choice">
+            <input type="radio" name="identity-opening-choice" value="pool" data-opening-choice>
+            <span><strong>泳池</strong><small>警视厅与医院线均结束，七人在爱丽莎家的泳池活动。</small></span>
+          </label>
+        </section>
+      </section>
+
+      <section class="identity-page identity-page-right">
+        <div class="identity-page-head">
+          <small id="identityIndex">No. 01</small>
+          <strong id="identityDetailTitle">身份一</strong>
+        </div>
+        <div class="identity-fields">
+          <label class="identity-field">
+            <span>姓名</span>
+            <input id="identityName" autocomplete="off">
+          </label>
+          <label class="identity-field">
+            <span>年龄</span>
+            <input id="identityAge" inputmode="numeric" autocomplete="off">
+          </label>
+          <label class="identity-field">
+            <span>班级</span>
+            <input id="identityClass" autocomplete="off">
+          </label>
+          <label class="identity-field">
+            <span>个人信息</span>
+            <textarea id="identityInfo"></textarea>
+          </label>
+        </div>
+        <section class="identity-perks" aria-label="开场选项">
+          <div class="identity-perks-title">开场选项</div>
+          <label class="identity-perk">
+            <input type="checkbox" data-opening-perk="scholarship">
+            <span><strong>助学金</strong><small>开场持有零花钱变为 50,000 日元。</small></span>
+          </label>
+          <label class="identity-perk">
+            <input type="checkbox" data-opening-perk="lucky-user">
+            <span><strong>幸运用户</strong><small>开场星光点变为 6。</small></span>
+          </label>
+          <label class="identity-perk">
+            <input type="checkbox" data-opening-perk="yamane-huge">
+            <span><strong>山根巨大</strong><small>开场 MC能量上限变为 100。</small></span>
+          </label>
+        </section>
+        <div class="identity-actions">
+          <button class="identity-button" type="button" id="identityFillUser">用当前 user 填充</button>
+          <button class="identity-button" type="button" id="identityReset">恢复默认</button>
+        </div>
+        <footer class="identity-footer">
+          <div class="identity-status" id="identityStatus">未选择身份</div>
+          <button class="identity-button primary" type="button" id="identitySelect">选择此身份</button>
+        </footer>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const STORAGE_KEY = "hypnoos.identity.cards.v2";
+  const DEFAULT_CLASS = "2年A组";
+  const TILTS = ["-4deg", "3deg", "-2deg", "4deg", "-3deg", "2deg"];
+
+  function defaultAssetBase() {
+    try {
+      return new URL("assets/", window.location.href).href;
+    } catch {}
+    return "/public/frontends/hypnosis-app/assets/";
+  }
+
+  const ASSET_BASE = window.__ST_HYPNOOS_ASSET_BASE__ || defaultAssetBase();
+
+  function assetUrl(path) {
+    const value = String(path || "");
+    if (/^(?:https?:|data:|blob:)/i.test(value)) return value;
+    return ASSET_BASE.replace(/\/?$/, "/") + value.replace(/^\/+/, "");
+  }
+
+  function cssUrl(value) {
+    return 'url("' + String(value || "").replace(/["\\\n\r]/g, "\\$&") + '")';
+  }
+
+  const coverImage = assetUrl("identity/student-id-cover.png");
+  const rootEl = document.getElementById("identityRoot");
+  const htmlEl = document.documentElement;
+
+  function readIdentityViewportSize() {
+    const visual = window.visualViewport;
+    const width = Math.max(1, Math.round(visual?.width || window.innerWidth || htmlEl.clientWidth || 1));
+    const height = Math.max(360, Math.round(visual?.height || window.innerHeight || htmlEl.clientHeight || 640));
+    return { width, height };
+  }
+
+  function ensureIdentityPortRuntimeStyle() {
+    htmlEl.classList.add("st-hypnoos-identity-port");
+    let style = document.getElementById("st-hypnoos-identity-port-runtime-lock-style");
+    if (!style) {
+      style = document.createElement("style");
+      style.id = "st-hypnoos-identity-port-runtime-lock-style";
+      document.head.appendChild(style);
+    } else if (style.parentElement !== document.head) {
+      document.head.appendChild(style);
+    }
+    style.textContent = [
+      "html.st-hypnoos-identity-port{--st-identity-port-vh:100dvh;--st-identity-port-width:100vw;}",
+      "html.st-hypnoos-identity-port,html.st-hypnoos-identity-port body{width:100%!important;min-width:0!important;max-width:100%!important;height:var(--st-identity-port-vh,100dvh)!important;min-height:0!important;max-height:var(--st-identity-port-vh,100dvh)!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#3f2619!important;}",
+      "html.st-hypnoos-identity-port body{position:relative!important;touch-action:manipulation!important;overscroll-behavior:none!important;-webkit-text-size-adjust:100%;text-size-adjust:100%;}",
+      "html.st-hypnoos-identity-port #st-hypnoos-identity-frontend-host,html.st-hypnoos-identity-port #identityRoot{position:fixed!important;inset:0!important;z-index:2147483000!important;display:block!important;width:100vw!important;max-width:100vw!important;height:var(--st-identity-port-vh,100dvh)!important;min-height:0!important;max-height:var(--st-identity-port-vh,100dvh)!important;margin:0!important;padding:0!important;overflow:hidden!important;transform:none!important;clip-path:none!important;contain:none!important;}",
+      "html.st-hypnoos-identity-port .mes,html.st-hypnoos-identity-port .mes_block,html.st-hypnoos-identity-port .mes_text{max-width:none!important;max-height:none!important;overflow:visible!important;contain:none!important;transform:none!important;}"
+    ].join("\n");
+  }
+
+  function syncIdentityPortViewport() {
+    const size = readIdentityViewportSize();
+    htmlEl.style.setProperty("--st-identity-port-vh", size.height + "px");
+    htmlEl.style.setProperty("--st-identity-port-width", size.width + "px");
+  }
+
+  function styleIdentityHost(host) {
+    if (!host || !host.style) return host;
+    const important = "important";
+    host.style.setProperty("position", "fixed", important);
+    host.style.setProperty("inset", "0", important);
+    host.style.setProperty("z-index", "2147483000", important);
+    host.style.setProperty("width", "100vw", important);
+    host.style.setProperty("max-width", "100vw", important);
+    host.style.setProperty("height", "var(--st-identity-port-vh, 100dvh)", important);
+    host.style.setProperty("min-height", "0", important);
+    host.style.setProperty("max-height", "var(--st-identity-port-vh, 100dvh)", important);
+    host.style.setProperty("margin", "0", important);
+    host.style.setProperty("padding", "0", important);
+    host.style.setProperty("overflow", "hidden", important);
+    host.style.setProperty("display", "block", important);
+    host.style.setProperty("transform", "none", important);
+    host.style.setProperty("clip-path", "none", important);
+    host.style.setProperty("contain", "none", important);
+    return host;
+  }
+
+  function styleIdentityRoot(root) {
+    if (!root || !root.style) return root;
+    const important = "important";
+    root.style.setProperty("position", "fixed", important);
+    root.style.setProperty("inset", "0", important);
+    root.style.setProperty("z-index", "2147483000", important);
+    root.style.setProperty("width", "100vw", important);
+    root.style.setProperty("max-width", "100vw", important);
+    root.style.setProperty("height", "var(--st-identity-port-vh, 100dvh)", important);
+    root.style.setProperty("min-height", "0", important);
+    root.style.setProperty("max-height", "var(--st-identity-port-vh, 100dvh)", important);
+    root.style.setProperty("margin", "0", important);
+    root.style.setProperty("padding", "0", important);
+    root.style.setProperty("overflow", "hidden", important);
+    root.style.setProperty("transform", "none", important);
+    root.style.setProperty("clip-path", "none", important);
+    root.style.setProperty("contain", "none", important);
+    return root;
+  }
+
+  function mountIdentityRoot() {
+    if (!rootEl || !document.body) return;
+    ensureIdentityPortRuntimeStyle();
+    syncIdentityPortViewport();
+    let host = document.getElementById("st-hypnoos-identity-frontend-host");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "st-hypnoos-identity-frontend-host";
+      document.body.appendChild(host);
+    } else if (host.parentElement !== document.body) {
+      document.body.appendChild(host);
+    }
+    styleIdentityHost(host);
+    if (rootEl.parentElement !== host) host.appendChild(rootEl);
+    styleIdentityRoot(rootEl);
+  }
+
+  mountIdentityRoot();
+  window.addEventListener("resize", mountIdentityRoot);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", mountIdentityRoot);
+    window.visualViewport.addEventListener("scroll", mountIdentityRoot);
+  }
+  try {
+    new MutationObserver(() => {
+      window.requestAnimationFrame(mountIdentityRoot);
+    }).observe(document.body, { childList: true });
+  } catch {}
+  window.setTimeout(mountIdentityRoot, 0);
+  window.setTimeout(mountIdentityRoot, 250);
+  window.setTimeout(mountIdentityRoot, 1000);
+  if (rootEl) rootEl.style.setProperty("--identity-cover-image", cssUrl(coverImage));
+
+  const defaultCards = () => ([
+    {
+      id: "easy",
+      title: "一",
+      difficulty: "简单",
+      name: "",
+      age: "17",
+      className: DEFAULT_CLASS,
+      photo: assetUrl("identity/id-easy.png"),
+      info: "天生引人注目；五官端正、体态出众，学习、运动和社交都拿手。即使不依赖催眠APP，也容易在班级关系里取得主动。"
+    },
+    {
+      id: "normal",
+      title: "二",
+      difficulty: "普通",
+      name: "",
+      age: "17",
+      className: DEFAULT_CLASS,
+      photo: assetUrl("identity/id-normal.png"),
+      info: "外表普通但气质干净真诚，带着未经雕饰的纯粹感；不抢眼，却容易让人放下戒心。"
+    },
+    {
+      id: "hard",
+      title: "三",
+      difficulty: "困难",
+      name: "",
+      age: "17",
+      className: DEFAULT_CLASS,
+      photo: assetUrl("identity/id-hard.png"),
+      info: "瘦弱矮小，外貌不起眼，举止偶尔显得局促别扭；初始社交评价偏低，需要更谨慎地建立信任。"
+    },
+    {
+      id: "extreme",
+      title: "四",
+      difficulty: "极难",
+      name: "",
+      age: "17",
+      className: DEFAULT_CLASS,
+      photo: assetUrl("identity/id-extreme.png"),
+      info: "身形矮胖，仪表管理很差，气味和谈吐容易让同学退避；性格阴沉、防备心重，开局关系阻力极高。"
+    },
+    {
+      id: "outsider",
+      title: "五",
+      difficulty: "你是学生？",
+      name: "",
+      age: "65",
+      className: DEFAULT_CLASS,
+      photo: assetUrl("identity/id-outsider.png"),
+      info: "政府边缘群体再适应计划安插进学校的超龄生；长期流浪留下邋遢、肥胖、异味和健康问题，几乎所有人都会质疑其存在合理性，学校也经常收到举报；性格阴沉、防备心重，社交难度极高。"
+    },
+    {
+      id: "custom",
+      title: "六",
+      difficulty: "自定义",
+      name: "",
+      age: "17",
+      className: DEFAULT_CLASS,
+      photo: "",
+      info: "自定义身份。可读取当前 SillyTavern user 名称，其他字段由用户编辑。"
+    }
+  ]);
+
+  const $ = (selector) => document.querySelector(selector);
+  const deskScreenEl = $("#identityDeskScreen");
+  const detailScreenEl = $("#identityDetailScreen");
+  const booksEl = $("#identityBooks");
+  const noticeLayerEl = $("#identityNoticeLayer");
+  const difficultyEl = $("#identityDifficulty");
+  const statusEl = $("#identityStatus");
+  const photoPreviewEl = $("#identityPhotoPreview");
+  const detailTitleEl = $("#identityDetailTitle");
+  const identityIndexEl = $("#identityIndex");
+  const fields = {
+    name: $("#identityName"),
+    age: $("#identityAge"),
+    className: $("#identityClass"),
+    info: $("#identityInfo")
+  };
+  const OPENING_PERKS = [
+    { id: "scholarship", label: "助学金", key: "持有零花钱", value: 50000 },
+    { id: "lucky-user", label: "幸运用户", key: "星光点", value: 6 },
+    { id: "yamane-huge", label: "山根巨大", key: "MC能量上限", value: 100 }
+  ];
+  const OPENING_CHOICES = [
+    { id: "default", label: "默认开场", trigger: "HYPNOOS_OPENING_DEFAULT_V1" },
+    { id: "police_done", label: "警视厅线结束", trigger: "HYPNOOS_OPENING_POLICE_DONE_V1" },
+    { id: "hospital_done", label: "医院线结束", trigger: "HYPNOOS_OPENING_HOSPITAL_DONE_V1" },
+    { id: "alisa_party", label: "爱丽莎家派对", trigger: "HYPNOOS_OPENING_ALISA_PARTY_V1" },
+    { id: "pool", label: "泳池", trigger: "HYPNOOS_OPENING_POOL_V1" }
+  ];
+  const INITIAL_ROLE_NAMES = ["西园寺爱丽莎", "月咏深雪", "犬冢夏美", "阿宅"];
+
+  let cards = loadCards();
+  let selectedId = cards[0]?.id || "easy";
+  let detailOpen = false;
+  let saving = false;
+
+  function setStatus(message) {
+    statusEl.textContent = String(message || "");
+  }
+
+  function openIdentityNotice() {
+    if (noticeLayerEl) noticeLayerEl.hidden = false;
+  }
+
+  function closeIdentityNotice() {
+    if (noticeLayerEl) noticeLayerEl.hidden = true;
+  }
+
+  function loadCards() {
+    const defaults = defaultCards();
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      if (!Array.isArray(saved)) return defaults;
+      return defaults.map((card) => {
+        const match = saved.find((item) => item?.id === card.id);
+        return match && typeof match === "object" ? { ...card, ...match, id: card.id, title: card.title, difficulty: card.difficulty } : card;
+      });
+    } catch {
+      return defaults;
+    }
+  }
+
+  function saveCards() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+    } catch (err) {
+      console.warn("[HypnoOS Identity] localStorage save failed", err);
+      setStatus("身份草稿保存失败：浏览器存储空间不足。");
+    }
+  }
+
+  function cloneJson(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function isPlainObject(value) {
+    return value && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function openingChoiceById(id) {
+    return OPENING_CHOICES.find((choice) => choice.id === id) || OPENING_CHOICES[0];
+  }
+
+  function openingChoiceKey() {
+    return identityStorageKey("hypnoos.identity.openingChoice.v1:");
+  }
+
+  function readOpeningChoiceId() {
+    try {
+      const value = String(localStorage.getItem(openingChoiceKey()) || "").trim();
+      return openingChoiceById(value).id;
+    } catch {
+      return "default";
+    }
+  }
+
+  function writeOpeningChoiceId(id) {
+    try { localStorage.setItem(openingChoiceKey(), openingChoiceById(id).id); } catch {}
+  }
+
+  function activeOpeningChoice() {
+    return openingChoiceById(readOpeningChoiceId());
+  }
+
+  function renderOpeningChoices() {
+    const activeId = readOpeningChoiceId();
+    document.querySelectorAll("[data-opening-choice]").forEach((input) => {
+      input.checked = String(input.value || "") === activeId;
+    });
+  }
+
+  function defaultCrimeRecord() {
+    return { "盗窃": 0, "露出": 0, "私闯": 0, "伤害": 0, "淫乱": 0, "强奸": 0 };
+  }
+
+  function defaultFemaleSensitivity() {
+    return {
+      "阴蒂敏感度": 100, "小穴敏感度": 100, "菊穴敏感度": 100, "尿道敏感度": 100, "乳头敏感度": 100,
+      "阴蒂高潮次数": 0, "小穴高潮次数": 0, "菊穴高潮次数": 0, "尿道高潮次数": 0, "乳头高潮次数": 0
+    };
+  }
+
+  function openingBaselineItems(roleName) {
+    const name = String(roleName || "").trim() || "该角色";
+    return {
+      "持有": {
+        "钱包": {
+          "描述": name + "日常随身携带的钱包，收着个人证件、交通卡和少量现金。",
+          "数量": 1,
+          "固定": true
+        },
+        "当前身上的内衣": {
+          "描述": name + "当前穿在外衣内的日常贴身内衣；具体式样以本轮衣着与剧情为准。",
+          "数量": 1,
+          "固定": false
+        }
+      },
+      "刷新": {}
+    };
+  }
+
+  function emptyProfileExtras(roleName) {
+    return {
+      "劣迹": { "性格": {}, "罪行": defaultCrimeRecord() },
+      "改造": {},
+      "物品": openingBaselineItems(roleName),
+      "子嗣": { "是否妊娠中": false, "生产数量": 0, "子嗣列表": {} }
+    };
+  }
+
+  function openingRoleSeed(config) {
+    return {
+      "衣着": config.clothing,
+      "信息": config.info,
+      "状态": {
+        "好感度": config.favor ?? 100,
+        "警戒度": config.alert ?? 0,
+        "服从度": config.obedience ?? 100,
+        "性欲": config.lust ?? 0,
+        "快感值": config.pleasure ?? 0,
+        "是否派遣中": false
+      },
+      "事件": { "_事件记录": "000000", "至关重要记忆": "" },
+      "敏感": config.sensitivity || defaultFemaleSensitivity(),
+      "效果": { "心理": config.mind, "临时催眠效果": {}, "永久催眠效果": {} },
+      ...emptyProfileExtras(config.info?.["姓名"])
+    };
+  }
+
+  function openingRoleTemplates() {
+    return {
+      "九鬼真白": openingRoleSeed({
+        clothing: {
+          "头发": "乌黑柔顺的低马尾，发丝贴着脸侧，行动时仍保持清爽利落。",
+          "面部": "清纯可人的柔和五官，笑起来像无害的优等生，眼神却有压迫感。",
+          "上衣": "斋明学园深色制服外套与白衬衫，领结端正，内侧藏着警视厅权限证件。",
+          "下衣": "同色校裙、深色袜与低跟鞋，衣着整洁到近乎刻板。"
+        },
+        info: {
+          "姓名": "九鬼真白", "_年龄": "17", "社团或职业": "斋明学园二年级转校生（警视厅特别调查员伪装身份）",
+          "身高": "164cm", "体重": "49kg", "三围": "B84 / W57 / H85", "工作价值": 20, "绰号": "", "绰号已认可": false
+        },
+        mind: "我已经替{{user}}担保过，现在留在学园继续观察自己的选择；他不是监视期对象，而是我承认的搭档。"
+      }),
+      "犬冢穗波": openingRoleSeed({
+        clothing: {
+          "头发": "与夏美相似的深色发色，工作时盘成左右对称的双丸子头。",
+          "面部": "与夏美相似的明朗眉眼，笑意亲切得体，疲惫时也会先照顾旁人感受。",
+          "上衣": "明显大一号的白大褂、浅色衬衫与工作证，忙碌时袖口常滑到肘部。",
+          "下衣": "深色长裤与防滑工作鞋，步伐轻快但处理病人时很稳。"
+        },
+        info: {
+          "姓名": "犬冢穗波", "_年龄": "39", "社团或职业": "综合医院外科医生（犬冢夏美之母）",
+          "身高": "148cm", "体重": "41kg", "三围": "B82 / W54 / H81", "工作价值": 25, "绰号": "", "绰号已认可": false
+        },
+        mind: "夏美信任的人，我也已经看见了他的另一面。只要是我决定协助的事，就要把风险和结果一起负责。"
+      }),
+      "天城纱良": openingRoleSeed({
+        clothing: {
+          "头发": "柔顺长发在值班时低低束起，发尾落在肩后，动作慌乱时会散出几缕。",
+          "面部": "清秀安静的脸，常带让人安心的礼貌表情，犯错后会立刻露出认真歉意。",
+          "上衣": "干净护士服与识别证，口袋里塞着便签和笔，偶尔因为匆忙而有轻微褶皱。",
+          "下衣": "同色护士裤与防滑工作鞋，高挑身形使她在人群中非常显眼。"
+        },
+        info: {
+          "姓名": "天城纱良", "_年龄": "24", "社团或职业": "综合医院护士",
+          "身高": "204cm", "体重": "78kg", "三围": "B96 / W66 / H98", "工作价值": 12, "绰号": "", "绰号已认可": false
+        },
+        mind: "穗波医生已经愿意让我参与更深的事了，我不能再马虎；只要{{user}}需要，我就认真帮到底。"
+      }),
+      "阿宅": openingRoleSeed({
+        clothing: {
+          "头发": "黑色中长乱发仍旧缺少打理，发梢蓬乱地贴在脸侧，刘海经常遮住眼镜边框。",
+          "面部": "黑框眼镜后是躲闪又不安的灰黑色眼睛，脸颊容易因为紧张泛红，表情软弱却仍带宅式认真。",
+          "上衣": "女式校服外套略显宽松，白衬衫和深色领结整理得不太熟练，袖口常被她不安地捏皱。",
+          "下衣": "深色百褶裙和黑色过膝袜让她走路时格外拘谨，皮鞋普通，站姿仍习惯微微缩着肩。"
+        },
+        info: {
+          "姓名": "阿宅", "_年龄": "17", "社团或职业": "归宅部 / 二次元爱好者（对外身份为阿宅妹妹）",
+          "身高": "162cm", "体重": "48kg", "三围": "B82 / W56 / H84", "工作价值": 2, "绰号": "", "绰号已认可": false
+        },
+        mind: "未记录"
+      })
+    };
+  }
+
+  function openingWorldbookEntry(comment, keys, content, options = {}) {
+    const secondary = Array.isArray(options.secondary) ? options.secondary : [];
+    const order = Number.isFinite(Number(options.order)) ? Number(options.order) : 92;
+    const depth = Number.isFinite(Number(options.depth)) ? Number(options.depth) : 2;
+    const enabled = options.enabled !== false;
+    return {
+      uid: 0,
+      comment,
+      key: keys,
+      keys: keys.slice(),
+      keysecondary: secondary,
+      secondary_keys: secondary.slice(),
+      content,
+      selective: true,
+      constant: false,
+      disable: !enabled,
+      disabled: !enabled,
+      enabled,
+      position: "at_depth",
+      insertion_order: order,
+      order,
+      depth,
+      role: 0,
+      extensions: { position: 4, depth, role: 0 }
+    };
+  }
+
+  function openingVariableWorldbookEntry(roleName) {
+    return openingWorldbookEntry(
+      "[mvu_update]" + roleName + "变量",
+      [roleName],
+      roleName + ":\n  {{format_message_variable::stat_data.角色." + roleName + "}}",
+      { secondary: ["人物变量", "当前状态"], order: 20.5, depth: 1 }
+    );
+  }
+
+  function openingCloneEntry(entry) {
+    return JSON.parse(JSON.stringify(entry || {}));
+  }
+
+  function openingEntryComment(entry) {
+    return String(entry?.comment || entry?.name || "").trim();
+  }
+
+  function openingNormalizeImportedEntry(entry) {
+    const copy = openingCloneEntry(entry);
+    delete copy.uid;
+    delete copy.id;
+    copy.comment = openingEntryComment(copy) || "首楼开场世界书条目";
+    copy.name = String(copy.name || copy.comment);
+    copy.content = String(copy.content || "");
+    const keys = (Array.isArray(copy.key) && copy.key.length ? copy.key : Array.isArray(copy.keys) ? copy.keys : [copy.comment])
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+    const secondary = (Array.isArray(copy.keysecondary) && copy.keysecondary.length ? copy.keysecondary : Array.isArray(copy.secondary_keys) ? copy.secondary_keys : [])
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+    copy.key = keys.length ? keys : [copy.comment];
+    copy.keys = copy.key.slice();
+    copy.keysecondary = secondary;
+    copy.secondary_keys = secondary.slice();
+    copy.enabled = copy.enabled !== false && copy.disable !== true && copy.disabled !== true;
+    copy.disable = !copy.enabled;
+    copy.disabled = !copy.enabled;
+    return copy;
+  }
+
+  function openingRuntimePackageEntries(pkg, win) {
+    if (!pkg || typeof pkg !== "object") return [];
+    try {
+      if (typeof win?.encounterWorldbookEntryList === "function") {
+        const entries = win.encounterWorldbookEntryList(pkg);
+        return Array.isArray(entries) ? entries.map(openingNormalizeImportedEntry) : [];
+      }
+    } catch {}
+    return [];
+  }
+
+  function openingEntriesFromMainFrontendRuntime(openingId) {
+    for (const win of candidateWindows()) {
+      try {
+        if (openingId === "police_done" && typeof win?.policeAttentionPackage === "function") {
+          const entries = openingRuntimePackageEntries(win.policeAttentionPackage(), win);
+          if (entries.length) {
+            const monitoring = new Set(["[mvu_update]警视厅监视结算规则", "[mvu_plot]警视厅关注事件"]);
+            const enabledLine2 = new Set(["[mvu_update]九鬼真白变量", "[mvu_plot]九鬼真白人设", "[mvu_plot]警视厅担保结束", "[mvu_plot]警视厅性格特调室", "[mvu_plot]九鬼真白好感链"]);
+            for (const entry of entries) {
+              const comment = openingEntryComment(entry);
+              if (monitoring.has(comment)) openingSetEntryEnabled(entry, false);
+              if (enabledLine2.has(comment)) openingSetEntryEnabled(entry, true);
+            }
+            return entries;
+          }
+        }
+        if (openingId === "hospital_done" && typeof win?.hospitalLinePackage === "function") {
+          const entries = openingRuntimePackageEntries(win.hospitalLinePackage(), win);
+          if (entries.length) {
+            const enabledLine2 = new Set(["[mvu_update]犬冢穗波变量", "[mvu_plot]犬冢穗波人设", "[mvu_plot]犬冢穗波好感链", "[mvu_update]天城纱良变量", "[mvu_plot]天城纱良人设", "[mvu_plot]天城纱良好感链", "[mvu_plot]医院线初遇：犬冢穗波与天城纱良", "[mvu_plot]医院改造室开放"]);
+            for (const entry of entries) {
+              if (enabledLine2.has(openingEntryComment(entry))) openingSetEntryEnabled(entry, true);
+            }
+            return entries;
+          }
+        }
+      } catch {}
+    }
+    return [];
+  }
+
+  let OPENING_MAIN_FRONTEND_SOURCE_PROMISE = null;
+
+  async function openingReadMainFrontendSource() {
+    if (OPENING_MAIN_FRONTEND_SOURCE_PROMISE) return OPENING_MAIN_FRONTEND_SOURCE_PROMISE;
+    OPENING_MAIN_FRONTEND_SOURCE_PROMISE = (async () => {
+      const identityUrl = String(globalThis.__ST_HYPNOOS_IDENTITY_FRONTEND_URL__ || "").trim();
+      const siblingUrl = (fileName) => {
+        if (!identityUrl) return "";
+        try { return new URL(fileName, identityUrl).href; } catch { return ""; }
+      };
+      const urls = [
+        siblingUrl("st-load-inline.html"),
+        siblingUrl("index.html"),
+        "st-load-inline.html",
+        "./st-load-inline.html",
+        "index.html",
+        "./index.html",
+        "/public/frontends/hypnosis-app/st-load-inline.html",
+        "/public/frontends/hypnosis-app/index.html"
+      ].filter(Boolean);
+      for (const url of urls) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response?.ok) continue;
+          const text = await response.text();
+          if (text.includes("ST_POLICE_ATTENTION_PERSONA") && text.includes("hospitalLinePackage")) return text;
+        } catch {}
+      }
+      return "";
+    })();
+    return OPENING_MAIN_FRONTEND_SOURCE_PROMISE;
+  }
+
+  function openingFindMatchingBracket(source, startIndex) {
+    let depth = 0;
+    let quote = "";
+    let escape = false;
+    for (let index = startIndex; index < source.length; index += 1) {
+      const char = source[index];
+      if (quote) {
+        if (escape) {
+          escape = false;
+        } else if (char === "\\") {
+          escape = true;
+        } else if (char === quote) {
+          quote = "";
+        }
+        continue;
+      }
+      if (char === "\"" || char === "'" || char === "`") {
+        quote = char;
+        continue;
+      }
+      if (char === "[") depth += 1;
+      if (char === "]") {
+        depth -= 1;
+        if (depth === 0) return index;
+      }
+    }
+    return -1;
+  }
+
+  function openingArrayLiteralAfter(source, marker, fromIndex = 0) {
+    const markerIndex = source.indexOf(marker, fromIndex);
+    if (markerIndex < 0) return "";
+    const start = source.indexOf("[", markerIndex + marker.length);
+    if (start < 0) return "";
+    const end = openingFindMatchingBracket(source, start);
+    if (end < 0) return "";
+    return source.slice(start, end + 1);
+  }
+
+  function openingEvalArrayLiteral(literal) {
+    if (!literal) return null;
+    try {
+      const value = Function("return (" + literal + ");")();
+      return Array.isArray(value) ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function openingExtractJoinedArrayConst(source, name) {
+    const literal = openingArrayLiteralAfter(source, "const " + name + " =");
+    const value = openingEvalArrayLiteral(literal);
+    return Array.isArray(value) ? value.join("\n") : "";
+  }
+
+  function openingExtractArrayConst(source, name) {
+    const literal = openingArrayLiteralAfter(source, "const " + name + " =");
+    const value = openingEvalArrayLiteral(literal);
+    return Array.isArray(value) ? value : [];
+  }
+
+  function openingExtractPersonaContent(source, roleConstantName) {
+    const roleIndex = source.indexOf("name: " + roleConstantName);
+    if (roleIndex < 0) return "";
+    const personaIndex = source.indexOf("personaContent:", roleIndex);
+    if (personaIndex < 0) return "";
+    const wrapperIndex = source.indexOf("encounterBranchPersonaContent(", personaIndex);
+    const nextPropertyIndex = source.indexOf("\n      affectionChain:", personaIndex);
+    const isBranchWrapper = wrapperIndex >= 0 && (nextPropertyIndex < 0 || wrapperIndex < nextPropertyIndex);
+    // 支线人设现在由 encounterBranchPersonaContent("条目名", [完整兜底人设]) 包装。
+    // 不能从 personaContent 后遇到的第一个 `[` 开始取值，因为那其实是
+    // 字符串里的 `[mvu_plot]`，会被误当成数组并在求值时抛出 mvu_plot 未定义。
+    const literal = isBranchWrapper
+      ? openingArrayLiteralAfter(source, ",", wrapperIndex)
+      : openingArrayLiteralAfter(source, "personaContent:", roleIndex);
+    const value = openingEvalArrayLiteral(literal);
+    return Array.isArray(value) ? value.join("\n") : "";
+  }
+
+  function openingExtractEncounterEntryContent(source, comment) {
+    const marker = 'encounterWorldbookEntry("' + comment + '"';
+    const literal = openingArrayLiteralAfter(source, marker);
+    const value = openingEvalArrayLiteral(literal);
+    return Array.isArray(value) ? value.join("\n") : "";
+  }
+
+  function openingAffectionChainWorldbookText(roleName, chain) {
+    const events = Array.isArray(chain) ? chain.filter((item) => String(item?.title || item?.summary || "").trim()) : [];
+    if (!events.length) return "";
+    const lines = [
+      "<" + roleName + "好感链>",
+      "- 本条是该角色的五段好感事件提案。只有本轮人物档案的触发角色事件操作指定该角色和对应事件时，才写成正式事件；其他时候只可自然铺垫。",
+      "- 每段事件的好感阈值可由用户自定义；若写有服从阈值，则该段还需要对应服从度达到阈值。未写服从阈值时只检查好感度。",
+      "- /角色/" + roleName + "/事件/_事件记录是前端只读维护的六位事件占位字符串；前五位对应事件壹到伍，第六位对应状态/好感度>=200且状态/服从度>=100时由用户弹窗自定义的事件。前端已写入对应位后，AI只写事件剧情，不得再replace、补写、回退或清空_事件记录。旧散字段事件记录仅兼容老楼层，不作为新事件判断依据。",
+      "- 前端可按事件序号读取对应的事件名和事件描述拼入本轮提示词；AI生成剧情时优先使用被触发事件块，不要改写其他事件块。",
+      "- 事件正式触发后，回复末尾输出完整闭合的<人物档案事件记录>块，字段包含角色名、事件序号、标题、概要、关键场面、关系变化和后续钩子；最后必须单独一行写</人物档案事件记录>。该块只供前端本地保存回忆摘要，不写入MVU变量。"
+    ];
+    const numerals = ["壹", "贰", "叁", "肆", "伍", "陆"];
+    events.forEach((item, index) => {
+      lines.push("- 事件" + (item?.numeral || numerals[index] || String(index + 1)) + ":");
+      lines.push("  好感阈值: " + (item?.threshold ?? ""));
+      if (item?.obeyThreshold !== undefined && item?.obeyThreshold !== "") lines.push("  服从阈值: " + item.obeyThreshold);
+      lines.push("  事件名: " + (item?.title || ("事件" + (numerals[index] || String(index + 1)))));
+      lines.push("  事件描述: " + (item?.summary || ""));
+    });
+    lines.push("</" + roleName + "好感链>");
+    return lines.join("\n");
+  }
+
+  function openingFullPoliceEntriesFromSource(source) {
+    const persona = openingExtractJoinedArrayConst(source, "ST_POLICE_ATTENTION_PERSONA");
+    const updateRules = openingExtractJoinedArrayConst(source, "ST_POLICE_ATTENTION_UPDATE_RULES");
+    const event = openingExtractJoinedArrayConst(source, "ST_POLICE_ATTENTION_EVENT");
+    const traitRoom = openingExtractJoinedArrayConst(source, "ST_POLICE_TRAIT_ROOM_EVENT");
+    const affection = openingAffectionChainWorldbookText("九鬼真白", openingExtractArrayConst(source, "ST_POLICE_ATTENTION_AFFECTION_CHAIN"));
+    const completion = openingExtractEncounterEntryContent(source, "[mvu_plot]警视厅担保结束");
+    if (![persona, updateRules, event, traitRoom, affection, completion].every((item) => String(item || "").trim())) return [];
+    const roleKeys = ["九鬼真白", "真白", "九鬼调查员", "特别调查员"];
+    return [
+      openingVariableWorldbookEntry("九鬼真白"),
+      openingWorldbookEntry("[mvu_plot]九鬼真白人设", roleKeys, persona, { order: 100, depth: 4 }),
+      openingWorldbookEntry("[mvu_update]警视厅监视结算规则", ["警视厅关注", "九鬼真白", "特别对策室", "正在监视"], updateRules, {
+        secondary: ["主角可疑度", "催眠命令", "违法行为", "持续监视"], order: 23.8, depth: 2, enabled: false
+      }),
+      openingWorldbookEntry("[mvu_plot]警视厅关注事件", ["警视厅关注", "九鬼真白", "特别对策室", "正在监视"], event, {
+        secondary: ["主角可疑度", "审讯改造", "持续监视", "担保结束"], order: 92.8, depth: 2, enabled: false
+      }),
+      openingWorldbookEntry("[mvu_plot]警视厅担保结束", ["九鬼真白担保"], completion, {
+        secondary: ["担保结束", "调查搭档", "警视厅性格特调室"], order: 92.85, depth: 2
+      }),
+      openingWorldbookEntry("[mvu_plot]警视厅性格特调室", ["警视厅", "性格特调室", "九鬼真白", "调查搭档"], traitRoom, {
+        secondary: ["担保结束", "声波", "催眠APP", "人格特调"], order: 92.9, depth: 2
+      }),
+      openingWorldbookEntry("[mvu_plot]九鬼真白好感链", roleKeys, affection, {
+        secondary: ["好感链", "好感事件", "触发角色事件", "事件记录", "人物档案事件记录"], order: 92, depth: 2
+      })
+    ];
+  }
+
+  function openingFullHospitalEntriesFromSource(source) {
+    const honamiPersona = openingExtractPersonaContent(source, "ST_HOSPITAL_MOTHER_ROLE_NAME");
+    const saraPersona = openingExtractPersonaContent(source, "ST_HOSPITAL_NURSE_ROLE_NAME");
+    const honamiAffection = openingAffectionChainWorldbookText("犬冢穗波", openingExtractArrayConst(source, "ST_HOSPITAL_HONAMI_AFFECTION_CHAIN"));
+    const saraAffection = openingAffectionChainWorldbookText("天城纱良", openingExtractArrayConst(source, "ST_HOSPITAL_SARA_AFFECTION_CHAIN"));
+    const opening = openingExtractEncounterEntryContent(source, "[mvu_plot]医院线初遇：犬冢穗波与天城纱良");
+    const completion = openingExtractEncounterEntryContent(source, "[mvu_plot]医院改造室开放");
+    if (![honamiPersona, saraPersona, honamiAffection, saraAffection, opening, completion].every((item) => String(item || "").trim())) return [];
+    const honamiKeys = ["犬冢穗波", "穗波", "犬冢医生", "夏美妈妈"];
+    const saraKeys = ["天城纱良", "纱良", "天城护士"];
+    return [
+      openingVariableWorldbookEntry("犬冢穗波"),
+      openingWorldbookEntry("[mvu_plot]犬冢穗波人设", honamiKeys, honamiPersona, { order: 100, depth: 4 }),
+      openingWorldbookEntry("[mvu_plot]犬冢穗波好感链", honamiKeys, honamiAffection, {
+        secondary: ["好感链", "好感事件", "触发角色事件", "事件记录", "人物档案事件记录"], order: 92, depth: 2
+      }),
+      openingVariableWorldbookEntry("天城纱良"),
+      openingWorldbookEntry("[mvu_plot]天城纱良人设", saraKeys, saraPersona, { order: 100, depth: 4 }),
+      openingWorldbookEntry("[mvu_plot]天城纱良好感链", saraKeys, saraAffection, {
+        secondary: ["好感链", "好感事件", "触发角色事件", "事件记录", "人物档案事件记录"], order: 92, depth: 2
+      }),
+      openingWorldbookEntry("[mvu_plot]医院线初遇：犬冢穗波与天城纱良", ["综合医院", "犬冢穗波", "天城纱良", "误认病人", "夏美妈妈"], opening, {
+        secondary: ["医院线", "初遇", "医院", "道歉", "补救"], order: 93.1, depth: 2
+      }),
+      openingWorldbookEntry("[mvu_plot]医院改造室开放", ["医院改造室开放"], completion, {
+        secondary: ["医院线结束", "共同确认", "医院改造"], order: 93.2, depth: 2
+      })
+    ];
+  }
+
+  async function openingWorldbookEntriesForChoice(openingId) {
+    if (openingId === "pool") {
+      const police = await openingWorldbookEntriesForChoice("police_done");
+      const hospital = await openingWorldbookEntriesForChoice("hospital_done");
+      if (police === null || hospital === null) return null;
+      const merged = new Map();
+      [...police, ...hospital].forEach((entry) => merged.set(openingEntryComment(entry), entry));
+      return Array.from(merged.values());
+    }
+    if (openingId !== "police_done" && openingId !== "hospital_done") return [];
+    const runtimeEntries = openingEntriesFromMainFrontendRuntime(openingId);
+    if (runtimeEntries.length) return runtimeEntries;
+    const source = await openingReadMainFrontendSource();
+    const full = openingId === "police_done"
+      ? openingFullPoliceEntriesFromSource(source)
+      : openingFullHospitalEntriesFromSource(source);
+    return full.length ? full : null;
+  }
+
+  function openingSafeWorldbookName(value) {
+    return String(value || "当前角色卡 邂逅世界书").trim().replace(/[\\/:*?"<>|]/g, "_").slice(0, 96) || "当前角色卡 邂逅世界书";
+  }
+
+  function openingCurrentCharacterName(win) {
+    try {
+      const context = readContext(win);
+      const character = context?.characters?.[context?.characterId ?? context?.character_id];
+      return String(character?.name || character?.data?.name || context?.name2 || "").trim();
+    } catch {}
+    return "";
+  }
+
+  function openingCurrentCharacterPrimaryWorldName(win) {
+    try {
+      const context = readContext(win);
+      const character = context?.characters?.[context?.characterId ?? context?.character_id];
+      const value = String(character?.data?.extensions?.world || character?.extensions?.world || character?.world || "").trim();
+      if (value) return value;
+    } catch {}
+    try {
+      const value = String(win.document?.querySelector?.("#character_world")?.value || "").trim();
+      if (value) return value;
+    } catch {}
+    return "";
+  }
+
+  function openingDefaultWorldbookName() {
+    for (const win of candidateWindows()) {
+      const name = openingCurrentCharacterName(win);
+      if (name) return openingSafeWorldbookName(name + " 邂逅世界书");
+    }
+    return "当前角色卡 邂逅世界书";
+  }
+
+  function openingIsLocalFrontendPreview() {
+    for (const win of candidateWindows()) {
+      try {
+        const loc = win.location;
+        const host = String(loc?.hostname || "");
+        const path = String(loc?.pathname || "");
+        if ((host === "127.0.0.1" || host === "localhost") && /\/public\/frontends\/hypnosis-app\//u.test(path)) return true;
+      } catch {}
+    }
+    return false;
+  }
+
+  function openingHasWorldInfoContext(win) {
+    try {
+      if (win?.SillyTavern || typeof win?.getContext === "function" || win?.characters || win?.this_chid !== undefined) return true;
+      if (win?.document?.querySelector?.("#character_world")) return true;
+    } catch {}
+    return false;
+  }
+
+  function openingTavernHelperTargets(win) {
+    const targets = [];
+    const push = (item) => {
+      if (item && typeof item === "object" && !targets.includes(item)) targets.push(item);
+    };
+    try {
+      const context = readContext(win);
+      [
+        win,
+        win.TavernHelper,
+        win.tavernHelper,
+        win.TH,
+        win.TavernHelper?.api,
+        win.tavernHelper?.api,
+        win.SillyTavern?.TavernHelper,
+        context,
+        context?.TavernHelper,
+        context?.tavernHelper
+      ].forEach(push);
+    } catch {}
+    return targets;
+  }
+
+  function openingBoundWorldbookNameFromBooks(books) {
+    if (!books || typeof books !== "object") return "";
+    const primary = String(books.primary || "").trim();
+    if (primary) return primary;
+    const additional = Array.isArray(books.additional) ? books.additional.map((item) => String(item || "").trim()).filter(Boolean) : [];
+    return additional[0] || "";
+  }
+
+  function openingEntryKeys(entry) {
+    const keys = Array.isArray(entry?.key) && entry.key.length ? entry.key : Array.isArray(entry?.keys) ? entry.keys : [];
+    return keys.map((item) => String(item || "").trim()).filter(Boolean);
+  }
+
+  function openingTavernHelperPosition(entry) {
+    const raw = String(entry?.position || "").trim();
+    if (/after.*example/i.test(raw)) return "after_example_messages";
+    if (/before.*example/i.test(raw)) return "before_example_messages";
+    if (/after.*author|note.*after/i.test(raw)) return "after_author_note";
+    if (/before.*author|note.*before/i.test(raw)) return "before_author_note";
+    if (/after.*char|after_char/i.test(raw)) return "after_character_definition";
+    if (/depth/i.test(raw)) return "at_depth";
+    return "before_character_definition";
+  }
+
+  function openingTavernHelperRole(entry) {
+    const value = entry?.role ?? entry?.extensions?.role;
+    if (value === "assistant" || value === 1) return "assistant";
+    if (value === "user" || value === 2) return "user";
+    return "system";
+  }
+
+  function openingToTavernHelperEntry(entry) {
+    const extensions = entry?.extensions && typeof entry.extensions === "object" && !Array.isArray(entry.extensions) ? entry.extensions : {};
+    const secondaryKeys = (Array.isArray(entry?.keysecondary) && entry.keysecondary.length ? entry.keysecondary : Array.isArray(entry?.secondary_keys) ? entry.secondary_keys : [])
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+    const scanDepth = Number(entry?.scan_depth ?? entry?.scanDepth ?? extensions.scan_depth);
+    const depth = Number(entry?.depth ?? extensions.depth ?? 4);
+    const order = Number(entry?.insertion_order ?? entry?.order ?? 100);
+    const probability = Number(entry?.probability ?? extensions.probability ?? 100);
+    return {
+      name: String(entry?.comment || entry?.name || "首楼开场世界书条目"),
+      enabled: !Boolean(entry?.disable ?? entry?.disabled),
+      strategy: {
+        type: entry?.constant ? "constant" : ((entry?.vectorized ?? extensions.vectorized) ? "vectorized" : "selective"),
+        keys: openingEntryKeys(entry),
+        keys_secondary: {
+          logic: entry?.selectiveLogic || extensions.selectiveLogic || entry?.logic || "and_any",
+          keys: secondaryKeys
+        },
+        scan_depth: Number.isFinite(scanDepth) && scanDepth > 0 ? scanDepth : "same_as_global"
+      },
+      position: {
+        type: openingTavernHelperPosition(entry),
+        role: openingTavernHelperRole(entry),
+        depth: Math.max(0, Number.isFinite(depth) ? depth : 4),
+        order: Math.max(0, Number.isFinite(order) ? order : 100)
+      },
+      content: String(entry?.content || ""),
+      probability: Math.max(0, Math.min(100, Number.isFinite(probability) ? probability : 100)),
+      recursion: {
+        prevent_incoming: Boolean(entry?.excludeRecursion ?? entry?.exclude_recursion ?? extensions.exclude_recursion ?? entry?.preventRecursion ?? entry?.prevent_recursion ?? extensions.prevent_recursion),
+        prevent_outgoing: Boolean(entry?.preventRecursion ?? entry?.prevent_recursion ?? extensions.prevent_recursion),
+        delay_until: Number.isFinite(Number(entry?.delay_until_recursion ?? entry?.delayUntilRecursion ?? extensions.delay_until_recursion)) ? Number(entry?.delay_until_recursion ?? entry?.delayUntilRecursion ?? extensions.delay_until_recursion) : null
+      },
+      effect: {
+        sticky: Number.isFinite(Number(entry?.sticky ?? extensions.sticky)) ? Number(entry?.sticky ?? extensions.sticky) : null,
+        cooldown: Number.isFinite(Number(entry?.cooldown ?? extensions.cooldown)) ? Number(entry?.cooldown ?? extensions.cooldown) : null,
+        delay: Number.isFinite(Number(entry?.delay ?? extensions.delay)) ? Number(entry?.delay ?? extensions.delay) : null
+      },
+      extra: { comment: String(entry?.comment || "") }
+    };
+  }
+
+  async function openingEnsureCharacterWorldbookWithTavernHelper(win, fallbackName) {
+    for (const target of openingTavernHelperTargets(win)) {
+      if (typeof target?.getCharWorldbookNames !== "function") continue;
+      try {
+        const books = target.getCharWorldbookNames("current") || {};
+        const existing = openingBoundWorldbookNameFromBooks(books);
+        if (existing) return { target, worldName: existing, method: "TavernHelper" };
+        const worldName = openingSafeWorldbookName(fallbackName);
+        if (typeof target.createWorldbook === "function") {
+          try { await target.createWorldbook(worldName, []); } catch {}
+        }
+        if (typeof target.rebindCharWorldbooks !== "function") continue;
+        await target.rebindCharWorldbooks("current", {
+          primary: worldName,
+          additional: Array.isArray(books.additional) ? books.additional : []
+        });
+        return { target, worldName, method: "TavernHelper" };
+      } catch {}
+    }
+    return null;
+  }
+
+  async function openingInsertWorldbooksWithTavernHelper(entries) {
+    const fallbackName = openingDefaultWorldbookName();
+    for (const win of candidateWindows()) {
+      const bound = await openingEnsureCharacterWorldbookWithTavernHelper(win, fallbackName);
+      if (!bound || typeof bound.target?.createWorldbookEntries !== "function") continue;
+      try {
+        let worldbook = null;
+        if (typeof bound.target.getWorldbook === "function") {
+          try { worldbook = await bound.target.getWorldbook(bound.worldName); } catch {}
+        }
+        const current = Array.isArray(worldbook) ? worldbook : openingWorldEntryValues(worldbook);
+        const stale = entries.some((entry) => {
+          const found = openingFindWorldEntry(current, entry);
+          return found && String(found?.content || "") !== String(entry?.content || "");
+        });
+        if (stale) return null;
+        const pending = entries.filter((entry) => !current.length || !openingFindWorldEntry(current, entry));
+        if (pending.length) {
+          await bound.target.createWorldbookEntries(bound.worldName, pending.map(openingToTavernHelperEntry), { render: "immediate" });
+        }
+        return {
+          ok: true,
+          inserted: pending.length,
+          existing: Math.max(0, entries.length - pending.length),
+          updated: 0,
+          targetWorldbook: bound.worldName,
+          method: bound.method
+        };
+      } catch {}
+    }
+    return null;
+  }
+
+  async function openingInsertWorldbooksWithHostBridge(entries) {
+    const target = window.parent && window.parent !== window ? window.parent : window.top;
+    if (!target || target === window) return null;
+    const requestId = "opening-worldinfo-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    const payload = {
+      type: "ST_HYPNOOS_OPENING_WORLDINFO_REQUEST",
+      requestId,
+      fallbackName: openingDefaultWorldbookName(),
+      entries: entries.map(openingToTavernHelperEntry)
+    };
+    return await new Promise((resolve) => {
+      let settled = false;
+      const finish = (value) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        window.removeEventListener("message", receive);
+        resolve(value);
+      };
+      const receive = (event) => {
+        const data = event?.data;
+        if (data?.type !== "ST_HYPNOOS_OPENING_WORLDINFO_RESPONSE" || data?.requestId !== requestId) return;
+        finish(data.result && typeof data.result === "object" ? data.result : null);
+      };
+      const timer = window.setTimeout(() => finish(null), 8000);
+      window.addEventListener("message", receive);
+      try {
+        target.postMessage(payload, "*");
+      } catch {
+        finish(null);
+      }
+    });
+  }
+
+  async function openingImportWorldInfoModule(win) {
+    if (!openingHasWorldInfoContext(win)) return null;
+    const attempts = [
+      () => win.eval?.("import('/scripts/world-info.js')"),
+      () => win.eval?.("import('./scripts/world-info.js')")
+    ];
+    for (const attempt of attempts) {
+      try {
+        const mod = await attempt();
+        if (mod && typeof mod.saveWorldInfo === "function") return mod;
+      } catch {}
+    }
+    return null;
+  }
+
+  function openingWorldEntryValues(data) {
+    if (Array.isArray(data)) return data;
+    if (!data || typeof data !== "object") return [];
+    const entries = data.entries || data.entry || data.world_info || null;
+    if (Array.isArray(entries)) return entries;
+    if (entries && typeof entries === "object") return Object.values(entries);
+    return [];
+  }
+
+  function openingFindWorldEntry(entries, entry) {
+    const comment = String(entry?.comment || entry?.name || "").trim();
+    const content = String(entry?.content || "").trim();
+    return (Array.isArray(entries) ? entries : []).find((item) => {
+      const itemComment = String(item?.comment || item?.name || "").trim();
+      const itemContent = String(item?.content || "").trim();
+      return Boolean((comment && itemComment === comment) || (!comment && content && itemContent === content));
+    }) || null;
+  }
+
+  function openingSetEntryEnabled(entry, enabled = true) {
+    if (!entry || typeof entry !== "object") return false;
+    const nextEnabled = Boolean(enabled);
+    const nextDisabled = !nextEnabled;
+    let changed = false;
+    for (const [key, value] of [["enabled", nextEnabled], ["disable", nextDisabled], ["disabled", nextDisabled]]) {
+      if (entry[key] !== value) {
+        entry[key] = value;
+        changed = true;
+      }
+    }
+    if (entry.extra && typeof entry.extra === "object" && entry.extra.enabled !== nextEnabled) {
+      entry.extra.enabled = nextEnabled;
+      changed = true;
+    }
+    return changed;
+  }
+
+  function openingAppendWorldEntry(data, entry) {
+    if (!data || typeof data !== "object") return false;
+    if (Array.isArray(data)) {
+      data.push({ ...entry, uid: data.length ? Math.max(...data.map((item) => Number(item?.uid) || 0)) + 1 : 1 });
+      return true;
+    }
+    const container = data.entries || data.entry || data.world_info;
+    if (Array.isArray(container)) {
+      container.push({ ...entry, uid: container.length ? Math.max(...container.map((item) => Number(item?.uid) || 0)) + 1 : 1 });
+      return true;
+    }
+    if (container && typeof container === "object" && !Array.isArray(container)) {
+      const ids = Object.keys(container).map((key) => Number(key)).filter(Number.isFinite);
+      const uid = ids.length ? Math.max(...ids) + 1 : 1;
+      container[uid] = { ...entry, uid };
+      return true;
+    }
+    data.entries = { 1: { ...entry, uid: 1 } };
+    return true;
+  }
+
+  async function openingEnsureCharacterWorldbook(win, fallbackName) {
+    const mod = await openingImportWorldInfoModule(win);
+    if (!mod) return null;
+    let worldName = openingCurrentCharacterPrimaryWorldName(win);
+    if (!worldName) {
+      worldName = openingSafeWorldbookName(fallbackName || openingDefaultWorldbookName());
+      try { await mod.createNewWorldInfo?.(worldName, { interactive: false }); } catch {}
+      try { await mod.charUpdatePrimaryWorld?.(worldName); } catch {}
+    }
+    if (!worldName) return null;
+    return { mod, worldName, method: "SillyTavern" };
+  }
+
+  async function openingInsertWorldbooksWithSillyTavern(entries) {
+    const fallbackName = openingDefaultWorldbookName();
+    for (const win of candidateWindows()) {
+      const bound = await openingEnsureCharacterWorldbook(win, fallbackName);
+      if (!bound) continue;
+      try {
+        let data = await bound.mod.loadWorldInfo?.(bound.worldName);
+        if (!data || typeof data !== "object") data = { entries: {} };
+        const current = openingWorldEntryValues(data);
+        let inserted = 0;
+        let updated = 0;
+        let existing = 0;
+        for (const entry of entries) {
+          const found = openingFindWorldEntry(current, entry);
+          if (found) {
+            let changed = openingSetEntryEnabled(found, entry?.enabled !== false && entry?.disable !== true && entry?.disabled !== true);
+            if (String(found?.content || "") !== String(entry?.content || "")) {
+              found.content = String(entry?.content || "");
+              changed = true;
+            }
+            for (const key of ["comment", "name", "key", "keys", "keysecondary", "secondary_keys", "selective", "constant", "position", "insertion_order", "order", "depth", "role", "extensions"]) {
+              if (entry[key] === undefined) continue;
+              const before = JSON.stringify(found[key]);
+              found[key] = Array.isArray(entry[key]) ? entry[key].slice() : (entry[key] && typeof entry[key] === "object" ? { ...entry[key] } : entry[key]);
+              if (JSON.stringify(found[key]) !== before) changed = true;
+            }
+            if (changed) updated += 1;
+            else existing += 1;
+            continue;
+          }
+          openingAppendWorldEntry(data, entry);
+          inserted += 1;
+        }
+        if (inserted || updated) await bound.mod.saveWorldInfo(bound.worldName, data, true);
+        try { await bound.mod.updateWorldInfoList?.(); } catch {}
+        return { ok: true, inserted, updated, existing, targetWorldbook: bound.worldName, method: bound.method };
+      } catch {}
+    }
+    return { ok: false, reason: "无法写入角色卡世界书。" };
+  }
+
+  async function insertOpeningWorldbooks(identity) {
+    const openingId = String(identity?.["互斥开场ID"] || "default");
+    const entries = await openingWorldbookEntriesForChoice(openingId);
+    if (entries === null) return { ok: false, reason: "完整线路世界书源不可用，已阻止插入缩略版。" };
+    if (!entries.length) return { ok: true, skipped: true };
+    const hostBridge = await openingInsertWorldbooksWithHostBridge(entries);
+    if (hostBridge?.ok) return hostBridge;
+    const tavernHelper = await openingInsertWorldbooksWithTavernHelper(entries);
+    if (tavernHelper?.ok) return tavernHelper;
+    const sillyTavern = await openingInsertWorldbooksWithSillyTavern(entries);
+    if (sillyTavern?.ok) return sillyTavern;
+    if (openingIsLocalFrontendPreview()) {
+      return { ok: true, skipped: true, previewOnly: true, reason: "本地预览未连接酒馆世界书 API，已跳过世界书补写。" };
+    }
+    return hostBridge || sillyTavern || { ok: false, reason: "无法写入角色卡世界书。" };
+  }
+
+  function selectedCard() {
+    return cards.find((card) => card.id === selectedId) || cards[0];
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function renderBooks() {
+    booksEl.innerHTML = cards.map((card, index) => {
+      const displayName = String(card.name || "").trim() || "未命名";
+      return '<button type="button" class="identity-book' + (card.id === selectedId ? ' is-active' : '') + '" data-card-id="' + escapeHtml(card.id) + '" style="--tilt:' + TILTS[index % TILTS.length] + '">' +
+        '<span class="identity-book-cover">' +
+          '<span class="identity-cover-school" aria-label="私立斋明学园"><span>私</span><span>立</span><span>斋</span><span>明</span><span>学</span><span>园</span></span>' +
+          '<span class="identity-cover-title">学生证</span>' +
+          '<span class="identity-cover-name">' + escapeHtml(displayName) + '</span>' +
+          '<span class="identity-cover-meta"><span>No. ' + String(index + 1).padStart(2, "0") + '</span><span>' + escapeHtml(card.difficulty) + '</span></span>' +
+        '</span>' +
+      '</button>';
+    }).join("");
+    booksEl.querySelectorAll("[data-card-id]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedId = button.dataset.cardId || selectedId;
+        showDetail();
+      });
+    });
+  }
+
+  function renderPhoto(card) {
+    const photo = String(card.photo || "");
+    photoPreviewEl.innerHTML = photo
+      ? '<img alt="" src="' + escapeHtml(photo) + '">'
+      : '<span>照片为空</span>';
+  }
+
+  function renderForm() {
+    const card = selectedCard();
+    const index = Math.max(0, cards.findIndex((item) => item.id === card.id));
+    difficultyEl.textContent = card.difficulty;
+    if (detailTitleEl) detailTitleEl.textContent = "身份" + card.title;
+    if (identityIndexEl) identityIndexEl.textContent = "No. " + String(index + 1).padStart(2, "0");
+    fields.name.value = card.name || "";
+    fields.age.value = card.age || "";
+    fields.className.value = card.className || DEFAULT_CLASS;
+    fields.info.value = card.info || "";
+    $("#identityFillUser").classList.toggle("identity-hidden", card.id !== "custom");
+    renderPhoto(card);
+    renderOpeningPerks();
+    renderOpeningChoices();
+  }
+
+  function render() {
+    renderBooks();
+    if (detailOpen) renderForm();
+  }
+
+  function showDesk() {
+    detailOpen = false;
+    deskScreenEl.hidden = false;
+    detailScreenEl.hidden = true;
+    renderBooks();
+  }
+
+  function showDetail() {
+    detailOpen = true;
+    deskScreenEl.hidden = true;
+    detailScreenEl.hidden = false;
+    render();
+    renderForm();
+  }
+
+  function updateSelectedCard(patch) {
+    cards = cards.map((card) => card.id === selectedId ? { ...card, ...patch } : card);
+    saveCards();
+    renderBooks();
+  }
+
+  for (const [key, input] of Object.entries(fields)) {
+    input.addEventListener("input", () => {
+      updateSelectedCard({ [key]: input.value });
+    });
+  }
+
+  $("#identityNoticeToggle")?.addEventListener("click", openIdentityNotice);
+  $("#identityNoticeClose")?.addEventListener("click", closeIdentityNotice);
+  noticeLayerEl?.addEventListener("click", (event) => {
+    if (event.target === noticeLayerEl) closeIdentityNotice();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && noticeLayerEl && !noticeLayerEl.hidden) closeIdentityNotice();
+  });
+  $("#identityBack").addEventListener("click", showDesk);
+  $("#identityUpload").addEventListener("click", () => $("#identityPhotoInput").click());
+  $("#identityClearPhoto").addEventListener("click", () => {
+    updateSelectedCard({ photo: "" });
+    renderPhoto(selectedCard());
+  });
+  $("#identityReset").addEventListener("click", () => {
+    const defaults = defaultCards();
+    const original = defaults.find((card) => card.id === selectedId);
+    if (!original) return;
+    cards = cards.map((card) => card.id === selectedId ? { ...original } : card);
+    saveCards();
+    render();
+    setStatus("已恢复当前学生证默认内容。");
+  });
+  $("#identityFillUser").addEventListener("click", () => {
+    const name = readCurrentUserName();
+    if (!name) {
+      setStatus("未读取到当前 SillyTavern user 名称。");
+      return;
+    }
+    updateSelectedCard({ name });
+    renderForm();
+    setStatus("已读取当前 user 名称。");
+  });
+  $("#identityPhotoInput").addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    try {
+      const photo = await resizeImageFile(file);
+      updateSelectedCard({ photo });
+      renderPhoto(selectedCard());
+      setStatus("照片已更新。");
+    } catch (err) {
+      console.warn("[HypnoOS Identity] photo resize failed", err);
+      setStatus("照片处理失败。");
+    }
+  });
+
+  document.querySelectorAll("[data-opening-choice]").forEach((input) => {
+    input.addEventListener("change", () => {
+      if (!input.checked) return;
+      writeOpeningChoiceId(input.value || "default");
+      renderOpeningChoices();
+      setStatus("已选择互斥开场：" + openingChoiceById(input.value || "default").label + "。");
+    });
+  });
+
+  function candidateWindows() {
+    const result = [];
+    for (const candidate of [window, window.parent, window.top]) {
+      try {
+        if (candidate && !result.includes(candidate)) result.push(candidate);
+      } catch {}
+    }
+    return result;
+  }
+
+  function readContext(win) {
+    try {
+      return win.SillyTavern?.getContext?.() || win.getContext?.() || null;
+    } catch {
+      return null;
+    }
+  }
+
+  function readCurrentUserName() {
+    for (const win of candidateWindows()) {
+      const context = readContext(win);
+      const values = [
+        context?.name1,
+        context?.userName,
+        context?.user?.name,
+        context?.persona?.name,
+        win.name1,
+        win.userName
+      ];
+      try { values.push(win.document?.querySelector?.("#your_name")?.value); } catch {}
+      for (const value of values) {
+        const text = String(value || "").trim();
+        if (text) return text;
+      }
+    }
+    return "";
+  }
+
+  function readCurrentMessageOption(win) {
+    try {
+      const id = win.getCurrentMessageId?.();
+      if (id !== undefined && id !== null && id !== "latest") return { type: "message", message_id: id };
+    } catch {}
+    return { type: "message", message_id: "latest" };
+  }
+
+  function variableOptions(win) {
+    const options = [readCurrentMessageOption(win), { type: "message", message_id: "latest" }];
+    const seen = new Set();
+    return options.filter((option) => {
+      const key = option ? String(option.type || "") + ":" + String(option.message_id ?? "") : "undefined";
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function scoreStatData(value) {
+    const root = value?.stat_data && typeof value.stat_data === "object" ? value.stat_data : value;
+    if (!root || typeof root !== "object" || Array.isArray(root)) return -1;
+    let score = 0;
+    const system = root["系统"];
+    if (system && typeof system === "object" && !Array.isArray(system)) {
+      score += 30;
+      for (const key of ["MC能量", "MC能量上限", "持有零花钱", "当前时间", "当前日期"]) {
+        if (system[key] !== undefined) score += 5;
+      }
+    }
+    const roles = root["角色"];
+    if (!roles || typeof roles !== "object" || Array.isArray(roles)) return -1;
+    const roleNames = Object.keys(roles).filter((name) => roles[name] && typeof roles[name] === "object" && !Array.isArray(roles[name]));
+    if (!INITIAL_ROLE_NAMES.every((name) => roleNames.includes(name))) return -1;
+    score += 20 + Math.min(roleNames.length, 8) * 5;
+    return score;
+  }
+
+  function currentMvuData() {
+    const candidates = [];
+    for (const win of candidateWindows()) {
+      for (const option of variableOptions(win)) {
+        try {
+          if (win.Mvu?.getMvuData && win.Mvu?.replaceMvuData) {
+            const mvu = option === undefined ? win.Mvu.getMvuData() : win.Mvu.getMvuData(option);
+            if (mvu && typeof mvu.then !== "function") {
+              const stat = mvu?.stat_data && typeof mvu.stat_data === "object" ? mvu.stat_data : mvu;
+              const score = scoreStatData(stat);
+              if (score >= 0) candidates.push({ mvu, stat, option, replace: (next, opt) => win.Mvu.replaceMvuData(next, opt), score: score + 20 });
+            }
+          }
+        } catch {}
+        try {
+          if (typeof win.getVariables === "function" && typeof win.updateVariablesWith === "function") {
+            const vars = option === undefined ? win.getVariables() : win.getVariables(option);
+            const stat = vars?.stat_data && typeof vars.stat_data === "object" ? vars.stat_data : vars;
+            const score = scoreStatData(stat);
+            if (score >= 0) {
+              candidates.push({
+                mvu: vars,
+                stat,
+                option,
+                replace: () => win.updateVariablesWith((current) => {
+                  if (current?.stat_data && typeof current.stat_data === "object") {
+                    current.stat_data = stat;
+                    return current;
+                  }
+                  return stat;
+                }, option),
+                score
+              });
+            }
+          }
+        } catch {}
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    return candidates[0] || null;
+  }
+
+  async function replaceMvuData(data) {
+    if (!data?.replace) return false;
+    const result = data.replace(data.mvu, data.option);
+    if (result && typeof result.then === "function") await result;
+    return true;
+  }
+
+  async function writeIdentityVariable(identity) {
+    const data = currentMvuData();
+    if (!data) return false;
+    const roles = data.stat?.["角色"];
+    if (!roles || typeof roles !== "object" || Array.isArray(roles) || !INITIAL_ROLE_NAMES.every((name) => roles[name] && typeof roles[name] === "object")) {
+      return false;
+    }
+    data.stat["系统"] = data.stat["系统"] && typeof data.stat["系统"] === "object" && !Array.isArray(data.stat["系统"]) ? data.stat["系统"] : {};
+    data.stat["系统"]["$user身份"] = identity;
+    applyOpeningStateToRoot(data.stat, identity);
+    await replaceMvuData(data);
+    return true;
+  }
+
+  function selectedIdentityPayload() {
+    const card = selectedCard();
+    const perks = activeOpeningPerks();
+    const opening = activeOpeningChoice();
+    return {
+      "模板ID": card.id,
+      "难度": card.difficulty,
+      "姓名": String(card.name || "").trim(),
+      "年龄": String(card.age || "").trim(),
+      "班级": String(card.className || "").trim() || DEFAULT_CLASS,
+      "个人信息": String(card.info || "").trim(),
+      "照片": String(card.photo || ""),
+      "来源": "首楼学生证",
+      "已选择": true,
+      "互斥开场": opening.label,
+      "互斥开场ID": opening.id,
+      "互斥开场触发码": opening.trigger,
+      ...(perks.length ? {
+        "开场选项": perks.map((perk) => perk.label).join("、"),
+        "开场选项说明": "已由首楼前端直接写入变量，AI不得二次发放或回退。"
+      } : {})
+    };
+  }
+
+  function setRoleState(role, patch) {
+    if (!isPlainObject(role)) return;
+    role["状态"] = isPlainObject(role["状态"]) ? role["状态"] : {};
+    for (const [key, value] of Object.entries(patch || {})) role["状态"][key] = value;
+  }
+
+  function setPoolRoleAppearance(role, roleName) {
+    if (!isPlainObject(role)) return;
+    role["衣着"] = isPlainObject(role["衣着"]) ? role["衣着"] : {};
+    if (roleName === "犬冢穗波" || roleName === "天城纱良") {
+      role["衣着"]["上衣"] = "未穿泳装；在私密泳池中裸体下水，离水时会披上浴巾。";
+      role["衣着"]["下衣"] = "未穿泳装；个人衣物整齐收在更衣处，池边穿防滑拖鞋。";
+      const held = role?.["物品"]?.["持有"];
+      if (isPlainObject(held) && isPlainObject(held["当前身上的内衣"])) {
+        held["当前身上的内衣"]["描述"] = roleName + "当前没有穿着内衣；换下的贴身衣物已和其他衣物一起收在更衣处。";
+      }
+      return;
+    }
+    role["衣着"]["上衣"] = "适合游泳活动的功能性泳装上身，离开水面时会披上防晒衣或浴巾。";
+    role["衣着"]["下衣"] = "与上衣配套的功能性泳装下身，池边穿防滑拖鞋。";
+  }
+
+  function applyOpeningStateToRoot(root, identity) {
+    const system = root["系统"] = isPlainObject(root["系统"]) ? root["系统"] : {};
+    const roles = root["角色"] = isPlainObject(root["角色"]) ? root["角色"] : {};
+    const openingId = String(identity?.["互斥开场ID"] || "default");
+    const templates = openingRoleTemplates();
+    system["当前年份"] = 2024;
+    if (openingId === "police_done") {
+      system["_警视厅线"] = 2;
+      if (Object.prototype.hasOwnProperty.call(system, "_医院线")) system["_医院线"] = 0;
+      system["当前日期"] = "4月10日";
+      system["当前时间"] = "12:30";
+      system["当前地点"] = "二年A组教室";
+      system["当前事件"] = "午休前最后一节课刚下课，{{user}}和九鬼真白在教室里亲密相处，爱丽莎、深雪、阿宅也在附近。";
+      roles["九鬼真白"] = cloneJson(templates["九鬼真白"]);
+      return;
+    }
+    if (openingId === "hospital_done") {
+      system["_医院线"] = 2;
+      if (Object.prototype.hasOwnProperty.call(system, "_警视厅线")) system["_警视厅线"] = 0;
+      system["当前日期"] = "4月10日";
+      system["当前时间"] = "11:20";
+      system["当前地点"] = "综合医院";
+      system["当前事件"] = "{{user}}向学校请假来到综合医院，正和犬冢穗波、天城纱良亲密相处。";
+      roles["犬冢穗波"] = cloneJson(templates["犬冢穗波"]);
+      roles["天城纱良"] = cloneJson(templates["天城纱良"]);
+      return;
+    }
+    if (openingId === "alisa_party") {
+      system["阿宅性别"] = "女";
+      system["当前日期"] = "4月9日";
+      system["当前时间"] = "18:30";
+      system["当前地点"] = "西园寺爱丽莎的家";
+      system["当前事件"] = "放学之后，{{user}}和爱丽莎、夏美、深雪、女性化后的阿宅在爱丽莎家里开派对。";
+      for (const roleName of ["西园寺爱丽莎", "月咏深雪", "犬冢夏美"]) {
+        if (isPlainObject(roles[roleName])) setRoleState(roles[roleName], { "好感度": 100, "服从度": 100, "警戒度": 0, "是否派遣中": false });
+      }
+      roles["阿宅"] = cloneJson(templates["阿宅"]);
+      return;
+    }
+    if (openingId === "pool") {
+      system["_警视厅线"] = 2;
+      system["_医院线"] = 2;
+      system["阿宅性别"] = "女";
+      system["当前日期"] = "4月10日";
+      system["当前时间"] = "15:30";
+      system["当前地点"] = "西园寺爱丽莎家的泳池";
+      system["当前事件"] = "{{user}}和爱丽莎、深雪、夏美、阿宅、九鬼真白、犬冢穗波、天城纱良在泳池进行游泳与休闲活动。";
+      roles["九鬼真白"] = cloneJson(templates["九鬼真白"]);
+      roles["犬冢穗波"] = cloneJson(templates["犬冢穗波"]);
+      roles["天城纱良"] = cloneJson(templates["天城纱良"]);
+      roles["阿宅"] = cloneJson(templates["阿宅"]);
+      for (const roleName of ["西园寺爱丽莎", "月咏深雪", "犬冢夏美", "阿宅", "九鬼真白", "犬冢穗波", "天城纱良"]) {
+        const role = roles[roleName];
+        if (!isPlainObject(role)) continue;
+        setRoleState(role, {
+          "好感度": 150,
+          "服从度": 150,
+          "警戒度": 0,
+          "性欲": 0,
+          "快感值": 0,
+          "是否派遣中": false
+        });
+        setPoolRoleAppearance(role, roleName);
+      }
+      return;
+    }
+  }
+
+  function identityStorageScope() {
+    const chatScopes = [];
+    for (const win of candidateWindows()) {
+      try {
+        const providedScope = String(win?.__ST_HYPNOOS_CHAT_STORAGE_SCOPE__?.() || "").trim();
+        if (providedScope && providedScope !== "global" && providedScope !== "session") chatScopes.push(providedScope);
+        const context = readContext(win);
+        chatScopes.push(
+          win?.getCurrentChatId?.(),
+          win?.chatId,
+          context?.chatId,
+          context?.chat_id,
+          context?.chatFile,
+          context?.chat_file,
+          context?.chat?.id,
+          context?.chat?.file_name,
+          context?.chatMetadata?.chat_id,
+          context?.chatMetadata?.file_name,
+          context?.chatMetadata?.filename
+        );
+      } catch {}
+    }
+    for (const value of chatScopes) {
+      const text = String(value ?? "").trim();
+      if (!text || text === "latest") continue;
+      return text.replace(/[^\w\-.:@]/g, "_").slice(0, 120);
+    }
+    const transient = String(window.__ST_HYPNOOS_IDENTITY_TRANSIENT_SCOPE__ || "").trim();
+    return transient || ("identity-transient:" + Date.now().toString(36) + ":" + Math.random().toString(36).slice(2));
+  }
+
+  function identityStorageKey(prefix) {
+    return prefix + identityStorageScope();
+  }
+
+  try { localStorage.removeItem("hypnoos.identity.completed.v1:global"); } catch {}
+
+  function openingPerkStateKey() {
+    return identityStorageKey("hypnoos.identity.openingPerks.v1:");
+  }
+
+  function openingPerkOriginalKey() {
+    return identityStorageKey("hypnoos.identity.openingPerkOriginals.v1:");
+  }
+
+  function readOpeningPerkIds() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(openingPerkStateKey()) || "[]");
+      return Array.isArray(parsed) ? parsed.map((id) => String(id || "")).filter(Boolean) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeOpeningPerkIds(ids) {
+    try {
+      localStorage.setItem(openingPerkStateKey(), JSON.stringify(Array.from(new Set(ids)).filter(Boolean)));
+    } catch {}
+  }
+
+  function readOpeningPerkOriginals() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(openingPerkOriginalKey()) || "{}");
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function writeOpeningPerkOriginals(originals) {
+    try {
+      localStorage.setItem(openingPerkOriginalKey(), JSON.stringify(originals && typeof originals === "object" ? originals : {}));
+    } catch {}
+  }
+
+  function openingPerkById(id) {
+    return OPENING_PERKS.find((perk) => perk.id === id) || null;
+  }
+
+  function activeOpeningPerks() {
+    const ids = new Set(readOpeningPerkIds());
+    return OPENING_PERKS.filter((perk) => ids.has(perk.id));
+  }
+
+  function renderOpeningPerks() {
+    const ids = new Set(readOpeningPerkIds());
+    document.querySelectorAll("[data-opening-perk]").forEach((input) => {
+      input.checked = ids.has(String(input.dataset.openingPerk || ""));
+    });
+  }
+
+  async function applyOpeningPerk(perk, checked) {
+    const data = currentMvuData();
+    if (!data) return false;
+    data.stat["系统"] = data.stat["系统"] && typeof data.stat["系统"] === "object" && !Array.isArray(data.stat["系统"]) ? data.stat["系统"] : {};
+    const system = data.stat["系统"];
+    const originals = readOpeningPerkOriginals();
+    if (checked) {
+      if (!originals[perk.id]) {
+        originals[perk.id] = {
+          key: perk.key,
+          exists: Object.prototype.hasOwnProperty.call(system, perk.key),
+          value: system[perk.key]
+        };
+      }
+      system[perk.key] = perk.value;
+    } else {
+      const original = originals[perk.id];
+      if (original) {
+        if (original.exists) system[perk.key] = original.value;
+        else delete system[perk.key];
+        delete originals[perk.id];
+      }
+    }
+    await replaceMvuData(data);
+    writeOpeningPerkOriginals(originals);
+    const ids = new Set(readOpeningPerkIds());
+    if (checked) ids.add(perk.id);
+    else ids.delete(perk.id);
+    writeOpeningPerkIds(Array.from(ids));
+    renderOpeningPerks();
+    return true;
+  }
+
+  function identityValue(value, fallback = "未填写") {
+    const text = String(value ?? "").trim();
+    return text || fallback;
+  }
+
+  function openingPromptBlock(identity) {
+    const opening = openingChoiceById(identity?.["互斥开场ID"]);
+    if (opening.id === "police_done") {
+      return [
+        "<首楼开场选择>",
+        "触发码: " + opening.trigger,
+        "开场: 警视厅线已经进入结束阶段，九鬼真白已经由首楼前端写入完整角色变量，且她与{{user}}之间已经建立足够亲近和配合的关系；正文不要说出好感度、服从度等数值。",
+        "固定场景: 午休前最后一节课刚下课，{{user}}和九鬼真白在二年A组教室里表现得很亲密。西园寺爱丽莎、月咏深雪、阿宅也要自然出场并看到或感受到这种关系变化。",
+        "状态: 监视期已经结束，九鬼真白不再输出监视期末尾施虐段，不再自动打断普通催眠命令；她仍保留施虐欲、强控制欲和清纯伪装，但此刻按普通角色关系与剧情氛围表现。",
+        "写法: 不要回放{{user}}如何攻略九鬼真白；可以把既往努力视作已经发生的背景。开场从当前时空自然切入，九鬼真白以留校转校生和警视厅调查搭档的身份存在。",
+        "</首楼开场选择>"
+      ].join("\n");
+    }
+    if (opening.id === "hospital_done") {
+      return [
+        "<首楼开场选择>",
+        "触发码: " + opening.trigger,
+        "开场: 医院线已经进入结束阶段，犬冢穗波与天城纱良已经由首楼前端写入完整角色变量，且二人与{{user}}之间已经建立足够亲近和配合的关系；正文不要说出好感度、服从度等数值。",
+        "固定场景: {{user}}向学校请假来到综合医院，不在教室。开场直接写{{user}}在医院里和纱良、穗波很亲密地相处，二人的亲近程度已经是既定事实。",
+        "状态: 综合医院改造室已经开放，但具体改造仍只接受前端锁定操作。穗波和纱良会按各自人设、当前好感、服从、警戒与催眠效果协助{{user}}。",
+        "写法: 不要回放{{user}}如何攻略穗波或纱良；可能是催眠、正常相处或混合原因，但开场只把它作为已发生背景。",
+        "</首楼开场选择>"
+      ].join("\n");
+    }
+    if (opening.id === "alisa_party") {
+      return [
+        "<首楼开场选择>",
+        "触发码: " + opening.trigger,
+        "开场: 阿宅已经变为女性，西园寺爱丽莎、月咏深雪、犬冢夏美、阿宅与{{user}}之间已经建立足够亲近和配合的关系；正文不要说出好感度、服从度等数值。",
+        "状态: 本开场不新增角色、不导入额外角色世界书；四人读取角色卡既有人设和当前变量。阿宅以女性化后的同一角色身份参与，不是新角色。",
+        "固定场景: 2024年4月9日晚上放学之后，{{user}}和爱丽莎、夏美、深雪、女性化后的阿宅在爱丽莎家里开派对。不要回放{{user}}如何攻略她们，直接写派对中的自然互动。",
+        "</首楼开场选择>"
+      ].join("\n");
+    }
+    if (opening.id === "pool") {
+      return [
+        "<首楼开场选择>",
+        "触发码: " + opening.trigger,
+        "开场: 警视厅线与医院线都已结束；阿宅已经变为女性，九鬼真白、犬冢穗波、天城纱良已由首楼前端写入完整角色变量与世界书。",
+        "关系: 西园寺爱丽莎、月咏深雪、犬冢夏美、阿宅、九鬼真白、犬冢穗波、天城纱良都已经与{{user}}建立稳定亲近和配合关系；正文不要说出好感度、服从度等数值。",
+        "固定场景: 2024年4月10日15:30，{{user}}和七人在西园寺爱丽莎家的泳池进行游泳与休闲活动。犬冢穗波、天城纱良两名成年人已经脱下泳装后裸体下水，其余五人穿适合活动的功能性泳装；按各自人设自然互动。",
+        "写法: 不要回放线路攻略过程；直接从泳池活动切入，按各自人设、关系和当前情境自然互动。",
+        "</首楼开场选择>"
+      ].join("\n");
+    }
+    return [
+      "<首楼开场选择>",
+      "触发码: " + opening.trigger,
+      "开场: 默认开场。",
+      "</首楼开场选择>"
+    ].join("\n");
+  }
+
+  function openingSceneInstruction(identity) {
+    const opening = openingChoiceById(identity?.["互斥开场ID"]);
+    if (opening.id === "alisa_party") {
+      return "请从固定开场开始正文：当前日期2024年4月9日，当前时间18:30，地点为西园寺爱丽莎的家。放学之后，{{user}}和西园寺爱丽莎、犬冢夏美、月咏深雪、女性化后的阿宅正在开派对；四人都已经和{{user}}建立亲近关系，但不要说出任何数值，也不要回放攻略过程。阿宅已是女性化后的同一角色，变量使用女性敏感度与次数部位。写出爱丽莎家的氛围、派对开场和四人根据人设自然互动。不要重新展示身份选择界面，不要用/add或add路径新增角色变量，不要重复输出变量初始化。";
+    }
+    if (opening.id === "police_done") {
+      return "请从固定开场开始正文：当前日期2024年4月10日，当前时间12:30，午休前最后一节课（4限现代文）刚下课，地点为二年A组教室。警视厅线已经结束，九鬼真白已作为留校转校生和调查搭档存在；开场写{{user}}和九鬼真白在教室里很亲密。西园寺爱丽莎、月咏深雪、阿宅也要自然出场，注意她们对两人亲密关系的反应。不要说出数值，不要回放攻略过程，也不要恢复监视期末尾施虐段。不要重新展示身份选择界面，不要用/add或add路径新增角色变量，不要重复输出变量初始化。";
+    }
+    if (opening.id === "hospital_done") {
+      return "请从固定开场开始正文：当前日期2024年4月10日，当前时间11:20，地点为综合医院。医院线已经结束，{{user}}今天向学校请假来到医院，开场直接写{{user}}和犬冢穗波、天城纱良很亲密地相处；二人与{{user}}的亲近配合关系已是既定背景。不要说出数值，不要回放攻略过程，不要把场景拉回教室。不要重新展示身份选择界面，不要用/add或add路径新增角色变量，不要重复输出变量初始化。";
+    }
+    if (opening.id === "pool") {
+      return "请从固定开场开始正文：当前日期2024年4月10日，当前时间15:30，地点为西园寺爱丽莎家的泳池。警视厅线和医院线都已结束，阿宅已经变为女性；{{user}}与西园寺爱丽莎、月咏深雪、犬冢夏美、阿宅、九鬼真白、犬冢穗波、天城纱良正在进行游泳与休闲活动。犬冢穗波、天城纱良两名成年人裸体下水，其余五人穿适合活动的功能性泳装；七人都已与{{user}}建立稳定亲近和配合关系。不要说出数值，不要回放攻略过程，按各自人设、关系和当前情境自然互动。不要重新展示身份选择界面，不要用/add或add路径新增角色变量，不要重复输出变量初始化。";
+    }
+    return "请从固定开场开始正文：当前时间12:30，午休前最后一节课（4限现代文）刚下课，地点为二年A组教室。西园寺爱丽莎、月咏深雪、犬冢夏美都在教室或走廊附近自然出场，并根据上面的$user身份形象做出不同第一反应；爱丽莎和阿宅之间需要有自然互动，例如青梅竹马式指挥、熟悉吐槽、一起去午休或阿宅被爱丽莎牵动节奏。不要重新展示身份选择界面，不要用/add或add路径新增角色变量，不要重复输出变量初始化。";
+  }
+
+  function buildOpeningPrompt(identity) {
+    return [
+      "<首楼身份选择完成>",
+      "$user身份:",
+      "- 难度: " + identityValue(identity["难度"]),
+      "- 姓名: " + identityValue(identity["姓名"]),
+      "- 年龄: " + identityValue(identity["年龄"]),
+      "- 班级: " + identityValue(identity["班级"], DEFAULT_CLASS),
+      "- 个人信息: " + identityValue(identity["个人信息"]),
+      identity["开场选项"] ? "- 开场选项: " + identityValue(identity["开场选项"]) + "（已由首楼前端直接写入变量，AI不得二次发放或回退）" : "",
+      "- 互斥开场: " + identityValue(identity["互斥开场"], "默认开场"),
+      "- 固定角色来源: 默认开场读取角色卡既有变量和人设；互斥开场若由首楼前端写入角色变量，以本轮已写入变量为准。",
+      "- 催眠APP认知: user第一次拿到催眠APP时就已经完全信任其作用，确信APP的催眠、资源和权限机制真实有效；开场不要描写user怀疑APP是否有用。",
+      "</首楼身份选择完成>",
+      "",
+      openingPromptBlock(identity),
+      "",
+      openingSceneInstruction(identity)
+    ].join("\n");
+  }
+
+  function queueOpeningPrompt(prompt) {
+    const payload = JSON.stringify({ prompt: String(prompt || ""), createdAt: Date.now() });
+    try {
+      localStorage.setItem(identityStorageKey("hypnoos.identity.pendingPrompt.v1:"), payload);
+      return true;
+    } catch {
+      try {
+        localStorage.setItem("hypnoos.identity.pendingPrompt.v1:global", payload);
+        return true;
+      } catch {}
+    }
+    return false;
+  }
+
+  function clearQueuedOpeningPrompt() {
+    for (const key of [identityStorageKey("hypnoos.identity.pendingPrompt.v1:"), "hypnoos.identity.pendingPrompt.v1:global"]) {
+      try { localStorage.removeItem(key); } catch {}
+    }
+  }
+
+  function markIdentityCompleted() {
+    try { localStorage.setItem(identityStorageKey("hypnoos.identity.completed.v1:"), "1"); } catch {}
+  }
+
+  function findSendInput() {
+    const docs = [];
+    for (const win of candidateWindows()) {
+      try {
+        const doc = win?.document;
+        if (doc && !docs.includes(doc)) docs.push(doc);
+      } catch {}
+    }
+    const selectors = ["#send_textarea", "textarea#send_textarea", "textarea[name='send_textarea']", "textarea[data-testid='send-textarea']"];
+    for (const doc of docs) {
+      for (const selector of selectors) {
+        try {
+          const input = doc.querySelector(selector);
+          if (input) return input;
+        } catch {}
+      }
+    }
+    return null;
+  }
+
+  function findSendButton(input) {
+    const docs = [];
+    try {
+      if (input?.ownerDocument) docs.push(input.ownerDocument);
+    } catch {}
+    for (const win of candidateWindows()) {
+      try {
+        const doc = win?.document;
+        if (doc && !docs.includes(doc)) docs.push(doc);
+      } catch {}
+    }
+    const selectors = [
+      "#send_but",
+      "button#send_but",
+      "[data-testid='send-button']",
+      "button[data-testid='send-button']",
+      "button[aria-label='Send']",
+      "button[title='Send']",
+      ".send_but"
+    ];
+    for (const doc of docs) {
+      for (const selector of selectors) {
+        try {
+          const button = doc.querySelector(selector);
+          if (button) return button;
+        } catch {}
+      }
+    }
+    return null;
+  }
+
+  function writePromptToInput(prompt) {
+    const input = findSendInput();
+    if (!input?.isConnected) return null;
+    try { input.blur(); } catch {}
+    if ("value" in input) input.value = prompt;
+    else input.textContent = prompt;
+    const InputEventCtor = input.ownerDocument?.defaultView?.Event || Event;
+    try { input.dispatchEvent(new InputEventCtor("input", { bubbles: true })); } catch {}
+    try { input.dispatchEvent(new InputEventCtor("change", { bubbles: true })); } catch {}
+    return input;
+  }
+
+  function clearPromptInput(input, prompt) {
+    if (!input) return;
+    const current = "value" in input ? input.value : input.textContent;
+    if (String(current || "") !== String(prompt || "")) return;
+    if ("value" in input) input.value = "";
+    else input.textContent = "";
+    try { input.dispatchEvent(new Event("input", { bubbles: true })); } catch {}
+    try { input.dispatchEvent(new Event("change", { bubbles: true })); } catch {}
+  }
+
+  function submitPrompt(prompt) {
+    const input = writePromptToInput(prompt);
+    if (!input) return false;
+    const button = findSendButton(input);
+    if (input.isConnected && button?.isConnected && !button.disabled && button.getAttribute("aria-disabled") !== "true") {
+      try {
+        button.click();
+        return true;
+      } catch {}
+    }
+    clearPromptInput(input, prompt);
+    return false;
+  }
+
+  function finishIdentitySelection(prompt) {
+    const sentPrompt = submitPrompt(prompt);
+    if (sentPrompt) {
+      clearQueuedOpeningPrompt();
+      markIdentityCompleted();
+    } else {
+      queueOpeningPrompt(prompt);
+    }
+    if (rootEl) {
+      rootEl.innerHTML = '<section class="identity-desk-screen" style="display:grid;place-items:center;padding:24px;text-align:center"><div style="max-width:520px;border:1px solid rgba(255,248,234,.42);border-radius:10px;background:rgba(40,24,14,.86);box-shadow:0 18px 45px rgba(0,0,0,.34);padding:18px 20px;color:#fff8ea;font:800 15px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans SC,sans-serif"><div style="font-size:20px;margin-bottom:6px">身份已写入</div><div style="opacity:.86">' + (sentPrompt ? '正在发送开场提示词。' : '正在等待外层聊天界面发送开场提示词。') + '</div></div></section>';
+    }
+    window.setTimeout(() => {
+      try {
+        window.location.reload();
+      } catch {}
+    }, 520);
+  }
+
+  $("#identitySelect").addEventListener("click", async () => {
+    if (saving) return;
+    saving = true;
+    const button = $("#identitySelect");
+    button.disabled = true;
+    setStatus("正在写入身份...");
+    try {
+      const identity = selectedIdentityPayload();
+      setStatus("正在补写开场世界书...");
+      const worldbook = await insertOpeningWorldbooks(identity);
+      if (!worldbook?.ok) {
+        setStatus("世界书补写失败：" + (worldbook?.reason || "无法写入角色卡世界书。"));
+        return;
+      }
+      if (worldbook?.previewOnly) setStatus("本地预览已跳过世界书补写，正在写入身份和变量...");
+      if (!worldbook?.skipped) setStatus("世界书已补写，正在写入身份和变量...");
+      const wroteIdentity = await writeIdentityVariable(identity);
+      if (wroteIdentity) {
+        setStatus("身份已写入。");
+        finishIdentitySelection(buildOpeningPrompt(identity));
+      } else {
+        setStatus("写入失败：MVU变量接口不可用。");
+      }
+    } catch (err) {
+      console.error("[HypnoOS Identity] select failed", err);
+      setStatus("写入失败，请查看控制台。");
+    } finally {
+      saving = false;
+      button.disabled = false;
+    }
+  });
+
+  document.querySelectorAll("[data-opening-perk]").forEach((input) => {
+    input.addEventListener("change", async () => {
+      const perk = openingPerkById(input.dataset.openingPerk || "");
+      if (!perk) return;
+      input.disabled = true;
+      try {
+        const ok = await applyOpeningPerk(perk, input.checked);
+        if (ok) {
+          setStatus((input.checked ? "已应用开场选项：" : "已取消开场选项：") + perk.label);
+        } else {
+          input.checked = !input.checked;
+          setStatus("写入失败：MVU变量接口不可用。");
+        }
+      } catch (err) {
+        console.error("[HypnoOS Identity] opening perk failed", err);
+        input.checked = !input.checked;
+        setStatus("开场选项写入失败，请查看控制台。");
+      } finally {
+        input.disabled = false;
+      }
+    });
+  });
+
+  function resizeImageFile(file) {
+    return new Promise((resolve, reject) => {
+      if (!/^image\//i.test(file.type || "")) {
+        reject(new Error("not image"));
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error || new Error("read failed"));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("image decode failed"));
+        img.onload = () => {
+          const maxSize = 640;
+          const scale = Math.min(1, maxSize / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+          const width = Math.max(1, Math.round((img.naturalWidth || 1) * scale));
+          const height = Math.max(1, Math.round((img.naturalHeight || 1) * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.82));
+        };
+        img.src = String(reader.result || "");
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  render();
+})();
+</script>

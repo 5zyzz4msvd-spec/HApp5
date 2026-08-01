@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="67%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.72" stop-color="#f4f7f8"/>
+      <stop offset="1" stop-color="#dfe8eb"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <g transform="translate(600 600) rotate(-4) translate(-600 -600)" fill="#050505" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <!-- generic female hospital silhouette: long twin tails, hairclip, slim 165cm, spread pose -->
+    <ellipse cx="600" cy="235" rx="58" ry="65"/>
+    <path d="M545 224c30-44 92-45 124-3 11 19 12 44 5 67-14-31-38-49-74-49-25 0-43 9-55 29z"/>
+    <path d="M548 299c-56 72-66 203-44 342 36 26 159 27 196 0 23-139 13-270-44-342-29 27-80 27-108 0z"/>
+    <path d="M513 345c-83 42-167 88-250 139-5 20 5 36 24 45 78-26 165-62 252-112z"/>
+    <path d="M688 345c82 43 166 90 249 141 5 20-7 36-25 44-78-26-164-63-251-114z"/>
+    <path d="M504 635c-80 93-160 195-233 304 8 20 27 29 49 22 84-86 164-174 237-267z"/>
+    <path d="M697 635c81 93 161 195 234 304-8 20-28 29-49 22-85-86-165-174-238-267z"/>
+    <path d="M538 300c-85 112-113 247-127 389-45-99-39-295 78-433z"/>
+    <path d="M662 300c84 112 112 247 126 389 45-99 39-295-78-433z"/>
+    <path d="M563 173c24-14 62-14 86 1"/>
+    <path d="M552 193c18 10 43 16 74 18"/>
+    <path d="M629 190l39-10" stroke-width="5"/>
+    <path d="M641 178l24 21" stroke-width="5"/>
+    <path d="M527 438h146M513 544h176M510 642h183"/>
+    <path d="M558 311l44 48 43-48"/>
+    <path d="M276 486c-22-7-48 11-49 36M929 488c22-8 49 9 51 34M276 940c-22 7-35 31-27 50M930 940c22 7 35 31 27 50"/>
+  </g>
+</svg>
