@@ -4216,7 +4216,7 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-location-rule-radar-bridge::after{content:"";position:absolute;left:19%;right:19%;bottom:8%;height:8%;background:linear-gradient(90deg,transparent,rgba(239,22,81,.7),transparent);filter:blur(11px);opacity:.65}
 .st-location-rule-radar-bridge img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
 .st-rule-radar-open{overflow:visible!important}
-.st-rule-radar-stage{margin-top:152px!important;overflow:visible!important;transition:margin-top .62s cubic-bezier(.12,.9,.18,1)}
+.st-rule-radar-stage{margin-top:92px!important;overflow:visible!important;transition:margin-top .62s cubic-bezier(.12,.9,.18,1)}
 .st-location-rule-radar-bridge.is-raised{transform:translate3d(-50%,0,0) scale(1) rotate(0);opacity:1;animation:st-rule-radar-idle 3.8s ease-in-out .7s infinite}.st-location-rule-radar-bridge.is-lowering{transform:translate3d(-50%,88px,0) scale(.62) rotate(3deg);opacity:0}
 @keyframes st-rule-verdict-in{0%{opacity:0;transform:translateY(52px) rotate(2deg) scale(.92);clip-path:polygon(0 0,0 0,0 100%,0 100%)}58%{opacity:1;transform:translateY(-7px) rotate(-.8deg) scale(1.02);clip-path:polygon(0 0,100% 0,86% 100%,0 100%)}100%{transform:none;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}}@keyframes st-rule-radar-idle{0%,100%{margin-top:0}50%{margin-top:-5px}}@media(prefers-reduced-motion:reduce){.st-location-rule-drawer,.st-location-rule-radar-bridge,.st-rule-radar-stage{animation:none!important;transition:none!important}}
 .st-map-add-layer{position:absolute;inset:0;z-index:80;display:grid;place-items:center;padding:16px;background:rgba(32,24,16,.32);backdrop-filter:blur(3px)}
@@ -32870,11 +32870,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const root = page?.parentElement;
     if (!root || !bridge?.isConnected) return;
     const rect = root.getBoundingClientRect();
-    const width = Math.max(310, Math.min(570, rect.width * .88));
-    const height = width * (937 / 1678);
+    const width = Math.max(196, Math.min(318, rect.width * .54));
+    const height = width * (916 / 1717);
     bridge.style.width = width + "px";
     bridge.style.left = (rect.left + rect.width / 2) + "px";
-    bridge.style.top = (rect.top - height * .82) + "px";
+    bridge.style.top = (rect.top - height * .77) + "px";
   }
 
   function startLocationRuleRadarTracking(page, bridge) {
