@@ -38297,8 +38297,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return headers;
   }
 
-  let connectorHostModulePromise = null;
-
   function connectorHostOrigin() {
     for (const readOrigin of [
       () => window.parent?.location?.origin,
@@ -38334,25 +38332,18 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       .replace(/\/completions$/i, "");
   }
 
-  async function connectorHostModule() {
-    if (connectorHostModulePromise) return connectorHostModulePromise;
-    connectorHostModulePromise = (async () => {
-      const origin = connectorHostOrigin();
-      if (!origin) throw new Error("无法识别 SillyTavern 同源地址。");
-      return import(origin + "/script.js");
-    })().catch((error) => {
-      connectorHostModulePromise = null;
-      throw error;
-    });
-    return connectorHostModulePromise;
-  }
-
   async function connectorHostRequestHeaders() {
-    const module = await connectorHostModule();
-    if (typeof module?.getRequestHeaders !== "function") {
-      throw new Error("当前 SillyTavern 未提供同源请求头接口。");
+    if (typeof globalThis.__ST_HYPNOOS_HOST_REQUEST_HEADERS__ === "function") {
+      return await globalThis.__ST_HYPNOOS_HOST_REQUEST_HEADERS__();
     }
-    return module.getRequestHeaders();
+    let registry = null;
+    try {
+      registry = window.parent?.__ST_HYPNOOS_FLOATING_SINGLETON__
+        || window.top?.__ST_HYPNOOS_FLOATING_SINGLETON__
+        || globalThis.__ST_HYPNOOS_FLOATING_REGISTRY__;
+    } catch {}
+    if (typeof registry?.getRequestHeaders === "function") return await registry.getRequestHeaders();
+    throw new Error("悬浮宿主未提供 SillyTavern 同源请求头桥接。");
   }
 
   async function invokeIndependentTextModelThroughHost(profile, messages, signal) {

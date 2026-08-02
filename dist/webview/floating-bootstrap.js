@@ -666,6 +666,7 @@
 
     var registryApi = null;
     var chatTopologyKey = "";
+    var hostScriptModulePromise = null;
 
     function ownerAlive(owner) {
       try {
@@ -773,6 +774,30 @@
         } catch (_) {}
       }
       return null;
+    }
+
+    async function hostRequestHeaders() {
+      if (!hostScriptModulePromise) {
+        hostScriptModulePromise = (async function () {
+          var views = sourceWindows();
+          for (var i = 0; i < views.length; i += 1) {
+            try {
+              if (typeof views[i].eval !== "function") continue;
+              var mod = await Promise.resolve(views[i].eval("import('/script.js')"));
+              if (mod && typeof mod.getRequestHeaders === "function") return mod;
+            } catch (_) {}
+          }
+          return null;
+        })().catch(function (error) {
+          hostScriptModulePromise = null;
+          throw error;
+        });
+      }
+      var module = await hostScriptModulePromise;
+      if (!module || typeof module.getRequestHeaders !== "function") {
+        throw new Error("当前 SillyTavern 未提供同源请求头接口。");
+      }
+      return module.getRequestHeaders();
     }
 
     function rawWorldbookEntries(data) {
@@ -1830,6 +1855,7 @@
         "globalThis.getChatMessages=function(){return r.callApi('getChatMessages',Array.prototype.slice.call(arguments))||[]};" +
         "globalThis.setChatMessages=function(){return r.guardedApi('setChatMessages',Array.prototype.slice.call(arguments))};" +
         "globalThis.getContext=function(){return r.getContext()};" +
+        "globalThis.__ST_HYPNOOS_HOST_REQUEST_HEADERS__=function(){return r.getRequestHeaders()};" +
         "globalThis.__ST_HYPNOOS_UPDATE_PROFILE_NEIGHBORS__=function(p){return r.updateProfileNeighbors(p)};" +
         "globalThis.__ST_HYPNOOS_UPDATE_PROFILE_POSSESSION__=function(p){return r.updateProfilePossession(p)};" +
         "globalThis.__ST_HYPNOOS_UPDATE_ENCOUNTER_POSSESSION_DECOR__=function(p){return r.updateEncounterPossessionDecor(p)};" +
@@ -2349,6 +2375,7 @@
         }
         return "";
       },
+      getRequestHeaders: hostRequestHeaders,
       phoneApi: phoneApi,
       notifyStages: notifyStages,
       registerGalgameHydrator: registerGalgameHydrator,
