@@ -3172,7 +3172,9 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
     ],
     "九鬼真白": [
       stAssetUrl("profiles/kuki-mashiro.png"),
-      stAssetUrl("profiles/kuki-mashiro-glasses-contempt.png")
+      stAssetUrl("profiles/kuki-mashiro-glasses-contempt.png"),
+      stAssetUrl("profiles/kuki-mashiro-odor-fan-dance.png"),
+      stAssetUrl("profiles/kuki-mashiro-prank-glasses.png")
     ]
   };
   const ST_OTAKU_FEMALE_PROFILE_PHOTO = stAssetUrl("profiles/otaku-female.png");
@@ -17557,7 +17559,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const availableIndex = normalizedSlots.findIndex(Boolean);
     const normalizedSelected = normalizedSlots[selectedIndex] ? Math.max(0, Math.min(3, Math.trunc(Number(selectedIndex) || 0))) : Math.max(0, availableIndex);
     const state = {
-      version: 2,
+      version: 3,
       selected: normalizedSelected >= 0 ? normalizedSelected : 0,
       slots: normalizedSlots
     };
@@ -17576,8 +17578,18 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         if (!raw) continue;
         const parsed = JSON.parse(raw);
         if (!parsed || !Array.isArray(parsed.slots)) continue;
-        const slots = normalizeProfilePhotoSlots(parsed.slots);
+        let slots = normalizeProfilePhotoSlots(parsed.slots);
         const selected = Math.max(0, Math.min(3, Math.trunc(Number(parsed?.selected) || 0)));
+        const configured = ST_DEFAULT_PROFILE_PHOTO_SLOTS[roleName];
+        if (Number(parsed?.version || 0) < 3 && Array.isArray(configured) && configured.length) {
+          const defaults = normalizeProfilePhotoSlots(configured);
+          const merged = slots.slice();
+          defaults.forEach((source, index) => {
+            if (source && !merged[index]) merged[index] = source;
+          });
+          slots = merged;
+          profileSaveLocalPhotoSlots(roleName, slots, slots[selected] ? selected : 0);
+        }
         const firstFilled = slots.findIndex(Boolean);
         return { slots, selected: slots[selected] ? selected : firstFilled >= 0 ? firstFilled : 0 };
       } catch {}
