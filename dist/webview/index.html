@@ -38273,6 +38273,19 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     if (typeof globalThis.__ST_HYPNOOS_HOST_REQUEST_HEADERS__ === "function") {
       return await globalThis.__ST_HYPNOOS_HOST_REQUEST_HEADERS__();
     }
+    for (const readApi of [
+      () => window.SillyTavern,
+      () => window.parent?.SillyTavern,
+      () => window.top?.SillyTavern,
+      () => window.TavernHelper?.SillyTavern,
+      () => window.parent?.TavernHelper?.SillyTavern
+    ]) {
+      try {
+        const api = readApi();
+        const context = typeof api?.getContext === "function" ? api.getContext() : api;
+        if (typeof context?.getRequestHeaders === "function") return context.getRequestHeaders();
+      } catch {}
+    }
     let registry = null;
     try {
       registry = window.parent?.__ST_HYPNOOS_FLOATING_SINGLETON__
@@ -38280,7 +38293,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         || globalThis.__ST_HYPNOOS_FLOATING_REGISTRY__;
     } catch {}
     if (typeof registry?.getRequestHeaders === "function") return await registry.getRequestHeaders();
-    throw new Error("悬浮宿主未提供 SillyTavern 同源请求头桥接。");
+    throw new Error("无法从 SillyTavern.getContext() 取得同源请求头。");
   }
 
   async function invokeIndependentTextModelThroughHost(profile, messages, signal) {

@@ -666,7 +666,6 @@
 
     var registryApi = null;
     var chatTopologyKey = "";
-    var hostScriptModulePromise = null;
 
     function ownerAlive(owner) {
       try {
@@ -777,27 +776,23 @@
     }
 
     async function hostRequestHeaders() {
-      if (!hostScriptModulePromise) {
-        hostScriptModulePromise = (async function () {
-          var views = sourceWindows();
-          for (var i = 0; i < views.length; i += 1) {
-            try {
-              if (typeof views[i].eval !== "function") continue;
-              var mod = await Promise.resolve(views[i].eval("import('/script.js')"));
-              if (mod && typeof mod.getRequestHeaders === "function") return mod;
-            } catch (_) {}
+      var ctx = context();
+      if (ctx && typeof ctx.getRequestHeaders === "function") {
+        return ctx.getRequestHeaders();
+      }
+      var views = sourceWindows();
+      for (var i = 0; i < views.length; i += 1) {
+        try {
+          var api = views[i].SillyTavern
+            || (views[i].TavernHelper && views[i].TavernHelper.SillyTavern);
+          if (!api) continue;
+          var apiContext = typeof api.getContext === "function" ? api.getContext() : api;
+          if (apiContext && typeof apiContext.getRequestHeaders === "function") {
+            return apiContext.getRequestHeaders();
           }
-          return null;
-        })().catch(function (error) {
-          hostScriptModulePromise = null;
-          throw error;
-        });
+        } catch (_) {}
       }
-      var module = await hostScriptModulePromise;
-      if (!module || typeof module.getRequestHeaders !== "function") {
-        throw new Error("当前 SillyTavern 未提供同源请求头接口。");
-      }
-      return module.getRequestHeaders();
+      throw new Error("无法从 SillyTavern.getContext() 取得同源请求头。");
     }
 
     function rawWorldbookEntries(data) {
