@@ -10468,16 +10468,25 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       let parsed = null;
       let lastFormatError = null;
       for (let attempt = 0; attempt < 2; attempt += 1) {
-        const resultText = await invokeIndependentTextModel({
+        const response = await invokeIndependentTextModel({
           system: baseSystem,
           user: attempt === 0
             ? baseUser
             : baseUser + "\n\n上一次返回无效：" + String(lastFormatError?.message || "格式错误") + "。不要解释原因，重新输出完整且唯一的合法JSON对象。",
           note: "为成就和任务应用生成每日任务候选；只生成候选，不写变量。",
-          deferSuccessFeedback: true
+          deferSuccessFeedback: true,
+          maxTokensOverride: 4096,
+          returnMeta: true
         });
-        rawResponses.push(String(resultText || "").slice(0, 6000));
+        const resultText = String(response?.text || "");
+        rawResponses.push([
+          "finish_reason: " + String(response?.finishReason || "unknown"),
+          "content:",
+          resultText || "（空）",
+          response?.reasoning ? "reasoning_content:\n" + String(response.reasoning) : ""
+        ].filter(Boolean).join("\n").slice(0, 12000));
         try {
+          if (response?.finishReason === "length") throw new Error("模型输出被max_tokens截断。");
           parsed = parseConnectorJsonObject(resultText, {
             requiredKeys: ["任务", "完成条件"],
             allowedKeys: ["任务", "完成条件"],
@@ -38512,7 +38521,15 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return "";
   }
 
-  async function invokeIndependentTextModel({ system, user, note = "", signal, deferSuccessFeedback = false } = {}) {
+  async function invokeIndependentTextModel({
+    system,
+    user,
+    note = "",
+    signal,
+    deferSuccessFeedback = false,
+    maxTokensOverride = 0,
+    returnMeta = false
+  } = {}) {
     showIndependentConnectorFeedback("text", "running", "正在连接文生文模型…");
     try {
       const config = readModelConnectorConfig();
@@ -38524,16 +38541,20 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         { role: "user", content: [context, String(user || "")].filter(Boolean).join("\n\n") }
       ];
       const useHostProxy = connectorShouldUseHostProxy(profile);
+      const requestedMaxTokens = Math.max(
+        Math.floor(Number(profile.maxTokens) || 0),
+        Math.floor(Number(maxTokensOverride) || 0)
+      );
       const body = {
         model: profile.model,
         messages,
         temperature: profile.temperature,
         top_p: profile.topP,
-        max_tokens: profile.maxTokens
+        max_tokens: requestedMaxTokens
       };
       let data;
       if (useHostProxy) {
-        data = await invokeIndependentTextModelThroughHost(profile, messages, signal);
+        data = await invokeIndependentTextModelThroughHost({ ...profile, maxTokens: requestedMaxTokens }, messages, signal);
       } else {
         const response = await fetch(String(profile.endpoint || "").trim(), {
           method: "POST",
@@ -38551,6 +38572,18 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         throw new Error("文生文插头没有返回可识别文本" + (keys ? "；响应字段：" + keys : "。"));
       }
       if (!deferSuccessFeedback) showIndependentConnectorFeedback("text", "success", "模型已返回文本，正在交给当前应用处理。");
+      if (returnMeta) {
+        return {
+          text: String(text).trim(),
+          finishReason: String(data?.choices?.[0]?.finish_reason ?? data?.finish_reason ?? ""),
+          reasoning: String(
+            data?.choices?.[0]?.message?.reasoning_content ??
+            data?.reasoning_content ??
+            data?.reasoning ??
+            ""
+          ).trim()
+        };
+      }
       return String(text).trim();
     } catch (error) {
       showIndependentConnectorFeedback("text", "error", String(error?.message || error || "未知错误"));
