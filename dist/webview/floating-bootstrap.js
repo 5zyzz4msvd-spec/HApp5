@@ -1488,6 +1488,23 @@
       return Math.min(panel?.classList?.contains("profile-neighbors") ? 354 : 286, available);
     }
 
+    function syncPanelSize() {
+      if (!panel) return;
+      var baseWidth = 430;
+      var baseHeight = 812;
+      var viewportWidth = Math.max(0, Number(host.innerWidth) || 0);
+      var viewportHeight = Math.max(0, Number(host.innerHeight) || 0);
+      var widthAllowance = Math.max(1, viewportWidth - 16);
+      if (viewportWidth <= 760) {
+        var sidecarWidth = Math.min(220, Math.max(104, viewportWidth * 0.28));
+        widthAllowance = Math.max(1, viewportWidth - sidecarWidth - 30);
+      }
+      var heightAllowance = Math.max(1, viewportHeight - 16);
+      var scale = Math.min(1, widthAllowance / baseWidth, heightAllowance / baseHeight);
+      panel.style.width = Math.max(1, Math.floor(baseWidth * scale)) + "px";
+      panel.style.height = Math.max(1, Math.floor(baseHeight * scale)) + "px";
+    }
+
     function clampPosition(x, y) {
       var width = panel ? panel.offsetWidth : Math.min(760, host.innerWidth - 24);
       var height = panel ? panel.offsetHeight : Math.min(900, host.innerHeight - 24);
@@ -1511,6 +1528,7 @@
 
     function applySavedPosition() {
       if (!panel) return;
+      syncPanelSize();
       var saved = readUiState();
       var fallbackX = Math.max(8, host.innerWidth - panel.offsetWidth - panelSidecarReserve(panel.offsetWidth) - 28);
       var fallbackY = Math.max(8, Math.min(88, host.innerHeight - panel.offsetHeight - 8));
