@@ -10515,10 +10515,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       ].join("\n");
       const baseSystem = [
         "你是每日任务设计器，只生成一项可在当前剧情中明确判定完成与否的任务。",
-        "任务要结合当前剧情，具有黑色幽默与荒诞感，不能复述现有任务。",
+        "两种奖励模式都必须结合当前剧情生成黑色色情幽默任务；黑色、色情、幽默三项缺一不可，不能弱化成普通恶作剧、日常跑腿、单纯暧昧或只带荒诞感的任务。",
+        "任务必须针对指定目标的当前处境、关系与底线设计，不能复述现有任务，也不能写成脱离当前剧情的通用模板。",
         highRisk
-          ? "这是高危兑换券任务：完成条件必须明显更困难、更冒险，并可能提高可疑度或目标警戒度，不能靠一句话或顺手动作完成。"
-          : "这是普通任务：难度适中，能在若干轮剧情内自然完成。",
+          ? "这是星光点兑换券任务：必须是高难度黑色色情幽默任务；按当前剧情评估应当成功率低，核心障碍是任务行为极其触犯指定目标目前最在意、最难退让的底线。完成条件必须要求连续而明确的剧情推进，不能靠一句话、顺手动作、目标无条件配合或直接宣布成功完成。"
+          : "这是星光点任务：必须是黑色色情幽默任务；难度可以适中，但仍要有明确的尴尬、欲望或越界冲突与黑色笑点，能在若干轮剧情内通过实际互动完成。",
         schemaInstruction
       ].join("\n");
       const baseUser = [
@@ -11085,7 +11086,16 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       });
     }
     const order = { COMPLETED: 0, ACTIVE: 1, AVAILABLE: 2 };
-    return rows.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9) || a.title.localeCompare(b.title, "zh-Hans-CN"));
+    const dailyPriority = (item) => (
+      item?.source === "generated-daily" ||
+      Boolean(item?.dailyQuestDate) ||
+      rewardIsDailyQuestKey(item?.id)
+    ) ? 0 : 1;
+    return rows.sort((a, b) =>
+      dailyPriority(a) - dailyPriority(b) ||
+      (order[a.status] ?? 9) - (order[b.status] ?? 9) ||
+      a.title.localeCompare(b.title, "zh-Hans-CN")
+    );
   }
 
   function rewardRansomText(value) {
@@ -11178,7 +11188,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         ? questGeneratorEntry + '<section class="st-reward-list">' + (quests.map((item) => renderRewardItem(item, "quest", occupiedTaskCount)).join("") || '<p class="st-reward-notice">' + rewardRansomText("暂无可显示任务。") + '</p>') + '</section>'
         : '<section class="st-lite-card st-graph-paper st-reward-new">' +
             '<div class="st-graph-head"><strong>' + rewardRansomText("新增任务") + '</strong><span>' + escapeHtml("独立插头生成候选 · 领取后才写入变量") + '</span></div>' +
-            '<p class="st-reward-notice">' + escapeHtml("普通任务：奖励5星光点。") + '<br>' + escapeHtml("星光点兑换券任务（高危）：奖励1张星光点兑换券，任务难度更高，极有可能增长user可疑度和他人警戒度。") + '</p>' +
+            '<p class="st-reward-notice">' + escapeHtml("星光点任务：结合当前剧情生成黑色色情幽默任务，奖励5星光点。") + '<br>' + escapeHtml("星光点兑换券任务：高难度黑色色情幽默；当前剧情下成功率低，核心是极其触犯目标底线，奖励1张兑换券。") + '</p>' +
             '<div class="st-reward-daily-target"><span>' + escapeHtml("今天任务目标") + '</span><strong>' + rewardRansomText(dailyTarget?.name || "暂无") + '</strong><small>' + escapeHtml("日期：" + (dailyTarget?.dateKey || rewardCurrentDateKey(system))) + '</small></div>' +
             '<div class="st-reward-choice-grid">' +
               '<button class="st-reward-button" type="button" data-reward-new-submit="starlight"' + (dailyTargetDisabled ? " disabled" : "") + '>' + rewardRansomText(dailyTargetDisabled ? dailyTargetButtonText : "生成 · 5星光点") + '</button>' +
