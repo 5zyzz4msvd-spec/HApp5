@@ -6524,6 +6524,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 .st-reward-app .st-connector-state::before{content:"";width:10px;height:10px;border-radius:50%;background:#777;box-shadow:0 0 0 3px rgba(0,0,0,.08)}
 .st-reward-app .st-connector-state[data-state="running"]::before{background:#f59e0b;animation:stConnectorPulse .85s ease-in-out infinite alternate}.st-reward-app .st-connector-state[data-state="success"]::before{background:#16a34a}.st-reward-app .st-connector-state[data-state="error"]::before{background:#dc2626}
 .st-reward-app .st-connector-state strong{display:block;color:#111;font-size:11px}.st-reward-app .st-connector-state span{display:block;margin-top:2px;color:#4a423d;font-size:10px;line-height:1.45;overflow-wrap:anywhere}
+.st-reward-app .st-connector-state{grid-template-columns:auto minmax(0,1fr)}.st-reward-app .st-connector-state>div{min-width:0}
+.st-reward-app .st-connector-raw{grid-column:1/-1;margin-top:8px;border:2px solid #111;background:#0d0d0f;color:#f5f1e8;box-shadow:3px 3px 0 #ed1831}
+.st-reward-app .st-connector-raw summary{padding:8px 10px;color:#fff;font-size:10px;font-weight:950;cursor:pointer;list-style:none}.st-reward-app .st-connector-raw summary::-webkit-details-marker{display:none}.st-reward-app .st-connector-raw summary::after{content:"＋";float:right;color:#ed1831;font-size:14px}.st-reward-app .st-connector-raw[open] summary::after{content:"－"}
+.st-reward-app .st-connector-raw pre{max-height:240px;margin:0;padding:10px;border-top:1px solid rgba(255,255,255,.18);overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;color:#f7d9dd;font:600 10px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;user-select:text}
 .st-independent-connector-toast{position:fixed;z-index:2147483300;left:50%;top:16px;transform:translateX(-50%);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;width:min(86vw,390px);box-sizing:border-box;padding:10px 12px;border:2px solid #111;background:rgba(13,15,20,.96);color:#fff;box-shadow:5px 5px 0 rgba(237,24,49,.9),0 14px 34px rgba(0,0,0,.38);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;pointer-events:none;animation:stConnectorToastIn .2s ease-out both}
 .st-independent-connector-toast::before{content:"";width:11px;height:11px;border-radius:50%;background:#f59e0b}.st-independent-connector-toast[data-state="running"]::before{animation:stConnectorPulse .85s ease-in-out infinite alternate}.st-independent-connector-toast[data-state="success"]::before{background:#22c55e}.st-independent-connector-toast[data-state="error"]::before{background:#ef4444}
 .st-independent-connector-toast strong{font-size:12px;line-height:1.25}.st-independent-connector-toast span{min-width:0;color:rgba(255,255,255,.78);font-size:10px;line-height:1.35;overflow-wrap:anywhere}.st-independent-connector-toast em{color:rgba(255,255,255,.5);font:900 9px/1 monospace;font-style:normal}
@@ -10496,6 +10500,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       return { ok: false, message: "独立插头正在生成今日任务，请勿重复点击。" };
     }
     globalThis.__HYPNOOS_DAILY_QUEST_CREATE_IN_FLIGHT__.add(dailyLockKey);
+    const rawResponses = [];
     try {
       const highRisk = rewardMode === "voucher";
       const currentTasks = rewardCurrentTaskSummaries();
@@ -10534,6 +10539,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
           note: "为成就和任务应用生成每日任务候选；只生成候选，不写变量。",
           deferSuccessFeedback: true
         });
+        rawResponses.push(String(resultText || "").slice(0, 6000));
         try {
           parsed = parseConnectorJsonObject(resultText, {
             requiredKeys: ["任务", "完成条件"],
@@ -10549,7 +10555,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       }
       if (!parsed) {
         showIndependentConnectorFeedback("text", "error", String(lastFormatError?.message || "模型未按每日任务JSON协议返回。"));
-        return { ok: false, message: "每日任务生成失败：" + String(lastFormatError?.message || "模型未按JSON协议返回。") };
+        return {
+          ok: false,
+          message: "每日任务生成失败：" + String(lastFormatError?.message || "模型未按JSON协议返回。"),
+          rawResponses
+        };
       }
       const title = parsed["任务"].trim();
       const description = parsed["完成条件"].trim();
@@ -10572,9 +10582,9 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         return { ok: false, message: "任务已经生成，但前端候选存储失败。" };
       }
       showIndependentConnectorFeedback("text", "success", "JSON格式校验通过，任务候选已加入列表。");
-      return { ok: true, message: "今日任务候选已生成，并加入任务列表。", candidate };
+      return { ok: true, message: "今日任务候选已生成，并加入任务列表。", candidate, rawResponses };
     } catch (error) {
-      return { ok: false, message: "每日任务生成失败：" + (error?.message || error || "未知错误") };
+      return { ok: false, message: "每日任务生成失败：" + (error?.message || error || "未知错误"), rawResponses };
     } finally {
       globalThis.__HYPNOOS_DAILY_QUEST_CREATE_IN_FLIGHT__.delete(dailyLockKey);
     }
@@ -11124,7 +11134,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     if (!state) return "";
     const label = state === "running" ? "独立插头正在生成" : state === "success" ? "独立插头生成成功" : "独立插头生成失败";
     const detail = String(page.dataset.rewardConnectorDetail || page.dataset.rewardNotice || "");
-    return '<div class="st-connector-state" data-state="' + escapeAttr(state) + '" role="status" aria-live="polite"><div><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(detail) + '</span></div></div>';
+    let rawResponses = [];
+    try {
+      const parsed = JSON.parse(String(page.dataset.rewardConnectorRaw || "[]"));
+      if (Array.isArray(parsed)) rawResponses = parsed.map((value) => String(value || "")).filter(Boolean);
+    } catch {}
+    const rawHtml = state === "error" && rawResponses.length
+      ? '<details class="st-connector-raw"><summary>查看模型原始返回（' + rawResponses.length + ' 次）</summary><pre>' +
+          rawResponses.map((value, index) => "第 " + (index + 1) + " 次返回：\n" + value).map(escapeHtml).join("\n\n") +
+        '</pre></details>'
+      : "";
+    return '<div class="st-connector-state" data-state="' + escapeAttr(state) + '" role="status" aria-live="polite"><div><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(detail) + '</span></div>' + rawHtml + '</div>';
   }
 
   function renderRewardPage(page) {
@@ -11255,12 +11275,18 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       const rewardMode = button.getAttribute("data-reward-new-submit") === "voucher" ? "voucher" : "starlight";
       page.dataset.rewardConnectorState = "running";
       page.dataset.rewardConnectorDetail = "正在请求文生文插头，并校验返回的任务名与完成条件…";
+      delete page.dataset.rewardConnectorRaw;
       page.dataset.rewardNotice = "请求已发送，请不要重复点击。";
       rerenderRewardPagePreservingScroll(page);
       const result = await rewardGenerateDailyQuestCandidate(target, rewardMode);
       page.dataset.rewardNotice = result?.message || "每日任务候选生成完成。";
       page.dataset.rewardConnectorState = result?.ok ? "success" : "error";
       page.dataset.rewardConnectorDetail = page.dataset.rewardNotice;
+      if (Array.isArray(result?.rawResponses) && result.rawResponses.length) {
+        page.dataset.rewardConnectorRaw = JSON.stringify(result.rawResponses);
+      } else {
+        delete page.dataset.rewardConnectorRaw;
+      }
       if (result?.ok) page.dataset.rewardTab = "quests";
       rerenderRewardPagePreservingScroll(page);
     }));
@@ -38517,6 +38543,38 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return data;
   }
 
+  function independentConnectorTextContent(data) {
+    const collect = (value, depth = 0) => {
+      if (depth > 5 || value === undefined || value === null) return [];
+      if (typeof value === "string") return value.trim() ? [value] : [];
+      if (Array.isArray(value)) return value.flatMap((item) => collect(item, depth + 1));
+      if (typeof value !== "object") return [];
+      for (const key of ["text", "output_text"]) {
+        if (typeof value[key] === "string" && value[key].trim()) return [value[key]];
+      }
+      for (const key of ["content", "parts", "message"]) {
+        const result = collect(value[key], depth + 1);
+        if (result.length) return result;
+      }
+      return [];
+    };
+    for (const candidate of [
+      data?.choices?.[0]?.message?.content,
+      data?.choices?.[0]?.text,
+      data?.output_text,
+      data?.output,
+      data?.text,
+      data?.content,
+      data?.candidates?.[0]?.content?.parts,
+      data?.candidates?.[0]?.content,
+      data?.data
+    ]) {
+      const parts = collect(candidate);
+      if (parts.length) return parts.join("\n").trim();
+    }
+    return "";
+  }
+
   async function invokeIndependentTextModel({ system, user, note = "", signal, deferSuccessFeedback = false } = {}) {
     showIndependentConnectorFeedback("text", "running", "正在连接文生文模型…");
     try {
@@ -38550,8 +38608,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         if (!response.ok) throw new Error("文生文插头返回 " + response.status + "。");
         data = await response.json();
       }
-      const text = data?.choices?.[0]?.message?.content ?? data?.output_text ?? data?.text ?? data?.content;
-      if (!String(text || "").trim()) throw new Error("文生文插头没有返回文本。");
+      const text = independentConnectorTextContent(data);
+      if (!String(text || "").trim()) {
+        const keys = data && typeof data === "object" ? Object.keys(data).slice(0, 12).join(", ") : "";
+        throw new Error("文生文插头没有返回可识别文本" + (keys ? "；响应字段：" + keys : "。"));
+      }
       if (!deferSuccessFeedback) showIndependentConnectorFeedback("text", "success", "模型已返回文本，正在交给当前应用处理。");
       return String(text).trim();
     } catch (error) {
