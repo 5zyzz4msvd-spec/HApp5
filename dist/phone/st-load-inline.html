@@ -4496,11 +4496,13 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-board-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#3d2f25;font-size:12px;font-weight:950}
 .st-board-drawer-head small{color:rgba(61,47,37,.54);font-size:10px;font-weight:850}
 .st-board-drawer-list{display:grid;gap:6px;max-height:132px;overflow:auto;padding-right:2px;scrollbar-width:thin}
-.st-board-drawer-row{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:6px;border:1px solid rgba(92,64,38,.12);border-radius:11px;background:rgba(255,255,255,.48);padding:6px;color:#3d2f25}
+.st-board-drawer-row{display:grid;grid-template-columns:28px minmax(0,1fr) 28px;align-items:center;gap:6px;border:1px solid rgba(92,64,38,.12);border-radius:11px;background:rgba(255,255,255,.48);padding:6px;color:#3d2f25}
 .st-board-drawer-row.active{border-color:rgba(20,184,166,.36);background:rgba(204,251,241,.42)}
 .st-board-drawer-fav{width:24px;height:24px;border:1px solid rgba(92,64,38,.13);border-radius:999px;background:rgba(255,250,240,.72);color:rgba(107,63,34,.48);font-size:13px;font-weight:950;cursor:pointer}
 .st-board-drawer-fav.active{color:#b45309;background:rgba(254,243,199,.86);border-color:rgba(180,83,9,.24)}
 .st-board-drawer-name{min-width:0;border:0;background:transparent;color:inherit;text-align:left;font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.st-board-drawer-delete{width:26px;height:26px;border:2px solid #111;background:#ef1831;color:#fff;font:950 18px/1 Impact,"Arial Black",sans-serif;cursor:pointer;box-shadow:2px 2px 0 #111;transform:rotate(2deg)}
+.st-board-drawer-delete:hover{filter:brightness(1.08);transform:rotate(-2deg) scale(1.05)}
 .st-board-drawer-empty{margin:0;color:rgba(61,47,37,.58);font-size:11px;line-height:1.45}
 .st-board-drawer-add{height:34px;border:1px dashed rgba(20,184,166,.34);border-radius:12px;background:rgba(240,253,250,.58);color:#0f766e;font-size:18px;font-weight:950;line-height:1;cursor:pointer}
 .st-city-map-app.st-map-external-chain .st-board-drawer{display:none}
@@ -6809,6 +6811,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 .st-reward-app .st-reward-new .st-reward-solid{background:transparent;color:#171313!important;padding:0}
 .st-reward-app .st-reward-new .st-reward-daily-target span,.st-reward-app .st-reward-new .st-reward-daily-target strong,
 .st-reward-app .st-reward-new .st-reward-daily-target small{color:#171313!important}
+.st-reward-app .st-reward-generator-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;margin:0 0 12px;padding:11px 12px;border:3px solid #09090b;background:#f7f1e8;color:#171313;box-shadow:5px 5px 0 #ed1831}
+.st-reward-app .st-reward-generator-entry strong{display:block;color:#111;font:950 13px/1.25 "Arial Black","Noto Sans SC",sans-serif}.st-reward-app .st-reward-generator-entry small{display:block;margin-top:5px;color:#554e49;font-size:10px;line-height:1.4}
+.st-reward-app .st-reward-generator-entry button{min-height:36px;padding:7px 10px;border:2px solid #09090b;background:#ed1831;color:#fff;box-shadow:3px 3px 0 #09090b;font:950 10px/1.1 "Arial Black","Noto Sans SC",sans-serif}
+.st-reward-app .st-connector-state{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:9px;margin:0 0 12px;padding:10px 11px;border:2px solid #09090b;background:#f7f1e8;color:#171313;box-shadow:3px 3px 0 #ed1831}
+.st-reward-app .st-connector-state::before{content:"";width:10px;height:10px;border-radius:50%;background:#777;box-shadow:0 0 0 3px rgba(0,0,0,.08)}
+.st-reward-app .st-connector-state[data-state="running"]::before{background:#f59e0b;animation:stConnectorPulse .85s ease-in-out infinite alternate}.st-reward-app .st-connector-state[data-state="success"]::before{background:#16a34a}.st-reward-app .st-connector-state[data-state="error"]::before{background:#dc2626}
+.st-reward-app .st-connector-state strong{display:block;color:#111;font-size:11px}.st-reward-app .st-connector-state span{display:block;margin-top:2px;color:#4a423d;font-size:10px;line-height:1.45;overflow-wrap:anywhere}
+.st-independent-connector-toast{position:fixed;z-index:2147483300;left:50%;top:16px;transform:translateX(-50%);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;width:min(86vw,390px);box-sizing:border-box;padding:10px 12px;border:2px solid #111;background:rgba(13,15,20,.96);color:#fff;box-shadow:5px 5px 0 rgba(237,24,49,.9),0 14px 34px rgba(0,0,0,.38);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;pointer-events:none;animation:stConnectorToastIn .2s ease-out both}
+.st-independent-connector-toast::before{content:"";width:11px;height:11px;border-radius:50%;background:#f59e0b}.st-independent-connector-toast[data-state="running"]::before{animation:stConnectorPulse .85s ease-in-out infinite alternate}.st-independent-connector-toast[data-state="success"]::before{background:#22c55e}.st-independent-connector-toast[data-state="error"]::before{background:#ef4444}
+.st-independent-connector-toast strong{font-size:12px;line-height:1.25}.st-independent-connector-toast span{min-width:0;color:rgba(255,255,255,.78);font-size:10px;line-height:1.35;overflow-wrap:anywhere}.st-independent-connector-toast em{color:rgba(255,255,255,.5);font:900 9px/1 monospace;font-style:normal}
+@keyframes stConnectorPulse{from{opacity:.42;transform:scale(.82)}to{opacity:1;transform:scale(1.12)}}@keyframes stConnectorToastIn{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
 /* 日程、校务、监控与地图统一使用 P5 黑白猩红漫画剪贴语言。 */
 .st-calendar-lite-app,.st-timetable-app,.st-clock-app,.st-school-app,.st-monitor-app,.st-map-app,.st-city-map-app:not(.st-police-hq-app):not(.st-hospital-remodel-app){
   --p5-red:#ed1831;--p5-black:#09090b;--p5-paper:#f4efe6;--p5-white:#fff;--p5-muted:#5b5550;
@@ -11368,6 +11381,14 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     });
   }
 
+  function rewardConnectorStateHtml(page) {
+    const state = String(page?.dataset?.rewardConnectorState || "");
+    if (!state) return "";
+    const label = state === "running" ? "独立插头正在生成" : state === "success" ? "独立插头生成成功" : "独立插头生成失败";
+    const detail = String(page.dataset.rewardConnectorDetail || page.dataset.rewardNotice || "");
+    return '<div class="st-connector-state" data-state="' + escapeAttr(state) + '" role="status" aria-live="polite"><div><strong>' + escapeHtml(label) + '</strong><span>' + escapeHtml(detail) + '</span></div></div>';
+  }
+
   function renderRewardPage(page) {
     const requestedActive = page.dataset.rewardTab || "achievements";
     const active = ["achievements", "quests", "new"].includes(requestedActive) ? requestedActive : "achievements";
@@ -11383,10 +11404,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const dailyTargetDisabled = !dailyTarget || dailyUsed || Boolean(dailyCandidate);
     const dailyTargetButtonText = dailyUsed ? "今日已领取" : dailyCandidate ? "候选已生成" : dailyTarget ? "生成今日任务" : "暂无可用角色";
     const notice = page.dataset.rewardNotice || "";
+    const questGeneratorEntry = '<section class="st-reward-generator-entry"><div><strong>每日任务 · 独立插头</strong><small>' + escapeHtml(dailyUsed ? "今天已经领取过每日任务。" : dailyCandidate ? "候选已经生成，可在下方任务列表接取。" : "生成结果先进入任务列表，接取后才写入变量。") + '</small></div><button type="button" data-reward-open-new>' + escapeHtml(dailyUsed ? "今日已用" : dailyCandidate ? "查看候选" : "去生成") + '</button></section>';
     const content = active === "achievements"
         ? '<section class="st-reward-list">' + (achievements.map((item) => renderRewardItem(item, "achievement", occupiedTaskCount)).join("") || '<p class="st-reward-notice">' + rewardRansomText("暂无可显示成就。") + '</p>') + '</section>'
       : active === "quests"
-        ? '<section class="st-reward-list">' + (quests.map((item) => renderRewardItem(item, "quest", occupiedTaskCount)).join("") || '<p class="st-reward-notice">' + rewardRansomText("暂无可显示任务。") + '</p>') + '</section>'
+        ? questGeneratorEntry + '<section class="st-reward-list">' + (quests.map((item) => renderRewardItem(item, "quest", occupiedTaskCount)).join("") || '<p class="st-reward-notice">' + rewardRansomText("暂无可显示任务。") + '</p>') + '</section>'
         : '<section class="st-lite-card st-graph-paper st-reward-new">' +
             '<div class="st-graph-head"><strong>' + rewardRansomText("新增任务") + '</strong><span>' + escapeHtml("独立插头生成候选 · 领取后才写入变量") + '</span></div>' +
             '<p class="st-reward-notice">' + escapeHtml("普通任务：奖励5星光点。") + '<br>' + escapeHtml("星光点兑换券任务（高危）：奖励1张星光点兑换券，任务难度更高，极有可能增长user可疑度和他人警戒度。") + '</p>' +
@@ -11402,8 +11424,9 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         '<section class="st-graph-tabs">' +
           '<button type="button" class="st-graph-tab ' + (active === "achievements" ? "active" : "") + '" data-reward-tab="achievements">' + rewardRansomText("成就") + '</button>' +
           '<button type="button" class="st-graph-tab ' + (active === "quests" ? "active" : "") + '" data-reward-tab="quests">' + rewardRansomText("任务") + '</button>' +
-          '<button type="button" class="st-graph-tab ' + (active === "new" ? "active" : "") + '" data-reward-tab="new">' + rewardRansomText("新增") + '</button>' +
+          '<button type="button" class="st-graph-tab ' + (active === "new" ? "active" : "") + '" data-reward-tab="new">' + rewardRansomText("每日生成") + '</button>' +
         '</section>' +
+        rewardConnectorStateHtml(page) +
         (notice ? '<p class="st-reward-notice">' + rewardRansomText(notice) + '</p>' : "") +
         content +
       '</main>';
@@ -11415,6 +11438,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       delete page.dataset.rewardNotice;
       renderRewardPage(page);
     }));
+    page.querySelector("[data-reward-open-new]")?.addEventListener("click", () => {
+      page.dataset.rewardTab = dailyCandidate ? "quests" : "new";
+      delete page.dataset.rewardNotice;
+      renderRewardPage(page);
+    });
     page.querySelectorAll("[data-reward-claim-achievement]").forEach((button) => button.addEventListener("click", () => {
       const id = button.getAttribute("data-reward-claim-achievement") || "";
       const item = internalAchievementRows().find((row) => row.id === id);
@@ -11487,10 +11515,14 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         return;
       }
       const rewardMode = button.getAttribute("data-reward-new-submit") === "voucher" ? "voucher" : "starlight";
-      button.disabled = true;
-      button.textContent = "生成中";
+      page.dataset.rewardConnectorState = "running";
+      page.dataset.rewardConnectorDetail = "正在请求文生文插头，并校验返回的任务名与完成条件…";
+      page.dataset.rewardNotice = "请求已发送，请不要重复点击。";
+      rerenderRewardPagePreservingScroll(page);
       const result = await rewardGenerateDailyQuestCandidate(target, rewardMode);
       page.dataset.rewardNotice = result?.message || "每日任务候选生成完成。";
+      page.dataset.rewardConnectorState = result?.ok ? "success" : "error";
+      page.dataset.rewardConnectorDetail = page.dataset.rewardNotice;
       if (result?.ok) page.dataset.rewardTab = "quests";
       rerenderRewardPagePreservingScroll(page);
     }));
@@ -34309,12 +34341,15 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const scope = layer.currentScope || "world";
     const favorites = readGraphFavoriteIds(scope);
     const selectedId = String(page?.dataset?.mapBoardSelected || "");
+    const defaultIds = defaultGraphNodeIds(scope);
     const list = mapBoardSortedExtras(scope, extras).map((location) => {
       const id = String(location?.id || "");
       const favorite = favorites.has(id);
+      const deletable = !defaultIds.has(id);
       return '<article class="st-board-drawer-row ' + (selectedId === id ? "active" : "") + '">' +
         '<button type="button" class="st-board-drawer-fav ' + (favorite ? "active" : "") + '" data-board-extra-favorite="' + escapeAttr(id) + '" aria-label="' + (favorite ? "取消收藏" : "收藏") + '">' + (favorite ? "★" : "☆") + '</button>' +
         '<button type="button" class="st-board-drawer-name" data-board-extra="' + escapeAttr(id) + '" title="' + escapeAttr(location?.info || "") + '">' + escapeHtml(location?.label || id) + '</button>' +
+        (deletable ? '<button type="button" class="st-board-drawer-delete" data-board-extra-delete="' + escapeAttr(id) + '" data-graph-scope="' + escapeAttr(scope) + '" aria-label="删除新增地点">×</button>' : '<span aria-hidden="true"></span>') +
       '</article>';
     }).join("") || '<p class="st-board-drawer-empty">暂无后续新增地点。</p>';
     return '<section class="st-board-drawer" data-board-drawer>' +
@@ -34351,6 +34386,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const pageIndex = Math.max(0, Math.min(pageCount - 1, Number(page.dataset.mapBoardExtraPage || 0) || 0));
     page.dataset.mapBoardExtraPage = String(pageIndex);
     const favorites = readGraphFavoriteIds(scope);
+    const defaultIds = defaultGraphNodeIds(scope);
     const selectedId = String(page.dataset.mapBoardSelected || "");
     const bridged = updateMapExtraChainBridge({
       visible: true,
@@ -34362,7 +34398,8 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         id: String(location?.id || ""),
         label: String(location?.label || location?.id || "未命名地点"),
         favorite: favorites.has(String(location?.id || "")),
-        active: selectedId === String(location?.id || "")
+        active: selectedId === String(location?.id || ""),
+        deletable: !defaultIds.has(String(location?.id || ""))
       }))
     });
     page.classList.toggle("st-map-external-chain", bridged);
@@ -34393,6 +34430,36 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     if (!page || !isLatestPhoneVariableView()) return false;
     page.dataset.mapBoardAddOpen = "true";
     renderCityMapPage(page);
+    return true;
+  };
+
+  async function deleteMapBoardAddedLocation(page, scope, nodeId) {
+    if (!page || !isLatestPhoneVariableView() || !nodeId) return false;
+    const graph = loadStaticGraph(scope);
+    const location = (graph.locations || []).find((item) => String(item?.id || "") === String(nodeId));
+    const label = String(location?.label || nodeId);
+    if (!location) {
+      await encounterConfirm(page, { title: "地点不存在", message: "这个新增地点已经被删除或不在当前地图中。", confirmText: "知道了", singleButton: true });
+      return false;
+    }
+    if (!await encounterConfirm(page, { title: "删除新增地点", message: "删除新增地点「" + label + "」？", confirmText: "确认删除" })) return false;
+    if (!deleteStaticGraphNode(scope, nodeId)) {
+      await encounterConfirm(page, { title: "无法删除", message: "固定地点与特殊地点不能删除。", confirmText: "知道了", singleButton: true });
+      return false;
+    }
+    if (page.dataset.mapBoardSelected === nodeId) delete page.dataset.mapBoardSelected;
+    delete page.dataset.mapBoardLastClick;
+    delete page.dataset.mapBoardLastClickAt;
+    renderCityMapPage(page);
+    return true;
+  }
+
+  globalThis.__ST_HYPNOOS_MAP_EXTRA_DELETE__ = (id) => {
+    const page = document.querySelector(".st-city-map-app[data-map-board-layer]");
+    if (!page || !isLatestPhoneVariableView()) return false;
+    const layerId = mapBoardLayerId(page);
+    const scope = ST_BOARD_MAP_LAYERS[layerId]?.currentScope || "world";
+    void deleteMapBoardAddedLocation(page, scope, String(id || ""));
     return true;
   };
 
@@ -35723,6 +35790,15 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         renderCityMapPage(page);
       });
     });
+    page.querySelectorAll("[data-board-extra-delete]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const id = button.getAttribute("data-board-extra-delete") || "";
+        const scope = button.getAttribute("data-graph-scope") || layer.currentScope || "world";
+        void deleteMapBoardAddedLocation(page, scope, id);
+      });
+    });
     page.querySelector("[data-board-add-open]")?.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -35855,19 +35931,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       const nodeId = button?.getAttribute?.("data-board-delete-location") || "";
       const scope = button?.getAttribute?.("data-graph-scope") || layer.currentScope || "world";
       if (!nodeId) return;
-      const graph = loadStaticGraph(scope);
-      const location = (graph.locations || []).find((item) => String(item?.id || "") === String(nodeId));
-      const label = String(location?.label || nodeId);
-      if (!await encounterConfirm(page, { title: "删除新增地点", message: "删除新增地点「" + label + "」？", confirmText: "确认删除" })) return;
-      const ok = deleteStaticGraphNode(scope, nodeId);
-      if (!ok) {
-        await encounterConfirm(page, { title: "无法删除", message: "默认地点不能删除。", confirmText: "知道了", singleButton: true });
-        return;
-      }
-      if (page.dataset.mapBoardSelected === nodeId) delete page.dataset.mapBoardSelected;
-      delete page.dataset.mapBoardLastClick;
-      delete page.dataset.mapBoardLastClickAt;
-      renderCityMapPage(page);
+      await deleteMapBoardAddedLocation(page, scope, nodeId);
     });
     bindGraphPageActions(page);
   }
@@ -38486,6 +38550,33 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return String(message.message ?? message.mes ?? message.text ?? message.content ?? "");
   }
 
+  function showIndependentConnectorFeedback(kind, state, detail = "") {
+    try {
+      ensureStyle();
+      const old = document.querySelector(".st-independent-connector-toast");
+      old?.remove();
+      if (globalThis.__ST_HYPNOOS_CONNECTOR_TOAST_TIMER__) {
+        clearTimeout(globalThis.__ST_HYPNOOS_CONNECTOR_TOAST_TIMER__);
+        delete globalThis.__ST_HYPNOOS_CONNECTOR_TOAST_TIMER__;
+      }
+      const toast = document.createElement("div");
+      toast.className = "st-independent-connector-toast";
+      toast.dataset.state = state;
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      const title = state === "running" ? "独立插头正在运行" : state === "success" ? "独立插头运行成功" : "独立插头运行失败";
+      const type = kind === "image" ? "IMAGE" : "TEXT";
+      toast.innerHTML = '<strong>' + escapeHtml(title) + '</strong><span>' + escapeHtml(String(detail || (state === "running" ? "正在等待模型返回…" : ""))) + '</span><em>' + type + '</em>';
+      document.body.appendChild(toast);
+      if (state !== "running") {
+        globalThis.__ST_HYPNOOS_CONNECTOR_TOAST_TIMER__ = setTimeout(() => {
+          toast.remove();
+          delete globalThis.__ST_HYPNOOS_CONNECTOR_TOAST_TIMER__;
+        }, state === "error" ? 9000 : 5200);
+      }
+    } catch {}
+  }
+
   function connectorStoryMessageAllowed(message) {
     if (typeof message === "string") return Boolean(message.trim());
     if (!message || typeof message !== "object") return false;
@@ -38689,39 +38780,46 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   }
 
   async function invokeIndependentTextModel({ system, user, note = "", signal } = {}) {
-    const config = readModelConnectorConfig();
-    const profile = config.text;
-    if (!independentConnectorProfileReady("text", config)) throw new Error("请先在设置的“模型插头”中启用文生文插头。");
-    const context = await buildIndependentConnectorContext(note);
-    const messages = [
-      { role: "system", content: String(system || "你是一个只返回所需结果的结构化助手。") },
-      { role: "user", content: [context, String(user || "")].filter(Boolean).join("\n\n") }
-    ];
-    const useHostProxy = connectorShouldUseHostProxy(profile);
-    const body = {
-      model: profile.model,
-      messages,
-      temperature: profile.temperature,
-      top_p: profile.topP,
-      max_tokens: profile.maxTokens
-    };
-    let data;
-    if (useHostProxy) {
-      data = await invokeIndependentTextModelThroughHost(profile, messages, signal);
-    } else {
-      const response = await fetch(String(profile.endpoint || "").trim(), {
-        method: "POST",
-        headers: independentConnectorHeaders("text", profile),
-        credentials: "same-origin",
-        signal,
-        body: JSON.stringify(body)
-      });
-      if (!response.ok) throw new Error("文生文插头返回 " + response.status + "。");
-      data = await response.json();
+    showIndependentConnectorFeedback("text", "running", "正在连接文生文模型…");
+    try {
+      const config = readModelConnectorConfig();
+      const profile = config.text;
+      if (!independentConnectorProfileReady("text", config)) throw new Error("请先在设置的“模型插头”中启用文生文插头。");
+      const context = await buildIndependentConnectorContext(note);
+      const messages = [
+        { role: "system", content: String(system || "你是一个只返回所需结果的结构化助手。") },
+        { role: "user", content: [context, String(user || "")].filter(Boolean).join("\n\n") }
+      ];
+      const useHostProxy = connectorShouldUseHostProxy(profile);
+      const body = {
+        model: profile.model,
+        messages,
+        temperature: profile.temperature,
+        top_p: profile.topP,
+        max_tokens: profile.maxTokens
+      };
+      let data;
+      if (useHostProxy) {
+        data = await invokeIndependentTextModelThroughHost(profile, messages, signal);
+      } else {
+        const response = await fetch(String(profile.endpoint || "").trim(), {
+          method: "POST",
+          headers: independentConnectorHeaders("text", profile),
+          credentials: "same-origin",
+          signal,
+          body: JSON.stringify(body)
+        });
+        if (!response.ok) throw new Error("文生文插头返回 " + response.status + "。");
+        data = await response.json();
+      }
+      const text = data?.choices?.[0]?.message?.content ?? data?.output_text ?? data?.text ?? data?.content;
+      if (!String(text || "").trim()) throw new Error("文生文插头没有返回文本。");
+      showIndependentConnectorFeedback("text", "success", "模型已返回文本，正在交给当前应用处理。");
+      return String(text).trim();
+    } catch (error) {
+      showIndependentConnectorFeedback("text", "error", String(error?.message || error || "未知错误"));
+      throw error;
     }
-    const text = data?.choices?.[0]?.message?.content ?? data?.output_text ?? data?.text ?? data?.content;
-    if (!String(text || "").trim()) throw new Error("文生文插头没有返回文本。");
-    return String(text).trim();
   }
 
   function parseConnectorJsonObject(text) {
@@ -38740,46 +38838,60 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   }
 
   async function invokeIndependentImageModel({ prompt, negativePrompt = "", note = "", signal } = {}) {
-    const config = readModelConnectorConfig();
-    const profile = config.image;
-    if (!independentConnectorProfileReady("image", config)) throw new Error("请先在设置的“模型插头”中启用文生图插头。");
-    const context = await buildIndependentConnectorContext(note);
-    const direct = profile.mode === "direct";
-    const fullPrompt = [String(prompt || ""), context].filter(Boolean).join("\n\n");
-    const body = direct ? {
-      model: profile.model,
-      prompt: fullPrompt,
-      size: profile.width + "x" + profile.height,
-      n: 1,
-      response_format: "b64_json"
-    } : {
-      providerId: "hypnoos-image-plugin",
-      model: profile.model,
-      secretRef: profile.secretRef,
-      width: profile.width,
-      height: profile.height,
-      steps: profile.steps,
-      cfg: profile.cfg,
-      seed: profile.seed,
-      prompt: fullPrompt,
-      negativePrompt: String(negativePrompt || profile.negativePrompt)
-    };
-    const response = await fetch(String(profile.endpoint || "").trim(), {
-      method: "POST",
-      headers: independentConnectorHeaders("image", profile),
-      credentials: direct ? "omit" : "same-origin",
-      signal,
-      body: JSON.stringify(body)
-    });
-    if (!response.ok) throw new Error("文生图插头返回 " + response.status + "。");
-    const contentType = String(response.headers.get("content-type") || "");
-    if (contentType.startsWith("image/")) return fileAsDataUrl(await response.blob());
-    const data = await response.json();
-    const b64 = String(data?.data?.[0]?.b64_json || data?.b64_json || "");
-    if (b64) return "data:image/png;base64," + b64;
-    const source = String(data?.data?.[0]?.url || data?.dataUrl || data?.url || data?.image || data?.image_url || "");
-    if (!source) throw new Error("文生图插头没有返回图片。");
-    return source;
+    showIndependentConnectorFeedback("image", "running", "正在连接文生图模型…");
+    try {
+      const config = readModelConnectorConfig();
+      const profile = config.image;
+      if (!independentConnectorProfileReady("image", config)) throw new Error("请先在设置的“模型插头”中启用文生图插头。");
+      const context = await buildIndependentConnectorContext(note);
+      const direct = profile.mode === "direct";
+      const fullPrompt = [String(prompt || ""), context].filter(Boolean).join("\n\n");
+      const body = direct ? {
+        model: profile.model,
+        prompt: fullPrompt,
+        size: profile.width + "x" + profile.height,
+        n: 1,
+        response_format: "b64_json"
+      } : {
+        providerId: "hypnoos-image-plugin",
+        model: profile.model,
+        secretRef: profile.secretRef,
+        width: profile.width,
+        height: profile.height,
+        steps: profile.steps,
+        cfg: profile.cfg,
+        seed: profile.seed,
+        prompt: fullPrompt,
+        negativePrompt: String(negativePrompt || profile.negativePrompt)
+      };
+      const response = await fetch(String(profile.endpoint || "").trim(), {
+        method: "POST",
+        headers: independentConnectorHeaders("image", profile),
+        credentials: direct ? "omit" : "same-origin",
+        signal,
+        body: JSON.stringify(body)
+      });
+      if (!response.ok) throw new Error("文生图插头返回 " + response.status + "。");
+      const contentType = String(response.headers.get("content-type") || "");
+      if (contentType.startsWith("image/")) {
+        const source = await fileAsDataUrl(await response.blob());
+        showIndependentConnectorFeedback("image", "success", "模型已返回图片，正在交给当前应用处理。");
+        return source;
+      }
+      const data = await response.json();
+      const b64 = String(data?.data?.[0]?.b64_json || data?.b64_json || "");
+      if (b64) {
+        showIndependentConnectorFeedback("image", "success", "模型已返回图片，正在交给当前应用处理。");
+        return "data:image/png;base64," + b64;
+      }
+      const source = String(data?.data?.[0]?.url || data?.dataUrl || data?.url || data?.image || data?.image_url || "");
+      if (!source) throw new Error("文生图插头没有返回图片。");
+      showIndependentConnectorFeedback("image", "success", "模型已返回图片，正在交给当前应用处理。");
+      return source;
+    } catch (error) {
+      showIndependentConnectorFeedback("image", "error", String(error?.message || error || "未知错误"));
+      throw error;
+    }
   }
 
   function wallpaperStorageScope() {
