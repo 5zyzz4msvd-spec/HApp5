@@ -650,7 +650,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        if (/定制趣味物品|库存物品|衣物|性道具/.test(item + text)) addOperationVariableFields(fields, ["星光点", "催眠APP订阅等级", "持有物品"]);
 	      }
 	      if (/^库存$/.test(source) && /使用物品|删除物品/.test(action)) addOperationVariableFields(fields, ["当前年份", "当前日期", "当前时间", "当前地点", "持有物品", "主角可疑度"]);
-	      if (/写入地点规则|删除地点规则/.test(action)) addOperationVariableFields(fields, ["催眠APP订阅等级", "持有物品", "当前规则数"]);
+	      if (/写入地点规则|发布地点规则|发布新规则|删除地点规则/.test(action)) addOperationVariableFields(fields, ["催眠APP订阅等级", "持有物品", "当前规则数"]);
 	      return [...fields];
 	    };
 	    const OPERATION_CURRENT_DETAIL_KEYS = new Set([
@@ -856,12 +856,14 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        return ["- AI执行规范｜邂逅到达只按命中角色安排出场；不重建或覆盖角色根与世界书。"];
 	      }
 	      if (/^(地图|学校地图|主教学楼地图)$/.test(text)) {
-	        return ["- AI执行规范｜地点建议不是瞬移；请求新增地点只是用户建议，前端尚未写入地图；AI需要按当前剧情判断是否接受，接受时只输出<新增地点补充>{...}</新增地点补充>单地点JSON，前端收到后才保存；用户建议已有地点时，只有用户行动造成地点环境或用途重大改变，才可低频输出<地点信息更新>{...}</地点信息更新>单地点JSON，不要输出完整地图JSON；特殊地点需持有对应准入证，未持证时不要写成普通通行成功。"];
+	        const parts = ["地点建议不是瞬移；请求新增地点只是用户建议，前端尚未写入地图；AI需要按当前剧情判断是否接受，接受时只输出<新增地点补充>{...}</新增地点补充>单地点JSON，前端收到后才保存；用户建议已有地点时，只有用户行动造成地点环境或用途重大改变，才可低频输出<地点信息更新>{...}</地点信息更新>单地点JSON，不要输出完整地图JSON；特殊地点需持有对应准入证，未持证时不要写成普通通行成功"];
+	        if (operationHasAction(records, /写入地点规则|发布地点规则|发布新规则/)) parts.push("永久地点规则尚未由前端写入；剧情模型按用户草案自然描写雷达启动与范围内常识被改写，变量模型在指定/规则/<规则ID>下add完整对象，并自行生成规则名称、润色规则内容，同时把常识修改雷达数量扣1；不得照抄草案当最终名称或把规则写进角色催眠效果");
+	        return ["- AI执行规范｜" + parts.join("；") + "。"];
 	      }
 	      if (text === "学校") {
 	        const parts = ["地点规则不是角色催眠效果，禁止写入角色临时/永久催眠效果"];
 	        if (operationHasAction(records, /删除地点规则/)) parts.push("删除地点规则只承认<变量权限>中的前端结果");
-	        if (operationHasAction(records, /写入地点规则|发布新规则/)) parts.push("永久地点规则由地图前端直接写入/规则/<规则ID>，AI不得补写或重复扣费");
+	        if (operationHasAction(records, /写入地点规则|发布地点规则|发布新规则/)) parts.push("发布永久地点规则时，前端只提交地点、用户草案、规则ID与精确变量路径；剧情模型自然描写雷达启动和常识改写过程，变量模型为规则生成简洁名称并润色内容，成功时扣除1个常识修改雷达并add完整规则对象");
 	        return ["- AI执行规范｜" + parts.join("；") + "。"];
 	      }
 	      return [];
@@ -1055,7 +1057,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        const item = cleanOperationText(details["物品名"] ?? details["物品"] ?? details["名称"] ?? "*");
 	        addAi("/系统/持有物品/" + item);
 	      }
-	      if (/^地图$/.test(source) && /写入地点规则|发布新规则/.test(action)) {
+	      if (/^地图$/.test(source) && /写入地点规则|发布地点规则|发布新规则/.test(action)) {
 	        addAi("/系统/持有物品/常识修改雷达", "/规则/*");
 	      }
 	      if (/^监控$/.test(source)) {
@@ -1753,7 +1755,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 		        const source = cleanOperationText(record.source || "");
 		        const action = cleanOperationText(record.action || "");
 		        if (/^催眠APP$/.test(source)) hasHypnosisAppOperation = true;
-	        if (/写入地点规则|发布新规则|删除地点规则/.test(action) || /^地点规则$/.test(source)) hasLocationRuleOperation = true;
+	        if (/写入地点规则|发布地点规则|发布新规则|删除地点规则/.test(action) || /^地点规则$/.test(source)) hasLocationRuleOperation = true;
 		      }
 		      if (hasHypnosisAppOperation || hasLocationRuleOperation) return "";
 		      return "- AI提醒｜本轮没有催眠APP或地点规则操作；AI不得自行新增催眠命令、催眠成功或催眠效果。";
@@ -3070,6 +3072,7 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
   }).prefault({});
 
   const LocationRule = contractObject({
+    名称: z.string().prefault(""),
     内容: z.string().prefault(""),
     目标范围: z.string().prefault("范围内所有人"),
     生效范围: z.string().prefault(""),
@@ -4222,7 +4225,8 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-rule-drawer-close:hover,.st-location-rule-sync button:hover{transform:translate(-2px,-2px) skewX(-7deg);background:#09090b;color:#fff;box-shadow:7px 7px 0 #ef1651}
 .st-location-rule-drawer .st-rule-list{display:grid;gap:9px;max-height:180px;overflow:auto;padding:3px 7px 3px 3px;scrollbar-color:#ef1651 #09090b}
 .st-location-rule-drawer .st-rule-item{position:relative;border:3px solid #09090b;border-radius:0;background:#fff;padding:10px 44px 10px 12px;box-shadow:5px 5px 0 rgba(239,22,81,.9);clip-path:polygon(0 4%,100% 0,98% 100%,2% 95%)}
-.st-location-rule-drawer .st-rule-item:nth-child(even){background:#09090b;color:#fff;box-shadow:5px 5px 0 #ef1651;transform:rotate(.3deg)}.st-location-rule-drawer .st-rule-item strong{display:flex;align-items:center;gap:7px;color:inherit;font-size:12px;font-weight:1000}.st-location-rule-drawer .st-rule-item small{border:2px solid currentColor;border-radius:0;background:#ef1651;color:#fff;padding:2px 6px;transform:rotate(-2deg)}.st-location-rule-drawer .st-rule-item p{margin:6px 0 0;color:inherit;font-size:11px;line-height:1.55;opacity:.76}
+.st-location-rule-drawer .st-rule-item::before{display:none!important}.st-location-rule-drawer .st-rule-item:nth-child(even){background:#09090b;color:#fff;box-shadow:5px 5px 0 #ef1651;transform:rotate(.3deg)}.st-location-rule-drawer .st-rule-item strong{display:flex;min-width:0;align-items:center;gap:7px;color:inherit;font-size:12px;font-weight:1000}.st-location-rule-drawer .st-rule-item strong>span{min-width:0;overflow-wrap:anywhere}.st-location-rule-drawer .st-rule-item small{flex:0 0 auto;border:2px solid currentColor;border-radius:0;background:#ef1651;color:#fff;padding:2px 6px;transform:rotate(-2deg)}.st-location-rule-drawer .st-rule-item em{display:block;margin-top:4px;color:inherit;font-size:9px;font-style:normal;font-weight:850;opacity:.62;overflow-wrap:anywhere}.st-location-rule-drawer .st-rule-item p{margin:6px 0 0;color:inherit;font-size:11px;line-height:1.55;opacity:.76}
+.st-location-rule-drawer .st-rule-pagination{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:7px}.st-location-rule-drawer .st-rule-pagination span{text-align:center;font:1000 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:#09090b}.st-location-rule-drawer .st-rule-pagination button{height:30px;border:3px solid #09090b;border-radius:0;background:#fff;color:#09090b;box-shadow:3px 3px 0 #ef1651;font-size:16px;font-weight:1000;cursor:pointer}.st-location-rule-drawer .st-rule-pagination button:disabled{opacity:.32;box-shadow:none;cursor:default}
 .st-location-rule-drawer .st-rule-delete{position:absolute;right:8px;top:8px;width:28px;height:28px;border:3px solid #09090b;border-radius:0;background:#ef1651;color:#fff;font-size:0;cursor:pointer;transform:rotate(4deg)}.st-location-rule-drawer .st-rule-delete::before,.st-location-rule-drawer .st-rule-delete::after{content:"";position:absolute;left:5px;right:5px;top:11px;height:3px;background:currentColor;transform:rotate(45deg)}.st-location-rule-drawer .st-rule-delete::after{transform:rotate(-45deg)}
 .st-location-rule-drawer .st-rule-form{display:grid;gap:8px;border-top:5px solid #09090b;padding-top:11px}.st-location-rule-drawer .st-rule-form>strong{width:max-content;max-width:100%;background:#ef1651;color:#fff;padding:4px 9px;font-size:11px;font-weight:1000;transform:skewX(-7deg)}.st-location-rule-drawer .st-rule-input{min-height:70px;border:4px solid #09090b;border-radius:0;background:#fff;color:#09090b;padding:10px;resize:vertical;box-shadow:6px 6px 0 rgba(9,9,11,.18)}.st-location-rule-drawer .st-rule-input::placeholder{color:rgba(9,9,11,.45)}.st-location-rule-drawer .st-rule-cost{display:flex;gap:6px;flex-wrap:wrap;font-size:9px;font-weight:1000}.st-location-rule-drawer .st-rule-cost span{border:2px solid #09090b;border-radius:0;background:#09090b;color:#fff;padding:4px 7px;transform:rotate(-1deg)}.st-location-rule-drawer .st-rule-cost span:nth-child(even){background:#ef1651}.st-location-rule-drawer .st-rule-button{border:4px solid #09090b;border-radius:0;background:#ef1651;box-shadow:7px 7px 0 #09090b;color:#fff;padding:11px;font-weight:1000;cursor:pointer;clip-path:polygon(2% 0,100% 5%,97% 100%,0 92%);transition:transform .16s ease,filter .16s ease}.st-location-rule-drawer .st-rule-button:hover{transform:translate(-2px,-2px) rotate(-.4deg);filter:saturate(1.2)}.st-location-rule-drawer .st-rule-button:disabled{background:#a7a3a4;color:#ece8e7;box-shadow:5px 5px 0 #3f3d3e;filter:grayscale(1)}
 .st-location-rule-sync{display:grid;grid-template-columns:1fr 1fr;gap:8px}.st-location-rule-drawer .st-rule-state,.st-location-rule-drawer .st-rule-empty{margin:0;border-left:6px solid #ef1651;background:rgba(9,9,11,.08);color:#2b292a;padding:6px 8px;font-size:10px;line-height:1.5;font-weight:800}
@@ -32876,7 +32880,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 
   function locationRuleVisibleInLayer(rule, layerId) {
     const ruleLayer = String(rule?.["地图层级"] || "city");
-    return mapLayerIsDescendantOf(ruleLayer, layerId);
+    return mapLayerIsDescendantOf(ruleLayer, layerId) || mapLayerIsDescendantOf(layerId, ruleLayer);
   }
 
   function mapLayerPathLabels(layerId) {
@@ -32948,14 +32952,40 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const ruleText = String(content || "").trim();
     if (!target || !ruleText) return { ok: false, message: "请先选择一个具体地点并填写规则。" };
     if (!requireWritablePhoneFloor()) return { ok: false, message: "历史楼层只读。" };
-    const result = await rewardApplySystemMutation((system, stat) => {
-      if (!encounterVip6FromSystem(system)) return { ok: false, message: "高级广范围雷达需要VIP6。" };
-      if (encounterInventoryItemCount(LOCATION_RULE_RADAR_ITEM, stat) < 1) return { ok: false, message: "需要1个常识修改雷达。" };
-      if (!encounterConsumeInventoryItem(stat, LOCATION_RULE_RADAR_ITEM, 1)) return { ok: false, message: "常识修改雷达扣除失败。" };
-      const rules = stat["规则"] && typeof stat["规则"] === "object" && !Array.isArray(stat["规则"]) ? stat["规则"] : {};
-      const id = "radar-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
-      rules[id] = {
-        内容: ruleText,
+    const requirement = locationRuleRequirementState();
+    if (!requirement.vip6) return { ok: false, message: "高级广范围雷达需要VIP6。" };
+    if (requirement.radarCount < 1) return { ok: false, message: "需要1个常识修改雷达。" };
+    const pendingRuleCount = (() => {
+      try {
+        const pending = window.__ST_GET_PENDING_OPERATION_INPUT_LOG__?.() || [];
+        return pending.filter((entry) => {
+          const payload = entry?.payload || entry;
+          return String(payload?.["来源"] || "").trim() === "地图"
+            && String(payload?.["操作"] || "").trim() === "发布地点规则";
+        }).length;
+      } catch {
+        return 0;
+      }
+    })();
+    if (pendingRuleCount >= requirement.radarCount) {
+      return { ok: false, message: "现有雷达已被本轮待发送的规则请求占用；请先发送或删除暂存请求。" };
+    }
+    const id = "radar-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
+    const rulePath = "/规则/" + id;
+    const radarQuantityPath = "/系统/持有物品/" + LOCATION_RULE_RADAR_ITEM + "/数量";
+    const added = await appendAppOperation({
+      来源: "地图",
+      操作: "发布地点规则",
+      暂存摘要: target.地点名 + " · 待AI命名与润色",
+      规则ID: id,
+      地点: target,
+      用户规则草案: ruleText,
+      目标变量路径: rulePath,
+      AI可写路径: [radarQuantityPath, rulePath],
+      AI写入方式: "常识修改雷达数量用replace写当前值-1；地点规则根用add写入完整对象。",
+      AI写入对象结构: {
+        名称: "由变量模型结合草案、地点和本轮剧情生成的简洁规则名",
+        内容: "由变量模型在不改变用户核心意图的前提下润色后的明确常识规则",
         目标范围: "范围内所有人",
         生效范围: target.生效范围,
         来源: "高级广范围雷达",
@@ -32964,28 +32994,14 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         地图层级: target.地图层级,
         地点路径: target.地点路径,
         持续类型: "永久"
-      };
-      stat["规则"] = rules;
-      return {
-        ok: true,
-        message: "永久地点规则已写入。",
-        payload: {
-          来源: "地图",
-          操作: "发布地点规则",
-          暂存摘要: target.地点名 + " · " + ruleText,
-          规则ID: id,
-          地点: target,
-          规则内容: ruleText,
-          前端处理: "已由前端消耗1个常识修改雷达并写入变量",
-          变量写入路径: ["/系统/持有物品/" + LOCATION_RULE_RADAR_ITEM, "/规则/" + id],
-          AI执行规范: "前端已完成道具扣除和永久地点规则写入；AI不得重复扣道具、重复add或写进角色催眠效果。",
-          不可删除: true,
-          forceLocked: true
-        }
-      };
+      },
+      前端处理: "只暂存用户意图；尚未扣除常识修改雷达，也未写入/规则。",
+      AI执行规范: "剧情模型必须自然描写user使用高级广范围雷达、装置作用于指定地点以及现场常识开始改变；不要把草案原样当系统日志。变量模型必须在目标变量路径add完整规则对象，自行生成名称并润色内容，同时将常识修改雷达数量扣1。不得写入角色临时或永久催眠效果，不得改动其他规则。",
+      不可删除: false
     });
-    if (result?.ok) await appendAppOperation(result.payload);
-    return result || { ok: false, message: "地点规则写入失败。" };
+    return added
+      ? { ok: true, message: "规则请求已加入暂存；发送后由剧情模型演出、变量模型命名润色并写入。" }
+      : { ok: false, message: "规则请求加入暂存失败。" };
   }
 
   function renderLocationRulesDrawer(page, layerId, selected) {
@@ -32993,29 +33009,40 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const entries = Object.entries(rules).filter(([, rule]) => locationRuleVisibleInLayer(rule, layerId));
     const requirement = locationRuleRequirementState();
     const target = selectedMapRuleTarget(layerId, selected);
-    const list = entries.length
-      ? entries.map(([id, value]) => {
+    const pageSize = 4;
+    const pageCount = Math.max(1, Math.ceil(entries.length / pageSize));
+    const requestedPage = Math.max(0, Math.trunc(Number(page?.dataset?.locationRulePage || 0) || 0));
+    const currentPage = Math.min(requestedPage, pageCount - 1);
+    if (page) page.dataset.locationRulePage = String(currentPage);
+    const visibleEntries = entries.slice(currentPage * pageSize, currentPage * pageSize + pageSize);
+    const list = visibleEntries.length
+      ? visibleEntries.map(([id, value]) => {
           const text = typeof value === "object" && value !== null ? (value["内容"] || JSON.stringify(value)) : value;
           const scope = String(value?.["地点路径"] || value?.["地点名"] || value?.["生效范围"] || "未标记地点");
+          const name = String(value?.["名称"] || value?.["规则名"] || scope);
           const duration = String(value?.["持续类型"] || "永久");
-          return '<article class="st-rule-item"><strong>' + escapeHtml(scope) + '<small>' + escapeHtml(duration) + '</small></strong><p>' + escapeHtml(text) + '</p><button class="st-rule-delete" type="button" data-location-rule-delete="' + escapeAttr(id) + '" aria-label="删除地点规则">删除</button></article>';
+          return '<article class="st-rule-item"><strong><span>' + escapeHtml(name) + '</span><small>' + escapeHtml(duration) + '</small></strong><em>' + escapeHtml(scope) + '</em><p>' + escapeHtml(text) + '</p><button class="st-rule-delete" type="button" data-location-rule-delete="' + escapeAttr(id) + '" aria-label="删除地点规则">删除</button></article>';
         }).join("")
-      : '<p class="st-rule-empty">本层与子层暂无APP地点规则；世界观仍采用正常规则。</p>';
+      : '<p class="st-rule-empty">当前关联层级暂无APP地点规则；世界观仍采用正常规则。</p>';
+    const pagination = entries.length > pageSize
+      ? '<div class="st-rule-pagination"><button type="button" data-location-rule-page="-1"' + (currentPage <= 0 ? " disabled" : "") + ' aria-label="上一页">‹</button><span>' + (currentPage + 1) + " / " + pageCount + ' · 每页4项</span><button type="button" data-location-rule-page="1"' + (currentPage >= pageCount - 1 ? " disabled" : "") + ' aria-label="下一页">›</button></div>'
+      : "";
     const form = requirement.vip6
       ? '<section class="st-rule-form">' +
           '<strong>目标：' + escapeHtml(target?.地点路径 || "请先在棋盘选择一个地点") + '</strong>' +
           '<textarea class="st-rule-input" data-location-rule-input placeholder="输入要永久写入该地点所有人常识的规则"' + (target ? "" : " disabled") + '></textarea>' +
           '<div class="st-rule-cost"><span>常识修改雷达 1</span><span>VIP6</span><span>单一地点及其子地点</span></div>' +
-          '<button class="st-rule-button" type="button" data-location-rule-submit' + (target && requirement.radarCount > 0 ? "" : " disabled") + '>' + (target ? (requirement.radarCount > 0 ? "写入永久规则" : "缺少常识修改雷达") : "先选择地点") + '</button>' +
+          '<button class="st-rule-button" type="button" data-location-rule-submit' + (target && requirement.radarCount > 0 ? "" : " disabled") + '>' + (target ? (requirement.radarCount > 0 ? "提交规则请求" : "缺少常识修改雷达") : "先选择地点") + '</button>' +
         '</section>'
       : '<p class="st-rule-state">VIP6可用一次性常识修改雷达写入永久规则。VIP5的开放空间常识修改成功后会以临时规则显示在这里。</p>';
     return '<section class="st-location-rule-drawer" data-location-rule-drawer>' +
       '<section class="st-rule-paper">' +
       '<div class="st-rule-paper-head">' +
-        '<div class="st-rule-paper-title"><strong>' + escapeHtml(ST_BOARD_MAP_LAYERS[layerId]?.title || "地图") + ' / 常识裁决</strong><span>LOCATION VERDICT · 本层及子层 ' + entries.length + ' 条 · 雷达 ' + requirement.radarCount + '</span></div>' +
+        '<div class="st-rule-paper-title"><strong>' + escapeHtml(ST_BOARD_MAP_LAYERS[layerId]?.title || "地图") + ' / 常识裁决</strong><span>LOCATION VERDICT · 关联层级 ' + entries.length + ' 条 · 雷达 ' + requirement.radarCount + '</span></div>' +
         '<button type="button" class="st-rule-drawer-close" data-location-rule-close aria-label="收回规则抽屉">撤回</button>' +
       '</div>' +
       '<div class="st-rule-list">' + list + '</div>' +
+      pagination +
       form +
       '<div class="st-location-rule-sync"><button type="button" data-location-directory-refresh="builtin">刷新地点世界书</button><button type="button" data-location-directory-refresh="custom">刷新新增地点世界书</button></div>' +
       '<p class="st-rule-state" data-location-rule-status>' + escapeHtml(String(page?.dataset?.locationRuleStatus || "特殊地点目录为角色卡固定条目，不参与刷新。")) + '</p>' +
@@ -33321,7 +33348,18 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       const input = page.querySelector("[data-location-rule-input]");
       const result = await locationRuleCreateDirect(page, target, input?.value || "");
       page.dataset.locationRuleStatus = result?.message || "";
+      if (result?.ok) page.dataset.locationRulePage = "0";
       renderCityMapPage(page);
+    });
+    page.querySelectorAll("[data-location-rule-page]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const delta = Math.sign(Number(button.getAttribute("data-location-rule-page") || 0));
+        const current = Math.max(0, Math.trunc(Number(page.dataset.locationRulePage || 0) || 0));
+        page.dataset.locationRulePage = String(Math.max(0, current + delta));
+        renderCityMapPage(page);
+      });
     });
     page.querySelectorAll("[data-location-rule-delete]").forEach((button) => {
       button.addEventListener("click", async (event) => {
