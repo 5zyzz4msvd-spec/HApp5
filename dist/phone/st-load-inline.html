@@ -37869,8 +37869,8 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         '<div class="st-model-connector-head"><div><h3>' + escapeHtml(title) + '</h3><p>' + escapeHtml(description) + '</p></div>' +
           '<label class="st-model-connector-switch"><input type="checkbox" data-connector-field="enabled" ' + (value.enabled ? "checked" : "") + '><span>' + (value.enabled ? "已启用" : "未启用") + '</span></label></div>' +
         '<div class="st-model-connector-grid">' +
-          '<label><span>请求方式</span><select data-connector-field="mode"><option value="proxy"' + (value.mode === "proxy" ? " selected" : "") + '>同源代理 / Secret Ref</option><option value="direct"' + (value.mode === "direct" ? " selected" : "") + '>直接兼容接口 / 会话密钥</option></select></label>' +
-          '<label><span>Endpoint</span><input data-connector-field="endpoint" value="' + escapeAttr(value.endpoint) + '" placeholder="https://.../v1/..."></label>' +
+          '<label><span>请求方式</span><select data-connector-field="mode"><option value="proxy"' + (value.mode === "proxy" ? " selected" : "") + '>SillyTavern 后端代理（推荐）</option><option value="direct"' + (value.mode === "direct" ? " selected" : "") + '>浏览器直连（仅同源或已开放 CORS）</option></select></label>' +
+          '<label><span>Endpoint</span><input data-connector-field="endpoint" value="' + escapeAttr(value.endpoint) + '" placeholder="OpenAI-compatible API 基址，如 https://example.com/v1"></label>' +
           '<label><span>Model</span><input data-connector-field="model" value="' + escapeAttr(value.model) + '" placeholder="模型名"></label>' +
           '<label><span>Secret Ref</span><input data-connector-field="secretRef" value="' + escapeAttr(value.secretRef) + '" placeholder="服务端密钥别名"></label>' +
           '<label class="st-model-secret"><span>API Key（仅本次浏览器会话）</span><input type="password" data-connector-secret="' + kind + '" value="" placeholder="' + ((kind === "text" ? textSecretReady : imageSecretReady) ? "已保存；留空保持" : "不会写入备份或配置") + '"></label>' +
@@ -37889,7 +37889,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         '<textarea class="st-settings-code st-model-notes" data-connector-context-notes placeholder="长期备注；会加入地点生成和后置拍照提示词。">' + escapeHtml(config.context.notes) + '</textarea>' +
         '<button type="button" class="st-settings-button primary" data-connector-save-context>保存上下文设置</button>' +
       '</section>' +
-      profile("text", "文生文插头", "用于新增地点、刷新角色物品等前端内容生成。要求 OpenAI-compatible chat completions，或同源代理返回 text/content。",
+      profile("text", "文生文插头", "用于新增地点、刷新角色物品等前端内容生成。外部接口会自动经 SillyTavern 后端转发，避免浏览器 CORS；Endpoint 填 OpenAI-compatible API 基址，不要重复填写 /chat/completions。",
         '<label><span>Temperature</span><input type="number" step="0.1" min="0" max="2" data-connector-field="temperature" value="' + config.text.temperature + '"></label>' +
         '<label><span>Top P</span><input type="number" step="0.05" min="0" max="1" data-connector-field="topP" value="' + config.text.topP + '"></label>' +
         '<label><span>Max tokens</span><input type="number" min="64" max="8192" data-connector-field="maxTokens" value="' + config.text.maxTokens + '"></label>') +
@@ -38591,40 +38591,130 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return headers;
   }
 
+  let connectorHostModulePromise = null;
+
+  function connectorHostOrigin() {
+    for (const readOrigin of [
+      () => window.parent?.location?.origin,
+      () => window.top?.location?.origin,
+      () => window.location.origin
+    ]) {
+      try {
+        const origin = String(readOrigin() || "").trim();
+        if (origin && origin !== "null") return origin.replace(/\/$/, "");
+      } catch {}
+    }
+    return "";
+  }
+
+  function connectorEndpointIsExternal(endpoint) {
+    try {
+      const hostOrigin = connectorHostOrigin();
+      const target = new URL(String(endpoint || "").trim(), hostOrigin || window.location.href);
+      return Boolean(hostOrigin && target.origin !== hostOrigin);
+    } catch {
+      return true;
+    }
+  }
+
+  function connectorShouldUseHostProxy(profile) {
+    return profile?.mode !== "direct" || connectorEndpointIsExternal(profile?.endpoint);
+  }
+
+  function connectorCustomApiBase(endpoint) {
+    const source = String(endpoint || "").trim().replace(/\/+$/, "");
+    return source
+      .replace(/\/chat\/completions$/i, "")
+      .replace(/\/completions$/i, "");
+  }
+
+  async function connectorHostModule() {
+    if (connectorHostModulePromise) return connectorHostModulePromise;
+    connectorHostModulePromise = (async () => {
+      const origin = connectorHostOrigin();
+      if (!origin) throw new Error("无法识别 SillyTavern 同源地址。");
+      return import(origin + "/script.js");
+    })().catch((error) => {
+      connectorHostModulePromise = null;
+      throw error;
+    });
+    return connectorHostModulePromise;
+  }
+
+  async function connectorHostRequestHeaders() {
+    const module = await connectorHostModule();
+    if (typeof module?.getRequestHeaders !== "function") {
+      throw new Error("当前 SillyTavern 未提供同源请求头接口。");
+    }
+    return module.getRequestHeaders();
+  }
+
+  async function invokeIndependentTextModelThroughHost(profile, messages, signal) {
+    const secret = readModelConnectorSessionSecret("text");
+    const customHeaders = secret
+      ? JSON.stringify({ Authorization: "Bearer " + secret })
+      : "";
+    const requestBody = {
+      chat_completion_source: "custom",
+      custom_url: connectorCustomApiBase(profile.endpoint),
+      custom_include_headers: customHeaders,
+      messages,
+      model: String(profile.model || ""),
+      temperature: profile.temperature,
+      top_p: profile.topP,
+      max_tokens: profile.maxTokens,
+      stream: false
+    };
+    if (String(profile.secretRef || "").trim()) requestBody.secret_id = String(profile.secretRef).trim();
+    const origin = connectorHostOrigin();
+    const response = await fetch(origin + "/api/backends/chat-completions/generate", {
+      method: "POST",
+      headers: await connectorHostRequestHeaders(),
+      credentials: "same-origin",
+      signal,
+      body: JSON.stringify(requestBody)
+    });
+    const raw = await response.text();
+    let data;
+    try { data = JSON.parse(raw); } catch {}
+    if (!response.ok || data?.error) {
+      const message = data?.error?.message || data?.message || raw || ("HTTP " + response.status);
+      throw new Error("文生文插头代理失败：" + String(message).slice(0, 500));
+    }
+    return data;
+  }
+
   async function invokeIndependentTextModel({ system, user, note = "", signal } = {}) {
     const config = readModelConnectorConfig();
     const profile = config.text;
     if (!independentConnectorProfileReady("text", config)) throw new Error("请先在设置的“模型插头”中启用文生文插头。");
     const context = await buildIndependentConnectorContext(note);
-    const direct = profile.mode === "direct";
-    const body = direct ? {
+    const messages = [
+      { role: "system", content: String(system || "你是一个只返回所需结果的结构化助手。") },
+      { role: "user", content: [context, String(user || "")].filter(Boolean).join("\n\n") }
+    ];
+    const useHostProxy = connectorShouldUseHostProxy(profile);
+    const body = {
       model: profile.model,
-      messages: [
-        { role: "system", content: String(system || "你是一个只返回所需结果的结构化助手。") },
-        { role: "user", content: [context, String(user || "")].filter(Boolean).join("\n\n") }
-      ],
+      messages,
       temperature: profile.temperature,
       top_p: profile.topP,
       max_tokens: profile.maxTokens
-    } : {
-      providerId: "hypnoos-text-plugin",
-      model: profile.model,
-      secretRef: profile.secretRef,
-      system: String(system || ""),
-      prompt: [context, String(user || "")].filter(Boolean).join("\n\n"),
-      temperature: profile.temperature,
-      topP: profile.topP,
-      maxTokens: profile.maxTokens
     };
-    const response = await fetch(String(profile.endpoint || "").trim(), {
-      method: "POST",
-      headers: independentConnectorHeaders("text", profile),
-      credentials: direct ? "omit" : "same-origin",
-      signal,
-      body: JSON.stringify(body)
-    });
-    if (!response.ok) throw new Error("文生文插头返回 " + response.status + "。");
-    const data = await response.json();
+    let data;
+    if (useHostProxy) {
+      data = await invokeIndependentTextModelThroughHost(profile, messages, signal);
+    } else {
+      const response = await fetch(String(profile.endpoint || "").trim(), {
+        method: "POST",
+        headers: independentConnectorHeaders("text", profile),
+        credentials: "same-origin",
+        signal,
+        body: JSON.stringify(body)
+      });
+      if (!response.ok) throw new Error("文生文插头返回 " + response.status + "。");
+      data = await response.json();
+    }
     const text = data?.choices?.[0]?.message?.content ?? data?.output_text ?? data?.text ?? data?.content;
     if (!String(text || "").trim()) throw new Error("文生文插头没有返回文本。");
     return String(text).trim();
