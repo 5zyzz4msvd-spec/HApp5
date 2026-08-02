@@ -23274,6 +23274,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      });
 	    }
 	    const imageSlots = encounterNormalizeRoleImageSlots(source);
+	    const normalizedGender = normalizedRoleGender(
+	      encounterFirstText(source.gender, source["gender"], source["性别"], parsedPersona.gender),
+	      "女"
+	    );
 	    return {
 	      id: String(source.id || source.roleId || encounterId("role-" + index)),
 	      name,
@@ -23281,9 +23285,14 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      intro: String(source.intro || source.profile || source.summary || source["介绍"] || source["档案"] || encounterParsedPersonaSummary(parsedPersona)),
 	      encounterPrompt: String(source.encounterPrompt || source.roleEncounterPrompt || source.appearancePrompt || source.storyPrompt || source.prompt || source["出场提示词"] || source["角色出场提示词"] || source["AI出场提示词"] || source["邂逅提示词"] || ""),
 	      variables: String(source.variables || source.variableWorldbook || source["人物变量"] || source["变量设定"] || encounterDefaultVariableContent(name)),
-	      initialVariables: encounterInitialVariablesText({ ...source, name, __parsedPersona: parsedPersona }),
+	      initialVariables: encounterInitialVariablesText({
+	        ...source,
+	        name,
+	        gender: normalizedGender,
+	        __parsedPersona: parsedPersona
+	      }),
 	      personaTitle: encounterFirstText(source.personaTitle, source.title, source["title"], source["称号"], source["定位"], parsedPersona.personaTitle),
-	      gender: encounterFirstText(source.gender, source["gender"], source["性别"], parsedPersona.gender),
+	      gender: normalizedGender,
 	      age: encounterFirstText(source.age, source["age"], source["年龄"], parsedPersona.age),
 	      identity: encounterFirstText(source.identity, source["身份"], parsedPersona.identity),
 	      firstEncounter: encounterFirstText(source.firstEncounter, source.first_encounter, source["初遇"], source["首次邂逅"], parsedPersona.firstEncounter),
@@ -23888,10 +23897,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
           persona: momokaPersona,
           personaEntry: encounterBuiltinWorldbookEntry("千杀百花人设", ["千杀百花", "百花", "千杀", "异世界杀手", "勇者"], momokaPersona),
           imageDataUrl: stAssetUrl("encounter/senkoro-momoka.png"),
-          images: [
-            stAssetUrl("encounter/senkoro-momoka.png"),
-            stAssetUrl("encounter/senkoro-momoka-old.png")
-          ],
+	          images: [
+	            stAssetUrl("encounter/senkoro-momoka.png"),
+	            stAssetUrl("encounter/senkoro-momoka-old.png"),
+	            stAssetUrl("encounter/senkoro-momoka-school-uniform.png")
+	          ],
           profileConfig: {
             policeTraitSilhouette: "police/trait-scene-senkoro-momoka.png",
             hospitalRemodelSilhouette: "hospital/remodel-senkoro-momoka.png"
@@ -25565,6 +25575,9 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     role.encounterPrompt = String(roleRead("roleEncounterPrompt"));
     const variableField = card.querySelector("[name='roleVariables']");
     role.variables = variableField ? String(variableField.value || "") : encounterDefaultVariableContent(role.name);
+    role.personaTitle = String(roleRead("rolePersonaTitle"));
+    role.gender = normalizedRoleGender(roleRead("roleGender"), normalizedRoleGender(role.gender, "女"));
+    role.age = String(roleRead("roleAge"));
     role.initialVariables = card.querySelector("[data-encounter-initial-root]")
       ? encounterReadInitialVariablesFromCard(card, role)
       : encounterInitialVariablesText(role);
@@ -25575,9 +25588,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         hospitalRemodelSilhouette: silhouetteRoot.querySelector("[data-encounter-profile-config='hospitalRemodelSilhouette']")?.value
       });
     }
-    role.personaTitle = String(roleRead("rolePersonaTitle"));
-    role.gender = String(roleRead("roleGender"));
-    role.age = String(roleRead("roleAge"));
     role.identity = String(roleRead("roleIdentity"));
     role.firstEncounter = String(roleRead("roleFirstEncounter"));
     role.socialConnection = String(roleRead("roleSocialConnection"));
@@ -26226,6 +26236,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         '<label class="st-encounter-field"><span>角色名</span><input name="roleName" value="' + escapeAttr(normalized.name) + '" placeholder="角色名"></label>' +
         '<label class="st-encounter-field"><span>别名 / 关键词</span><input name="roleAliases" value="' + escapeAttr(normalized.aliases) + '" placeholder="逗号分隔"></label>' +
       '</div>' +
+      '<label class="st-encounter-field"><span>性别</span><select name="roleGender" aria-label="角色性别">' +
+        '<option value="女"' + (normalized.gender === "女" ? " selected" : "") + '>女</option>' +
+        '<option value="男"' + (normalized.gender === "男" ? " selected" : "") + '>男</option>' +
+      '</select></label>' +
       '<label class="st-encounter-field"><span>介绍 / 档案摘要</span><textarea name="roleIntro" placeholder="身份、外貌、性格、关系、剧情定位">' + escapeHtml(normalized.intro) + '</textarea></label>' +
       '<label class="st-encounter-field"><span>角色出场提示词</span><textarea name="roleEncounterPrompt" placeholder="购买/使用后交给AI的这个角色单独登场方式、触发场景或剧情钩子">' + escapeHtml(normalized.encounterPrompt) + '</textarea></label>' +
       '<nav class="st-encounter-role-content-tabs">' +
@@ -26244,10 +26258,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         encounterRoleSilhouetteConfigHtml(normalized, selectedIndex, single) +
       '</section>' +
       '<section class="st-encounter-role-pane ' + (contentSection === "persona" ? "active" : "") + '" data-role-pane="persona">' +
-        '<div class="st-encounter-grid2">' +
-          '<label class="st-encounter-field"><span>title / 定位</span><input name="rolePersonaTitle" value="' + escapeAttr(normalized.personaTitle) + '" placeholder="例如：同班同学 / 杀手"></label>' +
-          '<label class="st-encounter-field"><span>gender / 性别</span><input name="roleGender" value="' + escapeAttr(normalized.gender) + '" placeholder="女"></label>' +
-        '</div>' +
+        '<label class="st-encounter-field"><span>title / 定位</span><input name="rolePersonaTitle" value="' + escapeAttr(normalized.personaTitle) + '" placeholder="例如：同班同学 / 杀手"></label>' +
         '<label class="st-encounter-field"><span>age / 年龄</span><input name="roleAge" value="' + escapeAttr(normalized.age) + '" placeholder="17"></label>' +
         '<label class="st-encounter-field"><span>identity / 身份</span><textarea name="roleIdentity" placeholder="public/hidden 或身份设定">' + escapeHtml(normalized.identity) + '</textarea></label>' +
         '<label class="st-encounter-field"><span>first encounter / 初遇</span><textarea name="roleFirstEncounter" placeholder="首次邂逅、扫描前后的剧情触发规则">' + escapeHtml(normalized.firstEncounter) + '</textarea></label>' +
