@@ -636,7 +636,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      if (/派遣结束提醒|取消派遣/.test(action)) addOperationVariableFields(fields, ["当前年份", "当前日期", "当前时间", "星光点", "派遣岗位"]);
 	      if (/派遣角色/.test(action)) addOperationVariableFields(fields, ["当前年份", "当前日期", "当前时间", "主角可疑度", "派遣岗位"]);
       if (/^打工$/.test(source) && /开始打工|有偶遇|打工中提醒|打工偶遇|打工buff提醒/.test(action)) {
-        if (/开始打工|打工偶遇/.test(action)) addOperationVariableFields(fields, ["持有零花钱", "_社畜值", "_buff", "_buff结束时间"]);
+        if (/开始打工|打工偶遇/.test(action)) addOperationVariableFields(fields, ["当前年份", "当前日期", "当前时间", "当前地点", "持有零花钱", "_社畜值", "_buff", "_buff结束时间"]);
         if (/打工buff提醒/.test(action)) addOperationVariableFields(fields, ["_buff", "_buff结束时间"]);
         if (/全盛出击|MC能量|恢复/.test(text)) addOperationVariableFields(fields, ["MC能量", "MC能量上限"]);
       }
@@ -691,6 +691,8 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      "AI写入对象结构",
 	      "不可删除",
 	      "前端处理",
+	      "工作ID",
+	      "打工分支",
 	      "前端成就任务计数",
 	      "任务来源",
 	      "初始状态",
@@ -844,12 +846,15 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      }
       if (text === "打工") {
         if (operationHasAction(records, /打工偶遇（主动回合）/)) {
-          return ["- AI执行规范｜本轮是同一次打工偶遇的主动回合，不是第二天再次打工：前端已把当前变量日期/时间写到打工开始后一小时的偶遇节点，AI必须按时间顺序承接当前/时钟场景、打工开始与偶遇现场，只写到偶遇发生、角色第一反应和{{user}}可主动行动的机会，然后立刻停住等待{{user}}；本回合绝对不得收束到下班、不得写预计结束时间后的内容；下一次收束回合才推进到预计结束时间，不得再次发工资、增加社畜值或改写打工buff。"];
+          return ["- AI执行规范｜资源与buff已由前端结算，禁止重复结算。从<相关变量>的当前地点、日期和时间承接，写清前往工作地点及开始工作。本回合唯一终点是偶遇发生时间，最后场景停在工作地点的偶遇现场、角色已作出第一反应且{{user}}可以行动的位置；预计结束时间仅是下一回合边界，不得写到下班或其他更晚锚点。将当前年份、日期、时间、地点和事件写成偶遇节点。"];
         }
         if (operationHasAction(records, /打工偶遇（收束回合）/)) {
-          return ["- AI执行规范｜本轮是同一次打工偶遇的收束回合，不是第二天再次打工也不是新的打工：最新{{user}}发言视为已在上一回合的偶遇现场主动行动，AI必须处理该行动造成的互动结果，然后直接推进并收束到预计结束时间；正文最终节点必须是打工结束/下班后的状态，最终/系统/当前日期、当前时间、当前地点和当前事件以预计结束时间或更晚锚点为准；本轮结束后不要继续保留打工偶遇锁，不得再次发工资、增加社畜值或改写打工buff。"];
+          return ["- AI执行规范｜资源与buff已由前端结算，禁止重复结算。承接当前变量所记录的上一楼偶遇现场与最新{{user}}行动，处理互动后推进至预计结束时间。本回合唯一终点是该时间的工作结束状态，最后场景停在工作结束时的实际地点；将当前年份、日期、时间、地点和事件写成该终点，不得当成新一次打工或再处理更晚时钟。"];
         }
-        return ["- AI执行规范｜打工只承载本轮已发生的工作事实；若打工开始/偶遇/结束时间与当前变量时间或同轮时钟锚点差距较大，AI必须按时间顺序写多个时空段并把最终变量写到正文最晚剧情节点；打工偶遇分为主动回合与收束回合：主动回合只写到偶遇发生、角色反应和{{user}}可主动行动的机会并停住；收束回合处理{{user}}主动行动后必须直接推进到预计结束时间的打工结束/下班状态；打工buff只读，AI不得改写或清空。"];
+        if (operationHasAction(records, /打工buff提醒/)) {
+          return ["- AI执行规范｜现有打工buff只读至其结束时间；不得改写、延期或提前清空，也不得据此安排新的打工。"];
+        }
+        return ["- AI执行规范｜资源与buff已由前端结算，禁止重复结算。从<相关变量>的当前地点、日期和时间承接；必要时写等待与移动，并到工作地点完成工作。本回合唯一终点是预计结束时间，最后场景停在工作结束时的实际地点；将当前年份、日期、时间、地点和事件写成该终点，不再承接同轮更晚时钟。"];
       }
 	      if (text === "邂逅") {
 	        return ["- AI执行规范｜邂逅到达只按命中角色安排出场；不重建或覆盖角色根与世界书。"];
@@ -1066,8 +1071,12 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        if (/结束|取消/.test(action)) addAi("/系统/星光点");
 	      }
 	      if (/^打工$/.test(source)) {
-	        addFrontend("/系统/持有零花钱", "/系统/_社畜值", "/系统/_buff", "/系统/_buff结束时间", "/系统/MC能量");
-	        addAi("/系统/当前年份", "/系统/当前日期", "/系统/当前时间", "/系统/当前地点", "/系统/当前事件");
+	        if (/打工buff提醒/.test(action)) {
+	          addFrontend("/系统/_buff", "/系统/_buff结束时间");
+	        } else {
+	          addFrontend("/系统/持有零花钱", "/系统/_社畜值", "/系统/_buff", "/系统/_buff结束时间", "/系统/MC能量");
+	          addAi("/系统/当前年份", "/系统/当前日期", "/系统/当前时间", "/系统/当前地点", "/系统/当前事件");
+	        }
 	      }
 	      if (/^人物档案$/.test(source) && /触发角色事件/.test(action)) {
 	        roles.forEach((name) => addFrontend("/角色/" + name + "/事件/_事件记录"));
@@ -1377,11 +1386,9 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
         if (remaining === 1) {
           nextPayload["操作"] = "打工偶遇（收束回合）";
           nextPayload["暂存摘要"] = "打工偶遇收束｜" + (role || "偶遇角色") + "｜至 " + String(nextPayload["预计结束时间"] || "预计结束时间");
-          nextPayload["AI执行规范"] = "本轮是同一次打工偶遇的收束回合，不是第二天再次打工也不是新的打工：最新{{user}}发言视为已在上一回合的偶遇现场主动行动，AI必须处理该行动造成的互动结果，然后直接推进并收束到预计结束时间；正文最终节点必须是打工结束/下班后的状态，最终/系统/当前日期、当前时间、当前地点和当前事件以预计结束时间或更晚锚点为准。本轮结束后不要继续保留打工偶遇锁，不得再次发工资、增加社畜值或改写打工buff。";
         } else if (remaining >= 2 || /^开始打工/.test(action)) {
           nextPayload["操作"] = "打工偶遇（主动回合）";
           nextPayload["暂存摘要"] = "打工偶遇主动回合｜" + (role || "偶遇角色") + "｜" + String(nextPayload["开始时间"] || "开始时间");
-          nextPayload["AI执行规范"] = "本轮是同一次打工偶遇的主动回合，不是第二天再次打工：前端已把当前变量日期/时间写到打工开始后一小时的偶遇节点，AI必须按时间顺序承接当前/时钟场景、打工开始与偶遇现场，只写到偶遇发生、角色第一反应和{{user}}可主动行动的机会，然后立刻停住等待{{user}}。本回合绝对不得收束到下班、不得写预计结束时间后的内容；下一次收束回合才推进到预计结束时间，不得再次发工资、增加社畜值或改写打工buff。";
         }
         return nextPayload;
       };
@@ -21369,23 +21376,12 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    };
 	  }
 
-  function workFrontendSettledPrompt(hasEncounter) {
-    return hasEncounter
-      ? "本条锁定暂存只告知AI前端已把同一次打工结算推进到打工开始后一小时的偶遇节点；它不是第二天再次打工，也不是新的打工。变量结算以<相关变量>中的前端处理后数值为准。主动回合必须按时间顺序承接当前/时钟场景、打工开始与偶遇现场，只写到角色第一反应和{{user}}可主动行动的机会并停住，绝对不得收束到下班。收束回合必须处理{{user}}主动行动造成的互动结果，然后直接推进并收束到预计结束时间的打工结束/下班状态；最终/系统/当前日期、当前时间、当前地点和当前事件以预计结束时间或更晚锚点为准。"
-      : "本条锁定暂存只告知AI本轮发生了打工事实；变量结算以<相关变量>中的前端处理后数值为准。若打工开始或预计结束时间与当前变量时间或同轮时钟锚点差距较大，AI必须按时间顺序写多个时空段，先承接当前/时钟场景，再进入打工时段并收束；最终/系统/当前日期、当前时间、当前地点和当前事件以正文最晚剧情节点为准。AI只承认该事实，不重复安排第二次打工。";
-  }
-
 	  function workSystemFieldsFromPayload(payload) {
 	    const source = payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {};
 	    const fields = [];
 	    const add = (key, value) => {
 	      if (value === undefined || value === null) return;
 	      fields.push([key, value]);
-	    };
-	    const addNonEmpty = (key, value) => {
-	      const text = String(value ?? "").trim();
-	      if (!text) return;
-	      fields.push([key, text]);
 	    };
     add("持有零花钱", source["前端写入后持有零花钱"]);
     add("_社畜值", source["前端写入后社畜值"]);
@@ -21399,24 +21395,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     }
     add("_buff", payloadBuff ?? "");
     add("_buff结束时间", payloadBuffEnd ?? "");
-    const action = String(source["操作"] || "").trim();
-    const hasEncounter = String(source["偶遇女角色"] || "无").trim() !== "无";
-	    const writeTimeText = hasEncounter && !/收束回合/.test(action)
-	      ? (source["偶遇发生时间"] || source["开始时间"])
-	      : source["预计结束时间"];
-	    const writeParts = workDateTimePartsFromText(writeTimeText || "");
-	    const writeDate = parseStoryDate(writeParts.dateText);
-	    if (writeDate) {
-	      add("当前年份", writeDate.year);
-	      addNonEmpty("当前日期", writeDate.month + "月" + writeDate.day + "日");
-	    }
-	    addNonEmpty("当前时间", writeParts.timeText);
-    if (source["工作"]) {
-      const eventText = hasEncounter && !/收束回合/.test(action)
-        ? ("打工偶遇（主动回合）：" + source["偶遇女角色"])
-        : ("打工结束：" + source["工作"]);
-      add("当前事件", eventText);
-    }
     return fields;
   }
 
@@ -21468,13 +21446,8 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    const timingInfo = workStartTimingInfo(clockInfo);
 		    if (timingInfo.buffLocked) return { ok: false, message: timingInfo.buffLockRule || "当前buff未结束，精力不足。" };
 		    const timeInfo = workCurrentTimeInfo(6, clockInfo);
-		    const beforeWorkTimeText = workEffectiveCurrentTimeText();
-		    const clockTargetText = pendingClockSuggestionTargetText();
 		    const latestRoll = rollWorkEncounterForAttempt(job, timeInfo.startText);
 	    const encounterRole = latestRoll.roleName && latestRoll.rolls?.[job.id] ? latestRoll.roleName : "";
-		    const temporalTransitionRule = encounterRole
-		      ? "若打工时间与当前变量时间相差较大，按时间顺序写当前场景、等待/移动、打工开始和偶遇；本主动回合必须停在偶遇发生时间，预计结束时间只是下一楼的未来边界，不得写到下班或同轮更晚时钟锚点。"
-		      : "若打工时间与当前变量时间或同轮时钟锚点相差较大，按时间顺序写当前/时钟场景、等待/移动、打工开始、工作过程和预计结束；最终日期、时间、地点和事件以实际写到的预计结束或更晚时钟锚点为准。";
 	    const workBranch = encounterRole ? "偶遇" : "普通";
 	    console.info("[HypnoOS][WorkEncounter] branch", {
 	      jobId: job.id,
@@ -21487,8 +21460,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    });
 		    const encounterDelayHours = encounterRole ? workEncounterDelayHours(job, latestRoll) : 0;
 		    const encounterTime = encounterRole ? (workOffsetDateTimeText(timeInfo.startText, encounterDelayHours) || timeInfo.startText) : "";
-		    const writeDateTimeText = encounterRole ? encounterTime : timeInfo.endText;
-		    const writeParts = workDateTimePartsFromText(writeDateTimeText);
 		    const buffEndText = timingInfo.buff ? workBuffEndTextFromClock(clockInfo, timeInfo.startText) : "";
 		    if (timingInfo.buff && !buffEndText) return { ok: false, message: "buff结束时间计算失败，未锁定本轮打工。" };
 		    const shachikuGain = workShachikuGain(job, currentValue);
@@ -21513,13 +21484,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	          if (maxEnergy > 0) hypnosisSetSystemNumber(system, "MC能量", maxEnergy, ["_MC能量", "当前MC能量"]);
 	        }
 	      }
-	      if (writeParts.dateText) setSystemStoryDate(system, writeParts.dateText);
-	      if (writeParts.timeText) system["当前时间"] = writeParts.timeText;
-	      system["当前事件"] = encounterRole ? ("打工偶遇（主动回合）：" + encounterRole) : ("打工结束：" + job.title);
-	      const dailySchedule = writeParts.dateText && writeParts.timeText ? workApplyReadonlySchedule(system, writeParts.dateText, writeParts.timeText, { syncTimetable: false }) : null;
-			      const variablePaths = ["/系统/持有零花钱", "/系统/_社畜值", "/系统/_buff", "/系统/_buff结束时间"];
-	      const writesBuffState = true;
-	      if (timingInfo.buff === "全盛出击") variablePaths.push("/系统/MC能量");
 	      return {
 	        ok: true,
 	        message: encounterRole ? "已结算到偶遇节点。" : "已完成打工结算。",
@@ -21529,28 +21493,21 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	          打工分支: workBranch,
 	          工作ID: job.id,
 	          工作: job.title,
+	          工作地点: workNoticePlace(job),
+	          工作内容: job.detail,
 	          暂存摘要: job.title + "｜" + timeInfo.startText + "-" + timeInfo.endText + (encounterRole ? "｜打工偶遇" : ""),
-	          打工前变量时间: beforeWorkTimeText || "未记录",
-	          同轮时钟目标时间: clockTargetText || "无",
 	          开始时间: timeInfo.startText,
 	          预计结束时间: timeInfo.endText,
-	          时空段规则: temporalTransitionRule,
-	          前端处理: "已由前端直接结算打工收益和时间推进",
-	          获得零花钱: job.wage,
 	          前端写入后持有零花钱: nextMoney,
-	          获得社畜值: shachikuGain,
 	          前端写入后社畜值: nextShachiku,
 	          前端写入后buff: nextBuffValue,
 	          前端写入后buff结束时间: nextBuffEndValue,
-	          偶遇: encounterRole ? "有" : "无",
-	          偶遇女角色: encounterRole || "无",
+	          ...(encounterRole ? { 偶遇女角色: encounterRole } : {}),
 	          ...(encounterTime ? { 偶遇发生时间: encounterTime } : {}),
 	          ...(encounterRole ? { 楼层锁剩余: 2, 楼层锁规则: "打工偶遇两楼层锁：第一楼停在偶遇现场等待{{user}}主动行动，下一楼处理互动后再收束到预计结束时间。" } : {}),
-	          变量写入路径: variablePaths,
-	          AI执行规范: workFrontendSettledPrompt(Boolean(encounterRole)),
 	          不可删除: true
 	        },
-	        dailySchedule
+	        dailySchedule: null
 	      };
 	    });
 	    if (!result?.ok) return result || { ok: false, message: "打工结算失败。" };
@@ -21773,11 +21730,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      来源: "打工",
 	      操作: "打工buff提醒",
 	      暂存摘要: "打工buff｜" + buff + "｜持续至 " + endText,
-	      当前buff: buff,
-	      当前buff结束时间: endText,
-	      前端处理: "打工buff由前端直接写入并只读维护；变量存在且未过期时锁定暂存区和打工按钮。",
-	      AI执行规范: "当前/系统/_buff=" + buff + "，持续至" + endText + "。AI只能读取该状态并按规则表现，不得改写、清空或延期/系统/_buff和/系统/_buff结束时间；buff持续期间不能安排新的打工。",
-	      变量写入路径: ["/系统/_buff", "/系统/_buff结束时间"],
 	      不可删除: true,
 	      locked: true,
 	      forceLocked: true

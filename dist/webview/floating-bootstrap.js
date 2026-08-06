@@ -125,6 +125,22 @@
     var dragState = null;
     var launcherDragState = null;
     var suppressLauncherClick = false;
+    var petSprite = null;
+    var petTimer = 0;
+    var petActivityTimer = 0;
+    var petState = "idle";
+    var petFrame = 0;
+    var petLoops = 0;
+    var petDirection = 1;
+    var petOriginX = 0;
+    var petOriginY = 0;
+    var petSpinAngle = 0;
+    var petPointerHover = false;
+    var petHasFocus = false;
+    var petAssetsReady = false;
+    var petMotionQuery = null;
+    var petMotionHandler = null;
+    var petVisibilityHandler = null;
     var stageSubscribers = new Set();
     var shellOpen = false;
     var storageKey = "hypnoos.floatingPhone.ui.v1";
@@ -1673,15 +1689,201 @@
       launcher.style.top = next.y + "px";
       launcher.style.right = "auto";
       launcher.style.bottom = "auto";
+      petOriginX = next.x;
+      petOriginY = next.y;
+    }
+
+    function petAssetUrl(name) {
+      return String(config.assetBase || "").replace(/\/?$/, "/") + "pet/" + name;
+    }
+
+    function petStateMeta(name) {
+      var states = {
+        idle: { asset: "alisa-ambient.png", total: 18, start: 0, end: 5, fps: 4, loops: 1 },
+        wave: { asset: "alisa-ambient.png", total: 18, start: 6, end: 11, fps: 8, loops: 1 },
+        sweat: { asset: "alisa-ambient.png", total: 18, start: 12, end: 17, fps: 8, loops: 1 },
+        walk: { asset: "alisa-move.png", total: 12, start: 0, end: 3, fps: 8, loops: 7 },
+        spin_run: { asset: "alisa-move.png", total: 12, start: 4, end: 11, fps: 12, loops: 2 },
+        trip: { asset: "alisa-mishap.png", total: 14, start: 0, end: 3, fps: 10, loops: 1 },
+        cry: { asset: "alisa-mishap.png", total: 14, start: 4, end: 5, fps: 5, loops: 4 },
+        recover: { asset: "alisa-mishap.png", total: 14, start: 6, end: 13, fps: 8, loops: 1 },
+        held_scared: { asset: "alisa-drag.png", total: 9, start: 0, end: 3, fps: 6, loops: Infinity },
+        release_sweat: { asset: "alisa-drag.png", total: 9, start: 4, end: 8, fps: 8, loops: 1 }
+      };
+      return states[name] || states.idle;
+    }
+
+    function petReducedMotion() {
+      return Boolean(petMotionQuery && petMotionQuery.matches);
+    }
+
+    function clearPetFrameTimer() {
+      if (petTimer) host.clearTimeout(petTimer);
+      petTimer = 0;
+    }
+
+    function clearPetActivityTimer() {
+      if (petActivityTimer) host.clearTimeout(petActivityTimer);
+      petActivityTimer = 0;
+    }
+
+    function applyPetFrame() {
+      if (!petSprite) return;
+      var meta = petStateMeta(petState);
+      petSprite.style.backgroundImage = "url('" + petAssetUrl(meta.asset).replace(/'/g, "%27") + "')";
+      petSprite.style.backgroundSize = (meta.total * 80) + "px 80px";
+      petSprite.style.backgroundPosition = (-petFrame * 80) + "px 0";
+      petSprite.style.setProperty("--pet-direction", String(petDirection));
+      petSprite.style.setProperty("--pet-lift", petState === "held_scared" ? "-10px" : "0px");
+      if (launcher) launcher.dataset.petState = petState;
+    }
+
+    function petClampToHabitat(x, y) {
+      var nextX = Math.max(petOriginX - 88, Math.min(Number(x) || petOriginX, petOriginX + 88));
+      var nextY = Math.max(petOriginY - 48, Math.min(Number(y) || petOriginY, petOriginY + 48));
+      return clampLauncherPosition(nextX, nextY);
+    }
+
+    function petMoveTo(x, y) {
+      if (!launcher || launcherDragState) return;
+      var next = petClampToHabitat(x, y);
+      launcher.style.left = next.x + "px";
+      launcher.style.top = next.y + "px";
+      launcher.style.right = "auto";
+      launcher.style.bottom = "auto";
+    }
+
+    function petMoveForFrame() {
+      if (!launcher) return;
+      var rect = launcher.getBoundingClientRect();
+      if (petState === "walk") {
+        var nextX = rect.left + petDirection * 2.4;
+        if (nextX <= petOriginX - 88 || nextX >= petOriginX + 88) {
+          petDirection *= -1;
+          nextX = rect.left + petDirection * 2.4;
+        }
+        petMoveTo(nextX, rect.top + Math.sin(petFrame * Math.PI / 2) * 0.8);
+      } else if (petState === "spin_run") {
+        petSpinAngle += Math.PI / 8;
+        petDirection = Math.cos(petSpinAngle) < 0 ? -1 : 1;
+        petMoveTo(petOriginX + Math.cos(petSpinAngle) * 52, petOriginY + Math.sin(petSpinAngle) * 24);
+      }
+    }
+
+    function petCanRoam() {
+      return Boolean(
+        petAssetsReady &&
+        launcher &&
+        !shellOpen &&
+        !launcherDragState &&
+        !petPointerHover &&
+        !petHasFocus &&
+        !petReducedMotion() &&
+        !hostDocument.hidden
+      );
+    }
+
+    function schedulePetActivity() {
+      clearPetActivityTimer();
+      if (!petCanRoam()) return;
+      petActivityTimer = host.setTimeout(function () {
+        petActivityTimer = 0;
+        if (!petCanRoam()) return;
+        var roll = Math.random();
+        if (roll < 0.55) setPetState("walk");
+        else if (roll < 0.82) setPetState("wave");
+        else setPetState("spin_run");
+      }, 2200 + Math.floor(Math.random() * 3200));
+    }
+
+    function finishPetState() {
+      if (petState === "spin_run") return setPetState("trip");
+      if (petState === "trip") return setPetState("cry");
+      if (petState === "cry") return setPetState("recover");
+      if (petState === "release_sweat") return setPetState("sweat");
+      if (petState === "held_scared") return;
+      if (petState === "idle") {
+        petFrame = 0;
+        applyPetFrame();
+        schedulePetActivity();
+        return;
+      }
+      setPetState("idle");
+    }
+
+    function advancePetFrame() {
+      petTimer = 0;
+      if (!petSprite || !launcher) return;
+      var meta = petStateMeta(petState);
+      petMoveForFrame();
+      petFrame += 1;
+      if (petFrame > meta.end) {
+        petLoops += 1;
+        if (petLoops >= meta.loops) {
+          finishPetState();
+          return;
+        }
+        petFrame = meta.start;
+      }
+      applyPetFrame();
+      petTimer = host.setTimeout(advancePetFrame, Math.round(1000 / Math.min(12, Math.max(1, meta.fps))));
+    }
+
+    function setPetState(name, options) {
+      var nextName = String(name || "idle");
+      var opts = options || {};
+      if (petReducedMotion() && /^(walk|wave|spin_run|trip|cry|recover)$/.test(nextName)) nextName = "idle";
+      clearPetFrameTimer();
+      clearPetActivityTimer();
+      petState = nextName;
+      petLoops = 0;
+      petSpinAngle = 0;
+      var meta = petStateMeta(petState);
+      petFrame = meta.start;
+      applyPetFrame();
+      if (opts.static || (petReducedMotion() && !/^(held_scared|release_sweat|sweat)$/.test(petState))) {
+        if (petState === "idle") schedulePetActivity();
+        return;
+      }
+      petTimer = host.setTimeout(advancePetFrame, Math.round(1000 / Math.min(12, Math.max(1, meta.fps))));
+    }
+
+    function pausePetAutonomy() {
+      clearPetFrameTimer();
+      clearPetActivityTimer();
+      if (!launcherDragState) setPetState("idle", { static: true });
+    }
+
+    function resumePetAutonomy() {
+      if (!petAssetsReady || shellOpen || hostDocument.hidden || petPointerHover || petHasFocus || launcherDragState) return;
+      setPetState("idle");
+    }
+
+    function loadPetAssets() {
+      if (!launcher || !petSprite || petAssetsReady) return;
+      ["alisa-ambient.png", "alisa-move.png", "alisa-mishap.png", "alisa-drag.png"].forEach(function (name, index) {
+        var image = new host.Image();
+        image.decoding = "async";
+        image.onload = function () {
+          if (index !== 0 || !launcher) return;
+          petAssetsReady = true;
+          launcher.classList.add("pet-ready");
+          resumePetAutonomy();
+        };
+        image.onerror = function () {
+          if (index === 0 && launcher) launcher.classList.remove("pet-ready");
+        };
+        image.src = petAssetUrl(name);
+      });
     }
 
     function shellCss() {
       return [
         "*{box-sizing:border-box}",
-        ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:58px;height:58px;border:1px solid rgba(196,116,255,.7);border-radius:22px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;cursor:grab;touch-action:none;user-select:none;z-index:3;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}",
-        ".launcher:hover,.launcher.active{transform:translateY(-3px);border-color:rgba(244,186,255,.9);box-shadow:0 20px 52px rgba(74,18,91,.56),0 0 0 3px rgba(217,70,239,.12)}",
-        ".launcher.dragging{cursor:grabbing;transition:none;transform:none}",
-        ".launcher svg{width:28px;height:28px}.launcher i{position:absolute;right:-4px;top:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#f25aa6;color:white;font:800 11px/20px system-ui;text-align:center}",
+        ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:80px;height:80px;border:0;padding:0;border-radius:24px;background:transparent;color:#fff;display:block;cursor:grab;touch-action:none;user-select:none;z-index:3;overflow:visible}",
+        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:80px;height:80px;background-repeat:no-repeat;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-direction,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
+        ".pet-fallback{position:absolute;left:11px;top:11px;width:58px;height:58px;border:1px solid rgba(196,116,255,.7);border-radius:22px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:28px;height:28px}",
+        ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(max-width:420px){.pet-sprite{transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-direction,1)) scale(.9);transform-origin:50% 100%}}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
         ".panel{pointer-events:auto;position:fixed;width:430px;height:812px;border:0;border-radius:38px;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1}",
         ".panel.open{display:block}",
         ".phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:inherit;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate;transform:scale(var(--phone-scale));transform-origin:0 0}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent}",
@@ -2027,10 +2229,11 @@
       shell.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481900;";
       shadow = shell.attachShadow({ mode: "open" });
       shadow.innerHTML = "<style>" + shellCss() + "</style>" +
-        "<button class='launcher' type='button' aria-label='打开悬浮手机'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg><i>0</i></button>" +
+        "<button class='launcher' type='button' aria-label='打开悬浮手机'><span class='pet-sprite' aria-hidden='true'></span><span class='pet-fallback' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg></span><i>0</i></button>" +
         "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='work-lever-host' aria-label='打工滚筒摇杆'><button class='work-lever' type='button' data-work-lever-host aria-label='拉动或点击摇杆切换下一份工作'><span class='work-lever__body'><svg viewBox='0 0 126 150' aria-hidden='true'><defs><linearGradient id='workLeverTube' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#aeb8b1'/><stop offset='.42' stop-color='#647169'/><stop offset='.72' stop-color='#303a34'/><stop offset='1' stop-color='#151b17'/></linearGradient><radialGradient id='workLeverKnob' cx='.32' cy='.25' r='.72'><stop offset='0' stop-color='#ffd36b'/><stop offset='.22' stop-color='#df850d'/><stop offset='.68' stop-color='#91340b'/><stop offset='1' stop-color='#431506'/></radialGradient></defs><path class='work-lever__tube-shadow' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube-shine' d='M44 35V99Q44 113 61 113H122'/><circle class='work-lever__knob-ring' cx='44' cy='28' r='33'/><circle class='work-lever__knob-core' cx='44' cy='28' r='27'/></svg></span></button></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div><span class='drag-edge top' data-phone-drag></span><span class='drag-edge right' data-phone-drag></span><span class='drag-edge bottom' data-phone-drag></span><span class='drag-edge left' data-phone-drag></span><span class='drag-grip' data-phone-drag aria-label='拖动手机'></span><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
       hostDocument.body.appendChild(shell);
       launcher = shadow.querySelector(".launcher");
+      petSprite = shadow.querySelector(".pet-sprite");
       panel = shadow.querySelector(".panel");
       if (panel && !panel.querySelector(".location-rule-radar")) {
         ["rear", "front"].forEach(function (layer) {
@@ -2155,6 +2358,25 @@
       launcher.addEventListener("pointermove", moveLauncherDrag);
       launcher.addEventListener("pointerup", endLauncherDrag);
       launcher.addEventListener("pointercancel", cancelLauncherDrag);
+      launcher.addEventListener("lostpointercapture", function (event) {
+        if (launcherDragState && event.pointerId === launcherDragState.pointerId) cancelLauncherDrag(event);
+      });
+      launcher.addEventListener("pointerenter", function () {
+        petPointerHover = true;
+        pausePetAutonomy();
+      });
+      launcher.addEventListener("pointerleave", function () {
+        petPointerHover = false;
+        if (!launcherDragState) resumePetAutonomy();
+      });
+      launcher.addEventListener("focus", function () {
+        petHasFocus = true;
+        pausePetAutonomy();
+      });
+      launcher.addEventListener("blur", function () {
+        petHasFocus = false;
+        if (!launcherDragState) resumePetAutonomy();
+      });
       var floorToggle = shadow.querySelector(".floor-toggle");
       var floorDrawer = shadow.querySelector(".floor-drawer");
       floorToggle.addEventListener("click", function (event) {
@@ -2190,12 +2412,28 @@
       });
       applySavedLauncherPosition();
       applySavedPosition();
+      try {
+        petMotionQuery = host.matchMedia("(prefers-reduced-motion: reduce)");
+        petMotionHandler = function () {
+          if (petMotionQuery && petMotionQuery.matches) pausePetAutonomy();
+          else resumePetAutonomy();
+        };
+        if (petMotionQuery.addEventListener) petMotionQuery.addEventListener("change", petMotionHandler);
+        else petMotionQuery.addListener?.(petMotionHandler);
+      } catch (_) {}
+      petVisibilityHandler = function () {
+        if (hostDocument.hidden) pausePetAutonomy();
+        else resumePetAutonomy();
+      };
+      hostDocument.addEventListener("visibilitychange", petVisibilityHandler);
+      loadPetAssets();
       updateChrome();
       syncGalgameState();
     }
 
     function beginLauncherDrag(event) {
       if (!launcher || (event.pointerType === "mouse" && event.button !== 0)) return;
+      pausePetAutonomy();
       var rect = launcher.getBoundingClientRect();
       launcherDragState = {
         pointerId: event.pointerId,
@@ -2216,7 +2454,10 @@
       if (!launcherDragState || event.pointerId !== launcherDragState.pointerId) return;
       var dx = event.clientX - launcherDragState.startX;
       var dy = event.clientY - launcherDragState.startY;
-      if (!launcherDragState.moved && Math.hypot(dx, dy) >= 5) launcherDragState.moved = true;
+      if (!launcherDragState.moved && Math.hypot(dx, dy) >= 5) {
+        launcherDragState.moved = true;
+        setPetState("held_scared");
+      }
       if (launcherDragState.moved) {
         var next = clampLauncherPosition(launcherDragState.startLeft + dx, launcherDragState.startTop + dy);
         launcher.style.left = next.x + "px";
@@ -2239,7 +2480,12 @@
       if (ended.moved) {
         var rect = launcher.getBoundingClientRect();
         saveLauncherPosition(rect.left, rect.top);
+        petOriginX = rect.left;
+        petOriginY = rect.top;
         suppressLauncherClick = true;
+        setPetState("release_sweat");
+      } else if (!shellOpen) {
+        resumePetAutonomy();
       }
       event.preventDefault();
       event.stopPropagation();
@@ -2247,8 +2493,19 @@
 
     function cancelLauncherDrag(event) {
       if (!launcherDragState || event.pointerId !== launcherDragState.pointerId) return;
+      var cancelled = launcherDragState;
       launcherDragState = null;
       launcher.classList.remove("dragging");
+      if (cancelled.moved) {
+        var rect = launcher.getBoundingClientRect();
+        saveLauncherPosition(rect.left, rect.top);
+        petOriginX = rect.left;
+        petOriginY = rect.top;
+        suppressLauncherClick = true;
+        setPetState("release_sweat");
+      } else if (!shellOpen) {
+        resumePetAutonomy();
+      }
       event.preventDefault();
       event.stopPropagation();
     }
@@ -2302,6 +2559,7 @@
       launcher.setAttribute("aria-label", shellOpen ? "关闭悬浮手机" : "打开悬浮手机");
       launcher.classList.toggle("active", shellOpen);
       if (shellOpen) {
+        pausePetAutonomy();
         if (selectionMode === "follow") followVisibleFloor();
         else updateChrome();
         applySavedPosition();
@@ -2314,6 +2572,7 @@
         var toggle = shadow.querySelector(".floor-toggle");
         if (drawer) drawer.classList.remove("open");
         if (toggle) toggle.setAttribute("aria-expanded", "false");
+        resumePetAutonomy();
       }
     }
 
@@ -2543,6 +2802,22 @@
       destroy: function () {
         if (mountTimer) host.clearTimeout(mountTimer);
         mountTimer = 0;
+        clearPetFrameTimer();
+        clearPetActivityTimer();
+        try {
+          if (petMotionQuery && petMotionHandler) {
+            if (petMotionQuery.removeEventListener) petMotionQuery.removeEventListener("change", petMotionHandler);
+            else petMotionQuery.removeListener?.(petMotionHandler);
+          }
+        } catch (_) {}
+        try {
+          if (petVisibilityHandler) hostDocument.removeEventListener("visibilitychange", petVisibilityHandler);
+        } catch (_) {}
+        petMotionQuery = null;
+        petMotionHandler = null;
+        petVisibilityHandler = null;
+        petAssetsReady = false;
+        petSprite = null;
         if (profileOpenTimer) host.clearTimeout(profileOpenTimer);
         profileOpenTimer = 0;
         pendingProfileRole = "";
