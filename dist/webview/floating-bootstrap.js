@@ -128,6 +128,8 @@
     var petSprite = null;
     var petTimer = 0;
     var petActivityTimer = 0;
+    var petMotionFrame = 0;
+    var petMotionLast = 0;
     var petState = "idle";
     var petFrame = 0;
     var petLoops = 0;
@@ -135,9 +137,14 @@
     var petOriginX = 0;
     var petOriginY = 0;
     var petSpinAngle = 0;
+    var petSpinCenterX = 0;
+    var petSpinCenterY = 0;
+    var petRoamX = 0;
+    var petRoamY = 0;
     var petPointerHover = false;
     var petHasFocus = false;
     var petAssetsReady = false;
+    var petReadyAssets = new Set();
     var petMotionQuery = null;
     var petMotionHandler = null;
     var petVisibilityHandler = null;
@@ -1689,28 +1696,37 @@
       launcher.style.top = next.y + "px";
       launcher.style.right = "auto";
       launcher.style.bottom = "auto";
+      launcher.style.transform = "translate3d(0,0,0)";
       petOriginX = next.x;
       petOriginY = next.y;
+      petRoamX = 0;
+      petRoamY = 0;
     }
 
     function petAssetUrl(name) {
       return String(config.assetBase || "").replace(/\/?$/, "/") + "pet/" + name;
     }
 
+    var PET_BASE_FACING = 1;
+    var petStates = {
+      idle: { asset: "alisa-ambient-v2.png", total: 24, start: 0, end: 5, fps: 8, loops: 1 },
+      wave: { asset: "alisa-ambient-v2.png", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
+      happy_hop: { asset: "alisa-ambient-v2.png", total: 24, start: 12, end: 17, fps: 14, loops: 1 },
+      heart_pose: { asset: "alisa-ambient-v2.png", total: 24, start: 18, end: 23, fps: 10, loops: 1 },
+      walk: { asset: "alisa-move-v2.png", total: 24, start: 0, end: 11, fps: 14, loops: 3, directional: true },
+      spin_run: { asset: "alisa-move-v2.png", total: 24, start: 12, end: 23, fps: 16, loops: 2, directional: true },
+      trip: { asset: "alisa-mishap-v2.png", total: 24, start: 0, end: 5, fps: 14, loops: 1 },
+      cry: { asset: "alisa-mishap-v2.png", total: 24, start: 6, end: 9, fps: 8, loops: 3 },
+      recover: { asset: "alisa-mishap-v2.png", total: 24, start: 10, end: 17, fps: 12, loops: 1 },
+      sleepy: { asset: "alisa-mishap-v2.png", total: 24, start: 18, end: 23, fps: 10, loops: 1 },
+      held_scared: { asset: "alisa-drag-v2.png", total: 24, start: 0, end: 5, fps: 8, loops: Infinity },
+      release_sweat: { asset: "alisa-drag-v2.png", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
+      curtsy: { asset: "alisa-drag-v2.png", total: 24, start: 12, end: 17, fps: 12, loops: 1 },
+      hair_tidy: { asset: "alisa-drag-v2.png", total: 24, start: 18, end: 23, fps: 12, loops: 1 }
+    };
+
     function petStateMeta(name) {
-      var states = {
-        idle: { asset: "alisa-ambient.png", total: 18, start: 0, end: 5, fps: 4, loops: 1 },
-        wave: { asset: "alisa-ambient.png", total: 18, start: 6, end: 11, fps: 8, loops: 1 },
-        sweat: { asset: "alisa-ambient.png", total: 18, start: 12, end: 17, fps: 8, loops: 1 },
-        walk: { asset: "alisa-move.png", total: 12, start: 0, end: 3, fps: 8, loops: 7 },
-        spin_run: { asset: "alisa-move.png", total: 12, start: 4, end: 11, fps: 12, loops: 2 },
-        trip: { asset: "alisa-mishap.png", total: 14, start: 0, end: 3, fps: 10, loops: 1 },
-        cry: { asset: "alisa-mishap.png", total: 14, start: 4, end: 5, fps: 5, loops: 4 },
-        recover: { asset: "alisa-mishap.png", total: 14, start: 6, end: 13, fps: 8, loops: 1 },
-        held_scared: { asset: "alisa-drag.png", total: 9, start: 0, end: 3, fps: 6, loops: Infinity },
-        release_sweat: { asset: "alisa-drag.png", total: 9, start: 4, end: 8, fps: 8, loops: 1 }
-      };
-      return states[name] || states.idle;
+      return petStates[name] || petStates.idle;
     }
 
     function petReducedMotion() {
@@ -1727,15 +1743,39 @@
       petActivityTimer = 0;
     }
 
-    function applyPetFrame() {
+    function clearPetMotionFrame() {
+      if (petMotionFrame) {
+        if (host.cancelAnimationFrame) host.cancelAnimationFrame(petMotionFrame);
+        else host.clearTimeout(petMotionFrame);
+      }
+      petMotionFrame = 0;
+      petMotionLast = 0;
+    }
+
+    function setPetDirection(direction) {
+      var next = Number(direction) < 0 ? -1 : 1;
+      if (next === petDirection && petSprite) return;
+      petDirection = next;
+      if (!petSprite) return;
+      var meta = petStateMeta(petState);
+      var visualScale = meta.directional && petDirection !== PET_BASE_FACING ? -1 : 1;
+      petSprite.style.setProperty("--pet-facing-scale", String(visualScale));
+    }
+
+    function applyPetStateAppearance() {
       if (!petSprite) return;
       var meta = petStateMeta(petState);
       petSprite.style.backgroundImage = "url('" + petAssetUrl(meta.asset).replace(/'/g, "%27") + "')";
       petSprite.style.backgroundSize = (meta.total * 80) + "px 80px";
-      petSprite.style.backgroundPosition = (-petFrame * 80) + "px 0";
-      petSprite.style.setProperty("--pet-direction", String(petDirection));
-      petSprite.style.setProperty("--pet-lift", petState === "held_scared" ? "-10px" : "0px");
+      petSprite.style.setProperty("--pet-lift", petState === "held_scared" ? "-8px" : "0px");
       if (launcher) launcher.dataset.petState = petState;
+      var visualScale = meta.directional && petDirection !== PET_BASE_FACING ? -1 : 1;
+      petSprite.style.setProperty("--pet-facing-scale", String(visualScale));
+    }
+
+    function applyPetFrame() {
+      if (!petSprite) return;
+      petSprite.style.backgroundPosition = (-petFrame * 80) + "px 0";
     }
 
     function petClampToHabitat(x, y) {
@@ -1747,27 +1787,62 @@
     function petMoveTo(x, y) {
       if (!launcher || launcherDragState) return;
       var next = petClampToHabitat(x, y);
-      launcher.style.left = next.x + "px";
-      launcher.style.top = next.y + "px";
-      launcher.style.right = "auto";
-      launcher.style.bottom = "auto";
+      petRoamX = next.x - petOriginX;
+      petRoamY = next.y - petOriginY;
+      launcher.style.transform = "translate3d(" + petRoamX.toFixed(2) + "px," + petRoamY.toFixed(2) + "px,0)";
     }
 
-    function petMoveForFrame() {
-      if (!launcher) return;
+    function commitPetRoamPosition() {
+      if (!launcher || (!petRoamX && !petRoamY)) return;
       var rect = launcher.getBoundingClientRect();
+      launcher.style.transform = "translate3d(0,0,0)";
+      launcher.style.left = rect.left + "px";
+      launcher.style.top = rect.top + "px";
+      launcher.style.right = "auto";
+      launcher.style.bottom = "auto";
+      petOriginX = rect.left;
+      petOriginY = rect.top;
+      petRoamX = 0;
+      petRoamY = 0;
+    }
+
+    function petMotionTick(timestamp) {
+      petMotionFrame = 0;
+      if (!launcher || launcherDragState || shellOpen || hostDocument.hidden || petReducedMotion()) return;
+      var now = Number(timestamp) || Date.now();
+      var delta = petMotionLast ? Math.min(0.05, Math.max(0, (now - petMotionLast) / 1000)) : 0;
+      petMotionLast = now;
       if (petState === "walk") {
-        var nextX = rect.left + petDirection * 2.4;
+        var nextX = petOriginX + petRoamX + petDirection * 34 * delta;
         if (nextX <= petOriginX - 88 || nextX >= petOriginX + 88) {
-          petDirection *= -1;
-          nextX = rect.left + petDirection * 2.4;
+          setPetDirection(petDirection * -1);
+          nextX = petOriginX + petRoamX + petDirection * 34 * delta;
         }
-        petMoveTo(nextX, rect.top + Math.sin(petFrame * Math.PI / 2) * 0.8);
+        petMoveTo(nextX, petOriginY + petRoamY);
       } else if (petState === "spin_run") {
-        petSpinAngle += Math.PI / 8;
-        petDirection = Math.cos(petSpinAngle) < 0 ? -1 : 1;
-        petMoveTo(petOriginX + Math.cos(petSpinAngle) * 52, petOriginY + Math.sin(petSpinAngle) * 24);
+        petSpinAngle += delta * (Math.PI * 4 / 1.5);
+        var spinX = petSpinCenterX + Math.sin(petSpinAngle) * 52;
+        var spinY = petSpinCenterY + (1 - Math.cos(petSpinAngle)) * 12;
+        var deltaX = spinX - (petOriginX + petRoamX);
+        if (Math.abs(deltaX) > 0.05) setPetDirection(deltaX < 0 ? -1 : 1);
+        petMoveTo(spinX, spinY);
+      } else {
+        return;
       }
+      petMotionFrame = (host.requestAnimationFrame || function (callback) {
+        return host.setTimeout(function () { callback(Date.now()); }, 16);
+      })(petMotionTick);
+    }
+
+    function startPetMotion() {
+      clearPetMotionFrame();
+      if (petState !== "walk" && petState !== "spin_run") return;
+      petMotionLast = 0;
+      petSpinCenterX = petOriginX + petRoamX;
+      petSpinCenterY = petOriginY + petRoamY;
+      petMotionFrame = (host.requestAnimationFrame || function (callback) {
+        return host.setTimeout(function () { callback(Date.now()); }, 16);
+      })(petMotionTick);
     }
 
     function petCanRoam() {
@@ -1790,17 +1865,25 @@
         petActivityTimer = 0;
         if (!petCanRoam()) return;
         var roll = Math.random();
-        if (roll < 0.55) setPetState("walk");
-        else if (roll < 0.82) setPetState("wave");
+        if (roll < 0.32) setPetState("walk");
+        else if (roll < 0.46) setPetState("wave");
+        else if (roll < 0.58) setPetState("happy_hop");
+        else if (roll < 0.68) setPetState("heart_pose");
+        else if (roll < 0.77) setPetState("sleepy");
+        else if (roll < 0.85) setPetState("curtsy");
+        else if (roll < 0.93) setPetState("hair_tidy");
         else setPetState("spin_run");
-      }, 2200 + Math.floor(Math.random() * 3200));
+      }, 3200 + Math.floor(Math.random() * 3600));
     }
 
     function finishPetState() {
-      if (petState === "spin_run") return setPetState("trip");
+      if (petState === "spin_run") {
+        petMoveTo(petSpinCenterX, petSpinCenterY);
+        return setPetState("trip");
+      }
       if (petState === "trip") return setPetState("cry");
       if (petState === "cry") return setPetState("recover");
-      if (petState === "release_sweat") return setPetState("sweat");
+      if (petState === "release_sweat") return setPetState("idle");
       if (petState === "held_scared") return;
       if (petState === "idle") {
         petFrame = 0;
@@ -1815,7 +1898,6 @@
       petTimer = 0;
       if (!petSprite || !launcher) return;
       var meta = petStateMeta(petState);
-      petMoveForFrame();
       petFrame += 1;
       if (petFrame > meta.end) {
         petLoops += 1;
@@ -1826,31 +1908,36 @@
         petFrame = meta.start;
       }
       applyPetFrame();
-      petTimer = host.setTimeout(advancePetFrame, Math.round(1000 / Math.min(12, Math.max(1, meta.fps))));
+      petTimer = host.setTimeout(advancePetFrame, Math.round(1000 / Math.min(16, Math.max(1, meta.fps))));
     }
 
     function setPetState(name, options) {
       var nextName = String(name || "idle");
       var opts = options || {};
-      if (petReducedMotion() && /^(walk|wave|spin_run|trip|cry|recover)$/.test(nextName)) nextName = "idle";
+      if (petReducedMotion() && /^(walk|wave|happy_hop|heart_pose|spin_run|trip|cry|recover|sleepy|curtsy|hair_tidy)$/.test(nextName)) nextName = "idle";
+      if (nextName !== "idle" && nextName !== "held_scared" && !petReadyAssets.has(petStateMeta(nextName).asset)) nextName = "idle";
       clearPetFrameTimer();
       clearPetActivityTimer();
+      clearPetMotionFrame();
       petState = nextName;
       petLoops = 0;
       petSpinAngle = 0;
       var meta = petStateMeta(petState);
       petFrame = meta.start;
+      applyPetStateAppearance();
       applyPetFrame();
-      if (opts.static || (petReducedMotion() && !/^(held_scared|release_sweat|sweat)$/.test(petState))) {
+      if (opts.static || (petReducedMotion() && !/^(held_scared|release_sweat)$/.test(petState))) {
         if (petState === "idle") schedulePetActivity();
         return;
       }
-      petTimer = host.setTimeout(advancePetFrame, Math.round(1000 / Math.min(12, Math.max(1, meta.fps))));
+      startPetMotion();
+      petTimer = host.setTimeout(advancePetFrame, Math.round(1000 / Math.min(16, Math.max(1, meta.fps))));
     }
 
     function pausePetAutonomy() {
       clearPetFrameTimer();
       clearPetActivityTimer();
+      clearPetMotionFrame();
       if (!launcherDragState) setPetState("idle", { static: true });
     }
 
@@ -1861,19 +1948,25 @@
 
     function loadPetAssets() {
       if (!launcher || !petSprite || petAssetsReady) return;
-      ["alisa-ambient.png", "alisa-move.png", "alisa-mishap.png", "alisa-drag.png"].forEach(function (name, index) {
+      var names = ["alisa-ambient-v2.png", "alisa-drag-v2.png", "alisa-move-v2.png", "alisa-mishap-v2.png"];
+      names.forEach(function (name, index) {
         var image = new host.Image();
         image.decoding = "async";
         image.onload = function () {
-          if (index !== 0 || !launcher) return;
-          petAssetsReady = true;
-          launcher.classList.add("pet-ready");
-          resumePetAutonomy();
+          petReadyAssets.add(name);
+          if (index === 0 && launcher) {
+            petAssetsReady = true;
+            launcher.classList.add("pet-ready");
+            setPetState("idle");
+          }
         };
         image.onerror = function () {
           if (index === 0 && launcher) launcher.classList.remove("pet-ready");
         };
-        image.src = petAssetUrl(name);
+        var beginLoad = function () { image.src = petAssetUrl(name); };
+        if (index < 2) beginLoad();
+        else if (host.requestIdleCallback) host.requestIdleCallback(beginLoad, { timeout: 1600 + index * 300 });
+        else host.setTimeout(beginLoad, 180 + index * 260);
       });
     }
 
@@ -1881,9 +1974,9 @@
       return [
         "*{box-sizing:border-box}",
         ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:80px;height:80px;border:0;padding:0;border-radius:24px;background:transparent;color:#fff;display:block;cursor:grab;touch-action:none;user-select:none;z-index:3;overflow:visible}",
-        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:80px;height:80px;background-repeat:no-repeat;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-direction,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
+        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:80px;height:80px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
         ".pet-fallback{position:absolute;left:11px;top:11px;width:58px;height:58px;border:1px solid rgba(196,116,255,.7);border-radius:22px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:28px;height:28px}",
-        ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(max-width:420px){.pet-sprite{transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-direction,1)) scale(.9);transform-origin:50% 100%}}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
+        ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(max-width:420px){.pet-sprite{transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1)) scale(.9);transform-origin:50% 100%}}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
         ".panel{pointer-events:auto;position:fixed;width:430px;height:812px;border:0;border-radius:38px;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1}",
         ".panel.open{display:block}",
         ".phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:inherit;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate;transform:scale(var(--phone-scale));transform-origin:0 0}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent}",
@@ -2434,6 +2527,7 @@
     function beginLauncherDrag(event) {
       if (!launcher || (event.pointerType === "mouse" && event.button !== 0)) return;
       pausePetAutonomy();
+      commitPetRoamPosition();
       var rect = launcher.getBoundingClientRect();
       launcherDragState = {
         pointerId: event.pointerId,
@@ -2804,6 +2898,7 @@
         mountTimer = 0;
         clearPetFrameTimer();
         clearPetActivityTimer();
+        clearPetMotionFrame();
         try {
           if (petMotionQuery && petMotionHandler) {
             if (petMotionQuery.removeEventListener) petMotionQuery.removeEventListener("change", petMotionHandler);
@@ -2817,6 +2912,7 @@
         petMotionHandler = null;
         petVisibilityHandler = null;
         petAssetsReady = false;
+        petReadyAssets.clear();
         petSprite = null;
         if (profileOpenTimer) host.clearTimeout(profileOpenTimer);
         profileOpenTimer = 0;
