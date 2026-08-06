@@ -108,6 +108,8 @@
     var galgameToggle = null;
     var galgameDialog = null;
     var resourcePanel = null;
+    var variableFormatButton = null;
+    var variableFormatDialog = null;
     var encounterDetailHost = null;
     var encounterPossessionDecorHost = null;
     var profileNeighborHost = null;
@@ -1330,6 +1332,67 @@
       paintSidecarResources(root && root["系统"], false);
     }
 
+    function paintVariableFormatButton(report) {
+      if (!variableFormatButton) return;
+      var data = report && typeof report === "object" ? report : null;
+      var extra = Math.max(0, Number(data && data.extraCount) || 0);
+      var missing = Math.max(0, Number(data && data.missingCount) || 0);
+      variableFormatButton.classList.toggle("warn", extra > 0);
+      variableFormatButton.classList.toggle("missing", extra <= 0 && missing > 0);
+      variableFormatButton.textContent = extra > 0
+        ? "未知键 " + extra
+        : missing > 0
+          ? "缺少字段 " + missing
+          : data && data.hasData
+            ? "变量格式正常"
+            : "变量格式检查";
+      variableFormatButton.setAttribute("aria-label", extra > 0
+        ? "变量格式发现 " + extra + " 个未知键"
+        : missing > 0
+          ? "变量格式缺少 " + missing + " 个字段"
+          : "检查当前楼层变量格式");
+    }
+
+    function refreshVariableFormatCheck() {
+      paintVariableFormatButton(phoneApi("__ST_HYPNOOS_VARIABLE_FORMAT_REPORT__", [], true));
+    }
+
+    function closeVariableFormatDialog() {
+      if (!variableFormatDialog) return;
+      variableFormatDialog.classList.remove("open");
+      variableFormatDialog.setAttribute("aria-hidden", "true");
+    }
+
+    function openVariableFormatDialog() {
+      if (!variableFormatDialog) return;
+      var report = phoneApi("__ST_HYPNOOS_VARIABLE_FORMAT_REPORT__", [], true);
+      var title = variableFormatDialog.querySelector("[data-variable-format-title]");
+      var body = variableFormatDialog.querySelector("[data-variable-format-body]");
+      var repair = variableFormatDialog.querySelector("[data-variable-format-repair]");
+      var card = variableFormatDialog.querySelector(".variable-format-dialog__card");
+      var extra = Math.max(0, Number(report && report.extraCount) || 0);
+      var missing = Math.max(0, Number(report && report.missingCount) || 0);
+      var extraPaths = Array.isArray(report && report.extraPaths) ? report.extraPaths : [];
+      var missingPaths = Array.isArray(report && report.missingPaths) ? report.missingPaths : [];
+      if (title) title.textContent = extra > 0 ? "发现未知变量键" : missing > 0 ? "变量字段不完整" : "变量格式检查";
+      if (card) card.classList.toggle("warn", extra > 0);
+      if (body) {
+        body.textContent = !report || !report.hasData
+          ? "当前楼层没有读到可检查的 MVU 变量。"
+          : "未知键：" + extra + " 项" +
+            (extraPaths.length ? "\n" + extraPaths.join("\n") : "") +
+            "\n\n缺少字段：" + missing + " 项" +
+            (missingPaths.length ? "\n" + missingPaths.join("\n") : "") +
+            (report.writable ? "\n\n可清理当前最新楼。合法的角色名、任务根键和物品名会保留。" : "\n\n历史楼层只读，只能查看报告。");
+      }
+      if (repair) {
+        repair.disabled = !report || !report.hasData || !report.writable || (!extra && !missing);
+        repair.textContent = extra > 0 ? "清理并补齐" : "补齐缺少字段";
+      }
+      variableFormatDialog.classList.add("open");
+      variableFormatDialog.setAttribute("aria-hidden", "false");
+    }
+
     function subscribeSidecarResourceEvents() {
       if (resourceEventsSubscribed) return;
       resourceEventsSubscribed = true;
@@ -1355,6 +1418,7 @@
       Array.from(new Set(events.filter(Boolean))).forEach(function (eventName) {
         var handler = function () {
           refreshSidecarResources();
+          refreshVariableFormatCheck();
           if (galgameFinalRenderEvents.has(eventName)) scheduleGalgameRender();
         };
         try {
@@ -1633,10 +1697,12 @@
         ".readonly{position:static;z-index:13;width:100%;padding:8px 10px;border-radius:13px;background:rgba(39,25,12,.72);border:1px solid rgba(251,191,36,.38);color:#fde68a;font:800 10px/1.35 system-ui;pointer-events:none;display:none;backdrop-filter:blur(10px)}.panel.history .readonly{display:block}",
         ".drag-edge{position:absolute;z-index:9;touch-action:none;user-select:none}.drag-edge.top{left:22px;right:22px;top:0;height:10px;cursor:grab}.drag-edge.bottom{left:22px;right:22px;bottom:0;height:10px;cursor:grab}.drag-edge.left{left:0;top:22px;bottom:22px;width:10px;cursor:grab}.drag-edge.right{right:0;top:22px;bottom:22px;width:10px;cursor:grab}.drag-edge:active,.drag-grip:active{cursor:grabbing}",
         ".drag-grip{position:absolute;z-index:10;left:50%;top:4px;width:72px;height:12px;transform:translateX(-50%);border-radius:999px;cursor:grab;touch-action:none;user-select:none}",
-        ".floor-toggle,.galgame-toggle{position:static;z-index:14;width:128px;min-width:128px;height:36px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;pointer-events:auto;backdrop-filter:blur(12px);font:800 11px/1 system-ui;white-space:nowrap;word-break:keep-all;overflow-wrap:normal;writing-mode:horizontal-tb;text-align:center;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.18)}",
+        ".floor-toggle,.galgame-toggle,.variable-format-toggle{position:static;z-index:14;width:128px;min-width:128px;height:36px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;pointer-events:auto;backdrop-filter:blur(12px);font:800 11px/1 system-ui;white-space:nowrap;word-break:keep-all;overflow-wrap:normal;writing-mode:horizontal-tb;text-align:center;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.18)}",
         ".floor-toggle{border:1px solid rgba(224,188,255,.38);background:rgba(11,8,26,.38);color:#f7eafe}",
         ".galgame-toggle{border:1px solid rgba(148,163,184,.34);background:rgba(11,8,26,.38);color:#cbd5e1}.galgame-toggle.enabled{border-color:rgba(52,211,153,.5);background:rgba(6,78,59,.34);color:#a7f3d0}.galgame-toggle.disabled{border-color:rgba(251,113,133,.36);background:rgba(76,5,25,.3);color:#fecdd3}.galgame-toggle.busy,.galgame-toggle:disabled{cursor:wait;opacity:.72}",
+        ".variable-format-toggle{border:1px solid rgba(94,234,212,.34);background:rgba(4,47,46,.34);color:#99f6e4}.variable-format-toggle.warn{border-color:rgba(251,113,133,.68);background:rgba(127,29,29,.54);color:#ffe4e6;box-shadow:0 0 0 2px rgba(251,113,133,.14),0 8px 22px rgba(0,0,0,.22)}.variable-format-toggle.missing{border-color:rgba(251,191,36,.48);background:rgba(120,53,15,.42);color:#fde68a}",
         ".resource-panel{width:128px;display:grid;gap:5px;pointer-events:none}.resource-row{min-width:0;height:28px;padding:0 9px;border:1px solid rgba(148,163,184,.27);border-radius:10px;background:rgba(11,8,26,.42);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;gap:6px;color:#dbeafe;font:750 9px/1 system-ui;box-shadow:0 6px 18px rgba(0,0,0,.14)}.resource-row span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.resource-row strong{flex:0 0 auto;color:#fff;font:900 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.resource-row.money{border-color:rgba(251,191,36,.32);color:#fde68a}.resource-row.starlight{border-color:rgba(244,114,182,.32);color:#fbcfe8}.resource-row.energy{border-color:rgba(56,189,248,.32);color:#bae6fd}.resource-panel.loading .resource-row strong{opacity:.55}",
+        ".variable-format-dialog{position:absolute;z-index:31;inset:0;display:none;place-items:center;padding:22px;background:rgba(2,3,10,.7);backdrop-filter:blur(8px);pointer-events:auto}.variable-format-dialog.open{display:grid}.variable-format-dialog__card{width:min(350px,calc(100% - 18px));max-height:calc(100% - 24px);overflow:auto;padding:19px;border:1px solid rgba(94,234,212,.38);border-radius:20px;background:linear-gradient(150deg,rgba(4,47,46,.98),rgba(10,14,31,.99) 66%);box-shadow:0 24px 70px rgba(0,0,0,.6);color:#ecfeff;font-family:system-ui}.variable-format-dialog__card.warn{border-color:rgba(251,113,133,.56);background:linear-gradient(150deg,rgba(76,5,25,.98),rgba(10,14,31,.99) 66%)}.variable-format-dialog__card strong{display:block;font:850 18px/1.3 system-ui}.variable-format-dialog__card p{margin:10px 0;color:rgba(236,254,255,.8);font:650 12px/1.6 system-ui;white-space:pre-wrap;overflow-wrap:anywhere}.variable-format-dialog__actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.variable-format-dialog__actions button{height:40px;border:1px solid rgba(153,246,228,.34);border-radius:12px;background:rgba(255,255,255,.08);color:#fff;font:800 12px system-ui;cursor:pointer}.variable-format-dialog__actions button[data-variable-format-repair]{border-color:rgba(251,113,133,.48);background:rgba(159,18,57,.28)}.variable-format-dialog__actions button:disabled{opacity:.45;cursor:not-allowed}",
         ".galgame-dialog{position:absolute;z-index:30;inset:0;display:none;place-items:center;padding:22px;background:rgba(2,3,10,.64);backdrop-filter:blur(8px);pointer-events:auto}.galgame-dialog.open{display:grid}.galgame-dialog__card{width:min(340px,calc(100% - 20px));padding:20px;border:1px solid rgba(110,231,183,.36);border-radius:22px;background:linear-gradient(145deg,rgba(6,78,59,.96),rgba(10,14,31,.98) 68%);box-shadow:0 24px 70px rgba(0,0,0,.58);color:#ecfdf5;font-family:system-ui}.galgame-dialog.is-error .galgame-dialog__card{border-color:rgba(251,113,133,.46);background:linear-gradient(145deg,rgba(76,5,25,.96),rgba(10,14,31,.98) 68%)}.galgame-dialog__card strong{display:block;font:850 18px/1.3 system-ui}.galgame-dialog__card p{margin:12px 0 18px;color:rgba(236,253,245,.82);font:650 13px/1.65 system-ui;white-space:pre-wrap}.galgame-dialog__card button{width:100%;height:40px;border:1px solid rgba(167,243,208,.38);border-radius:13px;background:rgba(255,255,255,.1);color:#fff;font:800 13px system-ui;cursor:pointer}",
         ".floor-drawer{position:static;z-index:12;width:100%;display:none;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:0;border:0;border-radius:17px;background:transparent;backdrop-filter:none;box-shadow:none;color:#f8efff;pointer-events:auto}",
         ".floor-drawer.open{display:grid}.floor-title{grid-column:1/2;align-self:center;overflow:hidden;color:#d9cbe4;font:750 11px/1.2 system-ui;text-overflow:ellipsis;white-space:nowrap}",
@@ -1644,7 +1710,7 @@
         ".mode{height:32px;padding:0 10px;border:1px solid rgba(201,155,232,.34);border-radius:10px;background:rgba(24,21,43,.5);backdrop-filter:blur(10px);color:#efe4f8;font:750 10px system-ui;cursor:pointer}",
         ".badge{grid-column:1/-1;min-height:28px;padding:6px 9px;border-radius:9px;display:flex;align-items:center;background:rgba(19,78,59,.32);backdrop-filter:blur(10px);border:1px solid rgba(51,211,153,.32);color:#a7f3d0;font:800 10px/1.25 system-ui}.badge.history{background:rgba(76,48,13,.34);border-color:rgba(251,191,36,.3);color:#fde68a}",
         "@media(max-width:980px){.encounter-detail-host{position:fixed;left:8px;right:auto;top:8px;width:min(440px,calc(100vw - 16px));max-height:calc(100vh - 16px)}}",
-        "@media(max-width:760px){.panel{--floor-sidecar-width:clamp(104px,28vw,220px);width:min(430px,calc(100vw - var(--floor-sidecar-width) - 30px))}.profile-neighbor-rail{width:84px;min-height:220px}.profile-neighbor-rail.prev{right:calc(100% - 34px)}.profile-neighbor-rail.next{left:calc(100% - 34px)}.panel.profile-neighbors .sidecar{left:calc(100% + 58px)}.sidecar{left:calc(100% + 10px)}.floor-toggle,.galgame-toggle,.resource-panel{width:min(128px,100%);min-width:0}.floor-toggle,.galgame-toggle{padding-inline:8px}.floor-drawer{grid-template-columns:minmax(0,1fr)}.floor-title,.mode,.select,.badge{grid-column:1/-1;width:100%}.encounter-detail-host__frame{min-height:560px}}"
+        "@media(max-width:760px){.panel{--floor-sidecar-width:clamp(104px,28vw,220px);width:min(430px,calc(100vw - var(--floor-sidecar-width) - 30px))}.profile-neighbor-rail{width:84px;min-height:220px}.profile-neighbor-rail.prev{right:calc(100% - 34px)}.profile-neighbor-rail.next{left:calc(100% - 34px)}.panel.profile-neighbors .sidecar{left:calc(100% + 58px)}.sidecar{left:calc(100% + 10px)}.floor-toggle,.galgame-toggle,.variable-format-toggle,.resource-panel{width:min(128px,100%);min-width:0}.floor-toggle,.galgame-toggle,.variable-format-toggle{padding-inline:8px}.floor-drawer{grid-template-columns:minmax(0,1fr)}.floor-title,.mode,.select,.badge{grid-column:1/-1;width:100%}.encounter-detail-host__frame{min-height:560px}}"
       ].join("");
     }
 
@@ -1962,7 +2028,7 @@
       shadow = shell.attachShadow({ mode: "open" });
       shadow.innerHTML = "<style>" + shellCss() + "</style>" +
         "<button class='launcher' type='button' aria-label='打开悬浮手机'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg><i>0</i></button>" +
-        "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='work-lever-host' aria-label='打工滚筒摇杆'><button class='work-lever' type='button' data-work-lever-host aria-label='拉动或点击摇杆切换下一份工作'><span class='work-lever__body'><svg viewBox='0 0 126 150' aria-hidden='true'><defs><linearGradient id='workLeverTube' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#aeb8b1'/><stop offset='.42' stop-color='#647169'/><stop offset='.72' stop-color='#303a34'/><stop offset='1' stop-color='#151b17'/></linearGradient><radialGradient id='workLeverKnob' cx='.32' cy='.25' r='.72'><stop offset='0' stop-color='#ffd36b'/><stop offset='.22' stop-color='#df850d'/><stop offset='.68' stop-color='#91340b'/><stop offset='1' stop-color='#431506'/></radialGradient></defs><path class='work-lever__tube-shadow' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube-shine' d='M44 35V99Q44 113 61 113H122'/><circle class='work-lever__knob-ring' cx='44' cy='28' r='33'/><circle class='work-lever__knob-core' cx='44' cy='28' r='27'/></svg></span></button></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div></div><span class='drag-edge top' data-phone-drag></span><span class='drag-edge right' data-phone-drag></span><span class='drag-edge bottom' data-phone-drag></span><span class='drag-edge left' data-phone-drag></span><span class='drag-grip' data-phone-drag aria-label='拖动手机'></span><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
+        "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='work-lever-host' aria-label='打工滚筒摇杆'><button class='work-lever' type='button' data-work-lever-host aria-label='拉动或点击摇杆切换下一份工作'><span class='work-lever__body'><svg viewBox='0 0 126 150' aria-hidden='true'><defs><linearGradient id='workLeverTube' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#aeb8b1'/><stop offset='.42' stop-color='#647169'/><stop offset='.72' stop-color='#303a34'/><stop offset='1' stop-color='#151b17'/></linearGradient><radialGradient id='workLeverKnob' cx='.32' cy='.25' r='.72'><stop offset='0' stop-color='#ffd36b'/><stop offset='.22' stop-color='#df850d'/><stop offset='.68' stop-color='#91340b'/><stop offset='1' stop-color='#431506'/></radialGradient></defs><path class='work-lever__tube-shadow' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube-shine' d='M44 35V99Q44 113 61 113H122'/><circle class='work-lever__knob-ring' cx='44' cy='28' r='33'/><circle class='work-lever__knob-core' cx='44' cy='28' r='27'/></svg></span></button></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div><span class='drag-edge top' data-phone-drag></span><span class='drag-edge right' data-phone-drag></span><span class='drag-edge bottom' data-phone-drag></span><span class='drag-edge left' data-phone-drag></span><span class='drag-grip' data-phone-drag aria-label='拖动手机'></span><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
       hostDocument.body.appendChild(shell);
       launcher = shadow.querySelector(".launcher");
       panel = shadow.querySelector(".panel");
@@ -1981,9 +2047,11 @@
       modeButton = shadow.querySelector(".mode");
       stateBadge = shadow.querySelector(".badge");
       titleFloor = shadow.querySelector(".floor-title");
-      galgameToggle = shadow.querySelector(".galgame-toggle");
-      galgameDialog = shadow.querySelector(".galgame-dialog");
-      resourcePanel = shadow.querySelector(".resource-panel");
+	      galgameToggle = shadow.querySelector(".galgame-toggle");
+	      galgameDialog = shadow.querySelector(".galgame-dialog");
+	      resourcePanel = shadow.querySelector(".resource-panel");
+	      variableFormatButton = shadow.querySelector(".variable-format-toggle");
+	      variableFormatDialog = shadow.querySelector(".variable-format-dialog");
       encounterDetailHost = shadow.querySelector(".encounter-detail-host");
       encounterPossessionDecorHost = shadow.querySelector(".encounter-possession-decor-host");
       profileNeighborHost = shadow.querySelector(".profile-neighbor-host");
@@ -2047,7 +2115,33 @@
         if (!roleName) return;
         phoneApi("__ST_HYPNOOS_PROFILE_POSSESSION__", [roleName], false);
       });
-      galgameDialog?.querySelector("[data-galgame-dialog-close]")?.addEventListener("click", closeGalgameDialog);
+	      galgameDialog?.querySelector("[data-galgame-dialog-close]")?.addEventListener("click", closeGalgameDialog);
+	      variableFormatDialog?.querySelector("[data-variable-format-close]")?.addEventListener("click", closeVariableFormatDialog);
+	      variableFormatDialog?.querySelector("[data-variable-format-repair]")?.addEventListener("click", async function (event) {
+	        event.preventDefault();
+	        event.stopPropagation();
+	        var button = event.currentTarget;
+	        if (!isWritable()) {
+	          openVariableFormatDialog();
+	          return;
+	        }
+	        button.disabled = true;
+	        button.textContent = "正在矫正…";
+	        var result = await Promise.resolve(phoneApi("__ST_HYPNOOS_CORRECT_VARIABLE_FORMAT__", [], false));
+	        refreshVariableFormatCheck();
+	        openVariableFormatDialog();
+	        var body = variableFormatDialog && variableFormatDialog.querySelector("[data-variable-format-body]");
+	        if (body && result && result.ok) {
+	          body.textContent = "变量格式已矫正：补齐 " + (result.missingCount || 0) + " 项，清理未知键 " + (result.removedExtraCount || 0) + " 项。";
+	        } else if (body) {
+	          body.textContent = "变量格式矫正失败：" + String(result && result.reason || "未能写回当前楼变量。");
+	        }
+	      });
+	      variableFormatButton?.addEventListener("click", function (event) {
+	        event.preventDefault();
+	        event.stopPropagation();
+	        openVariableFormatDialog();
+	      });
       launcher.addEventListener("click", function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -2277,9 +2371,10 @@
       var note = phoneApi("__ST_GET_PENDING_OPERATION_NOTE__", [], true);
       var total = (Array.isArray(count) ? count.length : 0) + (String(note || "").trim() ? 1 : 0);
       var launcherBadge = shadow.querySelector(".launcher i");
-      if (launcherBadge) launcherBadge.textContent = String(total);
-      refreshSidecarResources();
-    }
+	      if (launcherBadge) launcherBadge.textContent = String(total);
+	      refreshSidecarResources();
+	      refreshVariableFormatCheck();
+	    }
 
     function refreshPhone() {
       if (!frame || !frame.contentWindow) return;
@@ -2498,8 +2593,10 @@
         profileNeighborHost = null;
         profilePossessionHost = null;
         workLeverHost = null;
-        mapExtraChainHost = null;
-        resourcePanel = null;
+	        mapExtraChainHost = null;
+	        resourcePanel = null;
+	        variableFormatButton = null;
+	        variableFormatDialog = null;
         try {
           if (hostDocument[GALGAME_RUNTIME_KEY] && hostDocument[GALGAME_RUNTIME_KEY].registry === registryApi) {
             delete hostDocument[GALGAME_RUNTIME_KEY];
