@@ -1724,6 +1724,8 @@
     }
 
     var PET_BASE_FACING = 1;
+    var PET_RENDER_SIZE = 96;
+    var PET_DRAG_GRIP_Y = 5;
     var PET_CHARACTER_ORDER = ["alisa", "hyakka"];
     var PET_CHARACTER_NAMES = {
       alisa: "爱丽莎",
@@ -1790,8 +1792,8 @@
       if (!petSprite) return;
       var meta = petStateMeta(petState);
       petSprite.style.backgroundImage = "url('" + petAssetUrl(petStateAsset(petState)).replace(/'/g, "%27") + "')";
-      petSprite.style.backgroundSize = (meta.total * 80) + "px 80px";
-      petSprite.style.setProperty("--pet-lift", petState === "held_scared" ? "-8px" : "0px");
+      petSprite.style.backgroundSize = (meta.total * PET_RENDER_SIZE) + "px " + PET_RENDER_SIZE + "px";
+      petSprite.style.setProperty("--pet-lift", "0px");
       if (launcher) {
         launcher.dataset.petState = petState;
         launcher.dataset.petCharacter = petCharacterId;
@@ -1802,7 +1804,7 @@
 
     function applyPetFrame() {
       if (!petSprite) return;
-      petSprite.style.backgroundPosition = (-petFrame * 80) + "px 0";
+      petSprite.style.backgroundPosition = (-petFrame * PET_RENDER_SIZE) + "px 0";
     }
 
     function petClampToHabitat(x, y) {
@@ -1850,12 +1852,19 @@
 
     function schedulePetActivity() {
       clearPetActivityTimer();
-      if (!petCanRoam()) return;
-      petActivityTimer = host.setTimeout(function () {
-        petActivityTimer = 0;
-        if (!petCanRoam()) return;
-        setPetState(Math.random() < 0.5 ? "unique_a" : "unique_b");
-      }, 4200 + Math.floor(Math.random() * 4200));
+    }
+
+    function playPetShellAction(name, expectedOpen) {
+      var characterAtRequest = petCharacterId;
+      var group = petStateMeta(name).group;
+      loadPetAsset(characterAtRequest, group).then(function () {
+        if (
+          petCharacterId === characterAtRequest &&
+          shellOpen === expectedOpen &&
+          !launcherDragState &&
+          !petSwitching
+        ) setPetState(name);
+      }).catch(function () {});
     }
 
     function finishPetState() {
@@ -1945,30 +1954,33 @@
       }
     }
 
+    function startPetLoadTask(task) {
+      petLoadsInFlight += 1;
+      var image = new host.Image();
+      image.decoding = "async";
+      var finish = function (error) {
+        petLoadsInFlight = Math.max(0, petLoadsInFlight - 1);
+        petLoadPromises.delete(task.key);
+        if (error) task.reject(error);
+        else {
+          petImageCache.set(task.key, image);
+          if (task.characterId === petCharacterId) petReadyAssets.add(task.key);
+          trimPetImageCache();
+          task.resolve(image);
+        }
+        pumpPetLoadQueue();
+      };
+      image.onload = function () {
+        var decoded = typeof image.decode === "function" ? image.decode() : Promise.resolve();
+        Promise.resolve(decoded).catch(function () {}).then(function () { finish(); });
+      };
+      image.onerror = function () { finish(new Error("pet asset failed: " + task.key)); };
+      image.src = petAssetUrl(task.key);
+    }
+
     function pumpPetLoadQueue() {
       while (petLoadsInFlight < MAX_PET_LOADS_IN_FLIGHT && petLoadQueue.length) {
-        var task = petLoadQueue.shift();
-        petLoadsInFlight += 1;
-        var image = new host.Image();
-        image.decoding = "async";
-        var finish = function (error) {
-          petLoadsInFlight = Math.max(0, petLoadsInFlight - 1);
-          petLoadPromises.delete(task.key);
-          if (error) task.reject(error);
-          else {
-            petImageCache.set(task.key, image);
-            if (task.characterId === petCharacterId) petReadyAssets.add(task.key);
-            trimPetImageCache();
-            task.resolve(image);
-          }
-          pumpPetLoadQueue();
-        };
-        image.onload = function () {
-          var decoded = typeof image.decode === "function" ? image.decode() : Promise.resolve();
-          Promise.resolve(decoded).catch(function () {}).then(function () { finish(); });
-        };
-        image.onerror = function () { finish(new Error("pet asset failed: " + task.key)); };
-        image.src = petAssetUrl(task.key);
+        startPetLoadTask(petLoadQueue.shift());
       }
     }
 
@@ -2114,11 +2126,11 @@
     function shellCss() {
       return [
         "*{box-sizing:border-box}",
-        ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:80px;height:80px;border:0;padding:0;border-radius:24px;background:transparent;color:#fff;display:block;cursor:grab;touch-action:none;user-select:none;z-index:3;overflow:visible}",
-        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:80px;height:80px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
-        ".pet-fallback{position:absolute;left:11px;top:11px;width:58px;height:58px;border:1px solid rgba(196,116,255,.7);border-radius:22px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:28px;height:28px}",
+        ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:96px;height:96px;border:0;padding:0;border-radius:28px;background:transparent;color:#fff;display:block;cursor:grab;touch-action:none;user-select:none;z-index:3;overflow:visible}",
+        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:96px;height:96px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
+        ".pet-fallback{position:absolute;left:15px;top:15px;width:66px;height:66px;border:1px solid rgba(196,116,255,.7);border-radius:24px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:30px;height:30px}",
         ".pet-menu{position:fixed;z-index:4;width:56px;height:56px;pointer-events:none;opacity:0;transform:translateY(8px) scale(.9);transform-origin:50% 100%;transition:opacity .14s ease,transform .14s ease}.pet-menu.open{pointer-events:auto;opacity:1;transform:none}.pet-menu button{position:absolute;inset:0;width:56px;height:56px;padding:0;border:1px solid rgba(226,232,240,.7);border-radius:50%;background:linear-gradient(145deg,rgba(30,41,59,.97),rgba(15,23,42,.98));box-shadow:0 8px 22px rgba(2,6,23,.48),inset 0 1px rgba(255,255,255,.14);color:#f8fafc;font:850 11px/1.1 system-ui;cursor:pointer;touch-action:manipulation}.pet-menu button:hover,.pet-menu button:focus-visible{border-color:#a5f3fc;background:linear-gradient(145deg,#155e75,#172554);outline:2px solid rgba(165,243,252,.72);outline-offset:2px}",
-        ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(max-width:420px){.pet-sprite{transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1)) scale(.9);transform-origin:50% 100%}}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
+        ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
         ".panel{pointer-events:auto;position:fixed;width:430px;height:812px;border:0;border-radius:38px;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1}",
         ".panel.open{display:block}",
         ".phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:inherit;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate;transform:scale(var(--phone-scale));transform-origin:0 0}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent}",
@@ -2716,13 +2728,12 @@
       pausePetAutonomy();
       commitPetRoamPosition();
       loadPetAsset(petCharacterId, "drag").catch(function () {});
-      var rect = launcher.getBoundingClientRect();
       launcherDragState = {
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
-        startLeft: rect.left,
-        startTop: rect.top,
+        gripX: PET_RENDER_SIZE / 2,
+        gripY: PET_DRAG_GRIP_Y,
         moved: false
       };
       suppressLauncherClick = false;
@@ -2758,7 +2769,10 @@
         setPetState("held_scared");
       }
       if (launcherDragState.moved) {
-        var next = clampLauncherPosition(launcherDragState.startLeft + dx, launcherDragState.startTop + dy);
+        var next = clampLauncherPosition(
+          event.clientX - launcherDragState.gripX,
+          event.clientY - launcherDragState.gripY
+        );
         launcher.style.left = next.x + "px";
         launcher.style.top = next.y + "px";
         launcher.style.right = "auto";
@@ -2867,6 +2881,7 @@
         applySavedPosition();
         mountPhone(false);
         syncGalgameState();
+        playPetShellAction("unique_a", true);
       } else {
         hideEncounterDetail();
         updateProfileNeighbors(null);
@@ -2875,6 +2890,7 @@
         if (drawer) drawer.classList.remove("open");
         if (toggle) toggle.setAttribute("aria-expanded", "false");
         resumePetAutonomy();
+        playPetShellAction("unique_b", false);
       }
     }
 
