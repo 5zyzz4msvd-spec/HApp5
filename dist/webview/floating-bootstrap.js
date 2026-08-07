@@ -188,6 +188,8 @@
     ];
     var GALGAME_RUNTIME_KEY = "__ST_HYPNOOS_GALGAME_HOST_RUNTIME__";
     var GALGAME_MARKER_RE = /⟪人物演出总块⟫([\s\S]*?)⟪\/人物演出总块⟫/;
+    var GALGAME_HISTORY_MARKER_RE = /⟪人物演出历史块⟫([\s\S]*?)⟪\/人物演出历史块⟫/;
+    var GALGAME_RAW_BLOCK_RE = /<\s*人物演出\s*>([\s\S]*?)<\s*\/\s*人物演出\s*>/i;
     var GALGAME_SEGMENT_RE = /〔(动作|台词|思考)〕([\s\S]*?)(?=〔(?:动作|台词|思考)〕|$)/g;
     var ACTION_FOLD_OPEN = "⟪HYPNOOS_ACTION_FOLD_V3⟫";
     var ACTION_FOLD_CLOSE = "⟪/HYPNOOS_ACTION_FOLD_V3⟫";
@@ -263,32 +265,90 @@
     }
 
     function parseGalgameEntries(content) {
-      // SillyTavern's Markdown pass may serialize Chinese quoted dialogue as
-      // literal <q>...</q> text inside an otherwise valid lazy marker.  The
-      // outer regex has already validated and isolated the 人物演出 block, so
-      // remove only that presentation wrapper here instead of loosening the
-      // protocol parser to accept arbitrary HTML.
       var source = String(content || "")
-        .replace(/<\s*\/?\s*q\s*>/gi, "")
         .replace(/\r\n?/g, "\n")
         .trim();
       if (!source) return [];
       var entries = [];
-      var roles = new Set();
-      var cursor = 0;
-      var entryPattern = /^\s*【([^<>\n【】]+?)】\s*([^<>\n【】\s][^<>\n【】]*?)\s*【交互】([^<>]+?)(?=\s*【[^<>\n【】]+?】\s*[^<>\n【】\s][^<>\n【】]*?\s*【交互】|\s*$)/;
-      while (cursor < source.length) {
-        var match = source.slice(cursor).match(entryPattern);
-        if (!match) return null;
+      var roleIndexes = new Map();
+      var lines = source.split("\n");
+      var current = null;
+      lines.forEach(function (line) {
+        var value = String(line || "").trim();
+        if (!value) return;
+        var legacy = value.match(/^【角色】\s*([^【】]+?)\s*【表情】\s*([^【】]*?)\s*【交互】([\s\S]+)$/);
+        var direct = legacy ? null : value.match(/^【([^【】]+?)】\s*(.*?)\s*【交互】([\s\S]+)$/);
+        var match = legacy || direct;
+        if (!match) {
+          if (current && !/^【[^【】]+】/.test(value)) current[2] += "\n" + value;
+          return;
+        }
         var role = textId(match[1]);
         var expression = textId(match[2]);
-        var interaction = textId(match[3]);
-        if (!role || !interaction || roles.has(role)) return null;
-        roles.add(role);
-        entries.push([role, expression, interaction]);
-        cursor += match[0].length;
+        var interaction = String(match[3] || "").trim();
+        if (!role || !interaction) return;
+        if (roleIndexes.has(role)) {
+          var previous = entries[roleIndexes.get(role)];
+          previous[2] += "\n" + interaction;
+          if (!previous[1] && expression) previous[1] = expression;
+          current = previous;
+          return;
+        }
+        current = [role, expression, interaction];
+        roleIndexes.set(role, entries.length);
+        entries.push(current);
+      });
+      if (!entries.length) {
+        var pattern = /【([^【】\r\n]+?)】\s*(.*?)\s*【交互】([\s\S]*?)(?=【[^【】\r\n]+?】[\s\S]*?【交互】|$)/g;
+        var match;
+        while ((match = pattern.exec(source))) {
+          var role = textId(match[1]);
+          var interaction = String(match[3] || "").trim();
+          if (role && interaction) entries.push([role, textId(match[2]), interaction]);
+        }
       }
-      return cursor === source.length ? entries : null;
+      return entries.length ? entries : [["演出记录", "", source]];
+    }
+
+    function galgameMessageIdForContainer(container) {
+      var messageNode = container && container.closest
+        ? container.closest(".mes[mesid],.mes[data-message-id],.mes[data-mes-id]")
+        : null;
+      if (!messageNode) return "";
+      return textId(
+        messageNode.getAttribute("mesid")
+        || messageNode.getAttribute("data-message-id")
+        || messageNode.getAttribute("data-mes-id")
+      );
+    }
+
+    function galgameRawMessageForContainer(container) {
+      var targetId = galgameMessageIdForContainer(container);
+      if (!targetId) return "";
+      var messages = chatMessages();
+      for (var index = 0; index < messages.length; index += 1) {
+        var message = messages[index];
+        if (messageId(message, index) !== targetId) continue;
+        return String(
+          message && (message.mes ?? message.message ?? message.content ?? message.text)
+          || ""
+        );
+      }
+      var numericIndex = Number(targetId);
+      if (Number.isInteger(numericIndex) && numericIndex >= 0 && numericIndex < messages.length) {
+        var indexed = messages[numericIndex];
+        return String(
+          indexed && (indexed.mes ?? indexed.message ?? indexed.content ?? indexed.text)
+          || ""
+        );
+      }
+      return "";
+    }
+
+    function galgamePayloadForContainer(container, markerPayload) {
+      var raw = galgameRawMessageForContainer(container);
+      var rawMatch = raw.match(GALGAME_RAW_BLOCK_RE);
+      return rawMatch ? String(rawMatch[1] || "") : String(markerPayload || "");
     }
 
     function hydrateGalgameCard(card) {
@@ -403,6 +463,31 @@
       if (!hostDocument.body) return;
       Array.prototype.forEach.call(hostDocument.querySelectorAll(".mes_text"), function (container) {
         var rendered = false;
+        for (var historyPass = 0; historyPass < 8 && String(container.textContent || "").includes("⟪人物演出历史块⟫"); historyPass += 1) {
+          var historyWalker = hostDocument.createTreeWalker(container, host.NodeFilter ? host.NodeFilter.SHOW_TEXT : 4);
+          var historyNodes = [];
+          var historySource = "";
+          while (historyWalker.nextNode()) {
+            var historyNode = historyWalker.currentNode;
+            if (historyNode.parentElement && historyNode.parentElement.closest(".st-galgame-card,script,style")) continue;
+            var historyValue = String(historyNode.nodeValue || "");
+            if (!historyValue) continue;
+            historyNodes.push({ node: historyNode, start: historySource.length, end: historySource.length + historyValue.length });
+            historySource += historyValue;
+          }
+          var historyMatch = historySource.match(GALGAME_HISTORY_MARKER_RE);
+          if (!historyMatch || historyMatch.index == null) break;
+          var historyStartIndex = historyMatch.index;
+          var historyEndIndex = historyStartIndex + historyMatch[0].length;
+          var historyStart = historyNodes.find(function (item) { return historyStartIndex >= item.start && historyStartIndex <= item.end; });
+          var historyEnd = historyNodes.slice().reverse().find(function (item) { return historyEndIndex >= item.start && historyEndIndex <= item.end; });
+          if (!historyStart || !historyEnd) break;
+          var historyRange = hostDocument.createRange();
+          historyRange.setStart(historyStart.node, Math.max(0, historyStartIndex - historyStart.start));
+          historyRange.setEnd(historyEnd.node, Math.max(0, historyEndIndex - historyEnd.start));
+          historyRange.deleteContents();
+          historyRange.insertNode(hostDocument.createTextNode(galgamePayloadForContainer(container, historyMatch[1])));
+        }
         for (var pass = 0; pass < 8 && String(container.textContent || "").includes("⟪人物演出总块⟫"); pass += 1) {
           var walker = hostDocument.createTreeWalker(container, host.NodeFilter ? host.NodeFilter.SHOW_TEXT : 4);
           var textNodes = [];
@@ -417,7 +502,7 @@
           }
           var match = source.match(GALGAME_MARKER_RE);
           if (!match || match.index == null) break;
-          var entries = parseGalgameEntries(match[1]);
+          var entries = parseGalgameEntries(galgamePayloadForContainer(container, match[1]));
           if (!entries || !entries.length) break;
           var startIndex = match.index;
           var endIndex = startIndex + match[0].length;
@@ -464,13 +549,13 @@
               var record = records[index];
               var target = record.type === "characterData" ? record.target.parentElement : record.target;
               var message = target && target.closest ? target.closest(".mes_text") : null;
-              if (message && String(message.textContent || "").includes("⟪人物演出总块⟫")) {
+              if (message && /⟪人物演出(?:总|历史)块⟫/.test(String(message.textContent || ""))) {
                 scheduleGalgameRender();
                 return;
               }
               var added = Array.prototype.slice.call(record.addedNodes || []);
               if (added.some(function (node) {
-                return String(node && node.textContent || "").includes("⟪人物演出总块⟫");
+                return /⟪人物演出(?:总|历史)块⟫/.test(String(node && node.textContent || ""));
               })) {
                 scheduleGalgameRender();
                 return;
