@@ -126,6 +126,16 @@
     var launcherDragState = null;
     var suppressLauncherClick = false;
     var petSprite = null;
+    var petMenu = null;
+    var petMenuOpen = false;
+    var petMenuLongPressTimer = 0;
+    var petCharacterId = "alisa";
+    var petPendingCharacterId = "";
+    var petSwitching = false;
+    var petImageCache = new Map();
+    var petLoadPromises = new Map();
+    var petLoadQueue = [];
+    var petLoadsInFlight = 0;
     var petTimer = 0;
     var petActivityTimer = 0;
     var petMotionFrame = 0;
@@ -1561,6 +1571,9 @@
       var saved = readUiState();
       selectionMode = saved && saved.mode === "manual" ? "manual" : "follow";
       if (saved && saved.selectedId) selectedId = textId(saved.selectedId);
+      if (saved && ["alisa", "miyuki", "natsumi", "mashiro", "hyakka"].indexOf(saved.petCharacterId) >= 0) {
+        petCharacterId = saved.petCharacterId;
+      }
       return saved;
     }
 
@@ -1573,7 +1586,8 @@
           x: current.x,
           y: current.y,
           launcherX: current.launcherX,
-          launcherY: current.launcherY
+          launcherY: current.launcherY,
+          petCharacterId: petCharacterId
         }));
       } catch (_) {}
     }
@@ -1587,7 +1601,8 @@
           x: Math.round(x),
           y: Math.round(y),
           launcherX: current.launcherX,
-          launcherY: current.launcherY
+          launcherY: current.launcherY,
+          petCharacterId: petCharacterId
         }));
       } catch (_) {}
     }
@@ -1601,7 +1616,8 @@
           x: current.x,
           y: current.y,
           launcherX: Math.round(x),
-          launcherY: Math.round(y)
+          launcherY: Math.round(y),
+          petCharacterId: petCharacterId
         }));
       } catch (_) {}
     }
@@ -1708,22 +1724,45 @@
     }
 
     var PET_BASE_FACING = 1;
-    var petStates = {
-      idle: { asset: "alisa-ambient-v2.png", total: 24, start: 0, end: 5, fps: 8, loops: 1 },
-      wave: { asset: "alisa-ambient-v2.png", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
-      happy_hop: { asset: "alisa-ambient-v2.png", total: 24, start: 12, end: 17, fps: 14, loops: 1 },
-      heart_pose: { asset: "alisa-ambient-v2.png", total: 24, start: 18, end: 23, fps: 10, loops: 1 },
-      walk: { asset: "alisa-move-v2.png", total: 24, start: 0, end: 11, fps: 14, loops: 3, directional: true },
-      spin_run: { asset: "alisa-move-v2.png", total: 24, start: 12, end: 23, fps: 16, loops: 2, directional: true },
-      trip: { asset: "alisa-mishap-v2.png", total: 24, start: 0, end: 5, fps: 14, loops: 1 },
-      cry: { asset: "alisa-mishap-v2.png", total: 24, start: 6, end: 9, fps: 8, loops: 3 },
-      recover: { asset: "alisa-mishap-v2.png", total: 24, start: 10, end: 17, fps: 12, loops: 1 },
-      sleepy: { asset: "alisa-mishap-v2.png", total: 24, start: 18, end: 23, fps: 10, loops: 1 },
-      held_scared: { asset: "alisa-drag-v2.png", total: 24, start: 0, end: 5, fps: 8, loops: Infinity },
-      release_sweat: { asset: "alisa-drag-v2.png", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
-      curtsy: { asset: "alisa-drag-v2.png", total: 24, start: 12, end: 17, fps: 12, loops: 1 },
-      hair_tidy: { asset: "alisa-drag-v2.png", total: 24, start: 18, end: 23, fps: 12, loops: 1 }
+    var PET_CHARACTER_ORDER = ["alisa", "miyuki", "natsumi", "mashiro", "hyakka"];
+    var PET_CHARACTER_NAMES = {
+      alisa: "爱丽莎",
+      miyuki: "月咏深雪",
+      natsumi: "犬冢夏美",
+      mashiro: "九鬼真白",
+      hyakka: "千杀百花"
     };
+    var MAX_DECODED_PET_SHEETS = 6;
+    var MAX_PET_LOADS_IN_FLIGHT = 2;
+    var petStates = {
+      idle: { group: "ambient", total: 24, start: 0, end: 5, fps: 8, loops: 1 },
+      wave: { group: "ambient", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
+      happy_hop: { group: "ambient", total: 24, start: 12, end: 17, fps: 14, loops: 1 },
+      heart_pose: { group: "ambient", total: 24, start: 18, end: 23, fps: 10, loops: 1 },
+      walk: { group: "move", total: 24, start: 0, end: 11, fps: 14, loops: 3, directional: true },
+      spin_run: { group: "move", total: 24, start: 12, end: 23, fps: 16, loops: 2, directional: true },
+      trip: { group: "mishap", total: 24, start: 0, end: 5, fps: 14, loops: 1 },
+      cry: { group: "mishap", total: 24, start: 6, end: 9, fps: 8, loops: 3 },
+      recover: { group: "mishap", total: 24, start: 10, end: 17, fps: 12, loops: 1 },
+      sleepy: { group: "mishap", total: 24, start: 18, end: 23, fps: 10, loops: 1 },
+      held_scared: { group: "drag", total: 24, start: 0, end: 5, fps: 8, loops: Infinity },
+      release_sweat: { group: "drag", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
+      curtsy: { group: "drag", total: 24, start: 12, end: 17, fps: 12, loops: 1 },
+      hair_tidy: { group: "drag", total: 24, start: 18, end: 23, fps: 12, loops: 1 },
+      enter: { group: "interact", total: 24, start: 0, end: 5, fps: 12, loops: 1 },
+      exit: { group: "interact", total: 24, start: 6, end: 11, fps: 12, loops: 1 },
+      flick_react: { group: "interact", total: 24, start: 12, end: 17, fps: 12, loops: 1 },
+      stroke_react: { group: "interact", total: 24, start: 18, end: 23, fps: 12, loops: 1 }
+    };
+
+    function petAssetName(group, characterId) {
+      var role = PET_CHARACTER_ORDER.indexOf(characterId) >= 0 ? characterId : "alisa";
+      return "v3/" + role + "/" + role + "-" + group + "-v3.png";
+    }
+
+    function petStateAsset(name, characterId) {
+      return petAssetName(petStateMeta(name).group, characterId || petCharacterId);
+    }
 
     function petStateMeta(name) {
       return petStates[name] || petStates.idle;
@@ -1765,10 +1804,13 @@
     function applyPetStateAppearance() {
       if (!petSprite) return;
       var meta = petStateMeta(petState);
-      petSprite.style.backgroundImage = "url('" + petAssetUrl(meta.asset).replace(/'/g, "%27") + "')";
+      petSprite.style.backgroundImage = "url('" + petAssetUrl(petStateAsset(petState)).replace(/'/g, "%27") + "')";
       petSprite.style.backgroundSize = (meta.total * 80) + "px 80px";
       petSprite.style.setProperty("--pet-lift", petState === "held_scared" ? "-8px" : "0px");
-      if (launcher) launcher.dataset.petState = petState;
+      if (launcher) {
+        launcher.dataset.petState = petState;
+        launcher.dataset.petCharacter = petCharacterId;
+      }
       var visualScale = meta.directional && petDirection !== PET_BASE_FACING ? -1 : 1;
       petSprite.style.setProperty("--pet-facing-scale", String(visualScale));
     }
@@ -1850,6 +1892,8 @@
         petAssetsReady &&
         launcher &&
         !shellOpen &&
+        !petMenuOpen &&
+        !petSwitching &&
         !launcherDragState &&
         !petPointerHover &&
         !petHasFocus &&
@@ -1877,6 +1921,10 @@
     }
 
     function finishPetState() {
+      if (petState === "exit" && petPendingCharacterId) return completePetSwitch();
+      if (petState === "enter" || petState === "flick_react" || petState === "stroke_react") {
+        return setPetState("idle");
+      }
       if (petState === "spin_run") {
         petMoveTo(petSpinCenterX, petSpinCenterY);
         return setPetState("trip");
@@ -1915,7 +1963,7 @@
       var nextName = String(name || "idle");
       var opts = options || {};
       if (petReducedMotion() && /^(walk|wave|happy_hop|heart_pose|spin_run|trip|cry|recover|sleepy|curtsy|hair_tidy)$/.test(nextName)) nextName = "idle";
-      if (nextName !== "idle" && nextName !== "held_scared" && !petReadyAssets.has(petStateMeta(nextName).asset)) nextName = "idle";
+      if (nextName !== "idle" && nextName !== "held_scared" && !petReadyAssets.has(petStateAsset(nextName))) nextName = "idle";
       clearPetFrameTimer();
       clearPetActivityTimer();
       clearPetMotionFrame();
@@ -1942,32 +1990,206 @@
     }
 
     function resumePetAutonomy() {
-      if (!petAssetsReady || shellOpen || hostDocument.hidden || petPointerHover || petHasFocus || launcherDragState) return;
+      if (!petAssetsReady || shellOpen || petMenuOpen || petSwitching || hostDocument.hidden || petPointerHover || petHasFocus || launcherDragState) return;
       setPetState("idle");
+    }
+
+    function trimPetImageCache() {
+      while (petImageCache.size > MAX_DECODED_PET_SHEETS) {
+        var removable = "";
+        petImageCache.forEach(function (_image, key) {
+          var currentPrefix = "v3/" + petCharacterId + "/";
+          var pendingPrefix = petPendingCharacterId ? "v3/" + petPendingCharacterId + "/" : "";
+          if (!removable && key.indexOf(currentPrefix) !== 0 && (!pendingPrefix || key.indexOf(pendingPrefix) !== 0)) removable = key;
+        });
+        if (!removable) {
+          petImageCache.forEach(function (_image, key) {
+            if (
+              !removable &&
+              key.indexOf("v3/" + petCharacterId + "/") === 0 &&
+              key !== petAssetName("ambient", petCharacterId) &&
+              key !== petAssetName("interact", petCharacterId)
+            ) removable = key;
+          });
+        }
+        if (!removable) break;
+        petImageCache.delete(removable);
+      }
+    }
+
+    function pumpPetLoadQueue() {
+      while (petLoadsInFlight < MAX_PET_LOADS_IN_FLIGHT && petLoadQueue.length) {
+        var task = petLoadQueue.shift();
+        petLoadsInFlight += 1;
+        var image = new host.Image();
+        image.decoding = "async";
+        var finish = function (error) {
+          petLoadsInFlight = Math.max(0, petLoadsInFlight - 1);
+          petLoadPromises.delete(task.key);
+          if (error) task.reject(error);
+          else {
+            petImageCache.set(task.key, image);
+            if (task.characterId === petCharacterId) petReadyAssets.add(task.key);
+            trimPetImageCache();
+            task.resolve(image);
+          }
+          pumpPetLoadQueue();
+        };
+        image.onload = function () {
+          var decoded = typeof image.decode === "function" ? image.decode() : Promise.resolve();
+          Promise.resolve(decoded).catch(function () {}).then(function () { finish(); });
+        };
+        image.onerror = function () { finish(new Error("pet asset failed: " + task.key)); };
+        image.src = petAssetUrl(task.key);
+      }
+    }
+
+    function loadPetAsset(characterId, group) {
+      var key = petAssetName(group, characterId);
+      if (petImageCache.has(key)) {
+        if (characterId === petCharacterId) petReadyAssets.add(key);
+        return Promise.resolve(petImageCache.get(key));
+      }
+      if (petLoadPromises.has(key)) return petLoadPromises.get(key);
+      var promise = new Promise(function (resolve, reject) {
+        petLoadQueue.push({ key: key, characterId: characterId, resolve: resolve, reject: reject });
+        pumpPetLoadQueue();
+      });
+      petLoadPromises.set(key, promise);
+      return promise;
+    }
+
+    function loadPetBackgroundAssets(characterId) {
+      var start = function () {
+        loadPetAsset(characterId, "move").catch(function () {});
+        loadPetAsset(characterId, "mishap").catch(function () {});
+      };
+      if (host.requestIdleCallback) host.requestIdleCallback(start, { timeout: 1400 });
+      else host.setTimeout(start, 260);
     }
 
     function loadPetAssets() {
       if (!launcher || !petSprite || petAssetsReady) return;
-      var names = ["alisa-ambient-v2.png", "alisa-drag-v2.png", "alisa-move-v2.png", "alisa-mishap-v2.png"];
-      names.forEach(function (name, index) {
-        var image = new host.Image();
-        image.decoding = "async";
-        image.onload = function () {
-          petReadyAssets.add(name);
-          if (index === 0 && launcher) {
-            petAssetsReady = true;
-            launcher.classList.add("pet-ready");
-            setPetState("idle");
-          }
-        };
-        image.onerror = function () {
-          if (index === 0 && launcher) launcher.classList.remove("pet-ready");
-        };
-        var beginLoad = function () { image.src = petAssetUrl(name); };
-        if (index < 2) beginLoad();
-        else if (host.requestIdleCallback) host.requestIdleCallback(beginLoad, { timeout: 1600 + index * 300 });
-        else host.setTimeout(beginLoad, 180 + index * 260);
+      petReadyAssets.clear();
+      Promise.all([
+        loadPetAsset(petCharacterId, "ambient"),
+        loadPetAsset(petCharacterId, "interact")
+      ]).then(function () {
+        if (!launcher) return;
+        petAssetsReady = true;
+        launcher.classList.add("pet-ready");
+        launcher.dataset.petCharacter = petCharacterId;
+        launcher.setAttribute("aria-label", "打开悬浮手机 · 当前桌宠" + PET_CHARACTER_NAMES[petCharacterId]);
+        setPetState("enter");
+        loadPetAsset(petCharacterId, "drag").catch(function () {});
+        loadPetBackgroundAssets(petCharacterId);
+      }).catch(function () {
+        if (launcher) launcher.classList.remove("pet-ready");
       });
+    }
+
+    function nextPetCharacterId() {
+      var index = PET_CHARACTER_ORDER.indexOf(petCharacterId);
+      return PET_CHARACTER_ORDER[(Math.max(0, index) + 1) % PET_CHARACTER_ORDER.length];
+    }
+
+    function completePetSwitch() {
+      var next = petPendingCharacterId;
+      if (!next) {
+        petSwitching = false;
+        return setPetState("idle");
+      }
+      petPendingCharacterId = "";
+      petCharacterId = next;
+      petReadyAssets.clear();
+      ["ambient", "interact"].forEach(function (group) {
+        var key = petAssetName(group, petCharacterId);
+        if (petImageCache.has(key)) petReadyAssets.add(key);
+      });
+      petAssetsReady = true;
+      petSwitching = false;
+      saveUiState();
+      if (launcher) {
+        launcher.dataset.petCharacter = petCharacterId;
+        launcher.setAttribute("aria-label", "打开悬浮手机 · 当前桌宠" + PET_CHARACTER_NAMES[petCharacterId]);
+      }
+      setPetState("enter");
+      loadPetAsset(petCharacterId, "drag").catch(function () {});
+      loadPetBackgroundAssets(petCharacterId);
+    }
+
+    function switchPetCharacter() {
+      if (petSwitching) return;
+      var next = nextPetCharacterId();
+      closePetMenu();
+      pausePetAutonomy();
+      petSwitching = true;
+      petPendingCharacterId = next;
+      Promise.all([
+        loadPetAsset(next, "ambient"),
+        loadPetAsset(next, "interact")
+      ]).then(function () {
+        if (petReducedMotion()) completePetSwitch();
+        else setPetState("exit");
+      }).catch(function () {
+        petSwitching = false;
+        petPendingCharacterId = "";
+        resumePetAutonomy();
+      });
+    }
+
+    function runPetInteraction(stateName) {
+      closePetMenu();
+      pausePetAutonomy();
+      loadPetAsset(petCharacterId, "interact").then(function () {
+        if (!launcherDragState && !petSwitching) setPetState(stateName);
+      }).catch(function () { resumePetAutonomy(); });
+    }
+
+    function clearPetMenuLongPress() {
+      if (petMenuLongPressTimer) host.clearTimeout(petMenuLongPressTimer);
+      petMenuLongPressTimer = 0;
+    }
+
+    function positionPetMenu() {
+      if (!petMenu || !launcher) return;
+      var viewport = hostViewportRect();
+      var rect = launcher.getBoundingClientRect();
+      var left = Math.max(viewport.left + 6, Math.min(rect.left + rect.width / 2 - 80, viewport.left + viewport.width - 166));
+      var top = Math.max(viewport.top + 6, Math.min(rect.top - 116, viewport.top + viewport.height - 128));
+      petMenu.style.left = left + "px";
+      petMenu.style.top = top + "px";
+    }
+
+    function openPetMenu(focusMenu) {
+      if (!petMenu || !launcher || petSwitching) return;
+      if (shellOpen) toggleShell(false);
+      pausePetAutonomy();
+      commitPetRoamPosition();
+      loadPetAsset(petCharacterId, "interact").catch(function () {});
+      var switchButton = petMenu.querySelector("[data-pet-action='switch']");
+      if (switchButton) {
+        var next = nextPetCharacterId();
+        switchButton.title = "切换至" + PET_CHARACTER_NAMES[next];
+        switchButton.setAttribute("aria-label", "切换至" + PET_CHARACTER_NAMES[next]);
+      }
+      positionPetMenu();
+      petMenuOpen = true;
+      petMenu.classList.add("open");
+      petMenu.setAttribute("aria-hidden", "false");
+      launcher.setAttribute("aria-expanded", "true");
+      if (focusMenu) petMenu.querySelector("button")?.focus();
+    }
+
+    function closePetMenu(refocus) {
+      clearPetMenuLongPress();
+      if (!petMenu) return;
+      petMenuOpen = false;
+      petMenu.classList.remove("open");
+      petMenu.setAttribute("aria-hidden", "true");
+      if (launcher) launcher.setAttribute("aria-expanded", shellOpen ? "true" : "false");
+      if (refocus && launcher) launcher.focus();
+      else if (!launcherDragState && !shellOpen && !petSwitching) resumePetAutonomy();
     }
 
     function shellCss() {
@@ -1976,6 +2198,7 @@
         ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:80px;height:80px;border:0;padding:0;border-radius:24px;background:transparent;color:#fff;display:block;cursor:grab;touch-action:none;user-select:none;z-index:3;overflow:visible}",
         ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:80px;height:80px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
         ".pet-fallback{position:absolute;left:11px;top:11px;width:58px;height:58px;border:1px solid rgba(196,116,255,.7);border-radius:22px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:28px;height:28px}",
+        ".pet-menu{position:fixed;z-index:4;width:160px;height:118px;pointer-events:none;opacity:0;transform:translateY(8px) scale(.9);transform-origin:50% 100%;transition:opacity .14s ease,transform .14s ease}.pet-menu.open{pointer-events:auto;opacity:1;transform:none}.pet-menu button{position:absolute;width:48px;height:48px;padding:0;border:1px solid rgba(226,232,240,.7);border-radius:50%;background:linear-gradient(145deg,rgba(30,41,59,.97),rgba(15,23,42,.98));box-shadow:0 8px 22px rgba(2,6,23,.48),inset 0 1px rgba(255,255,255,.14);color:#f8fafc;font:850 10px/1.1 system-ui;cursor:pointer;touch-action:manipulation}.pet-menu button:hover,.pet-menu button:focus-visible{border-color:#a5f3fc;background:linear-gradient(145deg,#155e75,#172554);outline:2px solid rgba(165,243,252,.72);outline-offset:2px}.pet-menu button[data-pet-action='switch']{left:56px;top:0}.pet-menu button[data-pet-action='flick']{left:0;top:58px}.pet-menu button[data-pet-action='stroke']{right:0;top:58px}",
         ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(max-width:420px){.pet-sprite{transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1)) scale(.9);transform-origin:50% 100%}}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
         ".panel{pointer-events:auto;position:fixed;width:430px;height:812px;border:0;border-radius:38px;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1}",
         ".panel.open{display:block}",
@@ -2322,11 +2545,13 @@
       shell.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481900;";
       shadow = shell.attachShadow({ mode: "open" });
       shadow.innerHTML = "<style>" + shellCss() + "</style>" +
-        "<button class='launcher' type='button' aria-label='打开悬浮手机'><span class='pet-sprite' aria-hidden='true'></span><span class='pet-fallback' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg></span><i>0</i></button>" +
+        "<button class='launcher' type='button' aria-label='打开悬浮手机' aria-haspopup='menu' aria-expanded='false'><span class='pet-sprite' aria-hidden='true'></span><span class='pet-fallback' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg></span><i>0</i></button>" +
+        "<nav class='pet-menu' role='menu' aria-label='桌宠互动' aria-hidden='true'><button type='button' role='menuitem' data-pet-action='switch'>切换</button><button type='button' role='menuitem' data-pet-action='flick'>弹脑瓜</button><button type='button' role='menuitem' data-pet-action='stroke'>抚摸</button></nav>" +
         "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='work-lever-host' aria-label='打工滚筒摇杆'><button class='work-lever' type='button' data-work-lever-host aria-label='拉动或点击摇杆切换下一份工作'><span class='work-lever__body'><svg viewBox='0 0 126 150' aria-hidden='true'><defs><linearGradient id='workLeverTube' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#aeb8b1'/><stop offset='.42' stop-color='#647169'/><stop offset='.72' stop-color='#303a34'/><stop offset='1' stop-color='#151b17'/></linearGradient><radialGradient id='workLeverKnob' cx='.32' cy='.25' r='.72'><stop offset='0' stop-color='#ffd36b'/><stop offset='.22' stop-color='#df850d'/><stop offset='.68' stop-color='#91340b'/><stop offset='1' stop-color='#431506'/></radialGradient></defs><path class='work-lever__tube-shadow' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube-shine' d='M44 35V99Q44 113 61 113H122'/><circle class='work-lever__knob-ring' cx='44' cy='28' r='33'/><circle class='work-lever__knob-core' cx='44' cy='28' r='27'/></svg></span></button></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div><span class='drag-edge top' data-phone-drag></span><span class='drag-edge right' data-phone-drag></span><span class='drag-edge bottom' data-phone-drag></span><span class='drag-edge left' data-phone-drag></span><span class='drag-grip' data-phone-drag aria-label='拖动手机'></span><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
       hostDocument.body.appendChild(shell);
       launcher = shadow.querySelector(".launcher");
       petSprite = shadow.querySelector(".pet-sprite");
+      petMenu = shadow.querySelector(".pet-menu");
       panel = shadow.querySelector(".panel");
       if (panel && !panel.querySelector(".location-rule-radar")) {
         ["rear", "front"].forEach(function (layer) {
@@ -2445,7 +2670,51 @@
           suppressLauncherClick = false;
           return;
         }
+        if (petMenuOpen) {
+          closePetMenu();
+          return;
+        }
         toggleShell(!shellOpen);
+      });
+      launcher.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        openPetMenu(false);
+      });
+      launcher.addEventListener("keydown", function (event) {
+        if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) {
+          event.preventDefault();
+          event.stopPropagation();
+          openPetMenu(true);
+        } else if (event.key === "Escape" && petMenuOpen) {
+          event.preventDefault();
+          closePetMenu(true);
+        }
+      });
+      petMenu?.addEventListener("click", function (event) {
+        var button = event.target.closest("button[data-pet-action]");
+        if (!button) return;
+        event.preventDefault();
+        event.stopPropagation();
+        var action = button.getAttribute("data-pet-action");
+        if (action === "switch") switchPetCharacter();
+        else if (action === "flick") runPetInteraction("flick_react");
+        else if (action === "stroke") runPetInteraction("stroke_react");
+      });
+      petMenu?.addEventListener("keydown", function (event) {
+        var buttons = Array.from(petMenu.querySelectorAll("button"));
+        var index = buttons.indexOf(shadow.activeElement);
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closePetMenu(true);
+          return;
+        }
+        if (!/^(ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Home|End)$/.test(event.key)) return;
+        event.preventDefault();
+        if (event.key === "Home") index = 0;
+        else if (event.key === "End") index = buttons.length - 1;
+        else index = (Math.max(0, index) + (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) + buttons.length) % buttons.length;
+        buttons[index]?.focus();
       });
       launcher.addEventListener("pointerdown", beginLauncherDrag);
       launcher.addEventListener("pointermove", moveLauncherDrag);
@@ -2526,8 +2795,10 @@
 
     function beginLauncherDrag(event) {
       if (!launcher || (event.pointerType === "mouse" && event.button !== 0)) return;
+      closePetMenu();
       pausePetAutonomy();
       commitPetRoamPosition();
+      loadPetAsset(petCharacterId, "drag").catch(function () {});
       var rect = launcher.getBoundingClientRect();
       launcherDragState = {
         pointerId: event.pointerId,
@@ -2540,6 +2811,22 @@
       suppressLauncherClick = false;
       launcher.classList.add("dragging");
       try { launcher.setPointerCapture(event.pointerId); } catch (_) {}
+      clearPetMenuLongPress();
+      if (event.pointerType !== "mouse") {
+        var longPressPointerId = event.pointerId;
+        petMenuLongPressTimer = host.setTimeout(function () {
+          petMenuLongPressTimer = 0;
+          if (!launcherDragState || launcherDragState.pointerId !== longPressPointerId || launcherDragState.moved) return;
+          var held = launcherDragState;
+          launcherDragState = null;
+          launcher.classList.remove("dragging");
+          try {
+            if (launcher.hasPointerCapture && launcher.hasPointerCapture(held.pointerId)) launcher.releasePointerCapture(held.pointerId);
+          } catch (_) {}
+          suppressLauncherClick = true;
+          openPetMenu(false);
+        }, 500);
+      }
       event.preventDefault();
       event.stopPropagation();
     }
@@ -2549,6 +2836,7 @@
       var dx = event.clientX - launcherDragState.startX;
       var dy = event.clientY - launcherDragState.startY;
       if (!launcherDragState.moved && Math.hypot(dx, dy) >= 5) {
+        clearPetMenuLongPress();
         launcherDragState.moved = true;
         setPetState("held_scared");
       }
@@ -2565,6 +2853,7 @@
 
     function endLauncherDrag(event) {
       if (!launcherDragState || event.pointerId !== launcherDragState.pointerId) return;
+      clearPetMenuLongPress();
       var ended = launcherDragState;
       launcherDragState = null;
       launcher.classList.remove("dragging");
@@ -2587,6 +2876,7 @@
 
     function cancelLauncherDrag(event) {
       if (!launcherDragState || event.pointerId !== launcherDragState.pointerId) return;
+      clearPetMenuLongPress();
       var cancelled = launcherDragState;
       launcherDragState = null;
       launcher.classList.remove("dragging");
@@ -2648,9 +2938,10 @@
     function toggleShell(open) {
       ensureShell();
       shellOpen = Boolean(open);
+      if (shellOpen && petMenuOpen) closePetMenu();
       panel.classList.toggle("open", shellOpen);
-      launcher.setAttribute("aria-expanded", shellOpen ? "true" : "false");
-      launcher.setAttribute("aria-label", shellOpen ? "关闭悬浮手机" : "打开悬浮手机");
+      launcher.setAttribute("aria-expanded", shellOpen || petMenuOpen ? "true" : "false");
+      launcher.setAttribute("aria-label", (shellOpen ? "关闭悬浮手机" : "打开悬浮手机") + " · 当前桌宠" + PET_CHARACTER_NAMES[petCharacterId]);
       launcher.classList.toggle("active", shellOpen);
       if (shellOpen) {
         pausePetAutonomy();
@@ -2899,6 +3190,7 @@
         clearPetFrameTimer();
         clearPetActivityTimer();
         clearPetMotionFrame();
+        clearPetMenuLongPress();
         try {
           if (petMotionQuery && petMotionHandler) {
             if (petMotionQuery.removeEventListener) petMotionQuery.removeEventListener("change", petMotionHandler);
@@ -2913,6 +3205,12 @@
         petVisibilityHandler = null;
         petAssetsReady = false;
         petReadyAssets.clear();
+        petImageCache.clear();
+        petLoadPromises.clear();
+        petLoadQueue.length = 0;
+        petLoadsInFlight = 0;
+        petMenu = null;
+        petMenuOpen = false;
         petSprite = null;
         if (profileOpenTimer) host.clearTimeout(profileOpenTimer);
         profileOpenTimer = 0;
