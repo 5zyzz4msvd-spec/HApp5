@@ -4205,7 +4205,7 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-board-name{max-width:100%;color:#3d2f25;font-size:11px;font-weight:950;line-height:1.15;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .st-board-node.has-enter .st-board-name,.st-board-node.active .st-board-name{color:#0f766e}
 .st-board-tag{border:1px solid rgba(146,64,14,.13);border-radius:999px;background:rgba(254,243,199,.5);color:rgba(146,64,14,.72);font-size:8px;font-weight:900;line-height:1;padding:3px 5px;white-space:nowrap}
-.st-board-map-toolbar{display:flex;justify-content:flex-end;margin-top:2px;margin-bottom:-12px;z-index:12}
+.st-board-map-toolbar{display:flex;justify-content:flex-end;gap:6px;margin-top:2px;margin-bottom:-12px;z-index:12}
 .st-board-drawer-toggle{position:relative;border:1px solid rgba(92,64,38,.18);border-radius:999px;background:rgba(255,250,240,.88);box-shadow:0 8px 18px rgba(92,64,38,.13),inset 0 1px 0 rgba(255,255,255,.68);color:#6b3f22;font-size:12px;font-weight:950;padding:7px 10px;cursor:pointer}
 .st-board-drawer-toggle.active{border-color:rgba(20,184,166,.36);background:linear-gradient(135deg,rgba(236,253,245,.94),rgba(255,251,235,.92));color:#0f766e}
 .st-board-drawer{border:1px solid rgba(92,64,38,.2);border-radius:14px;background:linear-gradient(180deg,rgba(255,250,240,.96),rgba(246,236,218,.94));box-shadow:0 12px 24px rgba(80,57,34,.12),inset 0 1px 0 rgba(255,255,255,.62);padding:10px;display:grid;gap:8px}
@@ -4319,6 +4319,29 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-location-current span{color:rgba(61,47,37,.58);font-size:10px;font-weight:850}
 .st-location-current strong{color:#3d2f25;font-size:13px;line-height:1.35;text-align:right}
 .st-location-list{display:grid;gap:8px}
+.st-secret-coordinate{position:relative;display:grid;align-content:start;gap:12px;min-height:0;overflow:auto;border:1px solid rgba(30,41,59,.2)!important;border-radius:18px!important;background:linear-gradient(145deg,#f8f3e8 0 55%,#eee5d5 55% 100%)!important;color:#172033!important;box-shadow:0 18px 38px rgba(31,41,55,.16),inset 0 0 0 1px rgba(255,255,255,.7)!important;padding:12px!important;scrollbar-width:thin;scrollbar-color:#be123c rgba(15,23,42,.08)}
+.st-secret-coordinate::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(15,23,42,.055) 1px,transparent 1px),linear-gradient(rgba(15,23,42,.05) 1px,transparent 1px);background-size:24px 24px;mask-image:linear-gradient(180deg,#000,transparent 72%);opacity:.7}
+.st-secret-coordinate>*{position:relative;z-index:1}
+.st-secret-coordinate-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;border-bottom:2px solid #172033;padding:1px 1px 10px}
+.st-secret-coordinate-title{display:grid;gap:4px}.st-secret-coordinate-title small{color:#9f1239;font:900 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}.st-secret-coordinate-title strong{color:#111827;font-size:18px;font-weight:1000;letter-spacing:.02em}.st-secret-coordinate-title span{color:#64748b;font-size:10px;font-weight:800}
+.st-secret-coordinate-count{display:grid;place-items:center;min-width:54px;height:38px;border:2px solid #172033;background:#172033;color:#fff;font:1000 10px/1.15 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;box-shadow:4px 4px 0 #be123c;text-align:center}
+.st-secret-coordinate-status{margin:0;border-left:4px solid #be123c;background:rgba(255,255,255,.68);color:#475569;padding:7px 9px;font-size:10px;line-height:1.45;font-weight:800}
+.st-secret-coordinate-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:4px}
+.st-secret-coordinate-grid::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed rgba(15,23,42,.2)}
+.st-secret-pin{position:relative;min-width:0;min-height:112px;border:2px solid #172033;border-radius:12px;background:rgba(255,255,255,.78);color:#172033;display:grid;grid-template-rows:auto 1fr auto;gap:7px;padding:9px;text-align:left;cursor:pointer;box-shadow:4px 4px 0 rgba(15,23,42,.14);transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.st-secret-pin::before,.st-secret-pin::after{content:"";position:absolute;pointer-events:none}.st-secret-pin::before{right:8px;top:8px;width:8px;height:8px;border:2px solid currentColor;border-radius:50%}.st-secret-pin::after{right:12px;top:3px;width:1px;height:20px;background:currentColor;box-shadow:0 9px 0 currentColor;opacity:.28}
+.st-secret-pin:hover,.st-secret-pin.active{transform:translate(-1px,-2px);box-shadow:6px 7px 0 rgba(15,23,42,.18);background:#fff}
+.st-secret-pin.active{outline:3px solid rgba(190,18,60,.18);outline-offset:1px}
+.st-secret-pin[data-special-location-state="ready"]{border-color:#0f766e;color:#0f766e}.st-secret-pin[data-special-location-state="ready"].active{outline-color:rgba(15,118,110,.2)}
+.st-secret-pin[data-special-location-state="worldbook-missing"]{border-color:#a16207;color:#854d0e}
+.st-secret-pin-code{font:950 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;opacity:.72}
+.st-secret-pin strong{align-self:center;min-width:0;color:currentColor;font-size:12px;font-weight:1000;line-height:1.28;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.st-secret-pin-meta{display:flex;align-items:center;justify-content:space-between;gap:5px}.st-secret-pin-meta span{min-width:0;font-size:8px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st-secret-pin-meta em{flex:0 0 auto;border:1px solid currentColor;border-radius:999px;padding:2px 5px;font-size:8px;font-style:normal;font-weight:950}
+.st-secret-coordinate-file{display:grid;gap:9px;border:2px solid #172033;border-radius:13px;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(248,250,252,.88));padding:11px;box-shadow:5px 5px 0 #be123c}
+.st-secret-file-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center}.st-secret-file-index{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#172033;color:#fff;font:1000 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.st-secret-file-title{min-width:0;display:grid;gap:2px}.st-secret-file-title strong{color:#172033;font-size:14px;font-weight:1000;line-height:1.2}.st-secret-file-title small{color:#64748b;font-size:9px;font-weight:850}.st-secret-file-state{border:1px solid currentColor;border-radius:999px;color:#9f1239;padding:3px 7px;font-size:8px;font-weight:950;white-space:nowrap}.st-secret-file-state.ready{color:#0f766e}.st-secret-file-state.worldbook-missing{color:#854d0e}
+.st-secret-coordinate-file p{margin:0;color:#475569;font-size:11px;line-height:1.58;white-space:pre-wrap}.st-secret-file-access{display:flex;align-items:center;gap:6px;border-top:1px dashed rgba(15,23,42,.18);padding-top:8px;color:#64748b;font-size:9px;font-weight:850}.st-secret-file-access::before{content:"ACCESS";border:1px solid currentColor;padding:2px 4px;font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+.st-secret-file-action{min-height:44px;width:100%;border:2px solid #172033;border-radius:10px;background:#172033;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;box-shadow:4px 4px 0 #be123c}.st-secret-file-action[data-special-location-install]{background:#a16207}.st-secret-file-action[data-special-location-suggest]{background:#0f766e}.st-secret-file-action:disabled{opacity:.48;cursor:not-allowed;box-shadow:none}
+@media(max-width:360px){.st-secret-coordinate{padding:9px!important}.st-secret-coordinate-grid{gap:6px;padding:2px}.st-secret-pin{min-height:104px;padding:7px}.st-secret-file-head{grid-template-columns:auto minmax(0,1fr)}.st-secret-file-state{grid-column:2;justify-self:start}.st-board-map-toolbar{flex-wrap:wrap;margin-bottom:-7px}.st-board-drawer-toggle.is-special{flex-basis:100%}}
 .st-location-item{border:1px solid rgba(92,64,38,.16);border-radius:8px;background:rgba(255,255,255,.42);overflow:hidden}
 .st-location-item.is-current{border-color:rgba(146,64,14,.42);background:linear-gradient(135deg,rgba(254,243,199,.62),rgba(255,255,255,.48))}
 .st-location-item.is-favorite{border-color:rgba(202,138,4,.32);background:linear-gradient(135deg,rgba(254,243,199,.52),rgba(255,255,255,.44))}
@@ -14776,6 +14799,170 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     status.hidden = !message;
   }
 
+  const PROFILE_CHILD_ROLE_ROOT_KEYS = [...ROLE_PAGE_SECTIONS, ...ROLE_EXTRA_ROOT_OBJECTS];
+  const PROFILE_CHILD_ROLE_ACTIVE_SCOPES = new Set();
+  const PROFILE_CHILD_ROLE_ACTIVE_NAMES = new Set();
+
+  function profileChildRolePickObject(source, keys, fallback = {}) {
+    const input = isPlainObject(source) ? source : {};
+    const defaults = isPlainObject(fallback) ? fallback : {};
+    return Object.fromEntries(keys.map((key) => [
+      key,
+      encounterClone(Object.prototype.hasOwnProperty.call(input, key) ? input[key] : defaults[key])
+    ]));
+  }
+
+  function profileChildRoleExactInitialVariables(value, role) {
+    const normalizedRole = encounterNormalizeRole(role || {});
+    const roleName = String(normalizedRole.name || "").trim();
+    const gender = normalizedRoleGender(normalizedRole.gender, "女");
+    const source = isPlainObject(value) ? encounterClone(value) : {};
+    normalizeRoleSevenPages(source, roleName, { removeLegacy: true, gender });
+    const defaults = encounterDefaultInitialVariableObject(normalizedRole);
+    normalizeRoleSevenPages(defaults, roleName, { removeLegacy: true, gender });
+    const output = {
+      "衣着": profileChildRolePickObject(source["衣着"], ROLE_CLOTHING_FIELDS, defaults["衣着"]),
+      "信息": profileChildRolePickObject(
+        source["信息"],
+        ["姓名", "性别", "_年龄", "社团或职业", "身高", "体重", gender === "男" ? "阴茎长度" : "三围", "绰号", "绰号已认可"],
+        defaults["信息"]
+      ),
+      "状态": profileChildRolePickObject(source["状态"], ROLE_STATE_FIELDS, defaults["状态"]),
+      "事件": profileChildRolePickObject(source["事件"], ROLE_EVENT_FIELDS, defaults["事件"]),
+      "敏感": profileChildRolePickObject(
+        source["敏感"],
+        gender === "男" ? ROLE_MALE_SENSITIVE_FIELDS : ROLE_FEMALE_SENSITIVE_FIELDS,
+        defaults["敏感"]
+      ),
+      "效果": {
+        "心理": encounterClone(source?.["效果"]?.["心理"] ?? defaults["效果"]["心理"]),
+        "临时催眠效果": isPlainObject(source?.["效果"]?.["临时催眠效果"])
+          ? encounterClone(source["效果"]["临时催眠效果"])
+          : {},
+        "永久催眠效果": isPlainObject(source?.["效果"]?.["永久催眠效果"])
+          ? encounterClone(source["效果"]["永久催眠效果"])
+          : {}
+      },
+      "劣迹": {
+        "性格": isPlainObject(source?.["劣迹"]?.["性格"]) ? encounterClone(source["劣迹"]["性格"]) : {},
+        "罪行": profileChildRolePickObject(
+          source?.["劣迹"]?.["罪行"],
+          ["盗窃", "露出", "私闯", "伤害", "淫乱", "强奸"],
+          defaults["劣迹"]["罪行"]
+        )
+      },
+      "改造": {},
+      "物品": ensureRoleBaselineItems(source["物品"], roleName),
+      "子嗣": normalizeRoleChildren(source["子嗣"])
+    };
+    for (const area of ROLE_REMODEL_AREAS) {
+      const details = source?.["改造"]?.[area];
+      if (!isPlainObject(details)) continue;
+      const allowed = ROLE_REMODEL_DETAIL_FIELDS[area] || [];
+      const cleaned = {};
+      for (const key of allowed) {
+        if (Object.prototype.hasOwnProperty.call(details, key)) cleaned[key] = encounterClone(details[key]);
+      }
+      output["改造"][area] = cleaned;
+    }
+    output["信息"]["姓名"] = roleName;
+    output["信息"]["性别"] = gender;
+    output["信息"]["_年龄"] = encounterPlainLine(normalizedRole.age || output["信息"]["_年龄"] || "未记录") || "未记录";
+    return output;
+  }
+
+  function profileChildRoleStableSnapshot(value) {
+    if (Array.isArray(value)) return value.map(profileChildRoleStableSnapshot);
+    if (isPlainObject(value)) {
+      return Object.fromEntries(Object.keys(value).sort().map((key) => [key, profileChildRoleStableSnapshot(value[key])]));
+    }
+    return value;
+  }
+
+  function profileChildRoleSnapshotJson(value) {
+    try { return JSON.stringify(profileChildRoleStableSnapshot(value)); } catch { return ""; }
+  }
+
+  function profileChildRoleHasExactContract(initialVariables, roleMeta) {
+    if (!isPlainObject(initialVariables)) return false;
+    const rootKeys = Object.keys(initialVariables);
+    if (rootKeys.length !== PROFILE_CHILD_ROLE_ROOT_KEYS.length || PROFILE_CHILD_ROLE_ROOT_KEYS.some((key) => !rootKeys.includes(key))) return false;
+    const expected = profileChildRoleExactInitialVariables(initialVariables, {
+      name: roleMeta?.name,
+      gender: normalizedRoleGender(roleMeta?.gender, "女"),
+      age: roleMeta?.age
+    });
+    return profileChildRoleSnapshotJson(initialVariables) === profileChildRoleSnapshotJson(expected);
+  }
+
+  function profileChildRoleOptionKey(option) {
+    if (!option || typeof option !== "object") return "default";
+    return String(option.type || "") + ":" + String(option.message_id ?? "");
+  }
+
+  function profileChildRoleSameOption(left, right) {
+    return profileChildRoleOptionKey(left) === profileChildRoleOptionKey(right);
+  }
+
+  function profileChildRoleCloneCandidate(candidate) {
+    if (!candidate?.mvu || typeof candidate.replace !== "function") return null;
+    const mvu = encounterClone(candidate.mvu);
+    const stat = mvu?.stat_data && isPlainObject(mvu.stat_data) ? mvu.stat_data : mvu;
+    if (!isPlainObject(stat)) return null;
+    return { ...candidate, mvu, stat };
+  }
+
+  function profileChildRoleRootPath(roleName) {
+    return "/角色/" + String(roleName || "").replace(/~/g, "~0").split("/").join("~1");
+  }
+
+  function profileChildRoleCommitted(candidate, motherName, childKey, roleMeta, expectedInitialVariables, expectedChildren) {
+    const roles = candidate?.stat?.["角色"];
+    if (!isPlainObject(roles)) return false;
+    const role = roles[roleMeta.name];
+    if (!profileChildRoleHasExactContract(role, roleMeta)) return false;
+    if (profileChildRoleSnapshotJson(role) !== profileChildRoleSnapshotJson(expectedInitialVariables)) return false;
+    const mother = roles[motherName];
+    if (!isPlainObject(mother)) return false;
+    const children = normalizeRoleChildren(mother["子嗣"]);
+    const child = children["子嗣列表"][childKey];
+    return isPlainObject(child)
+      && child["阶段"] === "角色"
+      && child["角色名"] === roleMeta.name
+      && profileChildRoleSnapshotJson(children) === profileChildRoleSnapshotJson(expectedChildren);
+  }
+
+  function profileChildRoleWorldbookVerified(entries, expectedEntries) {
+    const list = Array.isArray(entries) ? entries : [];
+    return expectedEntries.every((expected) => {
+      const title = encounterEntryTitle(expected);
+      const matches = list.filter((entry) => encounterEntryTitle(entry) === title);
+      return matches.length === 1 && String(matches[0]?.content || "") === String(expected?.content || "");
+    });
+  }
+
+  async function profileChildRoleRollbackVariable(candidate, motherName, childKey, nextName, previousChild) {
+    const current = encounterCurrentMvuData();
+    const source = current && profileChildRoleSameOption(current.option, candidate?.option) ? current : candidate;
+    const rollback = profileChildRoleCloneCandidate(source);
+    const roles = rollback?.stat?.["角色"];
+    const mother = roles?.[motherName];
+    if (!rollback || !isPlainObject(roles) || !isPlainObject(mother)) return false;
+    delete roles[nextName];
+    const children = normalizeRoleChildren(mother["子嗣"]);
+    children["子嗣列表"][childKey] = encounterClone(previousChild);
+    mother["子嗣"] = children;
+    const replaced = await encounterReplaceMvuData(rollback);
+    if (!replaced) return false;
+    const readback = encounterCurrentMvuData();
+    if (!readback || !profileChildRoleSameOption(readback.option, rollback.option)) return false;
+    const readbackRoles = readback?.stat?.["角色"];
+    const readbackChild = normalizeRoleChildren(readbackRoles?.[motherName]?.["子嗣"])["子嗣列表"][childKey];
+    return isPlainObject(readbackRoles)
+      && !Object.prototype.hasOwnProperty.call(readbackRoles, nextName)
+      && profileChildRoleSnapshotJson(readbackChild) === profileChildRoleSnapshotJson(previousChild);
+  }
+
   function profileChildRoleManualPayload(page, motherName, child) {
     const card = page?.querySelector?.("[data-profile-child-role-form]");
     if (!card) throw new Error("转角色表单未就绪。");
@@ -14798,16 +14985,22 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const missing = required.filter(([, value]) => !String(value || "").trim()).map(([label]) => label);
     if (missing.length) throw new Error("请填写：" + missing.join("、") + "。");
     if (/[\r\n<>]/.test(role.name)) throw new Error("角色名不能包含换行或尖括号。");
-    const initialVariables = encounterInitialVariablesObject(role);
+    if (/^(?:__proto__|prototype|constructor)$/i.test(role.name)) throw new Error("该角色名属于系统保留名称，请更换。");
+    let initialVariables = encounterInitialVariablesObject(role);
     initialVariables["信息"]["姓名"] = role.name;
     initialVariables["信息"]["性别"] = role.gender;
     initialVariables["信息"]["_年龄"] = role.age;
     normalizeRoleSevenPages(initialVariables, role.name, { removeLegacy: true, gender: role.gender });
+    initialVariables = profileChildRoleExactInitialVariables(initialVariables, role);
+    const roleMeta = { name: role.name, gender: role.gender, age: role.age };
+    if (!profileChildRoleHasExactContract(initialVariables, roleMeta)) {
+      throw new Error("角色初始变量未通过十页结构校验，请检查后重试。");
+    }
     const persona = encounterPersonaContent(role);
     if (!persona || !persona.includes("<" + role.name + "人设>") || !persona.includes("</" + role.name + "人设>")) {
       throw new Error("人设世界书生成失败，请检查人设字段。");
     }
-    return { role, roleMeta: { name: role.name, gender: role.gender, age: role.age }, persona, initialVariables };
+    return { role, roleMeta, persona, initialVariables };
   }
 
   function profileChildRoleStaticVariableWorldbookContent(roleName, initialVariables) {
@@ -14886,77 +15079,145 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       const nextName = generated.roleMeta.name;
       const ageText = generated.roleMeta.age;
       const childDescription = String(child["说明"] || "未记录").trim() || "未记录";
-      if (Object.prototype.hasOwnProperty.call(data.stat["角色"], nextName)) {
+      const optionKey = profileChildRoleOptionKey(data.option);
+      const scopeLock = optionKey + "::child::" + roleName + "::" + childKey;
+      const nameLock = optionKey + "::role::" + nextName;
+      if (PROFILE_CHILD_ROLE_ACTIVE_SCOPES.has(scopeLock) || PROFILE_CHILD_ROLE_ACTIVE_NAMES.has(nameLock)) {
         if (confirmButton) confirmButton.disabled = false;
-        profileChildRoleFormStatus(page, "角色变量中已存在「" + nextName + "」，请更换角色名。");
+        profileChildRoleFormStatus(page, "该子嗣或角色名正在执行转入事务，请等待当前操作完成。");
         return;
       }
-      const worldbookSnapshot = await encounterReadCharacterWorldEntries({ name: "子嗣转角色：" + nextName });
-      if (!worldbookSnapshot?.ok) {
-        if (confirmButton) confirmButton.disabled = false;
-        profileChildRoleFormStatus(page, "无法读取当前角色卡世界书，未写入任何内容。请确认角色卡世界书已绑定后重试。");
-        return;
-      }
-      if (encounterRoleExistsInWorldbook(worldbookSnapshot.entries, nextName)) {
-        if (confirmButton) confirmButton.disabled = false;
-        profileChildRoleFormStatus(page, "角色卡世界书中已存在「" + nextName + "」的人设或变量条目，请更换角色名，现有条目不会被覆盖。");
-        return;
-      }
-      const previousChildren = encounterClone(role["子嗣"]);
-      data.stat["角色"][nextName] = generated.initialVariables;
-      child["阶段"] = "角色";
-      child["角色名"] = nextName;
-      role["子嗣"] = children;
+      PROFILE_CHILD_ROLE_ACTIVE_SCOPES.add(scopeLock);
+      PROFILE_CHILD_ROLE_ACTIVE_NAMES.add(nameLock);
+      const worldbookEntries = profileChildRoleWorldbookEntries(nextName, generated.persona, generated.initialVariables);
+      const worldbookPackage = {
+        name: "子嗣转角色：" + nextName,
+        roles: [],
+        extraEntries: worldbookEntries
+      };
       let variableWritten = false;
+      let worldbookSnapshot = null;
+      let committedCandidate = null;
+      let previousChild = null;
       try {
+        const latest = encounterCurrentMvuData();
+        if (!latest || !profileChildRoleSameOption(latest.option, data.option)) {
+          throw new Error("当前变量楼层已变化，未开始写入。");
+        }
+        const latestRoles = latest?.stat?.["角色"];
+        const latestMother = latestRoles?.[roleName];
+        if (!isPlainObject(latestRoles) || !isPlainObject(latestMother)) throw new Error("角色变量未就绪。");
+        const latestChildren = normalizeRoleChildren(latestMother["子嗣"]);
+        const latestChild = latestChildren["子嗣列表"][childKey];
+        if (!isPlainObject(latestChild) || latestChild["阶段"] !== "孩童" || String(latestChild["角色名"] || "").trim()) {
+          throw new Error("该子嗣记录已变化，未开始写入。");
+        }
+        if (Object.prototype.hasOwnProperty.call(latestRoles, nextName)) {
+          throw new Error("角色变量中已存在「" + nextName + "」，请更换角色名。");
+        }
+        previousChild = encounterClone(latestChild);
+        profileChildRoleFormStatus(page, "正在读取并锁定角色卡世界书…", "working");
+        worldbookSnapshot = await hospitalLineWorldbookCommentSnapshot(worldbookPackage);
+        if (!worldbookSnapshot?.ok) {
+          throw new Error("无法读取当前角色卡世界书，未写入任何内容。请确认角色卡世界书已绑定后重试。");
+        }
+        if (encounterRoleExistsInWorldbook(worldbookSnapshot.originals.map((record) => record.entry), nextName)) {
+          throw new Error("角色卡世界书中已存在「" + nextName + "」的人设或变量条目，请更换角色名，现有条目不会被覆盖。");
+        }
+        committedCandidate = profileChildRoleCloneCandidate(latest);
+        const committedRoles = committedCandidate?.stat?.["角色"];
+        const committedMother = committedRoles?.[roleName];
+        if (!committedCandidate || !isPlainObject(committedRoles) || !isPlainObject(committedMother)) {
+          throw new Error("无法建立角色变量事务快照。");
+        }
+        const committedChildren = normalizeRoleChildren(committedMother["子嗣"]);
+        const committedChild = committedChildren["子嗣列表"][childKey];
+        if (!isPlainObject(committedChild) || committedChild["阶段"] !== "孩童") {
+          throw new Error("该子嗣记录已变化，未开始写入。");
+        }
+        committedRoles[nextName] = encounterClone(generated.initialVariables);
+        committedChild["阶段"] = "角色";
+        committedChild["角色名"] = nextName;
+        committedMother["子嗣"] = committedChildren;
         profileChildRoleFormStatus(page, "正在写入角色变量…", "working");
-        variableWritten = typeof encounterReplaceMvuData === "function" ? await encounterReplaceMvuData(data) : false;
+        variableWritten = await encounterReplaceMvuData(committedCandidate);
         if (!variableWritten) throw new Error("角色变量写入失败。");
+        const variableReadback = encounterCurrentMvuData();
+        if (!variableReadback
+          || !profileChildRoleSameOption(variableReadback.option, committedCandidate.option)
+          || !profileChildRoleCommitted(
+            variableReadback,
+            roleName,
+            childKey,
+            generated.roleMeta,
+            generated.initialVariables,
+            committedChildren
+          )) {
+          throw new Error("角色变量写入后校验失败。");
+        }
         profileChildRoleFormStatus(page, "正在写入角色卡世界书…", "working");
-        const worldbookResult = await encounterInsertPackageWorldbooks({
-          name: "子嗣转角色：" + nextName,
-          roles: [],
-          extraEntries: profileChildRoleWorldbookEntries(nextName, generated.persona, generated.initialVariables)
-        });
+        const worldbookResult = await encounterInsertPackageWorldbooks(worldbookPackage);
         if (!worldbookResult?.ok) {
           throw new Error("角色卡世界书写入失败：" + ((worldbookResult?.failed || [worldbookResult?.reason || "未知错误"]).join("；")));
         }
+        const worldbookReadback = await encounterReadCharacterWorldEntries(worldbookPackage);
+        if (!worldbookReadback?.ok || !profileChildRoleWorldbookVerified(worldbookReadback.entries, worldbookEntries)) {
+          throw new Error("角色卡世界书写入后校验失败。");
+        }
+        const payload = {
+          来源: "人物档案",
+          操作: "转入角色阶段",
+          暂存摘要: (latestChild["名称"] || "未命名") + "｜转入角色：" + nextName,
+          变量处理: "前端已结算",
+          前端已写路径: [profileChildPath(roleName, childKey), profileChildRoleRootPath(nextName)],
+          AI不可写路径: [profileChildPath(roleName, childKey), profileChildRoleRootPath(nextName)],
+          母亲: roleName,
+          子嗣键: childKey,
+          子嗣名称: latestChild["名称"] || "未命名",
+          子嗣年龄: ageText,
+          子嗣说明: childDescription,
+          预留角色名: nextName,
+          世界书处理: "用户表单已生成并写入[mvu_plot]" + nextName + "人设与[mvu_update]" + nextName + "变量；变量条目保存校验后的静态初始快照。",
+          前端处理: "已按用户填写的人设与初始变量完成十页角色建档，并保留母亲的子嗣记录",
+          AI执行规范: "本轮只按新角色人设与当前场景安排自然登场。不得重新生成或覆盖初始变量，不得再次add角色根、改写世界书、删除母亲记录或转入其他子嗣。",
+          不可删除: true
+        };
+        const added = await appendAppOperation(payload);
+        if (!added) throw new Error("暂存区写入失败。");
       } catch (error) {
-        delete data.stat["角色"][nextName];
-        role["子嗣"] = previousChildren === null ? normalizeRoleChildren({}) : previousChildren;
-        let rollbackWritten = !variableWritten;
-        if (variableWritten) {
-          try { rollbackWritten = Boolean(await encounterReplaceMvuData(data)); } catch { rollbackWritten = false; }
+        let worldbookRolledBack = !worldbookSnapshot?.ok;
+        if (worldbookSnapshot?.ok) {
+          try { worldbookRolledBack = Boolean(await hospitalLineRollbackWorldbook(worldbookSnapshot)); } catch { worldbookRolledBack = false; }
+        }
+        let variableRolledBack = !variableWritten;
+        if (variableWritten && committedCandidate && previousChild) {
+          try {
+            variableRolledBack = await profileChildRoleRollbackVariable(
+              committedCandidate,
+              roleName,
+              childKey,
+              nextName,
+              previousChild
+            );
+          } catch {
+            variableRolledBack = false;
+          }
         }
         if (confirmButton) confirmButton.disabled = false;
         profileChildRoleFormStatus(
           page,
           "转入角色失败：" + String(error?.message || error || "未知错误") +
-            (rollbackWritten ? " 已恢复角色变量与母亲子嗣记录。" : " 自动回滚失败，请不要继续操作并检查当前变量。")
+            (worldbookRolledBack && variableRolledBack
+              ? " 已恢复角色变量、母亲子嗣记录与角色卡世界书。"
+              : " 自动回滚未完全通过校验，请不要继续操作并检查当前变量和世界书。")
         );
         return;
+      } finally {
+        PROFILE_CHILD_ROLE_ACTIVE_SCOPES.delete(scopeLock);
+        PROFILE_CHILD_ROLE_ACTIVE_NAMES.delete(nameLock);
       }
-      const payload = {
-        来源: "人物档案",
-        操作: "转入角色阶段",
-        暂存摘要: (child["名称"] || "未命名") + "｜转入角色：" + nextName,
-        变量处理: "前端已结算",
-        前端已写路径: [profileChildPath(roleName), "/角色/" + nextName],
-        AI不可写路径: [profileChildPath(roleName), "/角色/" + nextName],
-        母亲: roleName,
-        子嗣键: childKey,
-        子嗣名称: child["名称"] || "未命名",
-        子嗣年龄: ageText,
-        子嗣说明: childDescription,
-        预留角色名: nextName,
-        世界书处理: "用户表单已生成并写入[mvu_plot]" + nextName + "人设与[mvu_update]" + nextName + "变量；变量条目保存校验后的静态初始快照。",
-        前端处理: "已按用户填写的人设与初始变量完成十页角色建档，并保留母亲的子嗣记录",
-        AI执行规范: "本轮只按新角色人设与当前场景安排自然登场。不得重新生成或覆盖初始变量，不得再次add角色根、改写世界书、删除母亲记录或转入其他子嗣。",
-        不可删除: true
-      };
-      const added = await appendAppOperation(payload);
       delete page.dataset.profileChildOperationDialog;
-      page.dataset.profileChildrenNotice = added ? "角色与世界书已写入，本轮操作已暂存。" : "角色与世界书已写入，但暂存区未就绪。";
+      page.dataset.profileChildrenNotice = "角色、十页变量与两条世界书已回读确认，本轮操作已暂存。";
       renderPersonProfilePage(page);
       return;
     }
@@ -29729,10 +29990,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         .map((entry) => encounterEntryTitle(entry))
         .filter((comment) => incomingByComment.has(comment)));
       if (pending.length) {
-        await bound.target.createWorldbookEntries(bound.worldName, pending.map(encounterToTavernHelperEntry), { render: "immediate" });
+        const created = await bound.target.createWorldbookEntries(bound.worldName, pending.map(encounterToTavernHelperEntry), { render: "immediate" });
+        if (created === false) return null;
       }
       if (existingCommentsToRepair.size && typeof bound.target.updateWorldbookWith === "function") {
-        await bound.target.updateWorldbookWith(bound.worldName, (nextWorldbook) => {
+        const updated = await bound.target.updateWorldbookWith(bound.worldName, (nextWorldbook) => {
           for (const entry of encounterWorldEntryValues(nextWorldbook)) {
             const comment = encounterEntryTitle(entry);
             if (!existingCommentsToRepair.has(comment)) continue;
@@ -29752,6 +30014,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
           }
           return nextWorldbook;
         }, { render: "immediate" });
+        if (updated === false) return null;
       }
       return { ok: true, count: entries.length, insertedCount: pending.length, updatedCount: existingCommentsToRepair.size, targetWorldbook: bound.worldName, method: bound.method };
     } catch {
@@ -30085,7 +30348,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         else if (status === "existing") existingCount += 1;
         else return null;
       }
-      if (insertedCount || updatedCount) await bound.mod.saveWorldInfo(bound.worldName, data, true);
+      if (insertedCount || updatedCount) {
+        const saved = await bound.mod.saveWorldInfo(bound.worldName, data, true);
+        if (saved === false) return null;
+      }
       try { await bound.mod.updateWorldInfoList?.(); } catch {}
       return { ok: true, count: entries.length, insertedCount, updatedCount, existingCount, targetWorldbook: bound.worldName, method: bound.method };
     } catch {
@@ -35885,7 +36151,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const drawerToggle = '<div class="st-board-map-toolbar">' +
       '<button type="button" class="st-board-drawer-toggle ' + (drawerOpen ? "active" : "") + '" data-board-drawer-toggle aria-expanded="' + (drawerOpen ? "true" : "false") + '">' + escapeHtml(mapBoardExtraTitle(layerId)) + '</button>' +
       '<button type="button" class="st-board-drawer-toggle is-rules ' + (rulesOpen ? "active" : "") + '" data-location-rule-toggle aria-expanded="' + (rulesOpen ? "true" : "false") + '">地点规则</button>' +
-      '<button type="button" class="st-board-drawer-toggle is-special ' + (specialOpen ? "active" : "") + '" data-map-special-toggle aria-expanded="' + (specialOpen ? "true" : "false") + '">特殊地点</button>' +
+      '<button type="button" class="st-board-drawer-toggle is-special ' + (specialOpen ? "active" : "") + '" data-map-special-toggle aria-expanded="' + (specialOpen ? "true" : "false") + '">机密坐标 · ' + specialLocationCatalog().length + '</button>' +
     '</div>';
     const boardOrRules = specialOpen
       ? renderSpecialLocationCard(page)
@@ -36210,6 +36476,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     page.dataset.mapBoardLayer = "city";
     root.appendChild(page);
     renderCityMapPage(page);
+    return page;
   }
 
   function openCampusMapPage(tile) {
@@ -36357,41 +36624,83 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const installedComments = specialLocationInstalledComments(page);
     const installBusy = page?.dataset?.specialLocationInstallBusy === "1";
     const catalog = specialLocationCatalog();
-    const locations = catalog.map((location) => {
+    const requestedId = String(page?.dataset?.specialLocationSelectedId || "");
+    const selected = catalog.find((location) => location.id === requestedId) || catalog[0] || null;
+    if (page && selected && requestedId !== selected.id) page.dataset.specialLocationSelectedId = selected.id;
+    const locationState = (location) => {
       const unlocked = specialLocationUnlocked(location, stat);
-      const cost = Math.max(0, Math.floor(Number(location.cost) || 0));
-      const passItem = specialLocationPassItemName(location) || String(location.passItem || "").trim();
       const installed = !location.dynamicWorldbook || installedComments.has(specialLocationCanonicalComment(location.canonicalComment));
-      const meta = location.dynamicWorldbook
-        ? (installed ? "世界书已插入" : "按需插入世界书")
-        : cost <= 0 ? "可进入" : unlocked ? "持有准入证" : ("需要" + (passItem || "准入证"));
-      const action = location.dynamicWorldbook && !installed
-        ? '<button type="button" class="st-location-suggest" data-special-location-install="' + escapeAttr(location.id) + '"' + (installBusy ? " disabled" : "") + '>' + (installBusy ? "处理中" : "插入世界书") + '</button>'
-        : unlocked
-          ? '<button type="button" class="st-location-suggest" data-special-location-suggest="' + escapeAttr(location.id) + '"' + (pendingStoryLocation ? " disabled" : "") + '>' + (pendingStoryLocation ? "已暂存" : "建议设为地点") + '</button>'
-          : '<button type="button" class="st-location-suggest" data-special-location-shop="' + escapeAttr(location.id) + '">去商店</button>';
-      return '<details class="st-location-item" data-special-location-id="' + escapeAttr(location.id) + '">' +
-        '<summary class="st-location-summary">' +
-          '<span class="st-location-title">' +
-            '<strong>' + escapeHtml(location.label) + '</strong>' +
-            '<em class="st-location-category">' + escapeHtml(meta) + '</em>' +
-          '</span>' +
-          '<span></span>' +
-          action +
-          '<span class="st-location-chevron">⌄</span>' +
-        '</summary>' +
-        '<div class="st-location-detail"><p>' + escapeHtml(location.info || "待续") + '</p></div>' +
-      '</details>';
+      return !installed && location.dynamicWorldbook ? "worldbook-missing" : (unlocked ? "ready" : "locked");
+    };
+    const stateLabel = (state) => state === "ready" ? "可进入" : state === "worldbook-missing" ? "档案待载入" : "准入受限";
+    const pins = catalog.map((location, index) => {
+      const state = locationState(location);
+      const active = selected?.id === location.id;
+      const type = location.dynamicWorldbook ? "扩展坐标" : "校内坐标";
+      return '<button type="button" class="st-secret-pin ' + (active ? "active" : "") + '" data-special-location-select="' + escapeAttr(location.id) + '" data-special-location-state="' + state + '" aria-pressed="' + (active ? "true" : "false") + '">' +
+        '<span class="st-secret-pin-code">SC-' + String(index + 1).padStart(2, "0") + '</span>' +
+        '<strong>' + escapeHtml(location.label || "未命名地点") + '</strong>' +
+        '<span class="st-secret-pin-meta"><span>' + escapeHtml(type) + '</span><em>' + stateLabel(state) + '</em></span>' +
+      '</button>';
     }).join("");
-    return '<section class="st-lite-card st-graph-card st-graph-paper">' +
-      '<div class="st-graph-head"><strong>特殊地点</strong><span>' + catalog.length + ' 地点</span></div>' +
-      '<p class="st-graph-add-hint">润色地点只在这里按需加入角色卡世界书，不会随角色卡初始世界书自动写入。</p>' +
-      (status ? '<p class="st-graph-add-hint">' + escapeHtml(status) + '</p>' : '') +
-      '<div class="st-location-list">' + locations + '</div>' +
+    let file = '<p class="st-secret-coordinate-status">暂无特殊地点档案。</p>';
+    if (selected) {
+      const index = Math.max(0, catalog.findIndex((location) => location.id === selected.id));
+      const state = locationState(selected);
+      const unlocked = specialLocationUnlocked(selected, stat);
+      const passItem = specialLocationPassItemName(selected) || String(selected.passItem || "").trim();
+      const installed = !selected.dynamicWorldbook || installedComments.has(specialLocationCanonicalComment(selected.canonicalComment));
+      const access = state === "worldbook-missing"
+        ? "地点资料尚未载入；确认后只插入这一处地点世界书。"
+        : unlocked
+          ? (passItem ? "通行确认：" + passItem : "无需额外准入证。")
+          : "进入条件：" + (passItem || "对应准入证");
+      const action = selected.dynamicWorldbook && !installed
+        ? '<button type="button" class="st-secret-file-action" data-special-location-install="' + escapeAttr(selected.id) + '"' + (installBusy ? " disabled" : "") + '>' + (installBusy ? "正在载入地点档案…" : "载入此地点档案") + '</button>'
+        : unlocked
+          ? '<button type="button" class="st-secret-file-action" data-special-location-suggest="' + escapeAttr(selected.id) + '"' + (pendingStoryLocation ? " disabled" : "") + '>' + (pendingStoryLocation ? "地点建议已暂存" : "建议前往此坐标") + '</button>'
+          : '<button type="button" class="st-secret-file-action" data-special-location-shop="' + escapeAttr(selected.id) + '">查看准入证 / 去商店</button>';
+      file = '<article class="st-secret-coordinate-file" data-special-location-file="' + escapeAttr(selected.id) + '">' +
+        '<header class="st-secret-file-head">' +
+          '<span class="st-secret-file-index">' + String(index + 1).padStart(2, "0") + '</span>' +
+          '<span class="st-secret-file-title"><strong>' + escapeHtml(selected.label || "未命名地点") + '</strong><small>地图 / 机密坐标 / SC-' + String(index + 1).padStart(2, "0") + '</small></span>' +
+          '<span class="st-secret-file-state ' + state + '">' + stateLabel(state) + '</span>' +
+        '</header>' +
+        '<p>' + escapeHtml(selected.info || "暂无地点信息。") + '</p>' +
+        '<div class="st-secret-file-access">' + escapeHtml(access) + '</div>' +
+        action +
+      '</article>';
+    }
+    return '<section class="st-lite-card st-secret-coordinate" data-special-location-layer>' +
+      '<header class="st-secret-coordinate-head">' +
+        '<span class="st-secret-coordinate-title"><small>MAP / CLASSIFIED COORDINATES</small><strong>机密坐标图层</strong><span>地图内特殊地点 · 点击坐标查看档案</span></span>' +
+        '<span class="st-secret-coordinate-count">' + catalog.length + '<br>POINTS</span>' +
+      '</header>' +
+      '<p class="st-secret-coordinate-status">特殊地点资料只在这里按需加入角色卡世界书，不会在开场重复写入。</p>' +
+      (status ? '<p class="st-secret-coordinate-status">' + escapeHtml(status) + '</p>' : '') +
+      '<div class="st-secret-coordinate-grid">' + pins + '</div>' +
+      file +
     '</section>';
   }
 
   function bindSpecialLocationActions(page) {
+    page.querySelectorAll("[data-special-location-select]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const selectedId = button.getAttribute("data-special-location-select") || "";
+        page.dataset.specialLocationSelectedId = selectedId;
+        rerenderSpecialLocationHost(page);
+        requestAnimationFrame(() => {
+          const file = Array.from(page.querySelectorAll("[data-special-location-file]"))
+            .find((element) => element.getAttribute("data-special-location-file") === selectedId);
+          file?.scrollIntoView?.({
+            behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth",
+            block: "nearest"
+          });
+        });
+      });
+    });
     page.querySelectorAll("[data-special-location-install]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.preventDefault();
@@ -36460,28 +36769,12 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   }
 
   function openSpecialLocationPage(tile) {
-    ensureStyle();
-    ensurePhoneDarkThemeStyle();
-    const root = findPhoneRoot(tile);
-    setPhoneActiveApp(root, "special-location");
-    root.style.position = root.style.position || "relative";
-    clearPhoneInternalOverlays(root);
-    const page = document.createElement("section");
-    page.className = "st-lite-app st-special-location-app";
-    page.setAttribute("aria-label", "特殊地点");
-	    root.appendChild(page);
-	    renderSpecialLocationPage(page);
-	    void refreshSpecialLocationWorldbookState(page);
-	    const refreshFromOperationQueue = () => {
-	      if (!page.isConnected) {
-	        window.removeEventListener("HYPNOOS_OPERATION_QUEUE_CHANGED", refreshFromOperationQueue);
-	        return;
-	      }
-	      renderSpecialLocationPage(page);
-	    };
-	    page.__stSpecialLocationCleanup = () => window.removeEventListener("HYPNOOS_OPERATION_QUEUE_CHANGED", refreshFromOperationQueue);
-	    window.addEventListener("HYPNOOS_OPERATION_QUEUE_CHANGED", refreshFromOperationQueue);
-	  }
+    const page = openCityMapPage(tile);
+    if (!page) return;
+    page.dataset.mapBoardSpecialOpen = "true";
+    renderCityMapPage(page);
+    void refreshSpecialLocationWorldbookState(page);
+  }
 
 	  function openTodoPage(tile, appName, className, title, subtitle, schoolMode = false) {
     ensureStyle();
