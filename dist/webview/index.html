@@ -8819,6 +8819,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return rebound;
   }
 
+  function hospitalLineWorldbookSnapshotRestored(snapshot, data) {
+    if (!snapshot?.comments?.size) return false;
+    const expected = Array.isArray(snapshot.originals) ? snapshot.originals : [];
+    const actual = hospitalLineWorldbookCommentRecords(data, snapshot.comments);
+    try {
+      return JSON.stringify(actual) === JSON.stringify(expected);
+    } catch {
+      return false;
+    }
+  }
+
   async function hospitalLineRollbackWorldbook(snapshot) {
     if (!snapshot?.ok || !snapshot?.comments?.size || !snapshot?.bound) return false;
     const { bound, comments, originals = [] } = snapshot;
@@ -8831,18 +8842,31 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         }, { render: "immediate" });
         restored = result !== false;
       } catch {}
+      let readbackVerified = restored;
+      if (restored && !bound.createdWorldbook && typeof bound.target.getWorldbook === "function") {
+        try {
+          readbackVerified = hospitalLineWorldbookSnapshotRestored(
+            snapshot,
+            await bound.target.getWorldbook(bound.worldName)
+          );
+        } catch {
+          readbackVerified = false;
+        }
+      }
       const bindingRestored = await hospitalLineRollbackWorldbookBinding(bound);
-      return restored && bindingRestored;
+      return restored && readbackVerified && bindingRestored;
     }
     if (!bound.mod || typeof bound.mod.loadWorldInfo !== "function" || typeof bound.mod.saveWorldInfo !== "function") return false;
     try {
       const data = await bound.mod.loadWorldInfo(bound.worldName);
       const changed = hospitalLineRestoreWorldbookCommentRecords(data, comments, originals);
       if (changed) {
-        await bound.mod.saveWorldInfo(bound.worldName, data, true);
+        const saved = await bound.mod.saveWorldInfo(bound.worldName, data, true);
+        if (saved === false) return false;
         try { await bound.mod.updateWorldInfoList?.(); } catch {}
       }
-      return true;
+      const readback = await bound.mod.loadWorldInfo(bound.worldName);
+      return hospitalLineWorldbookSnapshotRestored(snapshot, readback);
     } catch {
       return false;
     }
@@ -14894,13 +14918,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     });
   }
 
-  async function profileChildRoleRollbackVariable(candidate, motherName, childKey, nextName, previousChild) {
+  async function profileChildRoleRollbackVariable(candidate, motherName, childKey, nextName, previousChild, expectedInitialVariables) {
     const current = encounterCurrentMvuData();
     const source = current && profileChildRoleSameOption(current.option, candidate?.option) ? current : candidate;
     const rollback = profileChildRoleCloneCandidate(source);
     const roles = rollback?.stat?.["角色"];
     const mother = roles?.[motherName];
     if (!rollback || !isPlainObject(roles) || !isPlainObject(mother)) return false;
+    if (
+      !isPlainObject(roles[nextName])
+      || profileChildRoleSnapshotJson(roles[nextName]) !== profileChildRoleSnapshotJson(expectedInitialVariables)
+    ) return false;
     delete roles[nextName];
     const children = normalizeRoleChildren(mother["子嗣"]);
     children["子嗣列表"][childKey] = encounterClone(previousChild);
@@ -15068,7 +15096,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         if (Object.prototype.hasOwnProperty.call(latestRoles, nextName)) {
           throw new Error("角色变量中已存在「" + nextName + "」，请更换角色名。");
         }
-        previousChild = encounterClone(latestChild);
         profileChildRoleFormStatus(page, "正在读取并锁定角色卡世界书…", "working");
         worldbookSnapshot = await hospitalLineWorldbookCommentSnapshot(worldbookPackage);
         if (!worldbookSnapshot?.ok) {
@@ -15077,7 +15104,39 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         if (encounterRoleExistsInWorldbook(worldbookSnapshot.originals.map((record) => record.entry), nextName)) {
           throw new Error("角色卡世界书中已存在「" + nextName + "」的人设或变量条目，请更换角色名，现有条目不会被覆盖。");
         }
-        committedCandidate = profileChildRoleCloneCandidate(latest);
+        const lockedWorldbook = await encounterReadCharacterWorldEntries(worldbookPackage);
+        if (
+          !lockedWorldbook?.ok
+          || (worldbookSnapshot?.bound?.worldName
+            && lockedWorldbook.targetWorldbook !== worldbookSnapshot.bound.worldName)
+        ) {
+          throw new Error("角色卡世界书绑定在校验期间发生变化，未开始写入。");
+        }
+        if (encounterRoleExistsInWorldbook(lockedWorldbook.entries, nextName)) {
+          throw new Error("角色卡世界书中已存在「" + nextName + "」的人设或变量条目，请更换角色名，现有条目不会被覆盖。");
+        }
+        const lockedLatest = encounterCurrentMvuData();
+        if (!lockedLatest || !profileChildRoleSameOption(lockedLatest.option, data.option)) {
+          throw new Error("当前变量楼层在校验期间发生变化，未开始写入。");
+        }
+        const lockedRoles = lockedLatest?.stat?.["角色"];
+        const lockedMother = lockedRoles?.[roleName];
+        const lockedChildren = normalizeRoleChildren(lockedMother?.["子嗣"]);
+        const lockedChild = lockedChildren["子嗣列表"][childKey];
+        if (
+          !isPlainObject(lockedRoles)
+          || !isPlainObject(lockedMother)
+          || !isPlainObject(lockedChild)
+          || lockedChild["阶段"] !== "孩童"
+          || String(lockedChild["角色名"] || "").trim()
+        ) {
+          throw new Error("该子嗣记录在校验期间发生变化，未开始写入。");
+        }
+        if (Object.prototype.hasOwnProperty.call(lockedRoles, nextName)) {
+          throw new Error("角色变量中已存在「" + nextName + "」，请更换角色名。");
+        }
+        previousChild = encounterClone(lockedChild);
+        committedCandidate = profileChildRoleCloneCandidate(lockedLatest);
         const committedRoles = committedCandidate?.stat?.["角色"];
         const committedMother = committedRoles?.[roleName];
         if (!committedCandidate || !isPlainObject(committedRoles) || !isPlainObject(committedMother)) {
@@ -15150,7 +15209,8 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
               roleName,
               childKey,
               nextName,
-              previousChild
+              previousChild,
+              generated.initialVariables
             );
           } catch {
             variableRolledBack = false;
@@ -30383,7 +30443,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	        }
 	        insertedCount += 1;
 	      }
-	      if (insertedCount || updatedCount) await bound.mod.saveWorldInfo(bound.worldName, data, true);
+	      if (insertedCount || updatedCount) {
+	        const saved = await bound.mod.saveWorldInfo(bound.worldName, data, true);
+	        if (saved === false) return null;
+	      }
 	      try { await bound.mod.updateWorldInfoList?.(); } catch {}
 	      return { ok: true, count: entries.length, insertedCount, updatedCount, targetWorldbook: bound.worldName, method: bound.method };
 	    } catch {
