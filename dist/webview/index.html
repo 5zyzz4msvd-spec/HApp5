@@ -2470,7 +2470,7 @@ const __stDefaultVariables = () => ({
 	    ],
 		    "当前事件": "午休前最后一节课下课",
 	    "当前地点": "教室",
-	    "$user身份": {}
+	    "_user身份": {}
   },
   "规则": {},
   "角色": __stDefaultRoles()
@@ -3045,7 +3045,7 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
     _课程表: z.array(TimetableItem).prefault([]),
     当前事件: z.string().prefault(""),
     当前出场角色: z.array(z.string()).prefault([]),
-    $user身份: z.record(z.string(), z.any()).prefault({}),
+    _user身份: z.record(z.string(), z.any()).prefault({}),
     当前地点: z.string().prefault("教室"),
     催眠APP订阅等级: z.string().prefault("试用期"),
     MC能量上限: nonnegativeNumber(25),
@@ -3072,8 +3072,22 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
   });
 };
   const normalizeMvuImportStatData = function normalizeMvuImportStatData(z, input) {
+  let candidate = input;
+  if (input && typeof input === "object" && !Array.isArray(input)) {
+    const oldDollarKey = "$" + "user身份";
+    const system = input.系统;
+    if (system && typeof system === "object" && !Array.isArray(system)) {
+      candidate = { ...input, 系统: { ...system } };
+      if (!Object.prototype.hasOwnProperty.call(candidate.系统, "_user身份")) {
+        if (Object.prototype.hasOwnProperty.call(candidate.系统, oldDollarKey)) candidate.系统._user身份 = candidate.系统[oldDollarKey];
+        else if (Object.prototype.hasOwnProperty.call(candidate.系统, "user身份")) candidate.系统._user身份 = candidate.系统["user身份"];
+      }
+      delete candidate.系统[oldDollarKey];
+      delete candidate.系统["user身份"];
+    }
+  }
   const schema = createMvuSchema(z, { stripUnknown: true });
-  const result = schema.safeParse(input);
+  const result = schema.safeParse(candidate);
   if (result.success) return { ok: true, value: result.data, issues: [] };
   return {
     ok: false,
@@ -4262,10 +4276,10 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-secret-coordinate-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;border-bottom:2px solid #172033;padding:1px 1px 10px}
 .st-secret-coordinate-title{display:grid;gap:4px}.st-secret-coordinate-title small{color:#9f1239;font:900 9px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}.st-secret-coordinate-title strong{color:#111827;font-size:18px;font-weight:1000;letter-spacing:.02em}.st-secret-coordinate-title span{color:#64748b;font-size:10px;font-weight:800}
 .st-secret-coordinate-count{display:grid;place-items:center;min-width:54px;height:38px;border:2px solid #172033;background:#172033;color:#fff;font:1000 10px/1.15 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;box-shadow:4px 4px 0 #be123c;text-align:center}
-.st-secret-coordinate-status{margin:0;border-left:4px solid #be123c;background:rgba(255,255,255,.68);color:#475569;padding:7px 9px;font-size:10px;line-height:1.45;font-weight:800}
+.st-secret-coordinate-status{margin:0;border-left:4px solid #be123c;background:rgba(255,255,255,.68);color:#475569;padding:7px 9px;font-size:10px;line-height:1.45;font-weight:800}.st-secret-coordinate-feedback{min-height:30px;display:flex;align-items:center}
 .st-secret-coordinate-grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:4px}
 .st-secret-coordinate-grid::before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed rgba(15,23,42,.2)}
-.st-secret-pin{position:relative;min-width:0;min-height:112px;border:2px solid #172033;border-radius:12px;background:rgba(255,255,255,.78);color:#172033;display:grid;grid-template-rows:auto 1fr auto;gap:7px;padding:9px;text-align:left;cursor:pointer;box-shadow:4px 4px 0 rgba(15,23,42,.14);transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+.st-secret-pin{position:relative;min-width:0;min-height:142px;border:2px solid #172033;border-radius:12px;background:rgba(255,255,255,.78);color:#172033;display:grid;grid-template-rows:auto auto 1fr auto;gap:7px;padding:9px;text-align:left;cursor:pointer;box-shadow:4px 4px 0 rgba(15,23,42,.14);transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
 .st-secret-pin::before,.st-secret-pin::after{content:"";position:absolute;pointer-events:none}.st-secret-pin::before{right:8px;top:8px;width:8px;height:8px;border:2px solid currentColor;border-radius:50%}.st-secret-pin::after{right:12px;top:3px;width:1px;height:20px;background:currentColor;box-shadow:0 9px 0 currentColor;opacity:.28}
 .st-secret-pin:hover,.st-secret-pin.active{transform:translate(-1px,-2px);box-shadow:6px 7px 0 rgba(15,23,42,.18);background:#fff}
 .st-secret-pin.active{outline:3px solid rgba(190,18,60,.18);outline-offset:1px}
@@ -4273,12 +4287,14 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-secret-pin[data-special-location-state="worldbook-missing"]{border-color:#a16207;color:#854d0e}
 .st-secret-pin-code{font:950 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;opacity:.72}
 .st-secret-pin strong{align-self:center;min-width:0;color:currentColor;font-size:12px;font-weight:1000;line-height:1.28;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.st-secret-pin-summary{margin:0;color:#64748b;font-size:9px;line-height:1.45;font-weight:750;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .st-secret-pin-meta{display:flex;align-items:center;justify-content:space-between;gap:5px}.st-secret-pin-meta span{min-width:0;font-size:8px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st-secret-pin-meta em{flex:0 0 auto;border:1px solid currentColor;border-radius:999px;padding:2px 5px;font-size:8px;font-style:normal;font-weight:950}
+.st-secret-coordinate-pager{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;align-items:center}.st-secret-coordinate-pager button{min-height:36px;border:2px solid #172033;border-radius:9px;background:#fff;color:#172033;font-size:17px;font-weight:1000;cursor:pointer;box-shadow:3px 3px 0 rgba(15,23,42,.14)}.st-secret-coordinate-pager button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}.st-secret-coordinate-pager span{text-align:center;color:#475569;font:900 10px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
 .st-secret-coordinate-file{display:grid;gap:9px;border:2px solid #172033;border-radius:13px;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(248,250,252,.88));padding:11px;box-shadow:5px 5px 0 #be123c}
 .st-secret-file-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center}.st-secret-file-index{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#172033;color:#fff;font:1000 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.st-secret-file-title{min-width:0;display:grid;gap:2px}.st-secret-file-title strong{color:#172033;font-size:14px;font-weight:1000;line-height:1.2}.st-secret-file-title small{color:#64748b;font-size:9px;font-weight:850}.st-secret-file-state{border:1px solid currentColor;border-radius:999px;color:#9f1239;padding:3px 7px;font-size:8px;font-weight:950;white-space:nowrap}.st-secret-file-state.ready{color:#0f766e}.st-secret-file-state.worldbook-missing{color:#854d0e}
 .st-secret-coordinate-file p{margin:0;color:#475569;font-size:11px;line-height:1.58;white-space:pre-wrap}.st-secret-file-access{display:flex;align-items:center;gap:6px;border-top:1px dashed rgba(15,23,42,.18);padding-top:8px;color:#64748b;font-size:9px;font-weight:850}.st-secret-file-access::before{content:"ACCESS";border:1px solid currentColor;padding:2px 4px;font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
 .st-secret-file-action{min-height:44px;width:100%;border:2px solid #172033;border-radius:10px;background:#172033;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;box-shadow:4px 4px 0 #be123c}.st-secret-file-action[data-special-location-install]{background:#a16207}.st-secret-file-action[data-special-location-suggest]{background:#0f766e}.st-secret-file-action:disabled{opacity:.48;cursor:not-allowed;box-shadow:none}
-@media(max-width:360px){.st-secret-coordinate{padding:9px!important}.st-secret-coordinate-grid{gap:6px;padding:2px}.st-secret-pin{min-height:104px;padding:7px}.st-secret-file-head{grid-template-columns:auto minmax(0,1fr)}.st-secret-file-state{grid-column:2;justify-self:start}.st-board-map-toolbar{flex-wrap:wrap;margin-bottom:-7px}.st-board-drawer-toggle.is-special{flex-basis:100%}}
+@media(max-width:360px){.st-secret-coordinate{padding:9px!important}.st-secret-coordinate-grid{gap:6px;padding:2px}.st-secret-pin{min-height:136px;padding:7px}.st-secret-file-head{grid-template-columns:auto minmax(0,1fr)}.st-secret-file-state{grid-column:2;justify-self:start}.st-board-map-toolbar{flex-wrap:wrap;margin-bottom:-7px}.st-board-drawer-toggle.is-special{flex-basis:100%}}
 .st-location-item{border:1px solid rgba(92,64,38,.16);border-radius:8px;background:rgba(255,255,255,.42);overflow:hidden}
 .st-location-item.is-current{border-color:rgba(146,64,14,.42);background:linear-gradient(135deg,rgba(254,243,199,.62),rgba(255,255,255,.48))}
 .st-location-item.is-favorite{border-color:rgba(202,138,4,.32);background:linear-gradient(135deg,rgba(254,243,199,.52),rgba(255,255,255,.44))}
@@ -23262,7 +23278,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 		    for (const crime of ["盗窃", "露出", "私闯", "伤害", "淫乱", "强奸"]) {
 		      output["劣迹"]["罪行"][crime] = Math.max(0, Math.floor(Number(output["劣迹"]["罪行"][crime]) || 0));
 		    }
-		    normalizeRoleSevenPages(output, roleName, { removeLegacy: true });
+		    normalizeRoleSevenPages(output, roleName, { removeLegacy: true, gender });
 		    return output;
 	  }
 
@@ -25892,7 +25908,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	  function encounterReadInitialVariablesFromCard(card, fallbackRole) {
 	    const role = encounterNormalizeRole(fallbackRole || {});
 	    const variable = encounterInitialVariableFromRole(role);
-	    const gender = normalizedRoleGender(variable?.["信息"]?.["性别"] || role.gender, "女");
+	    const gender = normalizedRoleGender(role.gender || variable?.["信息"]?.["性别"], "女");
+	    variable["信息"] = variable["信息"] && typeof variable["信息"] === "object" && !Array.isArray(variable["信息"]) ? variable["信息"] : {};
+	    variable["信息"]["性别"] = gender;
+	    normalizeRoleSevenPages(variable, role.name, { removeLegacy: true, gender });
 	    const specs = new Map(ENCOUNTER_INITIAL_MAIN_FIELD_SPECS.concat(encounterInitialProfileFieldSpecs(gender), encounterInitialBodyFieldSpecs(gender)).map((spec) => [spec.path, spec]));
     specs.set("效果.心理", { path: "效果.心理", type: "textarea" });
     card?.querySelectorAll?.("[data-encounter-initial-path]")?.forEach((input) => {
@@ -28186,7 +28205,12 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       const normalized = encounterNormalizeRole(role);
       const name = String(normalized.name || "").trim();
       if (!name) continue;
-      entries.push({ name, value: encounterInitialVariablesObject(normalized) });
+      const gender = normalizedRoleGender(normalized.gender, "女");
+      const value = profileChildRoleExactInitialVariables(encounterInitialVariablesObject(normalized), { name, gender });
+      if (!profileChildRoleHasExactContract(value, { name, gender })) {
+        throw new Error(name + " 的初始变量没有通过十页精确结构校验。");
+      }
+      entries.push({ name, gender, value });
     }
     return entries;
   }
@@ -28287,7 +28311,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       snapshot[name] = undefined;
       created.push(name);
       const clonedValue = encounterClone(item.value) || item.value || {};
-      data.stat["角色"][name] = encounterSanitizeInitialRoleVariableObject(clonedValue, { name });
+      const gender = normalizedRoleGender(item?.gender || clonedValue?.["信息"]?.["性别"], "女");
+      data.stat["角色"][name] = profileChildRoleExactInitialVariables(
+        encounterSanitizeInitialRoleVariableObject(clonedValue, { name, gender }),
+        { name, gender }
+      );
     }
 	    if (created.length || supplemented.length || systemChanged) {
 	      data.stat["系统"] = data.stat["系统"] && typeof data.stat["系统"] === "object" && !Array.isArray(data.stat["系统"]) ? data.stat["系统"] : {};
@@ -28296,7 +28324,21 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      // 动态角色字典的 schema，否则刚创建的非零字段可能在首轮读取/更新时丢失基线。
 	      if (data.mvu?.schema) repairDynamicMvuSchemaTree(data.mvu.schema);
 	      if (data.schema) repairDynamicMvuSchemaTree(data.schema);
-	      await encounterReplaceMvuData(data);
+	      const writeSucceeded = await encounterReplaceMvuData(data);
+	      if (!writeSucceeded) {
+	        await encounterRestoreRoleVariables(snapshot, systemSnapshot);
+	        return { ok: false, reason: "角色初始变量写入接口返回失败，已回滚。", created: [], overwritten, skipped, supplemented: [], supplementWarnings, snapshot, systemSnapshot };
+	      }
+	      const readBack = await settingsReadMvuCandidateForOption(data.option);
+	      const mismatched = created.filter((name) => {
+	        const expected = data.stat?.["角色"]?.[name];
+	        const actual = readBack?.stat?.["角色"]?.[name];
+	        return !expected || !actual || profileChildRoleSnapshotJson(expected) !== profileChildRoleSnapshotJson(actual);
+	      });
+	      if (mismatched.length) {
+	        await encounterRestoreRoleVariables(snapshot, systemSnapshot);
+	        return { ok: false, reason: "角色初始变量写后校验失败并已回滚：" + mismatched.join("、"), created: [], overwritten, skipped, supplemented: [], supplementWarnings, snapshot, systemSnapshot };
+	      }
 	    }
 	    return { ok: true, created, overwritten, skipped, supplemented, supplementWarnings, snapshot, systemSnapshot };
 	  }
@@ -31611,6 +31653,14 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       page.dataset.encounterStatus = encounterLastStorageError || "已更新角色剪影并保存草稿。";
       renderEncounterPage(page, { preserveScroll: true });
     }));
+    page.querySelectorAll('select[name="roleGender"]').forEach((select) => {
+      select.addEventListener("change", () => {
+        if (page.dataset.encounterTab === "role") encounterReadSingleRoleFromForm(page);
+        else encounterReadDraftFromForm(page);
+        page.dataset.encounterStatus = "性别已切换，初始变量表已同步为对应身体字段。";
+        renderEncounterPage(page, { preserveScroll: true });
+      });
+    });
     page.querySelector("[data-encounter-form]")?.addEventListener("input", () => {
       encounterReadDraftFromForm(page);
       encounterRefreshRoleFieldDots(page);
@@ -32149,6 +32199,30 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    return String(value || "").trim().replace(/^(\[mvu_(?:plot|update)\])\s*/u, "$1");
 	  }
 
+	  function specialLocationEntrySummary(source, entry, label) {
+	    const direct = String(source?.info || source?.description || source?.summary || "").replace(/\s+/g, " ").trim();
+	    if (direct) return direct.length > 128 ? direct.slice(0, 127) + "…" : direct;
+	    const lines = String(entry?.content || "")
+	      .replace(/<%[\s\S]*?%>/g, " ")
+	      .replace(/<\/?(?:context|场景档案)[^>]*>/gi, " ")
+	      .split(/\r?\n/)
+	      .map((line) => line
+	        .replace(/^\s*[|>#*-]+\s*/u, "")
+	        .replace(/\{\{[^}]+\}\}/g, "玩家")
+	        .replace(/`/g, "")
+	        .replace(/\s+/g, " ")
+	        .trim())
+	      .filter((line) =>
+	        line.length >= 18
+	        && !/^(地点描写|Location_|name|theme_concept|surface_layer|atmosphere|description|overview|public|hidden|entry_rules|condition|narrative_impact)\s*[:：]/i.test(line)
+	        && !/^【[^】]+】$/u.test(line)
+	        && line !== String(label || "").trim()
+	      );
+	    const preferred = lines.find((line) => /位于|坐落|对标|整座|前区|街道|园区|校园|城市|空间/u.test(line)) || lines[0] || "";
+	    if (!preferred) return "该地点拥有独立场景规则；载入档案后可在剧情中建议前往。";
+	    return preferred.length > 128 ? preferred.slice(0, 127) + "…" : preferred;
+	  }
+
 	  function specialLocationDynamicItems() {
 	    try {
 	      const pkg = encounterReadPackages().find((item) => String(item?.id || "") === ENCOUNTER_ORJENRN_PACKAGE_ID);
@@ -32166,7 +32240,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	          label,
 	          aliases: Array.isArray(source?.keys) ? source.keys.slice() : [],
 	          cost: 0,
-	          info: "orjenrn v0.75 润色特殊地点。点击“插入世界书”后才会加入当前角色卡世界书。",
+	          info: specialLocationEntrySummary(source, entry, label),
 	          canonicalComment,
 	          worldbookEntry: entry,
 	          dynamicWorldbook: true
@@ -32378,9 +32452,34 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 
   function rerenderSpecialLocationHost(page) {
     if (!page) return;
-    if (page.classList.contains("st-special-location-app")) renderSpecialLocationPage(page);
-    else if (page.classList.contains("st-city-map-app") || page.classList.contains("st-campus-map-app") || page.classList.contains("st-school-app")) rerenderGraphHost(page);
+    const body = page.querySelector?.(".st-lite-body");
+    const documentScroller = document.scrollingElement || document.documentElement;
+    const pageScrollTop = Number(page.scrollTop || 0);
+    const pageScrollLeft = Number(page.scrollLeft || 0);
+    const bodyScrollTop = Number(body?.scrollTop || 0);
+    const bodyScrollLeft = Number(body?.scrollLeft || 0);
+    const documentScrollTop = Number(documentScroller?.scrollTop || 0);
+    const documentScrollLeft = Number(documentScroller?.scrollLeft || 0);
+    if (page.classList.contains("st-city-map-app") || page.classList.contains("st-campus-map-app") || page.classList.contains("st-school-app")) rerenderGraphHost(page);
     else renderMapPage(page);
+    const restoreScroll = () => {
+      if (!page?.isConnected) return;
+      page.scrollTop = pageScrollTop;
+      page.scrollLeft = pageScrollLeft;
+      const nextBody = page.querySelector?.(".st-lite-body");
+      if (nextBody) {
+        nextBody.scrollTop = bodyScrollTop;
+        nextBody.scrollLeft = bodyScrollLeft;
+      }
+      const nextDocumentScroller = document.scrollingElement || document.documentElement;
+      if (nextDocumentScroller) {
+        nextDocumentScroller.scrollTop = documentScrollTop;
+        nextDocumentScroller.scrollLeft = documentScrollLeft;
+      }
+    };
+    restoreScroll();
+    requestAnimationFrame(restoreScroll);
+    window.setTimeout(restoreScroll, 0);
   }
 
   function rerenderGraphHost(page) {
@@ -36561,8 +36660,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const installedComments = specialLocationInstalledComments(page);
     const installBusy = page?.dataset?.specialLocationInstallBusy === "1";
     const catalog = specialLocationCatalog();
+    const pageSize = 4;
+    const pageCount = Math.max(1, Math.ceil(catalog.length / pageSize));
     const requestedId = String(page?.dataset?.specialLocationSelectedId || "");
-    const selected = catalog.find((location) => location.id === requestedId) || catalog[0] || null;
+    const requestedIndex = Math.max(0, catalog.findIndex((location) => location.id === requestedId));
+    const requestedPage = Math.max(0, Math.min(pageCount - 1, Math.trunc(Number(page?.dataset?.specialLocationPage) || 0)));
+    const selectedPage = requestedId && requestedIndex >= 0 ? Math.floor(requestedIndex / pageSize) : requestedPage;
+    const activePage = requestedId && requestedPage !== selectedPage ? selectedPage : requestedPage;
+    const pageStart = activePage * pageSize;
+    const pageCatalog = catalog.slice(pageStart, pageStart + pageSize);
+    const selected = pageCatalog.find((location) => location.id === requestedId) || pageCatalog[0] || null;
+    if (page) page.dataset.specialLocationPage = String(activePage);
     if (page && selected && requestedId !== selected.id) page.dataset.specialLocationSelectedId = selected.id;
     const locationState = (location) => {
       const unlocked = specialLocationUnlocked(location, stat);
@@ -36570,13 +36678,15 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       return !installed && location.dynamicWorldbook ? "worldbook-missing" : (unlocked ? "ready" : "locked");
     };
     const stateLabel = (state) => state === "ready" ? "可进入" : state === "worldbook-missing" ? "档案待载入" : "准入受限";
-    const pins = catalog.map((location, index) => {
+    const pins = pageCatalog.map((location, pageIndex) => {
+      const index = pageStart + pageIndex;
       const state = locationState(location);
       const active = selected?.id === location.id;
       const type = location.dynamicWorldbook ? "扩展坐标" : "校内坐标";
       return '<button type="button" class="st-secret-pin ' + (active ? "active" : "") + '" data-special-location-select="' + escapeAttr(location.id) + '" data-special-location-state="' + state + '" aria-pressed="' + (active ? "true" : "false") + '">' +
         '<span class="st-secret-pin-code">SC-' + String(index + 1).padStart(2, "0") + '</span>' +
         '<strong>' + escapeHtml(location.label || "未命名地点") + '</strong>' +
+        '<p class="st-secret-pin-summary">' + escapeHtml(location.info || "暂无地点介绍。") + '</p>' +
         '<span class="st-secret-pin-meta"><span>' + escapeHtml(type) + '</span><em>' + stateLabel(state) + '</em></span>' +
       '</button>';
     }).join("");
@@ -36614,8 +36724,13 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         '<span class="st-secret-coordinate-count">' + catalog.length + '<br>POINTS</span>' +
       '</header>' +
       '<p class="st-secret-coordinate-status">特殊地点资料只在这里按需加入角色卡世界书，不会在开场重复写入。</p>' +
-      (status ? '<p class="st-secret-coordinate-status">' + escapeHtml(status) + '</p>' : '') +
+      '<p class="st-secret-coordinate-status st-secret-coordinate-feedback" aria-live="polite">' + escapeHtml(status || "选择坐标后可查看完整档案、准入状态与载入操作。") + '</p>' +
       '<div class="st-secret-coordinate-grid">' + pins + '</div>' +
+      '<nav class="st-secret-coordinate-pager" aria-label="特殊地点分页">' +
+        '<button type="button" data-special-location-page="' + (activePage - 1) + '"' + (activePage <= 0 ? " disabled" : "") + ' aria-label="上一页">‹</button>' +
+        '<span>PAGE ' + String(activePage + 1).padStart(2, "0") + ' / ' + String(pageCount).padStart(2, "0") + '<br>每页 4 个坐标</span>' +
+        '<button type="button" data-special-location-page="' + (activePage + 1) + '"' + (activePage >= pageCount - 1 ? " disabled" : "") + ' aria-label="下一页">›</button>' +
+      '</nav>' +
       file +
     '</section>';
   }
@@ -36625,17 +36740,21 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       button.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
+        button.blur();
         const selectedId = button.getAttribute("data-special-location-select") || "";
         page.dataset.specialLocationSelectedId = selectedId;
         rerenderSpecialLocationHost(page);
-        requestAnimationFrame(() => {
-          const file = Array.from(page.querySelectorAll("[data-special-location-file]"))
-            .find((element) => element.getAttribute("data-special-location-file") === selectedId);
-          file?.scrollIntoView?.({
-            behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth",
-            block: "nearest"
-          });
-        });
+      });
+    });
+    page.querySelectorAll("[data-special-location-page]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        button.blur();
+        const nextPage = Math.max(0, Math.trunc(Number(button.getAttribute("data-special-location-page")) || 0));
+        page.dataset.specialLocationPage = String(nextPage);
+        delete page.dataset.specialLocationSelectedId;
+        rerenderSpecialLocationHost(page);
       });
     });
     page.querySelectorAll("[data-special-location-install]").forEach((button) => {
@@ -36688,22 +36807,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      });
 	    });
 	  }
-
-  function renderSpecialLocationPage(page) {
-    page.innerHTML =
-      renderLiteHeader(page, { title: "特殊地点", html: '<strong>特殊地点</strong>' }) +
-      '<main class="st-lite-body">' +
-        renderSpecialLocationCard(page) +
-      '</main>';
-    bindLiteHeader(page, () => renderSpecialLocationPage(page));
-	    page.querySelector('[data-lite-action="back"]')?.addEventListener("click", () => {
-	      const root = page.parentElement;
-	      setPhoneActiveApp(root, "");
-	      page.__stSpecialLocationCleanup?.();
-	      page.remove();
-	    });
-    bindSpecialLocationActions(page);
-  }
 
   function openSpecialLocationPage(tile) {
     const page = openCityMapPage(tile);
@@ -37841,7 +37944,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    "_社畜值": 0,
 	    "_buff": "",
 	    "_buff结束时间": "",
-	    "$user身份": {}
+	    "_user身份": {}
 	  };
 	  const SETTINGS_ROLE_DEFAULTS = {
 	    "衣着": { "头发": "", "面部": "", "上衣": "", "下衣": "" },
@@ -38124,7 +38227,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 
 	  window.__ST_HYPNOOS_MIGRATE_ROLE_PAGES__ = migrateCurrentRolePageStructure;
 
-	  const CURRENT_MVU_CONTRACT_MIGRATION_VERSION = 2;
+	  const CURRENT_MVU_CONTRACT_MIGRATION_VERSION = 3;
 	  const CURRENT_MVU_CONTRACT_MIGRATION_PREFIX = "hypnoos.mvu-contract-migration.v";
 
 	  function currentMvuContractMigrationStorageKey() {
@@ -38575,7 +38678,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   function renderModelConnectorSettings(page) {
     const config = readModelConnectorConfig();
     const textSecretReady = Boolean(readModelConnectorSessionSecret("text"));
-    const imageSecretReady = Boolean(readModelConnectorSessionSecret("image"));
     const profile = (kind, title, description, fields) => {
       const value = config[kind];
       return '<section class="st-settings-panel st-model-connector" data-connector-profile="' + kind + '">' +
@@ -38586,7 +38688,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
           '<label><span>Endpoint</span><input data-connector-field="endpoint" value="' + escapeAttr(value.endpoint) + '" placeholder="OpenAI-compatible API 基址，如 https://example.com/v1"></label>' +
           '<label><span>Model</span><input data-connector-field="model" value="' + escapeAttr(value.model) + '" placeholder="模型名"></label>' +
           '<label><span>Secret Ref</span><input data-connector-field="secretRef" value="' + escapeAttr(value.secretRef) + '" placeholder="服务端密钥别名"></label>' +
-          '<label class="st-model-secret"><span>API Key（仅本次浏览器会话）</span><input type="password" data-connector-secret="' + kind + '" value="" placeholder="' + ((kind === "text" ? textSecretReady : imageSecretReady) ? "已保存；留空保持" : "不会写入备份或配置") + '"></label>' +
+          '<label class="st-model-secret"><span>API Key（仅本次浏览器会话）</span><input type="password" data-connector-secret="' + kind + '" value="" placeholder="' + (textSecretReady ? "已保存；留空保持" : "不会写入备份或配置") + '"></label>' +
           fields +
         '</div>' +
         '<div class="st-settings-actions is-three"><button type="button" class="st-settings-button primary" data-connector-save="' + kind + '">保存</button><button type="button" class="st-settings-button" data-connector-test="' + kind + '">测试连接</button><button type="button" class="st-settings-button danger" data-connector-clear-secret="' + kind + '">清除密钥</button></div>' +
@@ -38599,18 +38701,13 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
           '<label><input type="checkbox" data-connector-context="variables" ' + (config.context.variables ? "checked" : "") + '>当前状态</label>' +
           '<label><input type="checkbox" data-connector-context="worldbook" ' + (config.context.worldbook ? "checked" : "") + '>相关世界书</label>' +
         '</div>' +
-        '<textarea class="st-settings-code st-model-notes" data-connector-context-notes placeholder="长期备注；会加入地点生成和后置拍照提示词。">' + escapeHtml(config.context.notes) + '</textarea>' +
+        '<textarea class="st-settings-code st-model-notes" data-connector-context-notes placeholder="长期备注；会加入地点、任务和人物物品等文生文提示词。">' + escapeHtml(config.context.notes) + '</textarea>' +
         '<button type="button" class="st-settings-button primary" data-connector-save-context>保存上下文设置</button>' +
       '</section>' +
       profile("text", "文生文插头", "用于新增地点、刷新角色物品等前端内容生成。外部接口会自动经 SillyTavern 后端转发，避免浏览器 CORS；Endpoint 填 OpenAI-compatible API 基址，不要重复填写 /chat/completions。",
         '<label><span>Temperature</span><input type="number" step="0.1" min="0" max="2" data-connector-field="temperature" value="' + config.text.temperature + '"></label>' +
         '<label><span>Top P</span><input type="number" step="0.05" min="0" max="1" data-connector-field="topP" value="' + config.text.topP + '"></label>' +
-        '<label><span>Max tokens</span><input type="number" min="64" max="8192" data-connector-field="maxTokens" value="' + config.text.maxTokens + '"></label>') +
-      profile("image", "文生图插头", "用于后置照相等前端图片生成。结果保存在当前聊天的前端照片存储，不写变量。",
-        '<label><span>宽 × 高</span><div class="st-model-inline"><input type="number" min="256" max="2048" data-connector-field="width" value="' + config.image.width + '"><input type="number" min="256" max="2048" data-connector-field="height" value="' + config.image.height + '"></div></label>' +
-        '<label><span>Steps / CFG</span><div class="st-model-inline"><input type="number" min="1" max="150" data-connector-field="steps" value="' + config.image.steps + '"><input type="number" step="0.5" min="0" max="30" data-connector-field="cfg" value="' + config.image.cfg + '"></div></label>' +
-        '<label><span>Seed</span><input type="number" min="-1" data-connector-field="seed" value="' + config.image.seed + '"></label>' +
-        '<label class="st-model-wide"><span>Negative prompt</span><textarea data-connector-field="negativePrompt">' + escapeHtml(config.image.negativePrompt) + '</textarea></label>');
+        '<label><span>Max tokens</span><input type="number" min="64" max="8192" data-connector-field="maxTokens" value="' + config.text.maxTokens + '"></label>');
   }
 
   function readConnectorProfileForm(page, kind) {
@@ -38645,7 +38742,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         writeModelConnectorConfig(config);
         const secret = String(page.querySelector('[data-connector-secret="' + kind + '"]')?.value || "").trim();
         if (secret) writeModelConnectorSessionSecret(kind, secret);
-        page.dataset.settingsStatus = (kind === "text" ? "文生文" : "文生图") + "插头配置已保存。";
+        page.dataset.settingsStatus = "文生文插头配置已保存。";
         renderSettingsPage(page);
       });
     });
@@ -38654,7 +38751,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         settingsStopEvent(event);
         const kind = button.getAttribute("data-connector-clear-secret") || "text";
         writeModelConnectorSessionSecret(kind, "");
-        page.dataset.settingsStatus = "已清除" + (kind === "text" ? "文生文" : "文生图") + "会话密钥。";
+        page.dataset.settingsStatus = "已清除文生文会话密钥。";
         renderSettingsPage(page);
       });
     });
@@ -38666,15 +38763,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         writeModelConnectorConfig(config);
         const secret = String(page.querySelector('[data-connector-secret="' + kind + '"]')?.value || "").trim();
         if (secret) writeModelConnectorSessionSecret(kind, secret);
-        page.dataset.settingsStatus = "正在测试" + (kind === "text" ? "文生文" : "文生图") + "插头...";
+        page.dataset.settingsStatus = "正在测试文生文插头...";
         renderSettingsPage(page);
         try {
-          if (kind === "text") {
-            await invokeIndependentTextModel({ system: "只回复 OK。", user: "连接测试，不需要剧情内容。" });
-          } else {
-            await invokeIndependentImageModel({ prompt: "A tiny neutral gray calibration square, no text.", note: "连接测试" });
-          }
-          page.dataset.settingsStatus = (kind === "text" ? "文生文" : "文生图") + "插头连接成功。";
+          await invokeIndependentTextModel({ system: "只回复 OK。", user: "连接测试，不需要剧情内容。" });
+          page.dataset.settingsStatus = "文生文插头连接成功。";
         } catch (error) {
           page.dataset.settingsStatus = "连接失败：" + String(error?.message || error || "未知错误");
         }
@@ -39077,6 +39170,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     "louishm-four-tone-v1": {
       name: "louisHM",
       src: stAssetUrl("wallpapers/louishm-four-tone-v1.png")
+    },
+    "inuzuka-natsumi-prank-v1": {
+      name: "夏美的鬼脸",
+      src: stAssetUrl("wallpapers/inuzuka-natsumi-prank-v1.png")
     }
   });
   const ST_MODEL_CONNECTOR_CONFIG_KEY = "hypnoos:model-connectors:v1";
@@ -39093,19 +39190,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         temperature: 0.7,
         topP: 1,
         maxTokens: 900
-      },
-      image: {
-        enabled: false,
-        mode: "proxy",
-        endpoint: "",
-        model: "",
-        secretRef: "",
-        width: 768,
-        height: 1365,
-        steps: 28,
-        cfg: 6.5,
-        seed: -1,
-        negativePrompt: "text, watermark, UI, frame, malformed hands, extra limbs"
       },
       context: {
         story: true,
@@ -39125,7 +39209,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const fallback = defaultModelConnectorConfig();
     const source = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
     const text = source.text && typeof source.text === "object" ? source.text : {};
-    const image = source.image && typeof source.image === "object" ? source.image : {};
     const context = source.context && typeof source.context === "object" ? source.context : {};
     return {
       text: {
@@ -39137,19 +39220,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         temperature: clampConnectorNumber(text.temperature, fallback.text.temperature, 0, 2),
         topP: clampConnectorNumber(text.topP, fallback.text.topP, 0, 1),
         maxTokens: Math.round(clampConnectorNumber(text.maxTokens, fallback.text.maxTokens, 64, 8192))
-      },
-      image: {
-        enabled: Boolean(image.enabled),
-        mode: image.mode === "direct" ? "direct" : "proxy",
-        endpoint: String(image.endpoint || ""),
-        model: String(image.model || ""),
-        secretRef: String(image.secretRef || ""),
-        width: Math.round(clampConnectorNumber(image.width, fallback.image.width, 256, 2048)),
-        height: Math.round(clampConnectorNumber(image.height, fallback.image.height, 256, 2048)),
-        steps: Math.round(clampConnectorNumber(image.steps, fallback.image.steps, 1, 150)),
-        cfg: clampConnectorNumber(image.cfg, fallback.image.cfg, 0, 30),
-        seed: Math.round(clampConnectorNumber(image.seed, fallback.image.seed, -1, 2147483647)),
-        negativePrompt: String(image.negativePrompt || fallback.image.negativePrompt)
       },
       context: {
         story: context.story !== false,
@@ -39214,7 +39284,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       toast.setAttribute("role", "status");
       toast.setAttribute("aria-live", "polite");
       const title = state === "running" ? "独立插头正在运行" : state === "success" ? "独立插头运行成功" : "独立插头运行失败";
-      const type = kind === "image" ? "IMAGE" : "TEXT";
+      const type = "TEXT";
       toast.innerHTML = '<strong>' + escapeHtml(title) + '</strong><span>' + escapeHtml(String(detail || (state === "running" ? "正在等待模型返回…" : ""))) + '</span><em>' + type + '</em>';
       document.body.appendChild(toast);
       if (state !== "running") {
@@ -39613,63 +39683,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return true;
   }
 
-  async function invokeIndependentImageModel({ prompt, negativePrompt = "", note = "", signal } = {}) {
-    showIndependentConnectorFeedback("image", "running", "正在连接文生图模型…");
-    try {
-      const config = readModelConnectorConfig();
-      const profile = config.image;
-      if (!independentConnectorProfileReady("image", config)) throw new Error("请先在设置的“模型插头”中启用文生图插头。");
-      const context = await buildIndependentConnectorContext(note);
-      const direct = profile.mode === "direct";
-      const fullPrompt = [String(prompt || ""), context].filter(Boolean).join("\n\n");
-      const body = direct ? {
-        model: profile.model,
-        prompt: fullPrompt,
-        size: profile.width + "x" + profile.height,
-        n: 1,
-        response_format: "b64_json"
-      } : {
-        providerId: "hypnoos-image-plugin",
-        model: profile.model,
-        secretRef: profile.secretRef,
-        width: profile.width,
-        height: profile.height,
-        steps: profile.steps,
-        cfg: profile.cfg,
-        seed: profile.seed,
-        prompt: fullPrompt,
-        negativePrompt: String(negativePrompt || profile.negativePrompt)
-      };
-      const response = await fetch(String(profile.endpoint || "").trim(), {
-        method: "POST",
-        headers: independentConnectorHeaders("image", profile),
-        credentials: direct ? "omit" : "same-origin",
-        signal,
-        body: JSON.stringify(body)
-      });
-      if (!response.ok) throw new Error("文生图插头返回 " + response.status + "。");
-      const contentType = String(response.headers.get("content-type") || "");
-      if (contentType.startsWith("image/")) {
-        const source = await fileAsDataUrl(await response.blob());
-        showIndependentConnectorFeedback("image", "success", "模型已返回图片，正在交给当前应用处理。");
-        return source;
-      }
-      const data = await response.json();
-      const b64 = String(data?.data?.[0]?.b64_json || data?.b64_json || "");
-      if (b64) {
-        showIndependentConnectorFeedback("image", "success", "模型已返回图片，正在交给当前应用处理。");
-        return "data:image/png;base64," + b64;
-      }
-      const source = String(data?.data?.[0]?.url || data?.dataUrl || data?.url || data?.image || data?.image_url || "");
-      if (!source) throw new Error("文生图插头没有返回图片。");
-      showIndependentConnectorFeedback("image", "success", "模型已返回图片，正在交给当前应用处理。");
-      return source;
-    } catch (error) {
-      showIndependentConnectorFeedback("image", "error", String(error?.message || error || "未知错误"));
-      throw error;
-    }
-  }
-
   function wallpaperStorageScope() {
     try { return profileStableStorageScope(); } catch {}
     return "default";
@@ -39685,13 +39698,13 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 
   function defaultWallpaperState() {
     return {
-      version: 2,
+      version: 3,
       selectedSlot: 0,
       slots: [
         { kind: "blank", name: "原始背景" },
         { kind: "builtin", builtinId: "miyuki-miruko-yinyang-v1", name: "阴阳双生" },
         { kind: "builtin", builtinId: "louishm-four-tone-v1", name: "louisHM" },
-        { kind: "empty", name: "墙纸 4" }
+        { kind: "builtin", builtinId: "inuzuka-natsumi-prank-v1", name: "夏美的鬼脸" }
       ]
     };
   }
@@ -39707,8 +39720,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         if (Number(parsed.version || 1) < 2 && index === 2 && current?.kind !== "upload") {
           return { ...slot };
         }
+        if (Number(parsed.version || 1) < 3 && index === 3 && current?.kind !== "upload") {
+          return { ...slot };
+        }
         const kind = ["blank", "builtin", "upload", "empty"].includes(current.kind) ? current.kind : slot.kind;
-        const legacyBuiltinId = index === 1 ? "miyuki-miruko-yinyang-v1" : "";
+        const legacyBuiltinId = index === 1
+          ? "miyuki-miruko-yinyang-v1"
+          : index === 2
+            ? "louishm-four-tone-v1"
+            : index === 3
+              ? "inuzuka-natsumi-prank-v1"
+              : "";
         const builtinId = kind === "builtin" && ST_WALLPAPER_BUILTINS[current.builtinId]
           ? current.builtinId
           : legacyBuiltinId;
@@ -39720,7 +39742,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         };
       });
       return {
-        version: 2,
+        version: 3,
         selectedSlot: Math.max(0, Math.min(3, Number(parsed.selectedSlot) || 0)),
         slots
       };
@@ -39733,7 +39755,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const next = state && typeof state === "object" ? state : defaultWallpaperState();
     try {
       localStorage.setItem(wallpaperStateKey(), JSON.stringify({
-        version: 2,
+        version: 3,
         selectedSlot: Math.max(0, Math.min(3, Number(next.selectedSlot) || 0)),
         slots: defaultWallpaperState().slots.map((fallback, index) => {
           const slot = next.slots?.[index] || fallback;
@@ -39890,122 +39912,50 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   }
 
   function cameraFrontPhoto() {
-    const identity = getSystemState()?.["$user身份"];
+    const identity = getSystemState()?.["_user身份"];
     if (!identity || typeof identity !== "object" || Array.isArray(identity)) return "";
     return effectScalar(identity["照片"]).trim();
   }
 
-  function cameraScenePrompt(description) {
-    const system = getSystemState();
-    const pieces = [
-      "当前年份：" + String(system["当前年份"] ?? ""),
-      "当前日期：" + String(system["当前日期"] ?? ""),
-      "当前时间：" + String(system["当前时间"] ?? ""),
-      "当前地点：" + String(system["当前地点"] ?? ""),
-      "当前事件：" + String(system["当前事件"] ?? ""),
-      "用户拍摄要求：" + String(description || "").trim()
-    ];
-    return "生成一张当前剧情世界中的后置镜头照片。保持人物身份和场景连续，画面自然，避免任何界面文字、水印或边框。\n" + pieces.join("\n");
-  }
-
-  function cameraBackPhotoStorageKey() {
-    return "hypnoos:camera-photo:v1:" + wallpaperStorageScope();
-  }
-
-  async function cameraGenerateBackImage(description, signal) {
-    return invokeIndependentImageModel({
-      prompt: cameraScenePrompt(description),
-      negativePrompt: "text, watermark, UI, frame, duplicated people, malformed hands, extra limbs",
-      note: description,
-      signal
-    });
-  }
-
   function renderCameraPage(page) {
-    const mode = page.dataset.cameraMode === "front" ? "front" : "back";
-    const frontPhoto = cameraFrontPhoto();
-    const backPhoto = String(page.dataset.cameraResult || "");
-    const viewSource = mode === "front" ? frontPhoto : backPhoto;
+    const viewSource = cameraFrontPhoto();
     const latest = isLatestPhoneVariableView();
-    const imageReady = independentConnectorProfileReady("image");
-    const generating = page.dataset.cameraGenerating === "true";
-    const description = String(page.dataset.cameraDescription || "");
     page.innerHTML =
       renderLiteHeader(page, { title: "照相", islandText: "CAMERA" }) +
       '<main class="st-lite-body">' +
-        '<section class="st-camera-viewfinder"><span class="st-camera-mode">' + (mode === "front" ? "前置 · SELFIE" : (imageReady ? "后置 · PLUGIN" : "后置 · 未配置")) + '</span>' +
-          (viewSource ? '<img alt="相机预览" src="' + escapeAttr(viewSource) + '">' : '<div class="st-camera-empty">' + (mode === "front" ? "首楼所选的用户照片会显示在这里。你也可以在此更换。" : (imageReady ? "描述想拍下的画面，然后按下快门。" : "请先在设置 → 模型插头配置文生图。")) + '</div>') +
+        '<section class="st-camera-viewfinder"><span class="st-camera-mode">前置 · SELFIE</span>' +
+          (viewSource ? '<img alt="自拍预览" src="' + escapeAttr(viewSource) + '">' : '<div class="st-camera-empty">首楼所选的用户照片会显示在这里。你也可以在此更换。</div>') +
         '</section>' +
-        (mode === "back" ? '<section class="st-camera-compose ' + (imageReady ? "" : "is-locked") + '" aria-disabled="' + (!imageReady) + '">' +
-          '<textarea data-camera-description ' + (!imageReady || generating ? "disabled" : "") + ' placeholder="补充构图、人物动作、镜头或氛围。">' + escapeHtml(description) + '</textarea>' +
-          '<p class="st-camera-status">' + escapeHtml(page.dataset.cameraStatus || (imageReady ? "独立于聊天生成；会读取设置中允许的剧情、状态、相关世界书和备注。" : "模型插头未配置。")) + '</p>' +
-        '</section>' : '<p class="st-camera-status">' + escapeHtml(page.dataset.cameraStatus || "前置镜头读取变量 /系统/$user身份/照片。") + '</p>') +
+        '<p class="st-camera-status">' + escapeHtml(page.dataset.cameraStatus || "前置镜头读取变量 /系统/_user身份/照片；后置摄像头暂不实现。") + '</p>' +
         '<div class="st-camera-controls">' +
-          '<button type="button" data-camera-action="switch">' + (mode === "front" ? "切到后镜头" : "切到前镜头") + '</button>' +
-          '<button type="button" data-camera-action="capture" aria-label="' + (mode === "front" ? "更换自拍照" : "生成后置照片") + '" ' + (!latest || generating || (mode === "back" && !imageReady) ? "disabled" : "") + '></button>' +
+          '<button type="button" data-camera-action="rear-unavailable" disabled aria-disabled="true">后置不可用</button>' +
+          '<button type="button" data-camera-action="capture" aria-label="更换自拍照" ' + (!latest ? "disabled" : "") + '></button>' +
           (viewSource ? '<button type="button" data-camera-action="download">保存照片</button>' : '<button type="button" disabled>保存照片</button>') +
-        '</div>' + (mode === "front" ? '<input class="st-camera-file" data-camera-file type="file" accept="image/*">' : '') +
+        '</div><input class="st-camera-file" data-camera-file type="file" accept="image/*">' +
       '</main>';
     bindLiteHeader(page, () => renderCameraPage(page));
     page.querySelector('[data-lite-action="back"]')?.addEventListener("click", () => {
-      page.__stCameraAbort?.abort?.();
       const root = page.parentElement;
       setPhoneActiveApp(root, "");
       page.remove();
       void applyHomeWallpaper(root);
     });
-    page.querySelector('[data-camera-action="switch"]')?.addEventListener("click", () => {
-      page.dataset.cameraDescription = String(page.querySelector("[data-camera-description]")?.value || page.dataset.cameraDescription || "");
-      page.dataset.cameraMode = mode === "front" ? "back" : "front";
-      renderCameraPage(page);
-    });
-    page.querySelector("[data-camera-description]")?.addEventListener("input", (event) => {
-      page.dataset.cameraDescription = String(event.target.value || "");
-    });
     const fileInput = page.querySelector("[data-camera-file]");
-    page.querySelector('[data-camera-action="capture"]')?.addEventListener("click", async () => {
-      if (mode === "front") {
-        fileInput?.click();
-        return;
-      }
-      if (!imageReady || !latest) return;
-      page.dataset.cameraDescription = String(page.querySelector("[data-camera-description]")?.value || "");
-      page.dataset.cameraGenerating = "true";
-      page.dataset.cameraStatus = "正在通过独立文生图插头生成…";
-      renderCameraPage(page);
-      const controller = new AbortController();
-      page.__stCameraAbort?.abort?.();
-      page.__stCameraAbort = controller;
-      try {
-        const source = await cameraGenerateBackImage(page.dataset.cameraDescription, controller.signal);
-        if (controller.signal.aborted || !page.isConnected) return;
-        const previous = String(page.dataset.cameraResult || "");
-        if (previous.startsWith("blob:")) try { URL.revokeObjectURL(previous); } catch {}
-        page.dataset.cameraResult = source;
-        await profileSetPhotoStorageIdb(cameraBackPhotoStorageKey(), source);
-        page.dataset.cameraStatus = "后置照片已生成并保存到当前聊天的前端照片存储。";
-      } catch (error) {
-        if (!controller.signal.aborted) page.dataset.cameraStatus = "生成失败：" + String(error?.message || error || "未知错误");
-      } finally {
-        delete page.dataset.cameraGenerating;
-        if (page.__stCameraAbort === controller) page.__stCameraAbort = null;
-        if (page.isConnected) renderCameraPage(page);
-      }
-    });
+    page.querySelector('[data-camera-action="capture"]')?.addEventListener("click", () => fileInput?.click());
     fileInput?.addEventListener("change", async () => {
       const file = fileInput.files?.[0];
       if (!file || !file.type.startsWith("image/")) return;
       const dataUrl = await fileAsDataUrl(file);
       const result = await rewardApplySystemMutation((system) => {
-        system["$user身份"] = system["$user身份"] && typeof system["$user身份"] === "object" && !Array.isArray(system["$user身份"]) ? system["$user身份"] : {};
-        system["$user身份"]["照片"] = dataUrl;
+        system["_user身份"] = system["_user身份"] && typeof system["_user身份"] === "object" && !Array.isArray(system["_user身份"]) ? system["_user身份"] : {};
+        system["_user身份"]["照片"] = dataUrl;
         return { ok: true, message: "自拍照已更新。" };
       });
       page.dataset.cameraStatus = result?.message || (result?.ok ? "自拍照已更新。" : "自拍照更新失败。");
       renderCameraPage(page);
     });
     page.querySelector('[data-camera-action="download"]')?.addEventListener("click", () => {
-      const source = mode === "front" ? cameraFrontPhoto() : String(page.dataset.cameraResult || "");
+      const source = cameraFrontPhoto();
       if (!source) return;
       const link = document.createElement("a");
       link.href = source;
@@ -40023,21 +39973,9 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     clearPhoneInternalOverlays(root);
     const page = document.createElement("section");
     page.className = "st-lite-app st-camera-app";
-    page.dataset.cameraMode = "back";
     page.setAttribute("aria-label", "照相");
-    page.__stCameraAbort = null;
-    page.__stCameraCleanup = () => {
-      page.__stCameraAbort?.abort?.();
-      const source = String(page.dataset.cameraResult || "");
-      if (source.startsWith("blob:")) try { URL.revokeObjectURL(source); } catch {}
-    };
     root.appendChild(page);
     renderCameraPage(page);
-    void profileGetPhotoStorageIdb(cameraBackPhotoStorageKey()).then((source) => {
-      if (!page.isConnected || !source) return;
-      page.dataset.cameraResult = String(source);
-      renderCameraPage(page);
-    }).catch(() => {});
   }
 
   window.__ST_OPEN_MCHAN_APP__ = () => openMchanPage();
