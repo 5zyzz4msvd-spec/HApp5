@@ -27665,13 +27665,16 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	                stat,
 	                option,
 	                view,
-	                replace: () => view.updateVariablesWith((current) => {
+	                replace: (nextMvu, nextOption) => view.updateVariablesWith((current) => {
+	                  const nextStat = nextMvu?.stat_data && typeof nextMvu.stat_data === "object"
+	                    ? nextMvu.stat_data
+	                    : nextMvu;
 	                  if (current?.stat_data && typeof current.stat_data === "object") {
-	                    current.stat_data = stat;
+	                    current.stat_data = nextStat;
 	                    return current;
 	                  }
-	                  return stat;
-	                }, option),
+	                  return nextStat;
+	                }, nextOption),
 	                score: score + optionPriority
 	              });
 	            }
@@ -37482,9 +37485,19 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    return snapshots;
 	  }
 
+	  function settingsCanonicalSnapshot(value) {
+	    if (Array.isArray(value)) return value.map(settingsCanonicalSnapshot);
+	    if (value && typeof value === "object") {
+	      return Object.fromEntries(
+	        Object.keys(value).sort().map((key) => [key, settingsCanonicalSnapshot(value[key])])
+	      );
+	    }
+	    return value;
+	  }
+
 	  function settingsSnapshotJson(value) {
 	    try {
-	      return JSON.stringify(value);
+	      return JSON.stringify(settingsCanonicalSnapshot(value));
 	    } catch {
 	      return "";
 	    }
@@ -37878,6 +37891,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     "_课程表": [],
     "当前地点": "教室",
     "当前事件": "",
+    "当前出场角色": [],
     "MC能量": 25,
     "MC能量上限": 25,
     "持有零花钱": 6000,
@@ -38037,17 +38051,9 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	    if (!report.hasData) return report;
 	    const rootSchema = settingsCurrentMvuSchemaRoot();
 	    settingsScanExpectedFields(report, root, [], SETTINGS_TOP_DEFAULTS, rootSchema);
-    const topAllowed = settingsExpectedKeySet(rootSchema, SETTINGS_TOP_DEFAULTS);
-    Object.keys(root).forEach((key) => {
-      if (!topAllowed.has(key)) report.extra.push({ path: [key] });
-    });
     const system = settingsObject(root["系统"]);
     const systemSchema = mvuSchemaChild(rootSchema, "系统");
     settingsScanExpectedFields(report, system, ["系统"], SETTINGS_SYSTEM_DEFAULTS, systemSchema, SETTINGS_SYSTEM_OPTIONAL_KEYS);
-    const systemAllowed = settingsExpectedKeySet(systemSchema, SETTINGS_SYSTEM_DEFAULTS, SETTINGS_SYSTEM_OPTIONAL_KEYS);
-    Object.keys(system).forEach((key) => {
-      if (!systemAllowed.has(key)) report.extra.push({ path: ["系统", key] });
-    });
 	    const roles = settingsObject(root["角色"]);
 	    Object.entries(roles).forEach(([roleName, rawRole]) => {
 	      const role = settingsObject(rawRole);
@@ -38055,11 +38061,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      // 敏感度、心理、状态等字段列在过时位置。设置页不能再反向信任这些
 	      // stale schema，否则会把可回退字段误报为缺少字段。
 	      const roleSchema = null;
-	      const roleAllowed = settingsExpectedKeySet(roleSchema, SETTINGS_ROLE_DEFAULTS, SETTINGS_ROLE_OPTIONAL_KEYS);
 	      settingsScanExpectedFields(report, role, ["角色", roleName], SETTINGS_ROLE_DEFAULTS, roleSchema, SETTINGS_ROLE_OPTIONAL_KEYS);
-	      Object.keys(role).forEach((key) => {
-	        if (!roleAllowed.has(key)) report.extra.push({ path: ["角色", roleName, key] });
-	      });
 	      for (const sectionName of ROLE_PAGE_SECTIONS) {
 	        const section = settingsObject(role[sectionName]);
 	        const sectionSchema = null;
@@ -38071,13 +38073,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	        const defaults = sectionName === "信息" ? { ...sectionDefaults, "姓名": String(section["姓名"] || roleName || "") } : sectionDefaults;
 	        const sectionOptional = sectionName === "信息" ? SETTINGS_ROLE_INFO_OPTIONAL_KEYS : (sectionName === "敏感" ? SETTINGS_ROLE_SENSITIVE_OPTIONAL_KEYS : null);
 	        settingsScanExpectedFields(report, section, ["角色", roleName, sectionName], defaults, sectionSchema, sectionOptional);
-	        const allowed = settingsExpectedKeySet(sectionSchema, sectionDefaults, sectionOptional);
-	        Object.keys(section).forEach((key) => {
-	          if (!allowed.has(key)) report.extra.push({ path: ["角色", roleName, sectionName, key] });
-	        });
 	      }
 	    });
-	    // 手写扫描负责给缺失字段提供默认值；严格合同负责识别所有层级的未知键。
+	    // 手写扫描只负责给缺失字段提供默认值；未知键只以当前统一 Zod 合同为准，
+	    // 不能信任旧聊天里可能过期或序列化形态不同的 schema properties。
 	    // record 的动态根键（角色名、任务名、物品名等）由 Zod record 自身放行，
 	    // 因此这里不会把合法的动态名称误报为未知字段。
 	    const runtimeZod = globalThis.__ST_HYPNOOS_ZOD__;
@@ -38318,20 +38317,36 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     const legacyChanged = removeDeprecatedAchievementFieldFromMvu(data.mvu || data.stat);
     if (data.mvu && typeof data.mvu === "object" && !Array.isArray(data.mvu) && Object.prototype.hasOwnProperty.call(data.mvu, "stat_data")) {
       data.mvu.stat_data = data.stat;
+    } else if (data.mvu && typeof data.mvu === "object" && !Array.isArray(data.mvu)) {
+      Object.keys(data.mvu).forEach((key) => delete data.mvu[key]);
+      Object.assign(data.mvu, settingsClone(data.stat));
+      data.stat = data.mvu;
     }
 	    const changed = Boolean(normalizedChanged || schemaChanged || legacyChanged);
     if (changed) {
       try { syncGhostEmbodiedStats(data.stat?.["系统"], data.stat); } catch {}
-      await encounterReplaceMvuData(data);
+      const writeSucceeded = await encounterReplaceMvuData(data);
+      if (!writeSucceeded) return { ok: false, reason: "变量写回接口拒绝了本次矫正。" };
     }
+    const readBack = await settingsReadMvuCandidateForOption(data.option);
+    if (!readBack?.stat) return { ok: false, reason: "变量写回后未能从同一楼层读回。" };
+    const expectedSnapshot = settingsSnapshotJson(data.stat);
+    const actualSnapshot = settingsSnapshotJson(readBack.stat);
+    if (!expectedSnapshot || expectedSnapshot !== actualSnapshot) {
+      return { ok: false, reason: "变量写回后读回内容不一致，未报告为已清理。" };
+    }
+    const postReport = settingsVariableReport(readBack.stat);
+    const beforeExtraPaths = new Set(report.extra.map((item) => settingsPathText(item.path)));
+    const afterExtraPaths = new Set(postReport.extra.map((item) => settingsPathText(item.path)));
+    const removedExtraCount = Array.from(beforeExtraPaths).filter((path) => !afterExtraPaths.has(path)).length;
     return {
 	      ok: true,
 	      changed,
-	      missingCount: report.missing.length,
+	      missingCount: Math.max(0, report.missing.length - postReport.missing.length),
 	      schemaChanged,
 	      legacyChanged,
-	      removedExtraCount: report.extra.length,
-	      extraCount: 0
+	      removedExtraCount,
+	      extraCount: postReport.extra.length
 	    };
 	  }
 
