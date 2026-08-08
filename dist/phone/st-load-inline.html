@@ -1140,15 +1140,15 @@ html.st-hypnoos-phone-port .st-operation-panel-preview pre {
 	      }
       if (text === "打工") {
         if (operationHasAction(records, /打工偶遇（主动回合）/)) {
-          return ["- AI执行规范｜资源与buff已由前端结算，禁止重复结算。从<相关变量>的当前地点、日期和时间承接，写清前往工作地点及开始工作。本回合唯一终点是偶遇发生时间，最后场景停在工作地点的偶遇现场、角色已作出第一反应且{{user}}可以行动的位置；预计结束时间仅是下一回合边界，不得写到下班或其他更晚锚点。将当前年份、日期、时间、地点和事件写成偶遇节点。"];
+          return ["- AI执行规范｜本轮由打工操作强制接管场景。<相关变量>中的当前地点、日期和时间只作为出发事实，不代表要续写上一幕；上一幕尚未完成的对话、冲突、人物动作和剧情目标全部暂停，除非它们直接阻止{{user}}离开，否则不得继续描写。从当前地点切断原剧情，按开始时间前往工作地点并开始工作；资源与buff已由前端结算，禁止重复结算。本回合唯一终点是偶遇发生时间，最后场景停在工作地点的偶遇现场、角色已作出第一反应且{{user}}可以行动的位置；预计结束时间仅是下一回合边界，不得写到下班或其他更晚锚点。前端不会修改当前年份、日期、时间、地点或事件，必须由AI将这五项写成偶遇节点。"]; 
         }
         if (operationHasAction(records, /打工偶遇（收束回合）/)) {
-          return ["- AI执行规范｜资源与buff已由前端结算，禁止重复结算。承接当前变量所记录的上一楼偶遇现场与最新{{user}}行动，处理互动后推进至预计结束时间。本回合唯一终点是该时间的工作结束状态，最后场景停在工作结束时的实际地点；将当前年份、日期、时间、地点和事件写成该终点，不得当成新一次打工或再处理更晚时钟。"];
+          return ["- AI执行规范｜本轮仍由同一次打工接管场景，只承接上一楼工作地点的偶遇现场与最新{{user}}行动；打工开始前的旧剧情、旧对话和旧事件继续冻结，不得恢复或推进。处理该行动的直接互动后，用必要且简短的工作过程推进至预计结束时间。本回合唯一终点是该时间的工作结束状态，最后场景停在工作结束时的实际地点；资源与buff已由前端结算，禁止重复结算。前端不会修改当前年份、日期、时间、地点或事件，必须由AI将这五项写成工作结束节点；不得当成新一次打工、不得返回旧剧情，也不得处理更晚时钟。"]; 
         }
         if (operationHasAction(records, /打工buff提醒/)) {
           return ["- AI执行规范｜现有打工buff只读至其结束时间；不得改写、延期或提前清空，也不得据此安排新的打工。"];
         }
-        return ["- AI执行规范｜资源与buff已由前端结算，禁止重复结算。从<相关变量>的当前地点、日期和时间承接；必要时写等待与移动，并到工作地点完成工作。本回合唯一终点是预计结束时间，最后场景停在工作结束时的实际地点；将当前年份、日期、时间、地点和事件写成该终点，不再承接同轮更晚时钟。"];
+        return ["- AI执行规范｜本轮由打工操作强制接管场景。<相关变量>中的当前地点、日期和时间只作为出发事实，不代表要续写上一幕；上一幕尚未完成的对话、冲突、人物动作和剧情目标全部暂停，除非它们直接阻止{{user}}离开，否则不得继续描写。从当前地点切断原剧情，按开始时间等待或移动到工作地点并完成工作；资源与buff已由前端结算，禁止重复结算。本回合唯一终点是预计结束时间，最后场景停在工作结束时的实际地点。前端不会修改当前年份、日期、时间、地点或事件，必须由AI将这五项写成工作结束节点；不得返回旧剧情，也不再承接同轮更晚时钟。"]; 
       }
 	      if (text === "邂逅") {
 	        return ["- AI执行规范｜邂逅到达只按命中角色安排出场；不重建或覆盖角色根与世界书。"];
@@ -22113,11 +22113,18 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      roll: latestRoll
 	    });
 		    const encounterDelayHours = encounterRole ? workEncounterDelayHours(job, latestRoll) : 0;
-		    const encounterTime = encounterRole ? (workOffsetDateTimeText(timeInfo.startText, encounterDelayHours) || timeInfo.startText) : "";
-		    const buffEndText = timingInfo.buff ? workBuffEndTextFromClock(clockInfo, timeInfo.startText) : "";
-		    if (timingInfo.buff && !buffEndText) return { ok: false, message: "buff结束时间计算失败，未锁定本轮打工。" };
-		    const shachikuGain = workShachikuGain(job, currentValue);
+	    const encounterTime = encounterRole ? (workOffsetDateTimeText(timeInfo.startText, encounterDelayHours) || timeInfo.startText) : "";
+	    const buffEndText = timingInfo.buff ? workBuffEndTextFromClock(clockInfo, timeInfo.startText) : "";
+	    if (timingInfo.buff && !buffEndText) return { ok: false, message: "buff结束时间计算失败，未锁定本轮打工。" };
+	    const shachikuGain = workShachikuGain(job, currentValue);
+	    const rollbackKeys = ["持有零花钱", "零花钱", "_社畜值", "社畜值", "打工值", "社畜经验", "_buff", "_buff结束时间", "buff", "buff结束时间", "MC能量", "_MC能量", "当前MC能量"];
+	    let rollbackSnapshot = null;
 	    const result = await rewardApplySystemMutation((system, stat) => {
+	      rollbackSnapshot = rollbackKeys.map((key) => ({
+	        key,
+	        present: Object.prototype.hasOwnProperty.call(system, key),
+	        value: system[key]
+	      }));
 	      const beforeMoney = workNumber(system["持有零花钱"], 0);
 	      const nextMoney = hypnosisSetSystemNumber(system, "持有零花钱", beforeMoney + job.wage, ["零花钱"]);
 		      const beforeShachiku = workNumber(system["_社畜值"], 0);
@@ -22173,7 +22180,29 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      role: result.payload?.["偶遇女角色"],
 	      summary: result.payload?.["暂存摘要"]
 	    });
-	    const added = await appendAppOperation(result.payload);
+	    let added = false;
+	    try {
+	      added = await appendAppOperation(result.payload);
+	    } catch (error) {
+	      console.warn("[HypnoOS][WorkEncounter] 打工暂存写入异常，准备回滚前端资源。", error);
+	    }
+	    if (!added) {
+	      const rollback = Array.isArray(rollbackSnapshot)
+	        ? await rewardApplySystemMutation((system) => {
+	          for (const key of rollbackKeys) delete system[key];
+	          for (const item of rollbackSnapshot) {
+	            if (item.present) system[item.key] = item.value;
+	          }
+	          return { ok: true, message: "打工暂存失败，已回滚前端资源。" };
+	        })
+	        : { ok: false };
+	      return {
+	        ok: false,
+	        message: rollback?.ok
+	          ? "打工暂存失败，工资、社畜值、buff与MC能量已回滚，请重试。"
+	          : "打工暂存失败，且资源回滚未确认；请先检查当前变量后再重试。"
+	      };
+	    }
 	    if (added) settleWorkEncounterProgressRoll(latestRoll, "appendAppOperation");
 	    console.info("[HypnoOS][WorkEncounter] append work branch result", {
 	      added: Boolean(added),
@@ -22182,7 +22211,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      role: result.payload?.["偶遇女角色"],
 	      progressCleared: Boolean(added && latestRoll?.progressWriteDeferred)
 	    });
-	    return { ok: Boolean(added), message: added ? result.message : "已在暂存区。" };
+	    return { ok: true, message: result.message };
 	  }
 
 	  function openWorkTimeDialog(page, jobId) {
@@ -39605,7 +39634,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     { title: "MC匿名版", tag: "论坛", body: "浏览匿名帖子和楼层，作为世界内的轻量信息来源。" },
     { title: "地图", tag: "城市", body: "用桌游棋盘查看主要地标；双击带角标的地点进入下层结构，用户新增地点会收在更多地点列表。" },
     { title: "监控", tag: "厕所", body: "查看男厕门位状态并发起派遣相关操作。" },
-    { title: "打工", tag: "零工", body: "查看可接零工，按社畜值解锁更高级的短工；确认后前端直接结算工资、社畜值、buff和时间，打工偶遇才交给AI写互动。" },
+    { title: "打工", tag: "零工", body: "查看可接零工，按社畜值解锁更高级的短工；确认后前端只结算工资、社畜值与buff，年份、日期、时间、地点、事件以及打工过程均交给AI更新。" },
     { title: "邂逅", tag: "桃花运", body: "浏览角色包资料、定制角色并购买随机桃花运，也可查看邂逅商店。" },
     { title: "设置", tag: "迁移", body: "导出或导入指定前端存储，并检查当前MVU变量是否缺少常用字段。" }
   ];
