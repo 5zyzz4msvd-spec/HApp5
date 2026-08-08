@@ -806,7 +806,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      const text = cleanOperationText(source);
 	      if (text === "催眠命令") {
 	        const parts = [];
-        if (operationHasAction(records, /启动催眠|追加催眠/)) parts.push("启动/追加催眠代表{{user}}已实际施术；按本条目标、方式与世界书条件结算成功、失败或部分失败");
+        if (operationHasAction(records, /启动催眠|追加催眠/)) parts.push("启动/追加催眠代表{{user}}已实际施术；按本条目标、方式与世界书条件结算成功、失败或部分失败；正文一旦写成催眠成功，变量模型必须同轮扣除实际MC并写入指令ID唯一对应的结果路径：角色命令写临时/永久效果，开放空间命令只写/规则，禁止只写成功剧情却漏掉结果变量");
 	        if (operationHasAction(records, /取消催眠/)) parts.push("取消催眠只结束当前临时催眠状态，不移除永久催眠效果");
 	        if (operationHasAction(records, /临时催眠到期提醒/)) parts.push("临时催眠已到期；只描写解除后的状态，不延期或转成永久效果");
 	        return parts.length ? ["- AI执行规范｜" + parts.join("；") + "。"] : [];
@@ -845,11 +845,8 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        return ["- AI执行规范｜派遣按字段和目标条件判定；结束/取消按前端完整天数收益结算，成功解除派遣并按工作风险处理主角可疑度。"];
 	      }
       if (text === "打工") {
-        if (operationHasAction(records, /打工偶遇（主动回合）/)) {
-          return ["- AI执行规范｜本轮由打工操作强制接管场景。<相关变量>中的当前地点、日期和时间只作为出发事实，不代表要续写上一幕；上一幕尚未完成的对话、冲突、人物动作和剧情目标全部暂停，除非它们直接阻止{{user}}离开，否则不得继续描写。从当前地点切断原剧情，按开始时间前往工作地点并开始工作；资源与buff已由前端结算，禁止重复结算。本回合唯一终点是偶遇发生时间，最后场景停在工作地点的偶遇现场、角色已作出第一反应且{{user}}可以行动的位置；预计结束时间仅是下一回合边界，不得写到下班或其他更晚锚点。前端不会修改当前年份、日期、时间、地点或事件，必须由AI将这五项写成偶遇节点。"];
-        }
-        if (operationHasAction(records, /打工偶遇（收束回合）/)) {
-	          return ["- AI执行规范｜本轮仍由同一次打工接管场景，只承接上一楼工作地点的偶遇现场与最新{{user}}行动；打工开始前的旧剧情、旧对话和旧事件继续冻结，不得恢复或推进。最新{{user}}行动只决定偶遇中段的互动内容，不拥有本楼层时间终点；无论行动内容、互动长度、角色离场、冲突或工作中断，都必须先处理其直接结果，再用必要且简短的工作过程或中性时间桥推进至预计结束时间。预计结束时间是不可被通用直接后果、Galgame尾段或普通剧情节奏覆盖的硬终点；不得停在偶遇时间，也不得越过结束时间。最后场景停在工作结束时的实际地点；资源与buff已由前端结算，禁止重复结算。前端不会修改当前年份、日期、时间、地点或事件，必须由AI将这五项精确写成预计结束节点；Galgame人物演出如启用也只能发生在该结束节点。不得当成新一次打工、不得返回旧剧情，也不得处理更晚时钟。"];
+        if (operationHasAction(records, /^打工偶遇$/)) {
+          return ["- AI执行规范｜本轮由打工操作强制接管场景。<相关变量>中的当前地点、日期和时间只作为出发事实，不代表续写上一幕；上一幕尚未完成的对话、冲突、人物动作和剧情目标全部冻结。从当前地点切断旧剧情，按开始时间前往工作地点并完成六小时工作；偶遇只发生在预计结束时间，也就是工作已经结束之后。最后场景停在下班地点的偶遇现场，偶遇角色作出第一反应后让{{user}}可以行动，不继续下一段剧情。资源与buff已由前端结算，禁止重复结算。前端不会修改当前年份、日期、时间、地点或事件，AI必须将这五项精确写成预计结束节点；不得返回旧剧情，也不得承接同轮更晚时钟。"];
         }
         if (operationHasAction(records, /打工buff提醒/)) {
           return ["- AI执行规范｜现有打工buff只读至其结束时间；不得改写、延期或提前清空，也不得据此安排新的打工。"];
@@ -996,6 +993,10 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      "vip5_permanent_personality"
 	    ]);
 	    const OPERATION_HYPNOSIS_LOCATION_RULE_IDS = new Set(["vip5_open_space_common_sense"]);
+	    const OPERATION_HYPNOSIS_NARRATIVE_RANGE_IDS = new Set([
+	      "vip4_closed_space_common_sense",
+	      "vip4_closed_space_cognitive_block"
+	    ]);
 	    const operationHypnosisFeatureRows = (details) => {
 	      const value = details?.["功能列表"];
 	      return Array.isArray(value) ? value.filter((item) => item && typeof item === "object" && !Array.isArray(item)) : [];
@@ -1009,6 +1010,8 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        if (/妊娠确认/.test(id + " " + label)) continue;
 	        const kind = OPERATION_HYPNOSIS_LOCATION_RULE_IDS.has(id) || /开放空间常识修改/.test(label)
 	          ? "location-rule"
+	          : OPERATION_HYPNOSIS_NARRATIVE_RANGE_IDS.has(id) || /封闭空间常识修改|封闭空间认知障碍/.test(label)
+	            ? "narrative-range"
 	          : OPERATION_HYPNOSIS_PERMANENT_IDS.has(id) || /永久常识修改|排泄控制|泌乳诱导|性癖植入|永久虚假记忆|永久人格植入/.test(label)
 	            ? "permanent"
 	            : "temporary";
@@ -1329,7 +1332,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
           return "reward:cancel-quest:" + (id || title);
         }
       }
-		      if (/^打工$/.test(source) && /^(开始打工|有偶遇|打工中提醒|打工偶遇（剧情进行中）|打工偶遇（主动回合）|打工偶遇（收束回合）)$/.test(action)) return "work:active";
+		      if (/^打工$/.test(source) && /^(开始打工|有偶遇|打工中提醒|打工偶遇)$/.test(action)) return "work:active";
 		      if (/^打工$/.test(source) && /^打工buff提醒$/.test(action)) return "work:buff";
 	      if (/^时钟$/.test(source) && /强制剧情开始时间|强制时间|目标时间|建议剧情开始时间|建议时间|当前时间|推进到该时间/.test(action)) return "clock:suggest-time";
 	      if (/^(地图|学校地图)$/.test(source)) {
@@ -1416,19 +1419,11 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
         const action = String(nextPayload["操作"] || "").trim();
         const branch = String(nextPayload["打工分支"] || "").trim();
         const role = String(nextPayload["偶遇女角色"] || "").trim();
-        const hasFloorLock = Object.prototype.hasOwnProperty.call(nextPayload, "楼层锁剩余");
-        if (String(nextPayload["偶遇发生时间"] || "").trim() === "无") delete nextPayload["偶遇发生时间"];
-        if (/^打工偶遇（剧情进行中）$/.test(action) && !hasFloorLock) return null;
-        if (branch !== "偶遇" && (!role || role === "无")) return nextPayload;
-        const remaining = Math.floor(Number(nextPayload["楼层锁剩余"]) || 0);
-        if (remaining === 1) {
-          nextPayload["操作"] = "打工偶遇（收束回合）";
-          nextPayload["暂存摘要"] = "打工偶遇收束｜" + (role || "偶遇角色") + "｜至 " + String(nextPayload["预计结束时间"] || "预计结束时间");
-	      nextPayload["收束硬终点"] = String(nextPayload["预计结束时间"] || "预计结束时间") + "；不可被最新user行动、直接后果收束、Galgame尾段或普通剧情节奏覆盖";
-	      nextPayload["用户行动定位"] = "偶遇中段；必须先处理直接结果，再继续必要工作过程或中性时间桥到预计结束时间";
-        } else if (remaining >= 2 || /^开始打工/.test(action)) {
-          nextPayload["操作"] = "打工偶遇（主动回合）";
-          nextPayload["暂存摘要"] = "打工偶遇主动回合｜" + (role || "偶遇角色") + "｜" + String(nextPayload["开始时间"] || "开始时间");
+        for (const key of ["偶遇发生时间", "楼层锁剩余", "楼层锁规则", "收束硬终点", "用户行动定位"]) delete nextPayload[key];
+        if (branch === "偶遇" || (role && role !== "无") || /^打工偶遇/.test(action)) {
+          nextPayload["操作"] = "打工偶遇";
+          nextPayload["偶遇时点"] = "预计结束时间；工作结束后";
+          nextPayload["暂存摘要"] = "打工结束偶遇｜" + (role || "偶遇角色") + "｜" + String(nextPayload["预计结束时间"] || "预计结束时间");
         }
         return nextPayload;
       };
@@ -1444,6 +1439,9 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      next.locked = locked;
 	      return next;
 	    };
+      window.__ST_OPERATION_INPUT_LOG__ = window.__ST_OPERATION_INPUT_LOG__
+        .map(normalizeStoredPendingOperationEntry)
+        .filter(Boolean);
 	    const readStoredOperationInputLog = () => {
 	      try {
 	        const raw = sessionStorage.getItem(operationInputStorageKey());
@@ -1674,7 +1672,10 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	      let state = "可撤销";
 	      let stateHelp = "这条操作尚未产生不可逆副作用，可以从暂存区移除。";
 	      if (locked) {
-	        if (/打工偶遇|打工buff提醒|派遣中提醒/.test(action)) {
+	        if (/打工偶遇/.test(action)) {
+	          state = "结果锁";
+	          stateHelp = "工资与工作资源已经结算；本条只等待 AI 在同一回复写完六小时工作和下班偶遇。";
+	        } else if (/打工buff提醒|派遣中提醒/.test(action)) {
 	          state = "跨楼锁";
 	          stateHelp = "这条操作跨回复持续，需按流程完成后自动解除。";
 	        } else if (ownership.mode === "frontend") {
@@ -2108,7 +2109,7 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
     window.__ST_SET_WORK_STATUS_REMINDER__ = (payload) => {
       const isTarget = (entry) => {
         const item = operationEntryPayload(entry);
-        return item?.["来源"] === "打工" && /^(有偶遇|打工中提醒|打工偶遇（剧情进行中）)$/.test(String(item?.["操作"] || ""));
+        return item?.["来源"] === "打工" && /^(有偶遇|打工中提醒|打工偶遇)$/.test(String(item?.["操作"] || ""));
       };
       if (!payload) {
         const before = window.__ST_OPERATION_INPUT_LOG__.length;
@@ -4532,17 +4533,14 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-hypnosis-trance-overlay{position:absolute;inset:0;z-index:240;pointer-events:none;overflow:hidden;background:transparent}
 .st-hypnosis-curtain{position:absolute;left:-4%;top:-8%;width:108%;height:116%;background:repeating-linear-gradient(90deg,#020203 0 9%,#111014 14%,#030304 22%,#171216 29%,#020203 38%);box-shadow:inset 0 -24px 34px rgba(0,0,0,.9),0 18px 44px rgba(0,0,0,.72);transform:translate3d(0,-106%,0);animation:stHypnosisCurtainSweep 3.2s cubic-bezier(.5,0,.18,1) both;will-change:transform,opacity}
 .st-hypnosis-curtain::after{content:"";position:absolute;left:-2%;right:-2%;bottom:-17px;height:34px;background:radial-gradient(ellipse at 5% 0,#020203 0 54%,transparent 56%) 0 0/10% 100% repeat-x;filter:drop-shadow(0 8px 7px rgba(0,0,0,.7))}
-.st-hypnosis-seraph{position:absolute;inset:0;z-index:1;display:grid;place-items:center;padding:12%;opacity:0;transform:scale(.76);animation:stHypnosisSeraphManifest 3.2s cubic-bezier(.2,.72,.22,1) both;will-change:transform,opacity}
-.st-hypnosis-seraph svg{display:block;width:min(88%,300px);height:auto;max-height:78%;overflow:visible;filter:drop-shadow(-7px 0 15px rgba(190,18,60,.44)) drop-shadow(7px 0 15px rgba(250,204,21,.28))}
-.st-hypnosis-seraph-eye{transform-origin:150px 154px;animation:stHypnosisSeraphEyePulse 3.2s ease-in-out both}
-.st-hypnosis-seraph-demon{fill:#31040f;stroke:#fb315e}.st-hypnosis-seraph-angel{fill:#f4e8bc;stroke:#ffe7a0}.st-hypnosis-seraph-line{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.st-hypnosis-seraph{position:absolute;inset:0;z-index:1;display:grid;place-items:center;padding:8%;opacity:0;transform:scale(.97);animation:stHypnosisSeraphManifest 3.2s ease-in-out both;will-change:transform,opacity}
+.st-hypnosis-seraph img{display:block;width:min(94%,360px);height:auto;max-height:84%;object-fit:contain;-webkit-mask-image:radial-gradient(ellipse at center,#000 48%,rgba(0,0,0,.94) 67%,transparent 95%);mask-image:radial-gradient(ellipse at center,#000 48%,rgba(0,0,0,.94) 67%,transparent 95%);filter:drop-shadow(-8px 0 16px rgba(120,5,32,.38)) drop-shadow(8px 0 16px rgba(191,151,75,.26));transform:translateZ(0)}
 .st-hypnosis-curtain-petal{--x:50%;--r:0deg;position:absolute;z-index:2;left:var(--x);top:-10%;width:14px;height:24px;border-radius:85% 12% 72% 20%;background:linear-gradient(145deg,#8f1738,#390713 66%,#0f0307);box-shadow:0 0 0 1px rgba(191,122,139,.2);opacity:0;transform:translate3d(0,-18px,0) rotate(var(--r));animation:stHypnosisCurtainPetal 2.7s calc(var(--d,0)*1ms) cubic-bezier(.22,.62,.24,1) both}
 .st-hypnosis-curtain-petal:nth-child(3n){width:10px;height:18px}.st-hypnosis-curtain-petal:nth-child(4n){filter:blur(.45px)}
 @keyframes stHypnosisCurtainSweep{0%{transform:translate3d(0,-106%,0);opacity:.98}24%,70%{transform:translate3d(0,0,0);opacity:1}100%{transform:translate3d(0,106%,0);opacity:.12}}
-@keyframes stHypnosisSeraphManifest{0%,17%{opacity:0;transform:scale(.76)}31%{opacity:.94;transform:scale(1)}68%{opacity:.94;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
-@keyframes stHypnosisSeraphEyePulse{0%,24%{transform:scale(.88)}42%,68%{transform:scale(1)}100%{transform:scale(.94)}}
+@keyframes stHypnosisSeraphManifest{0%,18%{opacity:0;transform:scale(.97)}32%{opacity:.94;transform:scale(1)}68%{opacity:.94;transform:scale(1)}100%{opacity:0;transform:scale(1.015)}}
 @keyframes stHypnosisCurtainPetal{0%{opacity:0;transform:translate3d(0,-18px,0) rotate(var(--r))}14%{opacity:.94}78%{opacity:.78}100%{opacity:0;transform:translate3d(var(--drift,24px),112vh,0) rotate(calc(var(--r) + 240deg))}}
-@media(prefers-reduced-motion:reduce){.st-hypnosis-curtain{animation:stHypnosisCurtainReduced .72s ease both!important}.st-hypnosis-seraph{animation:stHypnosisSeraphReduced .72s ease both!important}.st-hypnosis-seraph-eye{animation:none!important}.st-hypnosis-curtain-petal{display:none}@keyframes stHypnosisCurtainReduced{0%,100%{opacity:0}35%,65%{opacity:.9}}@keyframes stHypnosisSeraphReduced{0%,100%{opacity:0;transform:scale(.96)}35%,65%{opacity:.9;transform:scale(1)}}}
+@media(prefers-reduced-motion:reduce){.st-hypnosis-curtain{animation:stHypnosisCurtainReduced .72s ease both!important}.st-hypnosis-seraph{animation:stHypnosisSeraphReduced .72s ease both!important}.st-hypnosis-curtain-petal{display:none}@keyframes stHypnosisCurtainReduced{0%,100%{opacity:0}35%,65%{opacity:.9}}@keyframes stHypnosisSeraphReduced{0%,100%{opacity:0;transform:scale(.98)}35%,65%{opacity:.92;transform:scale(1)}}}
 .st-help-app{background:radial-gradient(circle at 18% -8%,rgba(56,189,248,.14),transparent 34%),linear-gradient(180deg,#0f172a,#08111f 58%,#05070d)}
 .st-help-app .st-lite-body{padding:10px 12px 16px;gap:8px}
 .st-help-grid{display:grid;gap:8px}
@@ -7262,16 +7260,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 .st-hypnosis-trance-overlay{
   background:
     radial-gradient(ellipse at 50% 45%,rgba(137,13,43,.3),rgba(26,7,20,.28) 35%,rgba(2,2,4,.84) 74%)!important
-}
-.st-hypnosis-trance-core{filter:drop-shadow(0 0 18px rgba(157,16,43,.42))!important}
-.st-hypnosis-trance-core i{
-  border-color:rgba(205,191,171,.7)!important;border-left-color:rgba(157,16,43,.22)!important;
-  border-right-color:rgba(211,34,67,.66)!important;border-radius:44% 56% 50% 50%!important
-}
-.st-hypnosis-trance-eye{
-  border-color:var(--hg-gold)!important;background:
-    radial-gradient(circle at 50% 50%,#f1e5d5 0 8%,#d42343 9% 20%,#5e0b20 21% 39%,#070407 40% 100%)!important;
-  box-shadow:0 0 24px rgba(157,16,43,.56),inset 0 0 16px rgba(238,229,216,.12)!important
 }
 .st-hypnosis-lite-app:not(.st-police-hq-v5-app):not(.st-police-hq-app) :focus-visible,
 [data-st-phone-app="hypnosis"] :focus-visible{outline:1px solid var(--hg-gold)!important;outline-offset:2px}
@@ -11753,6 +11741,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     "vip5_permanent_personality"
   ]);
 
+  const ST_HYPNOSIS_NARRATIVE_RANGE_IDS = new Set([
+    "vip4_closed_space_common_sense",
+    "vip4_closed_space_cognitive_block"
+  ]);
+
   function hypnosisFeatureResultContract(feature, roleNames, personCount) {
     const id = String(feature?.id || "").trim();
     if (hypnosisFeatureIsPregnancyConfirmation(feature)) {
@@ -11769,10 +11762,17 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         写入: "仅/规则/<本指令规则ID>；禁止写任何角色的临时或永久催眠效果"
       };
     }
+    if (ST_HYPNOSIS_NARRATIVE_RANGE_IDS.has(id)) {
+      return {
+        时效: "本轮指令给定时间内的封闭空间范围效果",
+        作用域: "单一明确封闭空间；不是数字人数模式，也不预设角色名单",
+        写入: "按封闭空间指令合同结算叙事范围；不得误写为指定角色永久催眠效果或开放空间/规则"
+      };
+    }
     const names = Array.isArray(roleNames) ? roleNames.filter(Boolean) : [];
     const targetShape = names.length
       ? (names.length > 1 ? "多个指定角色逐人结算（不是群体或范围型）" : "单个指定角色")
-      : (Number(personCount || 1) > 1 ? "按人数指定多个目标逐人结算（不是群体或范围型）" : "按人数指定单个目标");
+      : "数字模式不预设姓名；人数=" + Math.max(1, Number(personCount || 1)) + "是成功目标上限。AI只能从本轮催眠执行剧情中明确出现、并实际接受本指令施术的角色里逐人确定目标，不得从变量或世界书中的其他角色任意挑选";
     if (ST_HYPNOSIS_PERMANENT_EFFECT_IDS.has(id)) {
       return {
         时效: "永久",
@@ -11783,7 +11783,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return {
       时效: "临时或本轮即时结果（绝不自动转为永久）",
       作用域: targetShape,
-      写入: "只按该指令自身字段与成功结果写入；不得写永久催眠效果"
+      写入: "仅每个成功目标的/效果/临时催眠效果；不得写永久催眠效果"
     };
   }
 
@@ -12156,25 +12156,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       return '<i class="st-hypnosis-curtain-petal" style="--x:' + x + '%;--d:' + delay + ';--drift:' + drift + 'px;--r:' + rotation + 'deg"></i>';
     }).join("");
     const seraph = '<div class="st-hypnosis-seraph" data-hypnosis-seraph>' +
-      '<svg viewBox="0 0 300 300" focusable="false" aria-hidden="true">' +
-        '<defs>' +
-          '<linearGradient id="stHypnosisEyeSplit" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#26030d"/><stop offset=".49" stop-color="#7f102d"/><stop offset=".51" stop-color="#fff6d7"/><stop offset="1" stop-color="#d9b96f"/></linearGradient>' +
-          '<linearGradient id="stHypnosisIrisSplit" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff315f"/><stop offset=".48" stop-color="#6b071c"/><stop offset=".52" stop-color="#fff8cf"/><stop offset="1" stop-color="#f4bf45"/></linearGradient>' +
-        '</defs>' +
-        '<path class="st-hypnosis-seraph-demon" d="M132 118C96 74 48 66 18 104c32-6 44 8 48 25-24-9-41 2-49 27 24-10 43-2 52 15-20-2-34 10-37 31 29-18 68-21 105-4Z" stroke-width="4"/>' +
-        '<path class="st-hypnosis-seraph-angel" d="M168 118c36-44 84-52 114-14-32-6-44 8-48 25 24-9 41 2 49 27-24-10-43-2-52 15 20-2 34 10 37 31-29-18-68-21-105-4Z" stroke-width="4"/>' +
-        '<path class="st-hypnosis-seraph-demon st-hypnosis-seraph-line" d="M108 111C89 79 88 52 108 31c-2 25 11 32 25 47" stroke-width="7"/>' +
-        '<ellipse class="st-hypnosis-seraph-angel st-hypnosis-seraph-line" cx="194" cy="61" rx="48" ry="16" stroke-width="6" transform="rotate(9 194 61)"/>' +
-        '<path class="st-hypnosis-seraph-demon st-hypnosis-seraph-line" d="M150 45A109 109 0 0 0 150 263" stroke-width="5" opacity=".72"/>' +
-        '<path class="st-hypnosis-seraph-angel st-hypnosis-seraph-line" d="M150 45A109 109 0 0 1 150 263" stroke-width="5" opacity=".82"/>' +
-        '<g class="st-hypnosis-seraph-eye">' +
-          '<path d="M57 154Q98 96 150 108Q202 96 243 154Q202 212 150 200Q98 212 57 154Z" fill="url(#stHypnosisEyeSplit)" stroke="#f6d79a" stroke-width="4"/>' +
-          '<ellipse cx="150" cy="154" rx="43" ry="43" fill="url(#stHypnosisIrisSplit)" stroke="#0a0205" stroke-width="5"/>' +
-          '<ellipse cx="150" cy="154" rx="14" ry="28" fill="#050204"/>' +
-          '<circle cx="159" cy="140" r="7" fill="#fff" opacity=".9"/>' +
-          '<path d="M73 154Q107 116 150 122Q193 116 227 154" fill="none" stroke="#fff5cf" stroke-width="3" opacity=".52"/>' +
-        '</g>' +
-      '</svg>' +
+      '<img alt="" aria-hidden="true" draggable="false" src="' + escapeAttr(stAssetUrl("profile-ui/hypnosis-seraph-sacred-v1.webp")) + '">' +
     '</div>';
     overlay.innerHTML = '<div class="st-hypnosis-curtain"></div>' + seraph + petals;
     root.appendChild(overlay);
@@ -12434,11 +12416,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       }
       const selectionMode = deliveryMode === "selection";
       const soundwaveMode = hypnosisEffectiveSoundwaveMode(draft, system, selected);
-	  if (selectedNeedsTargetDelivery && !selectionMode) {
-	    page.dataset.hypnosisNotice = "指定单人或多人催眠必须切换到「选择」并勾选实名目标；人数不能代替目标名单。范围型命令不受此限制。";
-	    rerenderPreservingScroll();
-	    return;
-	  }
       if (selectionMode) {
         const missingRole = selected.find((feature) => hypnosisFeatureUsesPersonCount(feature) && hypnosisSelectedRoleNames(feature, draft).length <= 0);
         if (missingRole) {
@@ -12507,6 +12484,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
           const roleNames = hypnosisSelectedRoleNames(feature, draft);
           detail["人数"] = hypnosisFeaturePersonCount(feature, draft);
           if (selectionMode) detail["目标角色"] = roleNames.join("、");
+          else {
+            detail["数字模式目标规则"] = "不预先指定姓名；AI只能从本轮正文明确提到、且实际接受本指令施术的角色中确定成功目标，最多" + detail["人数"] + "人";
+            detail["数字模式禁止扩张"] = "不得选择未在本轮出现、仅存在于变量/世界书、未看屏或未实际接受本指令施术的角色";
+          }
         }
         if (hypnosisFeatureUsesPartCount(feature)) {
           const partLabels = hypnosisSelectedPartLabels(feature, draft);
@@ -12518,7 +12499,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         if (numericConfig) detail[numericConfig.key] = String(hypnosisFeatureNumericValue(feature, draft)) + (numericConfig.unit || "");
 	        const resultContract = hypnosisFeatureResultContract(
 	          feature,
-	          hypnosisSelectedRoleNames(feature, draft),
+	          selectionMode ? hypnosisSelectedRoleNames(feature, draft) : [],
 	          hypnosisFeatureUsesPersonCount(feature) ? hypnosisFeaturePersonCount(feature, draft) : 0
 	        );
 	        detail["指令判定权威"] = "只按指令ID判定；不得按显示名、VIP文字、备注内容或同时开放的变量根改类";
@@ -12534,16 +12515,28 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         : pregnancyOnly
           ? "妊娠确认是{{user}}对自己的自我催眠，不需要目标看屏幕或声波。"
         : selectedNeedsTargetDelivery
-          ? "指定目标催眠时，{{user}}已经让所有指定目标看3秒手机屏幕。"
+          ? selectionMode
+            ? "选择模式下，{{user}}已经让所有指定目标看3秒手机屏幕。"
+            : "数字模式不预先指定姓名；{{user}}会在本轮剧情中让实际受术角色看3秒手机屏幕，AI只能从本轮明确出现且实际完成看屏的角色中按人数上限逐人结算。"
           : "范围型催眠不需要指定目标或声波，前端已按范围命令暂存。";
       const settlementHint = "按钮已代表{{user}}实际行动：" + actionSceneHint +
         "结算顺序为条件满足->成功；条件不足、越级、强违人格或强剧情阻碍时才失败/部分失败。AI不要生成看屏不足、系统警告或事前劝退；失败和部分失败必须承担警戒、反感、旁人注意、主角可疑度或剧情阻碍等相应后果，不要无代价失败";
+      const hasRoleEffectCommand = commandList.some((item) => !["vip4_closed_space_common_sense", "vip4_closed_space_cognitive_block", "vip5_open_space_common_sense", "vip6_pregnancy_confirmation"].includes(String(item?.["指令ID"] || "")));
+      const hasLocationRuleCommand = commandList.some((item) => item?.["指令ID"] === "vip5_open_space_common_sense");
+      const hasPregnancyCommand = commandList.some((item) => item?.["指令ID"] === "vip6_pregnancy_confirmation");
+      const atomicResults = [];
+      if (hasRoleEffectCommand) atomicResults.push("角色命令成功=同轮扣除实际MC能量+按指令ID写入每个成功目标唯一对应的临时或永久催眠效果");
+      if (hasLocationRuleCommand) atomicResults.push("开放空间命令成功=同轮扣除实际MC能量+仅写入本指令给出的/规则/<规则ID>");
+      if (hasPregnancyCommand) atomicResults.push("妊娠确认成功=同轮扣除实际星光点+仅写入指定角色的子嗣根，不写催眠效果");
+      if (!atomicResults.length) atomicResults.push("范围命令按自身指令ID结算，不得伪造角色效果或地点规则");
       const operationPayload = {
         来源: "催眠APP",
         操作: actionText,
         功能列表: commandList,
         MC能量消耗: totalCost + "点",
         施术模式: soundwaveMode ? "声波单体催眠" : pregnancyOnly ? "自我催眠" : selectedNeedsTargetDelivery ? "指定目标看3秒手机屏幕" : "范围型催眠",
+        目标选择模式: selectionMode ? "实名选择" : selectedNeedsTargetDelivery ? "数字人数" : "范围命令",
+        结算一致性: "成功是原子结果：" + atomicResults.join("；") + "。若余额、条件或唯一结果路径不成立，正文必须明确失败/部分失败；禁止只写成功剧情却漏掉对应资源与结果变量",
         结算提示: settlementHint
       };
 	  const openSpaceCommand = commandList.find((item) => item?.["指令ID"] === "vip5_open_space_common_sense");
@@ -21347,14 +21340,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return Math.abs(hash);
   }
 
-  function workEncounterDelayHours(job, roll) {
-    const delayMinutes = Number(roll?.delayMinutes);
-    if (Number.isFinite(delayMinutes) && delayMinutes > 0) return 1;
-    const delayHours = Number(roll?.delayHours);
-    if (Number.isFinite(delayHours) && delayHours > 0) return 1;
-    return 1;
-  }
-
   function workCurrentStamp() {
     const clock = workEffectiveClockInfo();
     const parsed = parseStoryDate(clock.dateText || "");
@@ -21380,8 +21365,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   function workOperationLockExpired(payload, currentStamp = workCurrentStamp()) {
     if (!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
     if (String(payload["来源"] || "").trim() !== "打工") return false;
-    if (!/^(开始打工|有偶遇|打工中提醒|打工偶遇（剧情进行中）|打工偶遇（主动回合）|打工偶遇（收束回合）)$/.test(String(payload["操作"] || "").trim())) return false;
-    if (Number(payload["楼层锁剩余"]) > 0) return false;
+    if (!/^(开始打工|有偶遇|打工中提醒|打工偶遇)$/.test(String(payload["操作"] || "").trim())) return false;
     if (!currentStamp) return false;
     const thresholds = workLockReleaseThresholds(payload);
     return thresholds.some((threshold) => currentStamp > threshold);
@@ -21670,11 +21654,11 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 
 	  function pendingWorkPayloads() {
 	    return pendingOperationPayloads()
-	      .filter((payload) => payload?.["来源"] === "打工" && /^(开始打工|有偶遇|打工中提醒|打工偶遇（剧情进行中）|打工偶遇（主动回合）|打工偶遇（收束回合）)$/.test(String(payload?.["操作"] || "")));
+	      .filter((payload) => payload?.["来源"] === "打工" && /^(开始打工|有偶遇|打工中提醒|打工偶遇)$/.test(String(payload?.["操作"] || "")));
   }
 
   function pendingWorkStartPayloads() {
-    return pendingWorkPayloads().filter((payload) => /^(开始打工|打工偶遇（剧情进行中）|打工偶遇（主动回合）|打工偶遇（收束回合）)$/.test(String(payload?.["操作"] || "")));
+    return pendingWorkPayloads().filter((payload) => /^(开始打工|打工偶遇)$/.test(String(payload?.["操作"] || "")));
   }
 
   function hasPendingWorkOperation() {
@@ -21894,8 +21878,6 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      encounterRole,
 	      roll: latestRoll
 	    });
-		    const encounterDelayHours = encounterRole ? workEncounterDelayHours(job, latestRoll) : 0;
-	    const encounterTime = encounterRole ? (workOffsetDateTimeText(timeInfo.startText, encounterDelayHours) || timeInfo.startText) : "";
 	    const buffEndText = timingInfo.buff ? workBuffEndTextFromClock(clockInfo, timeInfo.startText) : "";
 	    if (timingInfo.buff && !buffEndText) return { ok: false, message: "buff结束时间计算失败，未锁定本轮打工。" };
 	    const shachikuGain = workShachikuGain(job, currentValue);
@@ -21929,10 +21911,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	      }
 	      return {
 	        ok: true,
-	        message: encounterRole ? "已结算到偶遇节点。" : "已完成打工结算。",
+	        message: encounterRole ? "已完成打工结算，并暂存下班后的偶遇。" : "已完成打工结算。",
 	        payload: {
 	          来源: "打工",
-	          操作: encounterRole ? "打工偶遇（主动回合）" : "开始打工",
+	          操作: encounterRole ? "打工偶遇" : "开始打工",
 	          打工分支: workBranch,
 	          工作ID: job.id,
 	          工作: job.title,
@@ -21945,9 +21927,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
 	          前端写入后社畜值: nextShachiku,
 	          前端写入后buff: nextBuffValue,
 	          前端写入后buff结束时间: nextBuffEndValue,
-	          ...(encounterRole ? { 偶遇女角色: encounterRole } : {}),
-	          ...(encounterTime ? { 偶遇发生时间: encounterTime } : {}),
-	          ...(encounterRole ? { 楼层锁剩余: 2, 楼层锁规则: "打工偶遇两楼层锁：第一楼停在偶遇现场等待{{user}}主动行动，下一楼处理互动后再收束到预计结束时间。" } : {}),
+	          ...(encounterRole ? { 偶遇女角色: encounterRole, 偶遇时点: "预计结束时间；工作结束后" } : {}),
 	          不可删除: true
 	        },
 	        dailySchedule: null
