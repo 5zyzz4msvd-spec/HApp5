@@ -4555,11 +4555,17 @@ var __webpack_exports__ = __webpack_require__("./src/催眠APP前端/index.tsx")
 .st-hypnosis-trance-overlay{position:absolute;inset:0;z-index:240;pointer-events:none;overflow:hidden;background:transparent}
 .st-hypnosis-curtain{position:absolute;left:-4%;top:-8%;width:108%;height:116%;background:repeating-linear-gradient(90deg,#020203 0 9%,#111014 14%,#030304 22%,#171216 29%,#020203 38%);box-shadow:inset 0 -24px 34px rgba(0,0,0,.9),0 18px 44px rgba(0,0,0,.72);transform:translate3d(0,-106%,0);animation:stHypnosisCurtainSweep 3.2s cubic-bezier(.5,0,.18,1) both;will-change:transform,opacity}
 .st-hypnosis-curtain::after{content:"";position:absolute;left:-2%;right:-2%;bottom:-17px;height:34px;background:radial-gradient(ellipse at 5% 0,#020203 0 54%,transparent 56%) 0 0/10% 100% repeat-x;filter:drop-shadow(0 8px 7px rgba(0,0,0,.7))}
+.st-hypnosis-seraph{position:absolute;inset:0;z-index:1;display:grid;place-items:center;padding:12%;opacity:0;transform:scale(.76);animation:stHypnosisSeraphManifest 3.2s cubic-bezier(.2,.72,.22,1) both;will-change:transform,opacity}
+.st-hypnosis-seraph svg{display:block;width:min(88%,300px);height:auto;max-height:78%;overflow:visible;filter:drop-shadow(-7px 0 15px rgba(190,18,60,.44)) drop-shadow(7px 0 15px rgba(250,204,21,.28))}
+.st-hypnosis-seraph-eye{transform-origin:150px 154px;animation:stHypnosisSeraphEyePulse 3.2s ease-in-out both}
+.st-hypnosis-seraph-demon{fill:#31040f;stroke:#fb315e}.st-hypnosis-seraph-angel{fill:#f4e8bc;stroke:#ffe7a0}.st-hypnosis-seraph-line{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .st-hypnosis-curtain-petal{--x:50%;--r:0deg;position:absolute;z-index:2;left:var(--x);top:-10%;width:14px;height:24px;border-radius:85% 12% 72% 20%;background:linear-gradient(145deg,#8f1738,#390713 66%,#0f0307);box-shadow:0 0 0 1px rgba(191,122,139,.2);opacity:0;transform:translate3d(0,-18px,0) rotate(var(--r));animation:stHypnosisCurtainPetal 2.7s calc(var(--d,0)*1ms) cubic-bezier(.22,.62,.24,1) both}
 .st-hypnosis-curtain-petal:nth-child(3n){width:10px;height:18px}.st-hypnosis-curtain-petal:nth-child(4n){filter:blur(.45px)}
 @keyframes stHypnosisCurtainSweep{0%{transform:translate3d(0,-106%,0);opacity:.98}24%,70%{transform:translate3d(0,0,0);opacity:1}100%{transform:translate3d(0,106%,0);opacity:.12}}
+@keyframes stHypnosisSeraphManifest{0%,17%{opacity:0;transform:scale(.76)}31%{opacity:.94;transform:scale(1)}68%{opacity:.94;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
+@keyframes stHypnosisSeraphEyePulse{0%,24%{transform:scale(.88)}42%,68%{transform:scale(1)}100%{transform:scale(.94)}}
 @keyframes stHypnosisCurtainPetal{0%{opacity:0;transform:translate3d(0,-18px,0) rotate(var(--r))}14%{opacity:.94}78%{opacity:.78}100%{opacity:0;transform:translate3d(var(--drift,24px),112vh,0) rotate(calc(var(--r) + 240deg))}}
-@media(prefers-reduced-motion:reduce){.st-hypnosis-curtain{animation:stHypnosisCurtainReduced .72s ease both!important}.st-hypnosis-curtain-petal{display:none}@keyframes stHypnosisCurtainReduced{0%,100%{opacity:0}35%,65%{opacity:.9}}}
+@media(prefers-reduced-motion:reduce){.st-hypnosis-curtain{animation:stHypnosisCurtainReduced .72s ease both!important}.st-hypnosis-seraph{animation:stHypnosisSeraphReduced .72s ease both!important}.st-hypnosis-seraph-eye{animation:none!important}.st-hypnosis-curtain-petal{display:none}@keyframes stHypnosisCurtainReduced{0%,100%{opacity:0}35%,65%{opacity:.9}}@keyframes stHypnosisSeraphReduced{0%,100%{opacity:0;transform:scale(.96)}35%,65%{opacity:.9;transform:scale(1)}}}
 .st-help-app{background:radial-gradient(circle at 18% -8%,rgba(56,189,248,.14),transparent 34%),linear-gradient(180deg,#0f172a,#08111f 58%,#05070d)}
 .st-help-app .st-lite-body{padding:10px 12px 16px;gap:8px}
 .st-help-grid{display:grid;gap:8px}
@@ -12115,10 +12121,10 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
   }
 
   function playHypnosisTranceAnimation(page) {
-    const root = findPhoneRoot(page);
+    const root = page?.closest?.(".w-full.h-full.bg-black.overflow-hidden.relative");
     if (!root) return;
     root.style.position = root.style.position || "relative";
-    root.querySelector?.(":scope > .st-hypnosis-trance-overlay")?.remove();
+    if (root.querySelector?.(":scope > .st-hypnosis-trance-overlay")) return;
     const overlay = document.createElement("div");
     overlay.className = "st-hypnosis-trance-overlay is-gothic-curtain";
     overlay.setAttribute("aria-hidden", "true");
@@ -12129,11 +12135,39 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
       const rotation = (index * 47) % 180;
       return '<i class="st-hypnosis-curtain-petal" style="--x:' + x + '%;--d:' + delay + ';--drift:' + drift + 'px;--r:' + rotation + 'deg"></i>';
     }).join("");
-    overlay.innerHTML = '<div class="st-hypnosis-curtain"></div>' + petals;
+    const seraph = '<div class="st-hypnosis-seraph" data-hypnosis-seraph>' +
+      '<svg viewBox="0 0 300 300" focusable="false" aria-hidden="true">' +
+        '<defs>' +
+          '<linearGradient id="stHypnosisEyeSplit" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#26030d"/><stop offset=".49" stop-color="#7f102d"/><stop offset=".51" stop-color="#fff6d7"/><stop offset="1" stop-color="#d9b96f"/></linearGradient>' +
+          '<linearGradient id="stHypnosisIrisSplit" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff315f"/><stop offset=".48" stop-color="#6b071c"/><stop offset=".52" stop-color="#fff8cf"/><stop offset="1" stop-color="#f4bf45"/></linearGradient>' +
+        '</defs>' +
+        '<path class="st-hypnosis-seraph-demon" d="M132 118C96 74 48 66 18 104c32-6 44 8 48 25-24-9-41 2-49 27 24-10 43-2 52 15-20-2-34 10-37 31 29-18 68-21 105-4Z" stroke-width="4"/>' +
+        '<path class="st-hypnosis-seraph-angel" d="M168 118c36-44 84-52 114-14-32-6-44 8-48 25 24-9 41 2 49 27-24-10-43-2-52 15 20-2 34 10 37 31-29-18-68-21-105-4Z" stroke-width="4"/>' +
+        '<path class="st-hypnosis-seraph-demon st-hypnosis-seraph-line" d="M108 111C89 79 88 52 108 31c-2 25 11 32 25 47" stroke-width="7"/>' +
+        '<ellipse class="st-hypnosis-seraph-angel st-hypnosis-seraph-line" cx="194" cy="61" rx="48" ry="16" stroke-width="6" transform="rotate(9 194 61)"/>' +
+        '<path class="st-hypnosis-seraph-demon st-hypnosis-seraph-line" d="M150 45A109 109 0 0 0 150 263" stroke-width="5" opacity=".72"/>' +
+        '<path class="st-hypnosis-seraph-angel st-hypnosis-seraph-line" d="M150 45A109 109 0 0 1 150 263" stroke-width="5" opacity=".82"/>' +
+        '<g class="st-hypnosis-seraph-eye">' +
+          '<path d="M57 154Q98 96 150 108Q202 96 243 154Q202 212 150 200Q98 212 57 154Z" fill="url(#stHypnosisEyeSplit)" stroke="#f6d79a" stroke-width="4"/>' +
+          '<ellipse cx="150" cy="154" rx="43" ry="43" fill="url(#stHypnosisIrisSplit)" stroke="#0a0205" stroke-width="5"/>' +
+          '<ellipse cx="150" cy="154" rx="14" ry="28" fill="#050204"/>' +
+          '<circle cx="159" cy="140" r="7" fill="#fff" opacity=".9"/>' +
+          '<path d="M73 154Q107 116 150 122Q193 116 227 154" fill="none" stroke="#fff5cf" stroke-width="3" opacity=".52"/>' +
+        '</g>' +
+      '</svg>' +
+    '</div>';
+    overlay.innerHTML = '<div class="st-hypnosis-curtain"></div>' + seraph + petals;
     root.appendChild(overlay);
-    window.setTimeout(() => {
+    let removed = false;
+    let fallbackTimer = 0;
+    const cleanup = () => {
+      if (removed) return;
+      removed = true;
+      if (fallbackTimer) window.clearTimeout(fallbackTimer);
       try { overlay.remove(); } catch {}
-    }, 3300);
+    };
+    overlay.querySelector(".st-hypnosis-curtain")?.addEventListener("animationend", cleanup, { once: true });
+    fallbackTimer = window.setTimeout(cleanup, 3500);
   }
 
   function renderHypnosisLitePage(page) {
