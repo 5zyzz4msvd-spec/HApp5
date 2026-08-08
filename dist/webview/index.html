@@ -1831,7 +1831,14 @@ html.st-hypnoos-booting.st-hypnoos-boot-failed .st-hypnoos-phone-preboot::after{
 	        if (!groups.has(source)) groups.set(source, []);
 	        groups.get(source).push(record);
 	      }
-		      const lines = ["<本轮操作>", ...buildOperationOwnershipLines(sortedEntries)];
+		      const lines = [
+		        "<本轮操作>",
+		        "<本轮执行边界>",
+		        "主剧情必须优先逐项处理本容器内的全部操作，并在当前一次回复内写清每项执行过程、成功或失败及直接反应；不得忽略、改成背景参考、延迟到下一回复，或在结算前擅自推进其他剧情。所有操作处理完后只停在其直接后果，不替用户决定下一步，不开启无关新事件，不额外跳时；全局至少推进1分钟只用于时间变量，不构成追加剧情的理由。",
+		        "额外变量模型必须逐项核对AI写与AI不动，只结算本轮授权路径；失败项也要明确核对为不写，不能因为正文简短而漏掉整项。",
+		        "</本轮执行边界>",
+		        ...buildOperationOwnershipLines(sortedEntries)
+		      ];
 	      const variables = selectOperationVariables(sortedEntries);
 	      if (variables) {
 	        lines.push("<相关变量>");
