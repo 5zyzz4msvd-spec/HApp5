@@ -1824,6 +1824,7 @@
       unique_a: { group: "unique-a", total: 8, start: 0, end: 7, fps: 7, loops: 1 },
       unique_b: { group: "unique-b", total: 8, start: 0, end: 7, fps: 7, loops: 1 },
       held_scared: { group: "drag", total: 8, start: 0, end: 7, fps: 6, loops: Infinity },
+      landing: { group: "landing", total: 12, start: 0, end: 11, fps: 10, loops: 1 },
       enter: { group: "enter", total: 8, start: 0, end: 7, fps: 7, loops: 1 },
       exit: { group: "exit", total: 8, start: 0, end: 7, fps: 7, loops: 1 }
     };
@@ -1953,6 +1954,15 @@
       }).catch(function () {});
     }
 
+    function playPetLandingAfterDrag() {
+      var landingAsset = petAssetName("landing", petCharacterId);
+      if (petReadyAssets.has(landingAsset)) {
+        setPetState("landing");
+        return;
+      }
+      setPetState("idle");
+    }
+
     function finishPetState() {
       if (petState === "exit" && petPendingCharacterId) return completePetSwitch();
       if (petState === "enter" || petState === "unique_a" || petState === "unique_b") return setPetState("idle");
@@ -1986,7 +1996,7 @@
     function setPetState(name, options) {
       var nextName = String(name || "idle");
       var opts = options || {};
-      if (petReducedMotion() && /^(unique_a|unique_b)$/.test(nextName)) nextName = "idle";
+      if (petReducedMotion() && /^(unique_a|unique_b|landing)$/.test(nextName)) nextName = "idle";
       if (nextName !== "idle" && nextName !== "held_scared" && !petReadyAssets.has(petStateAsset(nextName))) nextName = "idle";
       clearPetFrameTimer();
       clearPetActivityTimer();
@@ -2100,7 +2110,8 @@
       petReadyAssets.clear();
       Promise.all([
         loadPetAsset(petCharacterId, "idle"),
-        loadPetAsset(petCharacterId, "enter")
+        loadPetAsset(petCharacterId, "enter"),
+        loadPetAsset(petCharacterId, "landing")
       ]).then(function () {
         if (!launcher) return;
         petAssetsReady = true;
@@ -2141,7 +2152,7 @@
       petPendingCharacterId = "";
       petCharacterId = next;
       petReadyAssets.clear();
-      ["idle", "enter", "exit"].forEach(function (group) {
+      ["idle", "enter", "landing", "exit"].forEach(function (group) {
         var key = petAssetName(group, petCharacterId);
         if (petImageCache.has(key)) petReadyAssets.add(key);
       });
@@ -2167,7 +2178,8 @@
       updatePetCharacterButton();
       Promise.all([
         loadPetAsset(next, "idle"),
-        loadPetAsset(next, "enter")
+        loadPetAsset(next, "enter"),
+        loadPetAsset(next, "landing")
       ]).then(function () {
         completePetSwitch();
       }).catch(function () {
@@ -2831,7 +2843,7 @@
     }
 
     function beginLauncherDrag(event) {
-      if (!launcher || (event.pointerType === "mouse" && event.button !== 0)) return;
+      if (!launcher || !petAssetsReady || petSwitching || (event.pointerType === "mouse" && event.button !== 0)) return;
       closePetMenu();
       pausePetAutonomy();
       commitPetRoamPosition();
@@ -2905,7 +2917,7 @@
         petOriginX = rect.left;
         petOriginY = rect.top;
         suppressLauncherClick = true;
-        setPetState("idle");
+        playPetLandingAfterDrag();
       } else if (!shellOpen) {
         resumePetAutonomy();
       }
@@ -2925,7 +2937,7 @@
         petOriginX = rect.left;
         petOriginY = rect.top;
         suppressLauncherClick = true;
-        setPetState("idle");
+        playPetLandingAfterDrag();
       } else if (!shellOpen) {
         resumePetAutonomy();
       }
