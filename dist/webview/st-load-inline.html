@@ -16569,12 +16569,31 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     return Boolean(await window.__ST_FLUSH_OPERATION_TO_INPUT__?.());
   }
 
+  async function executeDailyFreeActions() {
+    if (!requireWritablePhoneFloor()) return false;
+    const state = readDailyActionState();
+    if (!state.free.length) {
+      window.__ST_HYPNOOS_DAILY_SCHEDULE_LAST_ERROR__ = "当前没有待执行的免行动操作。";
+      return false;
+    }
+    const append = window.__ST_QUEUE_OPERATION_FOR_EXECUTION__;
+    if (typeof append !== "function") return false;
+    for (const item of state.free) {
+      if (!(await append(item.payload))) return false;
+    }
+    const flushed = await window.__ST_FLUSH_OPERATION_TO_INPUT__?.();
+    if (!flushed) return false;
+    state.free = [];
+    return writeDailyActionState(state);
+  }
+
   window.__ST_HYPNOOS_DAILY_SCHEDULE_API__ = {
     enqueue: enqueueDailyAction,
     read: () => readDailyActionState(),
     moveHypnosis: moveDailyHypnosisToSlot,
     advance: executeDailyActionAdvance,
     nextDay: executeDailyActionNextDay,
+    executeFree: executeDailyFreeActions,
     lastError: () => String(window.__ST_HYPNOOS_DAILY_SCHEDULE_LAST_ERROR__ || "")
   };
 
@@ -17214,6 +17233,7 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
     globalThis.__ST_HYPNOOS_TIMETABLE_MOVE_HYPNOSIS__ = (entryId, slotId) => moveDailyHypnosisToSlot(entryId, slotId);
     globalThis.__ST_HYPNOOS_TIMETABLE_ADVANCE__ = (count) => executeDailyActionAdvance(count);
     globalThis.__ST_HYPNOOS_TIMETABLE_NEXT_DAY__ = () => executeDailyActionNextDay();
+    globalThis.__ST_HYPNOOS_TIMETABLE_EXECUTE_FREE__ = () => executeDailyFreeActions();
   } catch {}
   function getSystemState() {
     const variables = activeStatDataReadScope !== undefined ? activeStatDataReadScope : getLatestStatDataSync();
