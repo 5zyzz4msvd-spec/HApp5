@@ -148,8 +148,7 @@
     var petOriginX = 0;
     var petOriginY = 0;
     var petSpinAngle = 0;
-    var petSpinCenterX = 0;
-    var petSpinCenterY = 0;
+    var petSpinVelocity = 0;
     var petRoamX = 0;
     var petRoamY = 0;
     var petPointerHover = false;
@@ -873,7 +872,11 @@
     }
 
     function normalizeMessageOption(option) {
-      if (option && typeof option === "object" && option.type && option.type !== "message") return option;
+      if (option && typeof option === "object") {
+        if (option.type && option.type !== "message") return option;
+        var explicit = textId(option.message_id !== undefined ? option.message_id : option.mesid);
+        if (explicit) return { type: "message", message_id: explicit };
+      }
       var id = selectedId || writableId();
       return id ? { type: "message", message_id: id } : option;
     }
@@ -894,10 +897,19 @@
       return found.fn.apply(found.view, Array.isArray(args) ? args : []);
     }
 
+    function hasApi(name) {
+      return Boolean(findFunction(name));
+    }
+
     function callMvu(name, args) {
       var mvu = findMvu();
       if (!mvu || typeof mvu[name] !== "function") return undefined;
       return mvu[name].apply(mvu, Array.isArray(args) ? args : []);
+    }
+
+    function hasMvu(name) {
+      var mvu = findMvu();
+      return Boolean(mvu && typeof mvu[name] === "function");
     }
 
     async function importHostWorldInfoModule() {
@@ -1303,7 +1315,7 @@
       (Array.isArray(args) ? args : []).forEach(function (arg) {
         ids = ids.concat(explicitMessageIds(arg, 0));
       });
-      if (name === "setChatMessages" && !ids.length) return false;
+      if (!ids.length) return false;
       return ids.every(function (id) { return id === target; });
     }
 
@@ -1316,7 +1328,11 @@
     }
 
     function guardedMvu(name, args) {
-      if (!isWritable() || !writeTargetsWritable(name, args)) {
+      var explicitIds = [];
+      (Array.isArray(args) ? args : []).forEach(function (arg) {
+        explicitIds = explicitIds.concat(explicitMessageIds(arg, 0));
+      });
+      if (!explicitIds.length || !isWritable() || !writeTargetsWritable(name, args)) {
         notifyReadOnly();
         return false;
       }
@@ -1346,7 +1362,7 @@
 
     function messageId(message, index) {
       if (message && typeof message === "object") {
-        var stable = textId(message.message_id);
+        var stable = textId(message.message_id !== undefined ? message.message_id : (message.mesid !== undefined ? message.mesid : message.id));
         if (stable) return stable;
       }
       return String(index);
@@ -1812,6 +1828,10 @@
     var PET_BASE_FACING = 1;
     var PET_RENDER_SIZE = 96;
     var PET_DRAG_GRIP_Y = 5;
+    var PET_DRAG_COM_LENGTH = 56;
+    var PET_DRAG_GRAVITY = 1650;
+    var PET_DRAG_DAMPING = 3.25;
+    var PET_DRAG_MAX_ANGULAR_SPEED = 15;
     var PET_CHARACTER_ORDER = ["alisa", "hyakka"];
     var PET_CHARACTER_NAMES = {
       alisa: "爱丽莎",
@@ -1863,6 +1883,61 @@
       }
       petMotionFrame = 0;
       petMotionLast = 0;
+    }
+
+    function setPetDragAngle(angle) {
+      petSpinAngle = Number.isFinite(Number(angle)) ? Number(angle) : 0;
+      if (petSprite) petSprite.style.setProperty("--pet-drag-angle", petSpinAngle.toFixed(3) + "rad");
+    }
+
+    function resetPetDragPhysics() {
+      clearPetMotionFrame();
+      petSpinVelocity = 0;
+      setPetDragAngle(0);
+    }
+
+    function petPendulumStep(angle, angularVelocity, pivotAccelerationX, pivotAccelerationY, dt) {
+      var step = Math.max(1 / 240, Math.min(Number(dt) || 0, 1 / 24));
+      var accelerationX = Math.max(-9000, Math.min(9000, Number(pivotAccelerationX) || 0));
+      var accelerationY = Math.max(-9000, Math.min(9000, Number(pivotAccelerationY) || 0));
+      var theta = Number(angle) || 0;
+      var omega = Number(angularVelocity) || 0;
+      var tangential = -accelerationX * Math.cos(theta) - (PET_DRAG_GRAVITY - accelerationY) * Math.sin(theta);
+      var angularAcceleration = tangential / PET_DRAG_COM_LENGTH - PET_DRAG_DAMPING * omega;
+      omega = Math.max(-PET_DRAG_MAX_ANGULAR_SPEED, Math.min(PET_DRAG_MAX_ANGULAR_SPEED, omega + angularAcceleration * step));
+      theta += omega * step;
+      return { angle: theta, angularVelocity: omega };
+    }
+
+    function animateLauncherDragPhysics(timestamp) {
+      petMotionFrame = 0;
+      if (!launcherDragState || !launcherDragState.moved || petReducedMotion()) {
+        petMotionLast = 0;
+        return;
+      }
+      var now = Number(timestamp) || Date.now();
+      var dt = petMotionLast ? (now - petMotionLast) / 1000 : 1 / 60;
+      petMotionLast = now;
+      var next = petPendulumStep(
+        petSpinAngle,
+        petSpinVelocity,
+        launcherDragState.accelerationX,
+        launcherDragState.accelerationY,
+        dt
+      );
+      petSpinVelocity = next.angularVelocity;
+      setPetDragAngle(next.angle);
+      launcherDragState.accelerationX *= 0.82;
+      launcherDragState.accelerationY *= 0.82;
+      var requestFrame = host.requestAnimationFrame || function (callback) { return host.setTimeout(function () { callback(Date.now()); }, 16); };
+      petMotionFrame = requestFrame(animateLauncherDragPhysics);
+    }
+
+    function startLauncherDragPhysics() {
+      resetPetDragPhysics();
+      if (petReducedMotion()) return;
+      var requestFrame = host.requestAnimationFrame || function (callback) { return host.setTimeout(function () { callback(Date.now()); }, 16); };
+      petMotionFrame = requestFrame(animateLauncherDragPhysics);
     }
 
     function setPetDirection(direction) {
@@ -2003,7 +2078,7 @@
       clearPetMotionFrame();
       petState = nextName;
       petLoops = 0;
-      petSpinAngle = 0;
+      if (nextName !== "held_scared") resetPetDragPhysics();
       var meta = petStateMeta(petState);
       petFrame = meta.start;
       applyPetStateAppearance();
@@ -2239,7 +2314,7 @@
       return [
         "*{box-sizing:border-box}",
         ".launcher{pointer-events:auto;position:fixed;right:22px;bottom:90px;width:96px;height:96px;border:0;padding:0;border-radius:28px;background:transparent;color:#fff;display:block;cursor:grab;touch-action:none;user-select:none;z-index:3;overflow:visible}",
-        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:96px;height:96px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) scaleX(var(--pet-facing-scale,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54))}",
+        ".launcher:focus-visible{outline:3px solid rgba(125,211,252,.96);outline-offset:3px}.launcher.dragging{cursor:grabbing}.pet-sprite{position:absolute;inset:0;width:96px;height:96px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 7px 5px rgba(2,6,23,.58));transform:translateY(var(--pet-lift,0)) rotate(var(--pet-drag-angle,0rad)) scaleX(var(--pet-facing-scale,1));transform-origin:50% 100%;opacity:0;transition:filter .16s ease}.launcher.pet-ready .pet-sprite{opacity:1}.launcher:hover .pet-sprite,.launcher.active .pet-sprite{filter:drop-shadow(0 8px 5px rgba(30,64,175,.58)) drop-shadow(0 0 5px rgba(125,211,252,.34))}.launcher.dragging .pet-sprite{transition:none;transform-origin:50% " + PET_DRAG_GRIP_Y + "px;filter:drop-shadow(0 12px 7px rgba(2,6,23,.54));will-change:transform}",
         ".pet-fallback{position:absolute;left:15px;top:15px;width:66px;height:66px;border:1px solid rgba(196,116,255,.7);border-radius:24px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:30px;height:30px}",
         ".pet-menu{position:fixed;z-index:4;width:56px;height:56px;pointer-events:none;opacity:0;transform:translateY(8px) scale(.9);transform-origin:50% 100%;transition:opacity .14s ease,transform .14s ease}.pet-menu.open{pointer-events:auto;opacity:1;transform:none}.pet-menu button{position:absolute;inset:0;width:56px;height:56px;padding:0;border:1px solid rgba(226,232,240,.7);border-radius:50%;background:linear-gradient(145deg,rgba(30,41,59,.97),rgba(15,23,42,.98));box-shadow:0 8px 22px rgba(2,6,23,.48),inset 0 1px rgba(255,255,255,.14);color:#f8fafc;font:850 11px/1.1 system-ui;cursor:pointer;touch-action:manipulation}.pet-menu button:hover,.pet-menu button:focus-visible{border-color:#a5f3fc;background:linear-gradient(145deg,#155e75,#172554);outline:2px solid rgba(165,243,252,.72);outline-offset:2px}",
         ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
@@ -2523,10 +2598,10 @@
         "function option(o){return r.normalizeMessageOption(o)}function writeOption(o){return r.normalizeWriteMessageOption(o)}" +
         "globalThis.getCurrentMessageId=function(){return r.getSelectedId()};" +
         "globalThis.__ST_HYPNOOS_REQUIRE_WRITABLE_FLOOR__=function(){if(r.isWritable())return true;r.notifyReadOnly();return false};" +
-        "globalThis.getVariables=function(o){return r.readApi('getVariables',[option(o)])};" +
-        "globalThis.updateVariablesWith=function(fn,o){return r.guardedApi('updateVariablesWith',[fn,writeOption(o)])};" +
-        "globalThis.getChatMessages=function(){return r.callApi('getChatMessages',Array.prototype.slice.call(arguments))||[]};" +
-        "globalThis.setChatMessages=function(){return r.guardedApi('setChatMessages',Array.prototype.slice.call(arguments))};" +
+        "if(r.hasApi('getVariables'))globalThis.getVariables=function(o){return r.readApi('getVariables',[option(o)])};" +
+        "if(r.hasApi('updateVariablesWith'))globalThis.updateVariablesWith=function(fn,o){return r.guardedApi('updateVariablesWith',[fn,writeOption(o)])};" +
+        "if(r.hasApi('getChatMessages'))globalThis.getChatMessages=function(){return r.callApi('getChatMessages',Array.prototype.slice.call(arguments))||[]};" +
+        "if(r.hasApi('setChatMessages'))globalThis.setChatMessages=function(){return r.guardedApi('setChatMessages',Array.prototype.slice.call(arguments))};" +
         "globalThis.getContext=function(){return r.getContext()};" +
         "globalThis.__ST_HYPNOOS_HOST_REQUEST_HEADERS__=function(){return r.getRequestHeaders()};" +
         "globalThis.__ST_HYPNOOS_UPDATE_PROFILE_NEIGHBORS__=function(p){return r.updateProfileNeighbors(p)};" +
@@ -2537,9 +2612,12 @@
         "globalThis.__ST_HYPNOOS_UPDATE_MAP_EXTRA_CHAIN__=function(p){return r.updateMapExtraChain(p)};" +
         "globalThis.__ST_HYPNOOS_UPDATE_LOCATION_RULE_RADAR__=function(p){return r.updateLocationRuleRadar(p)};" +
         "globalThis.SillyTavern={getContext:function(){return r.getContext()},getCurrentChatId:function(){return r.getCurrentChatId()}};" +
-        "var sourceMvu=r.getMvu();globalThis.Mvu={events:sourceMvu&&sourceMvu.events||{},getMvuData:function(o){return r.readMvu('getMvuData',[option(o)])},replaceMvuData:function(m,o){return r.guardedMvu('replaceMvuData',[m,writeOption(o)])},setMvuVariable:function(){return r.guardedMvu('setMvuVariable',Array.prototype.slice.call(arguments))}};" +
-        "['eventOn','getCharWorldbookNames','getWorldbook'].forEach(function(n){globalThis[n]=function(){return r.callApi(n,Array.prototype.slice.call(arguments))}});" +
-        "['createWorldbook','createWorldbookEntries','createWorldInfoEntry','replaceWorldbook','updateWorldbookWith','rebindCharWorldbooks','deleteWorldbook'].forEach(function(n){globalThis[n]=function(){return r.guardedApi(n,Array.prototype.slice.call(arguments))}});" +
+        "var sourceMvu=r.getMvu();globalThis.Mvu={events:sourceMvu&&sourceMvu.events||{}};" +
+        "if(r.hasMvu('getMvuData'))globalThis.Mvu.getMvuData=function(o){return r.readMvu('getMvuData',[option(o)])};" +
+        "if(r.hasMvu('replaceMvuData'))globalThis.Mvu.replaceMvuData=function(m,o){return r.guardedMvu('replaceMvuData',[m,writeOption(o)])};" +
+        "if(r.hasMvu('setMvuVariable'))globalThis.Mvu.setMvuVariable=function(){return r.guardedMvu('setMvuVariable',Array.prototype.slice.call(arguments))};" +
+        "['eventOn','getCharWorldbookNames','getWorldbook'].forEach(function(n){if(r.hasApi(n))globalThis[n]=function(){return r.callApi(n,Array.prototype.slice.call(arguments))}});" +
+        "['createWorldbook','createWorldbookEntries','createWorldInfoEntry','replaceWorldbook','updateWorldbookWith','rebindCharWorldbooks','deleteWorldbook'].forEach(function(n){if(r.hasApi(n))globalThis[n]=function(){return r.guardedApi(n,Array.prototype.slice.call(arguments))}});" +
         "})();</scr" + "ipt>";
     }
 
@@ -2854,7 +2932,14 @@
         startY: event.clientY,
         gripX: PET_RENDER_SIZE / 2,
         gripY: PET_DRAG_GRIP_Y,
-        moved: false
+        moved: false,
+        sampleX: event.clientX,
+        sampleY: event.clientY,
+        sampleTime: Number(event.timeStamp) || Date.now(),
+        velocityX: 0,
+        velocityY: 0,
+        accelerationX: 0,
+        accelerationY: 0
       };
       suppressLauncherClick = false;
       launcher.classList.add("dragging");
@@ -2886,15 +2971,27 @@
       if (!launcherDragState.moved && Math.hypot(dx, dy) >= 5) {
         clearPetMenuLongPress();
         launcherDragState.moved = true;
-        setPetState("held_scared");
+        setPetState("held_scared", { static: petReducedMotion() });
+        startLauncherDragPhysics();
       }
       if (launcherDragState.moved) {
-        var next = clampLauncherPosition(
-          event.clientX - launcherDragState.gripX,
-          event.clientY - launcherDragState.gripY
-        );
-        launcher.style.left = next.x + "px";
-        launcher.style.top = next.y + "px";
+        var sampleTime = Number(event.timeStamp) || Date.now();
+        var sampleDt = Math.max(1 / 240, Math.min((sampleTime - launcherDragState.sampleTime) / 1000 || 1 / 60, 0.08));
+        var velocityX = (event.clientX - launcherDragState.sampleX) / sampleDt;
+        var velocityY = (event.clientY - launcherDragState.sampleY) / sampleDt;
+        launcherDragState.accelerationX = launcherDragState.accelerationX * 0.35 + ((velocityX - launcherDragState.velocityX) / sampleDt) * 0.65;
+        launcherDragState.accelerationY = launcherDragState.accelerationY * 0.35 + ((velocityY - launcherDragState.velocityY) / sampleDt) * 0.65;
+        petSpinVelocity += Math.max(-2.8, Math.min(2.8, -(velocityX - launcherDragState.velocityX) * 0.0022));
+        launcherDragState.velocityX = velocityX;
+        launcherDragState.velocityY = velocityY;
+        launcherDragState.sampleX = event.clientX;
+        launcherDragState.sampleY = event.clientY;
+        launcherDragState.sampleTime = sampleTime;
+        var viewport = hostViewportRect();
+        var gripClientX = Math.max(viewport.left, Math.min(event.clientX, viewport.left + viewport.width));
+        var gripClientY = Math.max(viewport.top, Math.min(event.clientY, viewport.top + viewport.height));
+        launcher.style.left = (gripClientX - launcherDragState.gripX) + "px";
+        launcher.style.top = (gripClientY - launcherDragState.gripY) + "px";
         launcher.style.right = "auto";
         launcher.style.bottom = "auto";
       }
@@ -2906,6 +3003,7 @@
       if (!launcherDragState || event.pointerId !== launcherDragState.pointerId) return;
       clearPetMenuLongPress();
       var ended = launcherDragState;
+      resetPetDragPhysics();
       launcherDragState = null;
       launcher.classList.remove("dragging");
       try {
@@ -2913,9 +3011,12 @@
       } catch (_) {}
       if (ended.moved) {
         var rect = launcher.getBoundingClientRect();
-        saveLauncherPosition(rect.left, rect.top);
-        petOriginX = rect.left;
-        petOriginY = rect.top;
+        var settled = clampLauncherPosition(rect.left, rect.top);
+        launcher.style.left = settled.x + "px";
+        launcher.style.top = settled.y + "px";
+        saveLauncherPosition(settled.x, settled.y);
+        petOriginX = settled.x;
+        petOriginY = settled.y;
         suppressLauncherClick = true;
         playPetLandingAfterDrag();
       } else if (!shellOpen) {
@@ -2929,13 +3030,17 @@
       if (!launcherDragState || event.pointerId !== launcherDragState.pointerId) return;
       clearPetMenuLongPress();
       var cancelled = launcherDragState;
+      resetPetDragPhysics();
       launcherDragState = null;
       launcher.classList.remove("dragging");
       if (cancelled.moved) {
         var rect = launcher.getBoundingClientRect();
-        saveLauncherPosition(rect.left, rect.top);
-        petOriginX = rect.left;
-        petOriginY = rect.top;
+        var settled = clampLauncherPosition(rect.left, rect.top);
+        launcher.style.left = settled.x + "px";
+        launcher.style.top = settled.y + "px";
+        saveLauncherPosition(settled.x, settled.y);
+        petOriginX = settled.x;
+        petOriginY = settled.y;
         suppressLauncherClick = true;
         playPetLandingAfterDrag();
       } else if (!shellOpen) {
@@ -3198,10 +3303,12 @@
       selectFloor: selectFloor,
       normalizeMessageOption: normalizeMessageOption,
       normalizeWriteMessageOption: normalizeWriteMessageOption,
+      hasApi: hasApi,
       callApi: callApi,
       readApi: readApi,
       guardedApi: guardedApi,
       callMvu: callMvu,
+      hasMvu: hasMvu,
       readMvu: readMvu,
       guardedMvu: guardedMvu,
       notifyReadOnly: notifyReadOnly,
@@ -3243,7 +3350,14 @@
         clearPetFrameTimer();
         clearPetActivityTimer();
         clearPetMotionFrame();
+        resetPetDragPhysics();
         clearPetMenuLongPress();
+        if (launcherDragState && launcher) {
+          try {
+            if (launcher.hasPointerCapture && launcher.hasPointerCapture(launcherDragState.pointerId)) launcher.releasePointerCapture(launcherDragState.pointerId);
+          } catch (_) {}
+        }
+        launcherDragState = null;
         try {
           if (petMotionQuery && petMotionHandler) {
             if (petMotionQuery.removeEventListener) petMotionQuery.removeEventListener("change", petMotionHandler);
