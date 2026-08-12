@@ -115,10 +115,12 @@
     var encounterPossessionDecorHost = null;
     var profileNeighborHost = null;
     var profilePossessionHost = null;
-    var workLeverHost = null;
+    var timetableHost = null;
+    var timetableFocus = "none";
     var mapExtraChainHost = null;
     var locationRuleRadarTimer = 0;
-    var workLeverPointer = null;
+    var timetableRefreshTimer = 0;
+    var timetableEditorCell = null;
     var galgameBusy = false;
     var selectedId = "";
     var selectionMode = "follow";
@@ -628,7 +630,7 @@
         { kind: "permission", regex: /<\s*变量权限\s*>\s*([\s\S]*?)\s*<\s*\/\s*变量权限\s*>/gi },
         { kind: "notice", regex: /<\s*AI提醒\s*>\s*([\s\S]*?)\s*<\s*\/\s*AI提醒\s*>/gi },
         { kind: "item", regex: /<\s*操作项\s*>\s*<\s*操作名\s*>\s*([\s\S]*?)\s*<\s*\/\s*操作名\s*>\s*<\s*操作内容\s*>\s*([\s\S]*?)\s*<\s*\/\s*操作内容\s*>\s*<\s*\/\s*操作项\s*>/gi },
-        { kind: "section", regex: /<\s*(相关变量|时钟|地图|学校|学校地图|催眠APP|催眠命令|催眠资源|催眠道具|成就和任务|成就|任务|规则|地点规则|打工|邂逅|人物档案|库存|物品|子嗣|警视厅|综合医院|医院|旧校舍|灵异|性格特调|改造|附身|课程表|日历|系统|设置|场景|事件|地点|APP)\s*>\s*([\s\S]*?)\s*<\s*\/\s*\1\s*>/gi }
+        { kind: "section", regex: /<\s*(相关变量|时钟|地图|学校|学校地图|催眠APP|催眠命令|催眠资源|催眠道具|成就和任务|成就|任务|规则|地点规则|邂逅|人物档案|库存|物品|子嗣|警视厅|综合医院|医院|旧校舍|灵异|性格特调|改造|附身|课程表|日历|系统|设置|场景|事件|地点|APP)\s*>\s*([\s\S]*?)\s*<\s*\/\s*\1\s*>/gi }
       ];
       var selected = null;
       definitions.forEach(function (definition) {
@@ -1735,6 +1737,7 @@
     }
 
     function panelSidecarReserve(width) {
+      if (timetableFocus === "phone") return 0;
       var viewport = hostViewportRect();
       var available = Math.max(0, viewport.width - Number(width || 0) - 24);
       return Math.min(panel?.classList?.contains("profile-neighbors") ? 354 : 286, available);
@@ -1742,21 +1745,21 @@
 
     function syncPanelSize() {
       if (!panel) return;
-      var baseWidth = 430;
+      var baseWidth = timetableFocus === "phone" ? 560 : timetableFocus === "timetable" ? 720 : 1160;
       var baseHeight = 812;
+      var visibleLeft = timetableFocus === "phone" ? 350 : timetableFocus === "timetable" ? 215 : 0;
       var viewport = hostViewportRect();
       var viewportWidth = viewport.width;
       var viewportHeight = viewport.height;
-      var widthAllowance = Math.max(1, viewportWidth - 16);
-      if (viewportWidth <= 760) {
-        var sidecarWidth = Math.min(220, Math.max(104, viewportWidth * 0.28));
-        widthAllowance = Math.max(1, viewportWidth - sidecarWidth - 30);
-      }
+      var widthAllowance = Math.max(1, viewportWidth - 20);
       var heightAllowance = Math.max(1, viewportHeight - 16);
       var scale = Math.min(1, widthAllowance / baseWidth, heightAllowance / baseHeight);
       panel.style.width = Math.max(1, Math.floor(baseWidth * scale)) + "px";
       panel.style.height = Math.max(1, Math.floor(baseHeight * scale)) + "px";
       panel.style.setProperty("--phone-scale", String(scale));
+      panel.style.setProperty("--stage-scale", String(scale));
+      panel.style.setProperty("--stage-offset-x", (-visibleLeft * scale) + "px");
+      panel.style.setProperty("--phone-face-width", (430 * scale) + "px");
     }
 
     function clampPosition(x, y) {
@@ -2318,18 +2321,18 @@
         ".pet-fallback{position:absolute;left:15px;top:15px;width:66px;height:66px;border:1px solid rgba(196,116,255,.7);border-radius:24px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:30px;height:30px}",
         ".pet-menu{position:fixed;z-index:4;width:56px;height:56px;pointer-events:none;opacity:0;transform:translateY(8px) scale(.9);transform-origin:50% 100%;transition:opacity .14s ease,transform .14s ease}.pet-menu.open{pointer-events:auto;opacity:1;transform:none}.pet-menu button{position:absolute;inset:0;width:56px;height:56px;padding:0;border:1px solid rgba(226,232,240,.7);border-radius:50%;background:linear-gradient(145deg,rgba(30,41,59,.97),rgba(15,23,42,.98));box-shadow:0 8px 22px rgba(2,6,23,.48),inset 0 1px rgba(255,255,255,.14);color:#f8fafc;font:850 11px/1.1 system-ui;cursor:pointer;touch-action:manipulation}.pet-menu button:hover,.pet-menu button:focus-visible{border-color:#a5f3fc;background:linear-gradient(145deg,#155e75,#172554);outline:2px solid rgba(165,243,252,.72);outline-offset:2px}",
         ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
-        ".panel{pointer-events:auto;position:fixed;width:430px;height:812px;border:0;border-radius:38px;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1}",
+        ".panel{pointer-events:auto;position:fixed;width:1160px;height:812px;border:0;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1;--stage-scale:1;perspective:1800px}",
         ".panel.open{display:block}",
-        ".phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:inherit;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate;transform:scale(var(--phone-scale));transform-origin:0 0}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent}",
+        ".dual-stage{position:absolute;left:0;top:0;width:1160px;height:812px;transform:translateX(var(--stage-offset-x,0px)) scale(var(--stage-scale));transform-origin:0 0;transform-style:preserve-3d}.surface{position:absolute;top:0;height:812px;transition:transform .62s cubic-bezier(.2,.82,.2,1),opacity .35s ease,filter .4s ease;transform-style:preserve-3d}.surface-cover{position:absolute;z-index:30;inset:0;border:0;background:transparent;cursor:pointer}.panel.focus-phone .phone-surface .surface-cover,.panel.focus-timetable .timetable-surface .surface-cover{display:none}.phone-surface{left:700px;width:430px;transform:translateX(-38px) rotateY(-18deg) scale(.88);transform-origin:left center}.timetable-surface{left:20px;width:720px;transform:translateX(22px) rotateY(15deg) scale(.9);transform-origin:right center}.panel.focus-phone .phone-surface{z-index:12;transform:translateX(-350px) rotateY(0) scale(1)}.panel.focus-phone .timetable-surface{z-index:5;transform:translateX(-70px) rotateY(35deg) scale(.72);opacity:.58;filter:saturate(.65)}.panel.focus-timetable .timetable-surface{z-index:12;transform:translateX(195px) rotateY(0) scale(1)}.panel.focus-timetable .phone-surface{z-index:5;transform:translateX(135px) rotateY(-38deg) scale(.72);opacity:.58;filter:saturate(.65)}.phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:38px;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent}.surface-switch{position:absolute;z-index:50;left:50%;bottom:14px;translate:-50% 0;border:3px solid #191713;border-radius:4px;background:#fffaf0;color:#1e1c18;box-shadow:5px 5px 0 #ef5d50;padding:10px 18px;font:900 14px/1.1 'Noto Sans SC',system-ui;cursor:pointer;transform:rotate(-1deg)}.surface-switch:hover{transform:rotate(1deg) translateY(-2px)}",
+        ".timetable-wrap{position:absolute;inset:0;border:4px solid #24201a;border-radius:18px;background:#fffaf0;color:#29251f;box-shadow:12px 16px 0 rgba(23,20,16,.28);overflow:hidden;font-family:'Klee One','Hiragino Maru Gothic ProN','Noto Sans SC',cursive}.timetable-paper{height:100%;padding:20px 18px 16px;background-image:repeating-linear-gradient(0deg,transparent 0 29px,rgba(80,135,180,.12) 30px)}.tt-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px}.tt-title{margin:0;font:900 30px/1 cursive;letter-spacing:.08em;transform:rotate(-1deg)}.tt-date{padding:6px 10px;border:2px dashed #225c91;background:#eef8ff;font-weight:800;transform:rotate(1deg)}.tt-rhythm{display:flex;gap:7px;overflow:auto;padding:3px 2px 10px}.tt-rhythm span{flex:0 0 auto;padding:5px 9px;border:2px solid #29251f;border-radius:50% 42% 48% 44%;background:#fff;box-shadow:2px 3px 0 #f2b24f;font-size:12px;font-weight:800}.tt-layout{display:grid;grid-template-columns:minmax(0,1fr) 150px 190px;gap:10px;height:660px}.tt-week,.tt-today,.tt-user{min-width:0;border:3px solid #29251f;background:rgba(255,255,255,.86);overflow:auto}.tt-week{display:grid;grid-template-columns:58px repeat(5,minmax(82px,1fr));grid-auto-rows:minmax(62px,auto)}.tt-cell{position:relative;border-right:1px dashed #6b6358;border-bottom:1px dashed #6b6358;padding:7px 6px;background:transparent;text-align:left;font:700 12px/1.3 inherit}.tt-cell.head{position:sticky;top:0;z-index:3;background:#fffaf0;text-align:center;font-weight:900}.tt-cell.today{background:#fff0a8}.tt-cell.period{background:#f1eee8;text-align:center;font-weight:900}.tt-cell.modified{background:#ffd9d2}.tt-cell button{width:100%;border:0;background:transparent;text-align:left;font:inherit;cursor:pointer}.tt-side-title{position:sticky;top:0;z-index:3;margin:0;padding:8px;background:#29251f;color:white;text-align:center;font:900 14px/1.2 inherit}.tt-today-list,.tt-action-list{display:grid;gap:7px;padding:8px}.tt-note{padding:8px;border:2px solid #29251f;background:#fffaf0;box-shadow:3px 3px 0 #7ab6d8;font-size:12px}.tt-slot{min-height:70px;padding:8px;border:2px dashed #29251f;background:#fff;box-shadow:3px 3px 0 #f2b24f}.tt-slot.locked{opacity:.5;background:#ddd8cf}.tt-slot.sent{background:#dcebd9}.tt-slot strong{display:block;font-size:12px}.tt-slot small{display:block;margin-top:4px;color:#645b50}.tt-free,.tt-hypnosis{margin:8px;padding:8px;border:2px solid #29251f;background:#eaf7ff;box-shadow:3px 3px 0 #6ea9cc}.tt-hypnosis{background:#f7eaff;cursor:grab}.tt-actions{display:flex;gap:8px;align-items:center;padding:8px}.tt-actions button,.tt-actions select{border:2px solid #29251f;background:#fffaf0;padding:7px;font:800 12px/1 inherit}.tt-actions button{box-shadow:3px 3px 0 #ef5d50;cursor:pointer}.tt-empty{padding:14px;color:#6a6258;text-align:center;font-size:12px}@media(prefers-reduced-motion:reduce){.surface{transition:none!important}}",
         ".location-rule-radar{position:absolute;left:50%;top:-112px;width:min(230px,62%);height:160px;object-fit:contain;object-position:center bottom;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0;transform:translate3d(-50%,-142px,0) rotate(-5deg) scale(.86);transform-origin:50% 86%;transition:transform .7s cubic-bezier(.16,.92,.2,1.12),opacity .24s ease;will-change:transform,opacity}.location-rule-radar.rear{z-index:3;filter:drop-shadow(0 19px 15px rgba(0,0,0,.64))}.location-rule-radar.front{z-index:6;clip-path:inset(70% 0 0 0);filter:drop-shadow(0 7px 5px rgba(0,0,0,.78))}.panel.location-rule-radar-visible .location-rule-radar{opacity:1;transform:translate3d(-50%,0,0) rotate(0) scale(1)}.panel.location-rule-radar-hiding .location-rule-radar{opacity:0;transform:translate3d(-50%,-154px,0) rotate(4deg) scale(.82);transition-duration:.52s,.2s}@media(max-width:760px){.location-rule-radar{top:-96px;width:min(202px,68%);height:140px}}",
-        ".work-lever-host{position:absolute;z-index:8;left:-126px;top:164px;width:126px;height:176px;display:none;pointer-events:none;user-select:none;perspective:440px}.panel.work-lever-visible .work-lever-host{display:block}.work-lever{position:absolute;inset:0;border:0;padding:0;background:transparent;pointer-events:auto;cursor:grab;touch-action:none;overflow:visible}.work-lever:active,.work-lever.is-pulling{cursor:grabbing}.work-lever__body{position:absolute;inset:0;display:block;transform-origin:126px 120px;transform-style:preserve-3d;transform:rotateX(0deg);transition:transform .31s cubic-bezier(.18,.82,.25,1.18),filter .22s ease;filter:drop-shadow(8px 13px 9px rgba(0,0,0,.56))}.work-lever__body svg{position:absolute;inset:0;width:126px;height:150px;overflow:visible}.work-lever__tube-shadow{fill:none;stroke:#080b09;stroke-width:32;stroke-linecap:round;stroke-linejoin:round}.work-lever__tube{fill:none;stroke:url(#workLeverTube);stroke-width:22;stroke-linecap:round;stroke-linejoin:round}.work-lever__tube-shine{fill:none;stroke:rgba(255,255,255,.2);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;transform:translate(-4px,-1px)}.work-lever__knob-ring{fill:#090b0a}.work-lever__knob-core{fill:url(#workLeverKnob)}.work-lever.is-pulling .work-lever__body{transform:rotateX(67deg);filter:drop-shadow(4px 5px 4px rgba(0,0,0,.5)) brightness(1.08);transition-duration:.17s}@media(max-width:760px){.work-lever-host{left:-116px;transform:scale(.92);transform-origin:right top}}",
         ".map-extra-chain-host{position:absolute;z-index:7;right:calc(100% - 18px);top:118px;width:176px;display:none;pointer-events:none;filter:drop-shadow(0 18px 16px rgba(0,0,0,.65));font-family:Impact,'Arial Black','Noto Sans SC',sans-serif;user-select:none}.panel.map-extra-chain-visible .map-extra-chain-host{display:block}.map-extra-chain{display:grid;gap:5px;pointer-events:auto}.map-extra-chain__head{justify-self:end;max-width:160px;padding:7px 9px 7px 12px;border:3px solid #080808;background:#f3eee4;color:#080808;box-shadow:5px 5px 0 #ed1831;font:950 12px/1.1 Impact,'Arial Black','Noto Sans SC',sans-serif;letter-spacing:.04em;transform:rotate(-2deg);clip-path:polygon(4% 0,100% 5%,94% 100%,0 88%);display:flex;align-items:center;gap:8px}.map-extra-chain__head strong{min-width:0}.map-extra-chain__head button{flex:0 0 27px;width:27px;height:27px;border:2px solid #080808;background:#ed1831;color:#fff;font:950 18px/1 Impact,sans-serif;cursor:pointer;box-shadow:2px 2px 0 #080808}.map-extra-chain__belt{display:grid;gap:2px}.map-extra-chain__row{position:relative;width:160px;margin-left:auto}.map-extra-chain__item{position:relative;width:160px;min-height:47px;border:3px solid #080808;background:#f3eee4;color:#080808;padding:7px 25px 7px 13px;text-align:left;cursor:pointer;pointer-events:auto;box-shadow:5px 4px 0 #ed1831;clip-path:polygon(0 8%,92% 0,100% 48%,92% 100%,0 92%,7% 50%);font:950 12px/1.2 'Arial Black','Noto Sans SC',sans-serif;white-space:normal;overflow-wrap:anywhere;transition:translate .16s ease,filter .16s ease}.map-extra-chain__item:before{content:'';position:absolute;right:9px;top:50%;width:9px;height:9px;border:3px solid #080808;border-radius:50%;background:#ed1831;transform:translateY(-50%)}.map-extra-chain__row:after{content:'';position:absolute;right:12px;top:calc(100% - 1px);width:3px;height:9px;background:#080808}.map-extra-chain__row:last-child:after{display:none}.map-extra-chain__item:hover,.map-extra-chain__item.active{translate:-9px 0;filter:brightness(1.08)}.map-extra-chain__item.active{background:#ed1831;color:#fff;box-shadow:5px 4px 0 #f3eee4}.map-extra-chain__item.favorite{padding-left:29px}.map-extra-chain__item.favorite span:before{content:'★';position:absolute;left:11px;color:#ed1831}.map-extra-chain__delete{position:absolute;z-index:3;right:7px;top:50%;width:25px;height:25px;border:2px solid #080808;background:#ed1831;color:#fff;box-shadow:2px 2px 0 #080808;font:950 17px/1 Impact,sans-serif;cursor:pointer;pointer-events:auto;transform:translateY(-50%) rotate(2deg)}.map-extra-chain__row.deletable .map-extra-chain__item{padding-right:37px}.map-extra-chain__row.deletable .map-extra-chain__item:before{display:none}.map-extra-chain__delete:hover{filter:brightness(1.1);transform:translateY(-50%) rotate(-3deg) scale(1.06)}.map-extra-chain__pager{justify-self:end;display:flex;align-items:center;gap:5px;margin-top:4px;pointer-events:auto}.map-extra-chain__pager button{width:34px;height:30px;border:3px solid #080808;background:#f3eee4;color:#080808;box-shadow:3px 3px 0 #ed1831;font:950 15px/1 Impact,sans-serif;cursor:pointer}.map-extra-chain__pager button:disabled{opacity:.32;cursor:default}.map-extra-chain__pager span{padding:5px 8px;background:#080808;color:#fff;font:950 10px/1 Impact,sans-serif;letter-spacing:.08em}@media(max-width:760px){.map-extra-chain-host{right:calc(100% - 14px);top:112px;width:148px}.map-extra-chain__head,.map-extra-chain__row,.map-extra-chain__item{max-width:136px}.map-extra-chain__item{font-size:10px;min-height:42px}}",
         ".hypnosis-judgement-perch{position:absolute;inset:0;display:none;pointer-events:none;user-select:none;-webkit-user-drag:none}.panel.hypnosis-perch-visible:not(.profile-possession-visible) .hypnosis-judgement-perch{display:block}.hypnosis-judgement-figure{position:absolute;top:76px;bottom:58px;width:152px;pointer-events:none}.hypnosis-judgement-figure.is-demon{right:calc(100% - 14px)}.hypnosis-judgement-figure.is-angel{left:calc(100% - 14px)}.hypnosis-judgement-figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}.hypnosis-judgement-figure.is-demon img{object-position:right center}.hypnosis-judgement-figure.is-angel img{object-position:left center}.hypnosis-judgement-figure__rear{z-index:3;filter:drop-shadow(0 18px 13px rgba(0,0,0,.66)) saturate(.86) contrast(1.08)}.hypnosis-judgement-figure__front{z-index:7;filter:drop-shadow(0 5px 3px rgba(0,0,0,.78)) saturate(.9) contrast(1.12)}.hypnosis-judgement-figure.is-demon .hypnosis-judgement-figure__front{clip-path:inset(0 0 0 79%)}.hypnosis-judgement-figure.is-angel .hypnosis-judgement-figure__front{clip-path:inset(0 79% 0 0)}@media(max-width:760px){.hypnosis-judgement-figure{top:92px;bottom:72px;width:118px}.hypnosis-judgement-figure.is-demon{right:calc(100% - 11px)}.hypnosis-judgement-figure.is-angel{left:calc(100% - 11px)}}",
         ".profile-neighbor-host{position:absolute;z-index:2;inset:0;pointer-events:none}.profile-neighbor-rail{--rail-red:#ed1831;position:absolute;top:25%;width:114px;height:48%;min-height:270px;padding:0;border:3px solid #080808;background:#f4efe6;color:#080808;box-shadow:7px 8px 0 var(--rail-red),0 20px 34px rgba(0,0,0,.5);overflow:hidden;cursor:pointer;pointer-events:auto;display:none;isolation:isolate;touch-action:manipulation;transition:transform .28s cubic-bezier(.2,.85,.25,1),filter .2s ease}.panel.profile-neighbors .profile-neighbor-rail{display:block}.profile-neighbor-rail.prev{right:calc(100% - 42px);transform:perspective(420px) rotateY(18deg) rotate(-2deg);clip-path:polygon(0 4%,100% 0,95% 100%,6% 95%)}.profile-neighbor-rail.next{left:calc(100% - 42px);transform:perspective(420px) rotateY(-18deg) rotate(2deg);clip-path:polygon(5% 0,100% 4%,94% 95%,0 100%)}.profile-neighbor-rail:before{content:attr(data-kicker);position:absolute;z-index:3;top:10px;padding:5px 9px;background:#080808;color:#fff;font:950 10px/1 Impact,'Arial Black',sans-serif;letter-spacing:.12em}.profile-neighbor-rail.prev:before{left:8px}.profile-neighbor-rail.next:before{right:8px}.profile-neighbor-rail img,.profile-neighbor-rail__empty{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center 18%;background:#d7d1c8;filter:saturate(.72) contrast(1.08)}.profile-neighbor-rail__empty{display:grid;place-items:center;font:950 38px/1 Impact,sans-serif}.profile-neighbor-rail strong{position:absolute;z-index:3;left:7px;right:7px;bottom:12px;padding:6px 5px;background:#080808;color:#fff;font:950 11px/1.2 'Arial Black','Noto Sans SC',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:3px 3px 0 var(--rail-red)}.profile-neighbor-rail:hover{filter:brightness(1.06)}.profile-neighbor-rail.prev:hover{transform:translateX(-8px) perspective(420px) rotateY(10deg) rotate(-1deg)}.profile-neighbor-rail.next:hover{transform:translateX(8px) perspective(420px) rotateY(-10deg) rotate(1deg)}.panel.profile-neighbors .sidecar{left:calc(100% + 88px)}.panel.profile-turning-prev .profile-neighbor-rail.prev{transform:translateX(26px) scale(1.08) perspective(420px) rotateY(-4deg) rotate(3deg)}.panel.profile-turning-prev .profile-neighbor-rail.next{transform:translateX(8px) scale(.96) perspective(420px) rotateY(-22deg) rotate(2deg)}.panel.profile-turning-next .profile-neighbor-rail.next{transform:translateX(-26px) scale(1.08) perspective(420px) rotateY(4deg) rotate(-3deg)}.panel.profile-turning-next .profile-neighbor-rail.prev{transform:translateX(-8px) scale(.96) perspective(420px) rotateY(22deg) rotate(-2deg)}",
         ".profile-possession-host,.encounter-possession-decor-host{position:absolute;z-index:9;left:50%;top:-88px;width:calc(100% + 34px);height:150px;transform:translateX(-50%) rotate(-.5deg);display:none;pointer-events:none;overflow:visible}.encounter-possession-decor-host[hidden]{display:none!important}.panel.profile-possession-visible .profile-possession-host{display:block}.panel.encounter-possession-decor-visible:not(.profile-possession-visible) .encounter-possession-decor-host:not([hidden]){display:block}.encounter-possession-decor-host img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;clip-path:inset(0 0 18% 0);filter:grayscale(.2) saturate(.82) blur(.55px) drop-shadow(0 8px 8px rgba(0,0,0,.5));opacity:.82;transform:translate(2px,-1px)}.encounter-possession-decor-host:after{content:'';position:absolute;inset:0;background:url('" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "') center/contain no-repeat;clip-path:inset(0 0 18% 0);opacity:.14;filter:blur(4px);transform:translate(-5px,-1px)}.profile-possession-grip{position:absolute;inset:0;border:0;padding:0;background:transparent;pointer-events:auto;cursor:pointer;touch-action:manipulation;clip-path:inset(0 0 18% 0);filter:grayscale(.24) saturate(.76) blur(.7px);opacity:.6;transform:translate(2px,-1px);transition:transform .25s cubic-bezier(.2,.85,.22,1),filter .25s ease,opacity .25s ease}.profile-possession-grip img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}.profile-possession-grip:after{content:'';position:absolute;inset:0;background:url('" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "') center/contain no-repeat;opacity:.2;filter:blur(4px);transform:translate(-6px,-1px);pointer-events:none}.profile-possession-grip:hover{opacity:.8;filter:grayscale(.1) saturate(.9) blur(.35px);transform:translateY(2px) rotate(.25deg)}.profile-possession-grip:active{transform:translateY(4px) scale(.992)}.profile-possession-grip.active{opacity:1;filter:saturate(1.06) contrast(1.04);transform:none}.profile-possession-grip.active:after{opacity:.07;filter:blur(2px);transform:translate(-2px,-1px)}",
         ".encounter-detail-host{--ed-red:#ef1b2d;position:absolute;z-index:18;right:calc(100% + 16px);top:20px;width:500px;max-height:calc(100% - 40px);display:none;overflow:auto;pointer-events:auto;color:#fff;font-family:Impact,'Arial Black','Noto Sans SC',system-ui;filter:drop-shadow(0 28px 45px rgba(0,0,0,.5));scrollbar-width:thin;scrollbar-color:#ef1b2d #080808}.encounter-detail-host.open{display:block}.encounter-detail-host__frame{position:relative;min-height:620px;overflow:hidden;border:5px solid #080808;background:#f3eee4;clip-path:polygon(3% 0,100% 3%,97% 94%,86% 91%,79% 100%,4% 96%,0 12%);isolation:isolate}.encounter-detail-host__frame:before{content:'';position:absolute;inset:-20%;z-index:-3;background:repeating-linear-gradient(113deg,transparent 0 22px,rgba(0,0,0,.08) 23px 25px),radial-gradient(circle at 18% 22%,#ef1b2d 0 3%,transparent 3.3%),linear-gradient(145deg,#eee7dc 0 38%,#d9d1c6 38% 45%,#f7f3ea 45% 100%)}.encounter-detail-host__frame:after{content:'';position:absolute;z-index:-2;left:-18%;right:16%;bottom:-22%;height:66%;background:#080808;transform:rotate(-8deg);clip-path:polygon(0 12%,100% 0,86% 100%,8% 84%)}.encounter-detail-host__close{position:absolute;z-index:8;right:18px;top:18px;width:46px;height:42px;border:4px solid #080808;background:#ef1b2d;color:#fff;font:950 24px/1 Impact,'Arial Black',sans-serif;transform:rotate(3deg);cursor:pointer;box-shadow:6px 6px 0 #080808}.encounter-detail-host__kicker{display:inline-block;margin:28px 0 0 26px;padding:5px 18px;background:#080808;color:#fff;font:950 14px/1 Impact,'Arial Black','Noto Sans SC',sans-serif;letter-spacing:.12em;transform:rotate(-3deg);clip-path:polygon(4% 0,100% 8%,94% 100%,0 84%)}.encounter-detail-host__name{position:relative;z-index:2;margin:10px 58px 0 24px;color:#080808;font:950 clamp(30px,4vw,54px)/.92 Impact,'Arial Black','Noto Sans SC',sans-serif;letter-spacing:.02em;text-transform:uppercase;transform:rotate(-2deg);text-shadow:3px 3px 0 #fff,6px 6px 0 #ef1b2d;overflow-wrap:anywhere}.encounter-detail-host__alias{display:inline-block;margin:10px 0 0 32px;padding:5px 13px;background:#ef1b2d;color:#fff;font:900 13px/1.2 system-ui;transform:rotate(1deg)}.encounter-detail-host__visual{position:relative;height:285px;margin:8px 18px 0;overflow:hidden;clip-path:polygon(3% 8%,94% 0,100% 88%,8% 100%,0 55%);background:#080808}.encounter-detail-host__visual img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 18%;filter:saturate(.8) contrast(1.14)}.encounter-detail-host__visual:after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,rgba(239,27,45,.45),transparent 34%,transparent 70%,rgba(0,0,0,.5)),repeating-linear-gradient(0deg,transparent 0 4px,rgba(255,255,255,.07) 5px);mix-blend-mode:screen;pointer-events:none}.encounter-detail-host__source{position:absolute;z-index:4;right:16px;bottom:18px;max-width:70%;padding:7px 13px;background:#fff;color:#080808;border:3px solid #080808;font:950 12px/1.2 system-ui;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.encounter-detail-host__body{position:relative;z-index:3;margin:-18px 26px 30px;padding:22px 18px 18px;background:#ef1b2d;color:#fff;clip-path:polygon(0 7%,100% 0,96% 100%,5% 94%);transform:rotate(.5deg)}.encounter-detail-host__intro{margin:0 0 13px;font:750 13px/1.65 system-ui;white-space:pre-wrap}.encounter-detail-host__facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.encounter-detail-host__fact{min-width:0;padding:8px 9px;background:#080808;color:#fff;transform:skew(-4deg)}.encounter-detail-host__fact span{display:block;color:#ff9aa4;font:850 9px/1.2 system-ui;letter-spacing:.08em}.encounter-detail-host__fact strong{display:block;margin-top:3px;font:850 12px/1.3 system-ui;overflow-wrap:anywhere}.encounter-detail-host__thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 27px 28px}.encounter-detail-host__thumbs img{width:100%;aspect-ratio:1/1;object-fit:cover;border:3px solid #080808;background:#ddd;transform:rotate(var(--thumb-tilt,0deg))}.encounter-detail-host__empty{display:grid;height:100%;place-items:center;color:#fff;font:950 54px/1 Impact,sans-serif;background:repeating-linear-gradient(135deg,#080808 0 18px,#ef1b2d 19px 34px)}",
         ".encounter-detail-host{padding:6px 0 16px;overscroll-behavior:contain}.encounter-detail-host__frame{clip-path:polygon(1% 0,100% 1%,99% 98%,87% 97%,82% 100%,1% 99%,0 4%);padding-bottom:30px}.encounter-detail-host__body{margin:-10px 24px 22px;padding:34px 20px 30px;clip-path:polygon(0 2%,100% 0,98% 100%,2% 98%);transform:none}.encounter-detail-host__thumbs{margin-bottom:8px;padding-bottom:8px}",
-        ".sidecar{position:absolute;z-index:12;left:calc(100% + 14px);top:12px;width:var(--floor-sidecar-width);display:grid;grid-template-columns:minmax(0,1fr);justify-items:start;gap:8px;pointer-events:none}",
+        ".sidecar{position:absolute;z-index:12;left:calc(100% + 14px);top:12px;width:var(--floor-sidecar-width);display:grid;grid-template-columns:minmax(0,1fr);justify-items:start;gap:8px;opacity:0;visibility:hidden;pointer-events:none;transform-origin:0 0;transition:opacity .24s ease}.panel.focus-phone .sidecar{left:calc(var(--phone-face-width) + 8px);opacity:1;visibility:visible;transform:scale(var(--stage-scale))}.panel:not(.focus-phone) .sidecar>*{pointer-events:none!important}",
         ".readonly{position:static;z-index:13;width:100%;padding:8px 10px;border-radius:13px;background:rgba(39,25,12,.72);border:1px solid rgba(251,191,36,.38);color:#fde68a;font:800 10px/1.35 system-ui;pointer-events:none;display:none;backdrop-filter:blur(10px)}.panel.history .readonly{display:block}",
         ".drag-edge{position:absolute;z-index:9;touch-action:none;user-select:none}.drag-edge.top{left:22px;right:22px;top:0;height:10px;cursor:grab}.drag-edge.bottom{left:22px;right:22px;bottom:0;height:10px;cursor:grab}.drag-edge.left{left:0;top:22px;bottom:22px;width:10px;cursor:grab}.drag-edge.right{right:0;top:22px;bottom:22px;width:10px;cursor:grab}.drag-edge:active,.drag-grip:active{cursor:grabbing}",
         ".drag-grip{position:absolute;z-index:10;left:50%;top:4px;width:72px;height:12px;transform:translateX(-50%);border-radius:999px;cursor:grab;touch-action:none;user-select:none}",
@@ -2424,25 +2427,66 @@
       return visible;
     }
 
-    function updateWorkLever(payload) {
-      ensureShell();
-      if (!panel || !workLeverHost) return false;
-      var data = payload && typeof payload === "object" ? payload : null;
-      var visible = Boolean(data && data.visible);
-      var pulling = Boolean(visible && data.pulling);
-      var axisY = Number(data && data.axisY);
-      panel.classList.toggle("work-lever-visible", visible);
-      if (visible && Number.isFinite(axisY)) {
-        workLeverHost.style.top = Math.max(18, axisY - 120) + "px";
+    function timetableSetFocus(next) {
+      timetableFocus = next === "phone" || next === "timetable" ? next : "none";
+      if (!panel) return;
+      panel.classList.toggle("focus-phone", timetableFocus === "phone");
+      panel.classList.toggle("focus-timetable", timetableFocus === "timetable");
+      var button = panel.querySelector("[data-surface-switch]");
+      if (button) button.textContent = timetableFocus === "phone" ? "⇄ 课程表" : timetableFocus === "timetable" ? "手机 ⇄" : "选择一面";
+      applySavedPosition();
+    }
+
+    function timetableScheduleHtml(schedule) {
+      var slots = Array.isArray(schedule && schedule.slots) ? schedule.slots : [];
+      var free = Array.isArray(schedule && schedule.free) ? schedule.free : [];
+      var looseHypnosis = (Array.isArray(schedule && schedule.hypnosis) ? schedule.hypnosis : []).filter(function (item) { return !item.slotId; });
+      var freeCard = free.length ? "<div class='tt-free'><strong>免行动合并卡 · " + free.length + " 项</strong>" + free.map(function (item) { return "<small>• " + escapeHtml(item.title) + "</small>"; }).join("") + "</div>" : "";
+      var external = freeCard + looseHypnosis.map(function (item) {
+        return "<div class='tt-hypnosis' draggable='true' data-hypnosis-id='" + escapeHtml(item.id) + "'>可拖拽附加 · " + escapeHtml(item.title) + "</div>";
+      }).join("");
+      var slotHtml = slots.map(function (slot) {
+        var classes = ["tt-slot"];
+        if (slot.locked) classes.push("locked");
+        if (slot.sent) classes.push("sent");
+        var entries = (slot.operations || []).map(function (item) { return "<small>• " + escapeHtml(item.title) + "</small>"; }).join("");
+        var hypnosis = (slot.hypnosis || []).map(function (item) { return "<small>✦ " + escapeHtml(item.title) + "</small>"; }).join("");
+        return "<div class='" + classes.join(" ") + "' data-schedule-slot='" + escapeHtml(slot.id) + "'><strong>" + escapeHtml(slot.label) + " · " + escapeHtml(slot.time) + "</strong>" + (entries || hypnosis ? entries + hypnosis : "<small>空白行动格</small>") + "</div>";
+      }).join("");
+      return external + "<div class='tt-action-list'>" + slotHtml + "</div><div class='tt-actions'><select data-advance-count>" + [1,2,3,4,5,6].map(function (n) { return "<option value='" + n + "'>推进 " + n + " 格</option>"; }).join("") + "</select><button type='button' data-advance>执行</button><button type='button' data-next-day>过日</button></div>";
+    }
+
+    function renderTimetableWindow() {
+      if (!timetableHost) return false;
+      var snapshot = phoneApi("__ST_HYPNOOS_TIMETABLE_SNAPSHOT__", [], true);
+      if (!snapshot || typeof snapshot !== "object") {
+        timetableHost.innerHTML = "<div class='timetable-paper'><p class='tt-empty'>课程表正在与当前楼同步……</p></div>";
+        return false;
       }
-      var button = workLeverHost.querySelector("[data-work-lever-host]");
-      if (button) {
-        button.classList.toggle("is-pulling", pulling);
-        button.setAttribute("aria-hidden", visible ? "false" : "true");
+      var days = Array.isArray(snapshot.days) ? snapshot.days : [];
+      var cells = [];
+      cells.push("<div class='tt-cell head'>時限</div>");
+      days.forEach(function (day) { cells.push("<div class='tt-cell head" + (day.active ? " today" : "") + "'>" + escapeHtml(day.label) + "</div>"); });
+      for (var period = 1; period <= 6; period += 1) {
+        var reference = days[0] && days[0].cells && days[0].cells[period - 1];
+        cells.push("<div class='tt-cell period'>" + period + "限<br><small>" + escapeHtml(reference && reference.time || "") + "</small></div>");
+        days.forEach(function (day) {
+          var cell = day.cells && day.cells[period - 1] || {};
+          cells.push("<div class='tt-cell" + (day.active ? " today" : "") + (cell.modified ? " modified" : "") + "'><button type='button' data-course-day='" + day.day + "' data-course-period='" + period + "'" + (cell.editable ? "" : " disabled") + "><strong>" + escapeHtml(cell.subject || "自习") + "</strong><small>" + escapeHtml(cell.description || "") + "</small></button></div>");
+        });
       }
-      if (!visible) workLeverPointer = null;
-      if (visible) applySavedPosition();
-      return visible;
+      var today = days.find(function (day) { return day.active; });
+      var todayList = snapshot.special && snapshot.special.blocksClass
+        ? "<div class='tt-note'><strong>" + escapeHtml(snapshot.special.title || "休日") + "</strong><br>" + escapeHtml(snapshot.special.description || snapshot.special.detail || "今日无固定课程") + "</div>"
+        : ((today && today.cells) || []).map(function (cell) { return "<div class='tt-note'><strong>" + escapeHtml(cell.label) + " · " + escapeHtml(cell.subject) + "</strong><br>" + escapeHtml(cell.time + "　" + (cell.description || "")) + "</div>"; }).join("");
+      var editor = timetableEditorCell ? "<form class='tt-free' data-course-editor><strong>修改 " + escapeHtml(timetableEditorCell.label) + "</strong><input name='subject' value='" + escapeHtml(timetableEditorCell.subject) + "' aria-label='课程名'><textarea name='description' aria-label='课程描述'>" + escapeHtml(timetableEditorCell.description) + "</textarea><button type='submit'>写入课程表</button><button type='button' data-course-cancel>取消</button></form>" : "";
+      timetableHost.innerHTML = "<div class='timetable-paper'><header class='tt-head'><h2 class='tt-title'>週間時間割</h2><span class='tt-date'>" + escapeHtml(snapshot.date + " · " + snapshot.weekday + " · " + snapshot.time) + "</span></header><div class='tt-rhythm'>" + (snapshot.rhythm || []).map(function (item) { return "<span>" + escapeHtml(item.label + " " + item.start + (item.end ? "–" + item.end : "")) + "</span>"; }).join("") + "</div>" + editor + "<div class='tt-layout'><div class='tt-week'>" + cells.join("") + "</div><section class='tt-today'><h3 class='tt-side-title'>本日</h3><div class='tt-today-list'>" + todayList + "</div></section><section class='tt-user'><h3 class='tt-side-title'>USER 日程 · " + escapeHtml(String(snapshot.actionSchedule && snapshot.actionSchedule.remaining || 0)) + " / 6</h3>" + timetableScheduleHtml(snapshot.actionSchedule || {}) + "</section></div></div>";
+      return true;
+    }
+
+    function scheduleTimetableRefresh(delay) {
+      if (timetableRefreshTimer) host.clearTimeout(timetableRefreshTimer);
+      timetableRefreshTimer = host.setTimeout(function () { timetableRefreshTimer = 0; renderTimetableWindow(); }, Math.max(0, Number(delay) || 0));
     }
 
     function updateMapExtraChain(payload) {
@@ -2608,7 +2652,7 @@
         "globalThis.__ST_HYPNOOS_UPDATE_PROFILE_POSSESSION__=function(p){return r.updateProfilePossession(p)};" +
         "globalThis.__ST_HYPNOOS_UPDATE_ENCOUNTER_POSSESSION_DECOR__=function(p){return r.updateEncounterPossessionDecor(p)};" +
         "globalThis.__ST_HYPNOOS_UPDATE_HYPNOSIS_PERCH__=function(p){return r.updateHypnosisPerch(p)};" +
-        "globalThis.__ST_HYPNOOS_UPDATE_WORK_LEVER__=function(p){return r.updateWorkLever(p)};" +
+        "globalThis.__ST_HYPNOOS_NOTIFY_TIMETABLE__=function(){return r.refreshTimetable()};" +
         "globalThis.__ST_HYPNOOS_UPDATE_MAP_EXTRA_CHAIN__=function(p){return r.updateMapExtraChain(p)};" +
         "globalThis.__ST_HYPNOOS_UPDATE_LOCATION_RULE_RADAR__=function(p){return r.updateLocationRuleRadar(p)};" +
         "globalThis.SillyTavern={getContext:function(){return r.getContext()},getCurrentChatId:function(){return r.getCurrentChatId()}};" +
@@ -2628,7 +2672,6 @@
       if (!config.frontendUrl) return;
       updateProfileNeighbors(null);
       updateHypnosisPerch(null);
-      updateWorkLever(null);
       updateMapExtraChain(null);
       updateLocationRuleRadar({ visible: false, immediate: true });
       frame.dataset.loadedFor = currentWritable;
@@ -2669,7 +2712,7 @@
       shadow.innerHTML = "<style>" + shellCss() + "</style>" +
         "<button class='launcher' type='button' aria-label='打开悬浮手机' aria-haspopup='menu' aria-expanded='false'><span class='pet-sprite' aria-hidden='true'></span><span class='pet-fallback' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg></span><i>0</i></button>" +
         "<nav class='pet-menu' role='menu' aria-label='桌宠切换' aria-hidden='true'><button type='button' role='menuitem' data-pet-action='switch'>切换</button></nav>" +
-        "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='work-lever-host' aria-label='打工滚筒摇杆'><button class='work-lever' type='button' data-work-lever-host aria-label='拉动或点击摇杆切换下一份工作'><span class='work-lever__body'><svg viewBox='0 0 126 150' aria-hidden='true'><defs><linearGradient id='workLeverTube' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#aeb8b1'/><stop offset='.42' stop-color='#647169'/><stop offset='.72' stop-color='#303a34'/><stop offset='1' stop-color='#151b17'/></linearGradient><radialGradient id='workLeverKnob' cx='.32' cy='.25' r='.72'><stop offset='0' stop-color='#ffd36b'/><stop offset='.22' stop-color='#df850d'/><stop offset='.68' stop-color='#91340b'/><stop offset='1' stop-color='#431506'/></radialGradient></defs><path class='work-lever__tube-shadow' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube' d='M44 31V101Q44 120 63 120H126'/><path class='work-lever__tube-shine' d='M44 35V99Q44 113 61 113H122'/><circle class='work-lever__knob-ring' cx='44' cy='28' r='33'/><circle class='work-lever__knob-core' cx='44' cy='28' r='27'/></svg></span></button></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div><span class='drag-edge top' data-phone-drag></span><span class='drag-edge right' data-phone-drag></span><span class='drag-edge bottom' data-phone-drag></span><span class='drag-edge left' data-phone-drag></span><span class='drag-grip' data-phone-drag aria-label='拖动手机'></span><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='pet-character-toggle' type='button'>人物 · 爱丽莎</button><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
+        "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='dual-stage'><section class='surface timetable-surface'><div class='timetable-wrap' aria-label='课程表'></div><button class='surface-cover' type='button' data-focus-surface='timetable' aria-label='聚焦课程表'></button></section><section class='surface phone-surface'><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div></section></div><button class='surface-switch' type='button' data-surface-switch>选择一面</button><span class='drag-edge top' data-phone-drag></span><span class='drag-edge right' data-phone-drag></span><span class='drag-edge bottom' data-phone-drag></span><span class='drag-edge left' data-phone-drag></span><span class='drag-grip' data-phone-drag aria-label='拖动手机'></span><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='pet-character-toggle' type='button'>人物 · 爱丽莎</button><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
       hostDocument.body.appendChild(shell);
       launcher = shadow.querySelector(".launcher");
       petSprite = shadow.querySelector(".pet-sprite");
@@ -2700,46 +2743,62 @@
       encounterPossessionDecorHost = shadow.querySelector(".encounter-possession-decor-host");
       profileNeighborHost = shadow.querySelector(".profile-neighbor-host");
       profilePossessionHost = shadow.querySelector(".profile-possession-host");
-      workLeverHost = shadow.querySelector(".work-lever-host");
+      timetableHost = shadow.querySelector(".timetable-wrap");
       mapExtraChainHost = shadow.querySelector(".map-extra-chain-host");
-      var workLeverButton = workLeverHost && workLeverHost.querySelector("[data-work-lever-host]");
-      if (workLeverButton) {
-        workLeverButton.addEventListener("pointerdown", function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          workLeverPointer = { id: event.pointerId, y: event.clientY, fired: false };
-          try { workLeverButton.setPointerCapture(event.pointerId); } catch (_) {}
-          workLeverButton.classList.add("is-pulling");
-        });
-        workLeverButton.addEventListener("pointermove", function (event) {
-          if (!workLeverPointer || workLeverPointer.id !== event.pointerId || workLeverPointer.fired) return;
-          if (event.clientY - workLeverPointer.y < 28) return;
-          workLeverPointer.fired = true;
-          phoneApi("__ST_HYPNOOS_WORK_LEVER_PULL__", ["next"], false);
-        });
-        var releaseWorkLever = function (event) {
-          if (!workLeverPointer || workLeverPointer.id !== event.pointerId) return;
-          var shouldFire = !workLeverPointer.fired;
-          workLeverPointer = null;
-          if (shouldFire) phoneApi("__ST_HYPNOOS_WORK_LEVER_PULL__", ["next"], false);
-          host.setTimeout(function () { workLeverButton.classList.remove("is-pulling"); }, 170);
-          try { workLeverButton.releasePointerCapture(event.pointerId); } catch (_) {}
-        };
-        var cancelWorkLever = function (event) {
-          if (!workLeverPointer || workLeverPointer.id !== event.pointerId) return;
-          workLeverPointer = null;
-          host.setTimeout(function () { workLeverButton.classList.remove("is-pulling"); }, 90);
-          try { workLeverButton.releasePointerCapture(event.pointerId); } catch (_) {}
-        };
-        workLeverButton.addEventListener("pointerup", releaseWorkLever);
-        workLeverButton.addEventListener("pointercancel", cancelWorkLever);
-        workLeverButton.addEventListener("click", function (event) {
-          if (event.detail !== 0) return;
-          event.preventDefault();
-          event.stopPropagation();
-          phoneApi("__ST_HYPNOOS_WORK_LEVER_PULL__", ["next"], false);
-        });
-      }
+      panel.querySelectorAll("[data-focus-surface]").forEach(function (button) {
+        button.addEventListener("click", function () { timetableSetFocus(button.dataset.focusSurface); });
+      });
+      panel.querySelector("[data-surface-switch]")?.addEventListener("click", function () {
+        timetableSetFocus(timetableFocus === "phone" ? "timetable" : "phone");
+      });
+      timetableHost?.addEventListener("click", async function (event) {
+        var course = event.target.closest("[data-course-day][data-course-period]");
+        if (course) {
+          var snapshot = phoneApi("__ST_HYPNOOS_TIMETABLE_SNAPSHOT__", [], true);
+          var day = Number(course.dataset.courseDay);
+          var period = Number(course.dataset.coursePeriod);
+          var dayData = snapshot && snapshot.days && snapshot.days.find(function (item) { return item.day === day; });
+          var cell = dayData && dayData.cells && dayData.cells[period - 1];
+          if (cell && cell.editable) {
+            timetableEditorCell = { day: day, period: period, label: dayData.label + " " + period + "限", subject: cell.subject || "", description: cell.description || "" };
+            renderTimetableWindow();
+          }
+          return;
+        }
+        if (event.target.closest("[data-course-cancel]")) { timetableEditorCell = null; renderTimetableWindow(); return; }
+        if (event.target.closest("[data-advance]")) {
+          var count = Number(timetableHost.querySelector("[data-advance-count]")?.value) || 1;
+          await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_ADVANCE__", [count], false));
+          scheduleTimetableRefresh(80);
+          return;
+        }
+        if (event.target.closest("[data-next-day]")) {
+          await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_NEXT_DAY__", [], false));
+          scheduleTimetableRefresh(80);
+        }
+      });
+      timetableHost?.addEventListener("submit", async function (event) {
+        var form = event.target.closest("[data-course-editor]");
+        if (!form || !timetableEditorCell) return;
+        event.preventDefault();
+        var result = await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_COMMIT__", [{ day: timetableEditorCell.day, period: timetableEditorCell.period, subject: form.elements.subject.value, description: form.elements.description.value }], false));
+        if (result && result.ok) timetableEditorCell = null;
+        else form.dataset.error = String(result && result.reason || "课程表写入失败");
+        renderTimetableWindow();
+      });
+      timetableHost?.addEventListener("dragstart", function (event) {
+        var card = event.target.closest("[data-hypnosis-id]");
+        if (card && event.dataTransfer) event.dataTransfer.setData("text/hypnoos-hypnosis", card.dataset.hypnosisId || "");
+      });
+      timetableHost?.addEventListener("dragover", function (event) { if (event.target.closest("[data-schedule-slot]")) event.preventDefault(); });
+      timetableHost?.addEventListener("drop", async function (event) {
+        var slot = event.target.closest("[data-schedule-slot]");
+        var id = event.dataTransfer && event.dataTransfer.getData("text/hypnoos-hypnosis");
+        if (!slot || !id) return;
+        event.preventDefault();
+        await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_MOVE_HYPNOSIS__", [id, slot.dataset.scheduleSlot], false));
+        renderTimetableWindow();
+      });
       profileNeighborHost?.querySelectorAll("[data-profile-neighbor]")?.forEach(function (button) {
         button.addEventListener("click", function (event) {
           event.preventDefault();
@@ -2896,6 +2955,7 @@
       });
       frame.addEventListener("load", function () {
         consumePendingProfileRole();
+        scheduleTimetableRefresh(0);
         host.setTimeout(function () { notifyStages(); }, 0);
         host.setTimeout(function () { notifyStages(); }, 350);
       });
@@ -3110,11 +3170,13 @@
       launcher.setAttribute("aria-label", (shellOpen ? "关闭悬浮手机" : "打开悬浮手机") + " · 当前桌宠" + PET_CHARACTER_NAMES[petCharacterId]);
       launcher.classList.toggle("active", shellOpen);
       if (shellOpen) {
+        timetableSetFocus("none");
         pausePetAutonomy();
         if (selectionMode === "follow") followVisibleFloor();
         else updateChrome();
         applySavedPosition();
         mountPhone(false);
+        scheduleTimetableRefresh(80);
         syncGalgameState();
         playPetShellAction("unique_a", true);
       } else {
@@ -3349,7 +3411,8 @@
       updateProfileNeighbors: updateProfileNeighbors,
       updateProfilePossession: updateProfilePossession,
       updateHypnosisPerch: updateHypnosisPerch,
-      updateWorkLever: updateWorkLever,
+      refreshTimetable: function () { scheduleTimetableRefresh(0); return true; },
+      notifySchedule: function () { scheduleTimetableRefresh(0); return true; },
       updateMapExtraChain: updateMapExtraChain,
       updateLocationRuleRadar: updateLocationRuleRadar,
       ensureOpeningWorldbooks: ensureOpeningWorldbooks,
@@ -3429,7 +3492,6 @@
         updateProfileNeighbors(null);
         updateProfilePossession(null);
         updateHypnosisPerch(null);
-        updateWorkLever(null);
         updateMapExtraChain(null);
         updateLocationRuleRadar({ visible: false, immediate: true });
         if (locationRuleRadarTimer) host.clearTimeout(locationRuleRadarTimer);
@@ -3438,7 +3500,9 @@
         encounterPossessionDecorHost = null;
         profileNeighborHost = null;
         profilePossessionHost = null;
-        workLeverHost = null;
+        if (timetableRefreshTimer) host.clearTimeout(timetableRefreshTimer);
+        timetableRefreshTimer = 0;
+        timetableHost = null;
 	        mapExtraChainHost = null;
 	        resourcePanel = null;
 	        variableFormatButton = null;
