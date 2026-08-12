@@ -628,7 +628,7 @@
         { kind: "permission", regex: /<\s*变量权限\s*>\s*([\s\S]*?)\s*<\s*\/\s*变量权限\s*>/gi },
         { kind: "notice", regex: /<\s*AI提醒\s*>\s*([\s\S]*?)\s*<\s*\/\s*AI提醒\s*>/gi },
         { kind: "item", regex: /<\s*操作项\s*>\s*<\s*操作名\s*>\s*([\s\S]*?)\s*<\s*\/\s*操作名\s*>\s*<\s*操作内容\s*>\s*([\s\S]*?)\s*<\s*\/\s*操作内容\s*>\s*<\s*\/\s*操作项\s*>/gi },
-        { kind: "section", regex: /<\s*(相关变量|时钟|地图|学校|学校地图|催眠APP|催眠命令|催眠资源|催眠道具|成就和任务|成就|任务|规则|地点规则|打工|监控|邂逅|人物档案|库存|物品|子嗣|派遣|警视厅|综合医院|医院|旧校舍|灵异|性格特调|改造|附身|课程表|日历|系统|设置|场景|事件|地点|APP)\s*>\s*([\s\S]*?)\s*<\s*\/\s*\1\s*>/gi }
+        { kind: "section", regex: /<\s*(相关变量|时钟|地图|学校|学校地图|催眠APP|催眠命令|催眠资源|催眠道具|成就和任务|成就|任务|规则|地点规则|打工|邂逅|人物档案|库存|物品|子嗣|警视厅|综合医院|医院|旧校舍|灵异|性格特调|改造|附身|课程表|日历|系统|设置|场景|事件|地点|APP)\s*>\s*([\s\S]*?)\s*<\s*\/\s*\1\s*>/gi }
       ];
       var selected = null;
       definitions.forEach(function (definition) {
@@ -2904,14 +2904,21 @@
       try {
         petMotionQuery = host.matchMedia("(prefers-reduced-motion: reduce)");
         petMotionHandler = function () {
-          if (petMotionQuery && petMotionQuery.matches) pausePetAutonomy();
+          if (petMotionQuery && petMotionQuery.matches) {
+            resetPetDragPhysics();
+            if (launcherDragState?.moved) setPetState("held_scared", { static: true });
+            else pausePetAutonomy();
+          }
           else resumePetAutonomy();
         };
         if (petMotionQuery.addEventListener) petMotionQuery.addEventListener("change", petMotionHandler);
         else petMotionQuery.addListener?.(petMotionHandler);
       } catch (_) {}
       petVisibilityHandler = function () {
-        if (hostDocument.hidden) pausePetAutonomy();
+        if (hostDocument.hidden) {
+          resetPetDragPhysics();
+          pausePetAutonomy();
+        }
         else resumePetAutonomy();
       };
       hostDocument.addEventListener("visibilitychange", petVisibilityHandler);
@@ -3033,6 +3040,9 @@
       resetPetDragPhysics();
       launcherDragState = null;
       launcher.classList.remove("dragging");
+      try {
+        if (launcher.hasPointerCapture && launcher.hasPointerCapture(cancelled.pointerId)) launcher.releasePointerCapture(cancelled.pointerId);
+      } catch (_) {}
       if (cancelled.moved) {
         var rect = launcher.getBoundingClientRect();
         var settled = clampLauncherPosition(rect.left, rect.top);
@@ -3271,7 +3281,7 @@
       openProfileRole(roleName);
     };
     hostResizeHandler = function () {
-      if (launcher) applySavedLauncherPosition();
+      if (launcher && !launcherDragState) applySavedLauncherPosition();
       if (panel) applySavedPosition();
     };
     hostDocument.addEventListener("click", hostClickHandler, true);
