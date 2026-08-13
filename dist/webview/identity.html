@@ -2332,11 +2332,11 @@
       const id = win.getCurrentMessageId?.();
       if (id !== undefined && id !== null && id !== "latest") return { type: "message", message_id: id };
     } catch {}
-    return { type: "message", message_id: "latest" };
+    return null;
   }
 
   function variableOptions(win) {
-    const options = [readCurrentMessageOption(win), { type: "message", message_id: "latest" }];
+    const options = [readCurrentMessageOption(win)].filter(Boolean);
     const seen = new Set();
     return options.filter((option) => {
       const key = option ? String(option.type || "") + ":" + String(option.message_id ?? "") : "undefined";
@@ -2365,23 +2365,28 @@
     return score;
   }
 
-  function currentMvuData() {
+  async function currentMvuDataOnce() {
     const candidates = [];
     for (const win of candidateWindows()) {
       for (const option of variableOptions(win)) {
         try {
           if (win.Mvu?.getMvuData && win.Mvu?.replaceMvuData) {
-            const mvu = option === undefined ? win.Mvu.getMvuData() : win.Mvu.getMvuData(option);
-            if (mvu && typeof mvu.then !== "function") {
+            const mvu = await Promise.resolve(win.Mvu.getMvuData(option));
+            if (mvu) {
               const stat = mvu?.stat_data && typeof mvu.stat_data === "object" ? mvu.stat_data : mvu;
               const score = scoreStatData(stat);
-              if (score >= 0) candidates.push({ mvu, stat, option, replace: (next, opt) => win.Mvu.replaceMvuData(next, opt), score: score + 20 });
+              if (score >= 0) candidates.push({
+                mvu, stat, option,
+                replace: (next, opt) => win.Mvu.replaceMvuData(next, opt),
+                read: (opt) => win.Mvu.getMvuData(opt),
+                score: score + 20
+              });
             }
           }
         } catch {}
         try {
           if (typeof win.getVariables === "function" && typeof win.updateVariablesWith === "function") {
-            const vars = option === undefined ? win.getVariables() : win.getVariables(option);
+            const vars = await Promise.resolve(win.getVariables(option));
             const stat = vars?.stat_data && typeof vars.stat_data === "object" ? vars.stat_data : vars;
             const score = scoreStatData(stat);
             if (score >= 0) {
@@ -2389,13 +2394,14 @@
                 mvu: vars,
                 stat,
                 option,
-                replace: () => win.updateVariablesWith((current) => {
+                replace: (next) => win.updateVariablesWith((current) => {
                   if (current?.stat_data && typeof current.stat_data === "object") {
-                    current.stat_data = stat;
+                    current.stat_data = next?.stat_data && typeof next.stat_data === "object" ? next.stat_data : next;
                     return current;
                   }
-                  return stat;
+                  return next?.stat_data && typeof next.stat_data === "object" ? next.stat_data : next;
                 }, option),
+                read: (opt) => win.getVariables(opt),
                 score
               });
             }
@@ -2407,15 +2413,37 @@
     return candidates[0] || null;
   }
 
+  async function currentMvuData() {
+    const deadline = Date.now() + 5000;
+    do {
+      const candidate = await currentMvuDataOnce();
+      if (candidate) return candidate;
+      await new Promise((resolve) => window.setTimeout(resolve, 100));
+    } while (Date.now() < deadline);
+    return null;
+  }
+
+  function stableIdentityJson(value) {
+    const normalize = (item) => Array.isArray(item)
+      ? item.map(normalize)
+      : (item && typeof item === "object"
+        ? Object.fromEntries(Object.keys(item).sort().map((key) => [key, normalize(item[key])]))
+        : item);
+    return JSON.stringify(normalize(value));
+  }
+
   async function replaceMvuData(data) {
-    if (!data?.replace) return false;
-    const result = data.replace(data.mvu, data.option);
-    if (result && typeof result.then === "function") await result;
-    return true;
+    if (!data?.replace || !data?.read || !data?.option) return false;
+    const expected = data.mvu?.stat_data && typeof data.mvu.stat_data === "object" ? data.mvu.stat_data : data.mvu;
+    const result = await Promise.resolve(data.replace(data.mvu, data.option));
+    if (result === false) return false;
+    const readBack = await Promise.resolve(data.read(data.option));
+    const actual = readBack?.stat_data && typeof readBack.stat_data === "object" ? readBack.stat_data : readBack;
+    return Boolean(actual && stableIdentityJson(actual) === stableIdentityJson(expected));
   }
 
   async function writeIdentityVariable(identity) {
-    const data = currentMvuData();
+    const data = await currentMvuData();
     if (!data) return false;
     const roles = data.stat?.["角色"];
     if (!roles || typeof roles !== "object" || Array.isArray(roles) || !INITIAL_ROLE_NAMES.every((name) => roles[name] && typeof roles[name] === "object")) {
@@ -2424,8 +2452,7 @@
     data.stat["系统"] = data.stat["系统"] && typeof data.stat["系统"] === "object" && !Array.isArray(data.stat["系统"]) ? data.stat["系统"] : {};
     data.stat["系统"]["_user身份"] = identity;
     applyOpeningStateToRoot(data.stat, identity);
-    await replaceMvuData(data);
-    return true;
+    return replaceMvuData(data);
   }
 
   function selectedIdentityPayload() {
@@ -2633,7 +2660,7 @@
   }
 
   async function applyOpeningPerk(perk, checked) {
-    const data = currentMvuData();
+    const data = await currentMvuData();
     if (!data) return false;
     data.stat["系统"] = data.stat["系统"] && typeof data.stat["系统"] === "object" && !Array.isArray(data.stat["系统"]) ? data.stat["系统"] : {};
     const system = data.stat["系统"];
@@ -2655,7 +2682,7 @@
         delete originals[perk.id];
       }
     }
-    await replaceMvuData(data);
+    if (!await replaceMvuData(data)) return false;
     writeOpeningPerkOriginals(originals);
     const ids = new Set(readOpeningPerkIds());
     if (checked) ids.add(perk.id);
