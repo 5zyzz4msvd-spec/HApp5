@@ -28893,6 +28893,23 @@ html.st-hypnoos-phone-port #st-operation-float-ball,html.st-hypnoos-phone-port .
         const previousBooks = encounterNormalizeBoundWorldbooks(books);
         const existing = encounterBoundWorldbookNameFromBooks(books);
         if (existing) {
+          let readable = null;
+          if (typeof target.getWorldbook === "function") {
+            try { readable = await Promise.resolve(target.getWorldbook(existing)); } catch {}
+          }
+          if (!readable && create && typeof target.createWorldbook === "function") {
+            const embedded = encounterCurrentCharacterEmbeddedWorldbook(win);
+            const embeddedName = String(embedded?.name || "").trim();
+            if (embeddedName && embeddedName === existing) {
+              const embeddedEntries = (Array.isArray(embedded?.entries) ? embedded.entries : [])
+                .map((entry) => encounterToTavernHelperEntry(encounterClone(entry)));
+              try { await Promise.resolve(target.createWorldbook(existing, embeddedEntries)); } catch {}
+              if (typeof target.getWorldbook === "function") {
+                try { readable = await Promise.resolve(target.getWorldbook(existing)); } catch {}
+              }
+            }
+          }
+          if (!readable && typeof target.getWorldbook === "function") continue;
           return {
             target,
             worldName: existing,
