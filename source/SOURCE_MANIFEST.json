@@ -1,0 +1,2581 @@
+{
+  "schema": "hypnoos.source-manifest/v1",
+  "version": "v5.0",
+  "source_head": "752b0fab5ec1f5f07976440bbd9d6ac906fc2588",
+  "worktree_dirty": true,
+  "file_count": 514,
+  "total_bytes": 330023154,
+  "source_tree_sha256": "0610f148a57c70581440b402f72351071694f3b2c5b16ba404fd07485cd217e4",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 323,
+      "sha256": "499792cd0251fb11cd0b7f431a15e27a5b1d9a69396a11f266bc6fb187be75a4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3321,
+      "sha256": "d3594b7099f360fa4d9e7ccbfc92504d571bb85b52087c178bef42baee727faf"
+    },
+    {
+      "path": "docs/MULTI_AGENT_WORKFLOW.md",
+      "bytes": 34193,
+      "sha256": "12280bc68dac356e3dcf447cb96310f5e8c46fe026c5086d9a66c4fd95ebd7f0"
+    },
+    {
+      "path": "docs/PROJECT_STATE.md",
+      "bytes": 45912,
+      "sha256": "814dde6e644fe92318cff077f8d3e36e324b749b19544ba83e822c661f44d074"
+    },
+    {
+      "path": "docs/previews/regex-theme-gallery.html",
+      "bytes": 13613,
+      "sha256": "5ec80824422870c2359cb74e0fc5dc37f1d3344b27af9dd20a63f86e794a4243"
+    },
+    {
+      "path": "docs/regex-patches/regex-新·星河璀璨数据库召回配套正则1-本轮操作兼容.json",
+      "bytes": 18422,
+      "sha256": "a945149c7d5a30d925dcebd8234b940a26334f34b8dba65eb30f2e21d4b736d2"
+    },
+    {
+      "path": "docs/sillytavern-frontend-agent-notes.md",
+      "bytes": 10840,
+      "sha256": "ba536088d7976799a2fe1d751366be6843ea8485f2a8e5bde06f69fd3d76397f"
+    },
+    {
+      "path": "docs/邂逅世界书角色包工作流.md",
+      "bytes": 4270,
+      "sha256": "ddd4540a5a7ff8e8c9e4862466736bbe653cb3e2dcb1f1f747d8cfc0200c8d3a"
+    },
+    {
+      "path": "index.html",
+      "bytes": 398,
+      "sha256": "5cf3f5455dbc4311d732cb0fd1c43770b263bc1346c54a31aa08e6498116c583"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 754,
+      "sha256": "d497892a23058474c233c3b78cac893aaa4d755c371068046fcd27a454dab255"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1446,
+      "sha256": "1464797873b36542915487bbafa54937e3a26ce784a9d07152e2d0dd2c870138"
+    },
+    {
+      "path": "public/dev/pet-preview.html",
+      "bytes": 7218,
+      "sha256": "e7e33cb16e03bd422931b1f0720462d1064eaa15969ce5d6dc593f1301e063af"
+    },
+    {
+      "path": "public/dev/pet-v5/anchors/alisa-static.png",
+      "bytes": 183883,
+      "sha256": "ce6e75ea93cfcba8abcbc39b8e7b08cf6326315fc3ee0082f9d6aca3d3f018ac"
+    },
+    {
+      "path": "public/dev/pet-v5/anchors/hyakka-static.png",
+      "bytes": 127600,
+      "sha256": "451de66bda8d616dbd03304ab3dcc64355c552095c948e4b60a83373f97e2069"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-drag-v5.png",
+      "bytes": 43810,
+      "sha256": "b1bbbe3475520c157bbaae632f505c4e1f45a33b90088451f279c8a01933367d"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-enter-v5.png",
+      "bytes": 94946,
+      "sha256": "7f24c3b49b9ad981ca08b216973ac622ae59c3ed723b700b2b40396563c73a56"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-exit-v5.png",
+      "bytes": 94947,
+      "sha256": "8f5219d78d89819fa166757fddc76e346c71b2c30fd8d9bcca4f7f20cc0c89ce"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-idle-v5.png",
+      "bytes": 75397,
+      "sha256": "b3552fa9ec87138a23fdcbcfadcb1ce6d675226cb6c22caa1080a9fa76fd03fc"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-landing-v5.png",
+      "bytes": 252003,
+      "sha256": "824e188979ec69520719d6db4bfeddeec4e0beb26e3a0928bd45f70d95b8a303"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-unique-a-v5.png",
+      "bytes": 75475,
+      "sha256": "e1d8ff7bed88054e8de9b73b2d5968466e36507c497e306db2424ad167473030"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/alisa/alisa-unique-b-v5.png",
+      "bytes": 78610,
+      "sha256": "71554ddcb0559cdcf1311c517e46a86097b6b1d245a7434b526e21981dd96b18"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-drag-v5.png",
+      "bytes": 39297,
+      "sha256": "585ec34f0125ce63645ba64a7cde34778108b2d8fe35181082249784e3a34165"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-enter-v5.png",
+      "bytes": 67093,
+      "sha256": "c7dc226fe5f4fda9f28ac7669100283daca105f1f9fb13d54b2d17350c37573e"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-exit-v5.png",
+      "bytes": 67116,
+      "sha256": "24bfee6ed4ff2f879158b2594e0c03e394206ab45438ae74b035e72adffb9ae8"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-idle-v5.png",
+      "bytes": 52190,
+      "sha256": "ef884ef920ebd19614f7712d6e6458ffc058feb28eb4277ffdcb59d2b1940066"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-landing-v5.png",
+      "bytes": 175179,
+      "sha256": "0bca763fca91d774657c7ef0f3e6b49f8a2befeffc74fcce1ef55277d005612e"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-unique-a-v5.png",
+      "bytes": 52243,
+      "sha256": "77e33e476a9639ef0cc55057acc0327435f83b320e531c68b0d671d9c695a3f1"
+    },
+    {
+      "path": "public/dev/pet-v5/strips/hyakka/hyakka-unique-b-v5.png",
+      "bytes": 54068,
+      "sha256": "70aba9f6b205f151e957914f7e5c90902c7efa22d6f312981d1e2d13bdc1d151"
+    },
+    {
+      "path": "public/frontends/hypnosis-app-phone/st-load-inline.html",
+      "bytes": 7304643,
+      "sha256": "b18e6e37e4601ce3a8df2d6455f248cbabec79250a8848872a081bd8a01ce4c3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/app-icons/map.png",
+      "bytes": 313933,
+      "sha256": "60ff3e73e77cc8ee154862740a95894bd1fbe63630261a45ce1c74317417138a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/app-icons/profile.png",
+      "bytes": 262956,
+      "sha256": "2342afd3bc4097acc8ce09db489347267f8a5c60d3fc8d5930ae8bc00830840a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/app-icons/scan-role.png",
+      "bytes": 273490,
+      "sha256": "b927142fc28ac8a95790da3e2d20a0ec404aacecd43f7f3d4598a8a5b56d8cca"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/app-icons/school.png",
+      "bytes": 338176,
+      "sha256": "b84d0445d62f3f6d130006b0e45fde330b1fb59df67e5c1765c6448dc7c510ca"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/app-icons/timetable.png",
+      "bytes": 255037,
+      "sha256": "a9cfa8cc1df4f0d9bfe76b2cacb2a8389646ecacbc188fd866dcbe90defa44a3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/akashi-maho/package.json",
+      "bytes": 66424,
+      "sha256": "019c5fca994351950088ca18c55ee3fb46fdab6ac99483ab764e278dcc627774"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/akashi-maho/role-01.png",
+      "bytes": 1411321,
+      "sha256": "3698e0458cea87c856362ef330c4482b6bbc613b491acacd7eb4f9b479ff087b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/akashi-maho/role-02.png",
+      "bytes": 1808772,
+      "sha256": "7911672888c7e40066222537f3440199e6a286f23c1834ef71a47ee100a695ca"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/package.json",
+      "bytes": 480916,
+      "sha256": "99aa8bba7705549146d5c75af57e882168ff240ff9b27b5dcffea271b3aaeb18"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/prompts/encounter-plot-oneline-template.txt",
+      "bytes": 237,
+      "sha256": "d243b757dc6a0c613fa026aa7ab3e274b7f0bba980f442864b250dcc5a62c5a0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/prompts/role-image-prompts-oneline.txt",
+      "bytes": 13939,
+      "sha256": "8dafeab40c6319207703300299b71d3a28826a27cffd9c8d78870b914417ddb2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/image-prompt.txt",
+      "bytes": 1044,
+      "sha256": "8cff76b2ae07371b3bb834872d614815f0fb4f4e6fd276a1042009e59a6ed7e6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/persona-entry.encounter-layout.json",
+      "bytes": 12397,
+      "sha256": "532f8c05808f0dcd5e1f6809f74930854bfe6afcf56b7fa3fecf7b0023d62748"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/persona-entry.original.json",
+      "bytes": 12397,
+      "sha256": "532f8c05808f0dcd5e1f6809f74930854bfe6afcf56b7fa3fecf7b0023d62748"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/role.json",
+      "bytes": 28003,
+      "sha256": "ecc051b38300b10d5fa9e6d3b28fd2729b29ee5c8a8e1dc8723135138b52abff"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/variable-entry.encounter-layout.json",
+      "bytes": 2289,
+      "sha256": "392017ba705473955ec731c2872810a8f4ae75a6872e2b695560e6f2f380dcb2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/variable-entry.original.json",
+      "bytes": 2289,
+      "sha256": "392017ba705473955ec731c2872810a8f4ae75a6872e2b695560e6f2f380dcb2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/凯瑟琳/凯瑟琳.png",
+      "bytes": 1628737,
+      "sha256": "8e9e69282ee389959efe05e94356338964ab42f951db9ba7eaef9b92c242ff1e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/image-prompt.txt",
+      "bytes": 746,
+      "sha256": "49c5df3f4a5aa36e3ec5d7f3480abb137e7d5027b7d1a389428c8a221b7f2421"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/persona-entry.encounter-layout.json",
+      "bytes": 11336,
+      "sha256": "698f49f68233204e4284a247d38e5a19fb73881fb330c559fac0ade97e913135"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/persona-entry.original.json",
+      "bytes": 11336,
+      "sha256": "698f49f68233204e4284a247d38e5a19fb73881fb330c559fac0ade97e913135"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/role.json",
+      "bytes": 25931,
+      "sha256": "032b9f5888039f680da350cfddff311b992998d0985e85138eeaef701cd1a22d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/variable-entry.encounter-layout.json",
+      "bytes": 2338,
+      "sha256": "fa6e51756bbeda0bad46bd962120b6c661d11ef46c87563218cea51a651fce2f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/variable-entry.original.json",
+      "bytes": 2338,
+      "sha256": "fa6e51756bbeda0bad46bd962120b6c661d11ef46c87563218cea51a651fce2f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/古河诗织/古河诗织.png",
+      "bytes": 1491876,
+      "sha256": "c20c72f2553b9626744e2ab0d6e0f24a7e525dd35f5260cd51c0d90d2687c4a4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/image-prompt.txt",
+      "bytes": 952,
+      "sha256": "0c5fb4762bb8414fef7f6de182d504b347fd1fc0266ebd5ea54eb3452374e83f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/persona-entry.encounter-layout.json",
+      "bytes": 13706,
+      "sha256": "7cf8c2a40c8b154eee1a36753378c8cef588da8bced770f7d4ca2bb8d14f68a5"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/persona-entry.original.json",
+      "bytes": 13706,
+      "sha256": "7cf8c2a40c8b154eee1a36753378c8cef588da8bced770f7d4ca2bb8d14f68a5"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/role.json",
+      "bytes": 30619,
+      "sha256": "16e433e6819ebc82c30d1ee4601fd0acd0e582e9123ca57a33fac0238fb4c640"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/variable-entry.encounter-layout.json",
+      "bytes": 2244,
+      "sha256": "a59efdeb9eae94dd856211b5f32290b3c3ba9ccdc4578cef3a141fced222f23e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/variable-entry.original.json",
+      "bytes": 2244,
+      "sha256": "a59efdeb9eae94dd856211b5f32290b3c3ba9ccdc4578cef3a141fced222f23e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏沐/夏沐.png",
+      "bytes": 1616298,
+      "sha256": "75cbb5f354b23a22dbbab30c9fa13d19c23876feea84cc50acb3d5b80faae8b9"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/image-prompt.txt",
+      "bytes": 870,
+      "sha256": "a6ed61a0b0edfdd795930b251c69ef8c47ba36966c3c96f8074b0beafd36ad11"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/persona-entry.encounter-layout.json",
+      "bytes": 11889,
+      "sha256": "802342a6605de8cc28f41a1541cb7db391d9c86494b8628eec32a88343ebf4ba"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/persona-entry.original.json",
+      "bytes": 11889,
+      "sha256": "802342a6605de8cc28f41a1541cb7db391d9c86494b8628eec32a88343ebf4ba"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/role.json",
+      "bytes": 26915,
+      "sha256": "43f8adc7afc257fe0cbc4a8a70daebc81b5496ae4200702d0d178716d91ef08a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/variable-entry.encounter-layout.json",
+      "bytes": 2244,
+      "sha256": "3ae9c97a2f6e02637159cda894770c0798b210bb7c3b011896037f113d0bc705"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/variable-entry.original.json",
+      "bytes": 2244,
+      "sha256": "3ae9c97a2f6e02637159cda894770c0798b210bb7c3b011896037f113d0bc705"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/夏织/夏织.png",
+      "bytes": 1709534,
+      "sha256": "5e11781d51a493bcffd273e797514e3c3830d584808669d80716a6ee77a46d92"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/image-prompt.txt",
+      "bytes": 811,
+      "sha256": "c8ea4afdf7a4330b3c68acaa31b50f1355b4b37107091321406bf632e6e5cf16"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/persona-entry.encounter-layout.json",
+      "bytes": 12558,
+      "sha256": "2d426cbff487622ba84326be2103d5886c2fb72b15dcb47b76e66d35fdb437e4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/persona-entry.original.json",
+      "bytes": 12558,
+      "sha256": "2d426cbff487622ba84326be2103d5886c2fb72b15dcb47b76e66d35fdb437e4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/role.json",
+      "bytes": 28377,
+      "sha256": "e2a94e20d3c0491fc313263bca06532a23c2c2f7e43966c8dba0ccc4a1e26d53"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/variable-entry.encounter-layout.json",
+      "bytes": 2338,
+      "sha256": "609ee016c14831d0f5c09714629b265850389ef8ffdfc4a27c72f734bd66fc12"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/variable-entry.original.json",
+      "bytes": 2338,
+      "sha256": "609ee016c14831d0f5c09714629b265850389ef8ffdfc4a27c72f734bd66fc12"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天泽爱音/天泽爱音.png",
+      "bytes": 1595424,
+      "sha256": "a2999dccd7f0615b6cdd74d70950488d5bcf505d45dd1daa808dd1b1ddea1fcf"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/image-prompt.txt",
+      "bytes": 837,
+      "sha256": "0a95bca6648112c13730653ad0252500a0ea3e593f49bf96f837589dac69314b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/persona-entry.encounter-layout.json",
+      "bytes": 11991,
+      "sha256": "0bb7d813d62e0093de1a81cf6ce317104afb5c96f81ecb6e6f0fec61d22ba537"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/persona-entry.original.json",
+      "bytes": 11991,
+      "sha256": "0bb7d813d62e0093de1a81cf6ce317104afb5c96f81ecb6e6f0fec61d22ba537"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/role.json",
+      "bytes": 27264,
+      "sha256": "9bf4160687ead9a097cb6e6fac0cdaf2e77d3976cb78aca953ec65ead6a68412"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/variable-entry.encounter-layout.json",
+      "bytes": 2360,
+      "sha256": "028a25dd29cf4ee911207ed9079c765bac0f9288dff5cee1ad4367fe96a771ad"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/variable-entry.original.json",
+      "bytes": 2360,
+      "sha256": "028a25dd29cf4ee911207ed9079c765bac0f9288dff5cee1ad4367fe96a771ad"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/天海真/天海真.png",
+      "bytes": 1586942,
+      "sha256": "cb963aba9cdd0257bb0aeaf161b5d67c73d9e09cd574c3d004fe25ce8b4ae3d2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/image-prompt.txt",
+      "bytes": 860,
+      "sha256": "539c902325d4a7c65aa5d45d9caf1da4910e173a75a46f5f3da6916622b6f247"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/persona-entry.encounter-layout.json",
+      "bytes": 11759,
+      "sha256": "85af4a569bfbc45e9a8ff5614cb33a3879d743d219beebd1c6cf58a6de0f1034"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/persona-entry.original.json",
+      "bytes": 11759,
+      "sha256": "85af4a569bfbc45e9a8ff5614cb33a3879d743d219beebd1c6cf58a6de0f1034"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/role.json",
+      "bytes": 26769,
+      "sha256": "6f44cab83186e08f8d8b5cb000ed70fefb7eae38bfa5b93927f660126353fc06"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/variable-entry.encounter-layout.json",
+      "bytes": 2310,
+      "sha256": "750d8a8c75dac19e9d6b8085990c85a3c1999f487dab8edea0189c11496a4b87"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/variable-entry.original.json",
+      "bytes": 2310,
+      "sha256": "750d8a8c75dac19e9d6b8085990c85a3c1999f487dab8edea0189c11496a4b87"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野千夏/星野千夏.png",
+      "bytes": 1617308,
+      "sha256": "a7d769d3ecb7715956a4c675cfd7a1b77cb565fc27a12d87a1a92cff359726a4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/image-prompt.txt",
+      "bytes": 741,
+      "sha256": "a395ca47f9e13b4bf0da5c5ab591c460f07f85d2d96e83de39e5fb2e11b284cc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/persona-entry.encounter-layout.json",
+      "bytes": 13070,
+      "sha256": "418ece715205c1940fa1d36679f44c3ac7b5bf4bab7cedd10b1fd75811958586"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/persona-entry.original.json",
+      "bytes": 13070,
+      "sha256": "418ece715205c1940fa1d36679f44c3ac7b5bf4bab7cedd10b1fd75811958586"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/role.json",
+      "bytes": 29377,
+      "sha256": "b436e11e1d043dc233224aff0fcfa6e4badbe2917afcf04da577f23943e7600f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/variable-entry.encounter-layout.json",
+      "bytes": 2373,
+      "sha256": "902bcc81c8a7212dd5443c1e591f62c201106a66e4511bb1cc08f45681f56a19"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/variable-entry.original.json",
+      "bytes": 2373,
+      "sha256": "902bcc81c8a7212dd5443c1e591f62c201106a66e4511bb1cc08f45681f56a19"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/星野海/星野海.png",
+      "bytes": 1598183,
+      "sha256": "18f6b915a07801e48e832f099208ceb0896f6dbc82a9fb3741d07d32e39921b7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/image-prompt.txt",
+      "bytes": 819,
+      "sha256": "dbcab619129d5d31bc12e258e6183e0495a20f27d43c9be4cbca9d255850d91f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/persona-entry.encounter-layout.json",
+      "bytes": 12881,
+      "sha256": "62bdc0b1bf9381e295498af734db0b74e0f2a9f896dabc7fdb8244f44a9dc327"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/persona-entry.original.json",
+      "bytes": 12881,
+      "sha256": "62bdc0b1bf9381e295498af734db0b74e0f2a9f896dabc7fdb8244f44a9dc327"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/role.json",
+      "bytes": 28927,
+      "sha256": "4dfa0be22357913938b7912658bab8d43b63de67dc716c738d2fe576e68cd31d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/variable-entry.encounter-layout.json",
+      "bytes": 2289,
+      "sha256": "fc02526a2b92412192de1afc7c35eaef5d158005a0fa80a9094705ec7a579a0b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/variable-entry.original.json",
+      "bytes": 2289,
+      "sha256": "fc02526a2b92412192de1afc7c35eaef5d158005a0fa80a9094705ec7a579a0b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/林语薇/林语薇.png",
+      "bytes": 1721768,
+      "sha256": "8158d0568d785ed3994598cd9eec5071943b6a404ed67a7f0447bf2da2ad5c64"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/image-prompt.txt",
+      "bytes": 795,
+      "sha256": "7f5f18193f0da3818aae9a95372561c5eb147cf44a1c0a83baf09b8609f094b4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/persona-entry.encounter-layout.json",
+      "bytes": 11866,
+      "sha256": "d2cbd7325e9560936e334573a3102a4f6b26b83de02e508e99cb70fd98ddef77"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/persona-entry.original.json",
+      "bytes": 11866,
+      "sha256": "d2cbd7325e9560936e334573a3102a4f6b26b83de02e508e99cb70fd98ddef77"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/role.json",
+      "bytes": 26951,
+      "sha256": "e7434303aa84a0ca7fa27525178f352f2cb937a30202b39131ee60d4939a1d13"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/variable-entry.encounter-layout.json",
+      "bytes": 2310,
+      "sha256": "95e2760ecc3f5eef1fc73b1e34d5419c1512bca241d8ab0eb56505dfc40f4687"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/variable-entry.original.json",
+      "bytes": 2310,
+      "sha256": "95e2760ecc3f5eef1fc73b1e34d5419c1512bca241d8ab0eb56505dfc40f4687"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅仓步美/浅仓步美.png",
+      "bytes": 1970256,
+      "sha256": "62543974e826dcb5327e1f5b749c025f6a0c5f2ca32f0068e67701ab6ef59c05"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/image-prompt.txt",
+      "bytes": 938,
+      "sha256": "898dadf985b9dc0fd1c6cb2e7808b0e42d49d235180163656950163c7ac688da"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/persona-entry.encounter-layout.json",
+      "bytes": 11502,
+      "sha256": "00e77d2b949c84f13dd60a4bce8bd56f9d32d36a4c9d1bec09b9a32dbf895a96"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/persona-entry.original.json",
+      "bytes": 11502,
+      "sha256": "00e77d2b949c84f13dd60a4bce8bd56f9d32d36a4c9d1bec09b9a32dbf895a96"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/role.json",
+      "bytes": 26349,
+      "sha256": "6bc50270bced311440528e38ad28513fdcf237fb0cd79356b1bda0209c982ff5"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/variable-entry.encounter-layout.json",
+      "bytes": 2394,
+      "sha256": "70cbee7ab9008d9ac4d8b5029c176a5c3f2c84ce24f610ad9d8ad520429f0e4f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/variable-entry.original.json",
+      "bytes": 2394,
+      "sha256": "70cbee7ab9008d9ac4d8b5029c176a5c3f2c84ce24f610ad9d8ad520429f0e4f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/浅野绘里/浅野绘里.png",
+      "bytes": 1689057,
+      "sha256": "d3c686285be7b86de51769164a6a973973be210695ec257d09adbdb74f6ace6d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/image-prompt.txt",
+      "bytes": 741,
+      "sha256": "b5c2f5a18fd035fe58cd877b416fffe4019f3ceb77815b450ca06c463aa716ca"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/persona-entry.encounter-layout.json",
+      "bytes": 11172,
+      "sha256": "6d06bd3f645399a3add0b2fec0af81cbbf72168ba498beda4a482fa63b2ebf69"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/persona-entry.original.json",
+      "bytes": 11172,
+      "sha256": "6d06bd3f645399a3add0b2fec0af81cbbf72168ba498beda4a482fa63b2ebf69"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/role.json",
+      "bytes": 25585,
+      "sha256": "a2556911fd5f79307b55c73592ef73305d9eadca6acde9293d27db1bfbc358af"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/variable-entry.encounter-layout.json",
+      "bytes": 2305,
+      "sha256": "6dbdf72c7208ca3a24aad9f622fdb2cfabbb60f620c5c2d795976e95d99f5a5e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/variable-entry.original.json",
+      "bytes": 2305,
+      "sha256": "6dbdf72c7208ca3a24aad9f622fdb2cfabbb60f620c5c2d795976e95d99f5a5e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/源薰子/源薰子.png",
+      "bytes": 1832898,
+      "sha256": "26c4db7d0f726764e5f4489a5ad113cf1ea878d357ba3fde897b52b4a0e2decc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/image-prompt.txt",
+      "bytes": 909,
+      "sha256": "16ffaab80f469d29301ca70473a26fa757a1257ade8b911a4bd5b49f9f0431c4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/persona-entry.encounter-layout.json",
+      "bytes": 12598,
+      "sha256": "7bb5c207f1f983990de87717156bf550373db3abe0cf640c4d14188fc636b1ac"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/persona-entry.original.json",
+      "bytes": 12598,
+      "sha256": "7bb5c207f1f983990de87717156bf550373db3abe0cf640c4d14188fc636b1ac"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/role.json",
+      "bytes": 28461,
+      "sha256": "65c8c61c93d6b47c265c2d337eec17cdb230fc3f962d9a2b78acec748f526645"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/variable-entry.encounter-layout.json",
+      "bytes": 2378,
+      "sha256": "6e7844bbd52b60ea922b5a9d671ffaa7479b0930b4a53bbee3af9eee96e78181"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/variable-entry.original.json",
+      "bytes": 2378,
+      "sha256": "6e7844bbd52b60ea922b5a9d671ffaa7479b0930b4a53bbee3af9eee96e78181"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神宫寺凛/神宫寺凛.png",
+      "bytes": 1670469,
+      "sha256": "8f1e0b48dade1c410b9ff87f825eaf86842545dd1ece24fc96021f443bb600ef"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/image-prompt.txt",
+      "bytes": 994,
+      "sha256": "aad5aaeeae54d0e8326b68ecdb2a2bcc5053312adc91ce16662beac937ca4e9d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/persona-entry.encounter-layout.json",
+      "bytes": 11473,
+      "sha256": "44760f977dfae123647c60cf3b4ef7e6976bbb2c63121d3427229da833616550"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/persona-entry.original.json",
+      "bytes": 11473,
+      "sha256": "44760f977dfae123647c60cf3b4ef7e6976bbb2c63121d3427229da833616550"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/role.json",
+      "bytes": 26133,
+      "sha256": "8a1dcceb263354918e80f67e447e318353a8b2620add0d65a671fc85495f6786"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/variable-entry.encounter-layout.json",
+      "bytes": 2277,
+      "sha256": "5e29bba83e15dfaa0d44c2f9902132a6650bf6058955b50e1840af3e3e9a0ddd"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/variable-entry.original.json",
+      "bytes": 2277,
+      "sha256": "5e29bba83e15dfaa0d44c2f9902132a6650bf6058955b50e1840af3e3e9a0ddd"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/神谷凛/神谷凛.png",
+      "bytes": 1708638,
+      "sha256": "2a116ecafcbbb84f9a255a0da68832f4335d7853815e239c2aba292ba6d3378e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/image-prompt.txt",
+      "bytes": 941,
+      "sha256": "44cb7bae53035f76a23dc96ed4d6627b74f70fbeb2751bd6641d911656dbbecc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/persona-entry.encounter-layout.json",
+      "bytes": 11855,
+      "sha256": "a842c1a3352d85bff73573e0d5e7042d88c66fd13e5a345e7e6df83f746a0f61"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/persona-entry.original.json",
+      "bytes": 11855,
+      "sha256": "a842c1a3352d85bff73573e0d5e7042d88c66fd13e5a345e7e6df83f746a0f61"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/role.json",
+      "bytes": 26901,
+      "sha256": "9702a3f4be07817af385f7b7600860f2112ea9e24409356fca7a75babf87fc3c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/variable-entry.encounter-layout.json",
+      "bytes": 2277,
+      "sha256": "6349c33230bbf920cc4af142f5f27361c828180edd0ba087f7b4014b458d343a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/variable-entry.original.json",
+      "bytes": 2277,
+      "sha256": "6349c33230bbf920cc4af142f5f27361c828180edd0ba087f7b4014b458d343a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/苏清寒/苏清寒.png",
+      "bytes": 1604043,
+      "sha256": "6131dccd029095fa9dd024f42c5e90ef3cd37b0d102f285bea631387787e04bb"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/image-prompt.txt",
+      "bytes": 941,
+      "sha256": "862ea3a1cd2e900b92d385e4597e7b0b94f8aa8525b59b12f1519d6f996c18b9"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/persona-entry.encounter-layout.json",
+      "bytes": 12997,
+      "sha256": "9b2d37abc3afd8ef8c1523e897d95d908dae1af107bbb02a4de5f3c2f48e5481"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/persona-entry.original.json",
+      "bytes": 12997,
+      "sha256": "9b2d37abc3afd8ef8c1523e897d95d908dae1af107bbb02a4de5f3c2f48e5481"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/role.json",
+      "bytes": 29275,
+      "sha256": "2ed5227b582e1c3e884ab70daa3ce32688e5172c89e964aef0356320f09e05a8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/variable-entry.encounter-layout.json",
+      "bytes": 2343,
+      "sha256": "dab6ae1fb16d87c64e37b2b7605765f77d270f784ffb357a13c22aaf774ffcfa"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/variable-entry.original.json",
+      "bytes": 2343,
+      "sha256": "dab6ae1fb16d87c64e37b2b7605765f77d270f784ffb357a13c22aaf774ffcfa"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/baikai/roles/西园寺美织/西园寺美织.png",
+      "bytes": 1745391,
+      "sha256": "721acd5f30640d58d5ab6a6146db3eb22c94d1f703a5a0c321b63ac7334e4059"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/basic-role-pack-cover.png",
+      "bytes": 2095535,
+      "sha256": "d1c2bae2038d2f05c597204426bbe8b881355763d22ead623cfae44890dba554"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/nakamura-sakura.png",
+      "bytes": 1801438,
+      "sha256": "86f253ede3f71b005ac7836fb5551c27566c601b25d46876cabc13af53b3cb34"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/package.json",
+      "bytes": 1433447,
+      "sha256": "bfa93f6a35f462938a723e704e87593891cbc9913f704b4f5760facfdf391551"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/polish-v0.12.source.json",
+      "bytes": 152830,
+      "sha256": "62e22b0785b7a32d7b6b54175836b3a3d805f2d7626b017dc942177dcd9d5118"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/polish-v0.32.source.json",
+      "bytes": 308696,
+      "sha256": "03f7a7e223f404ed59b6423f5b2684bffc6324713e1546da8267f51763db7acc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/polish-v0.75.source.json",
+      "bytes": 243877,
+      "sha256": "52167d90e7024e3bf681fbc29f110a5eed5b346cdb371ebaf861c7cc0458ac7d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-01.png",
+      "bytes": 1739932,
+      "sha256": "943eb909093958892eb136ab072a802b719202099400f460b6a46281fd1e7dee"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-02.png",
+      "bytes": 2152764,
+      "sha256": "f884504b44d31c72f8cba4e6802c3ed9a3a226721770c286923b258c0fd23613"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-03.png",
+      "bytes": 2163401,
+      "sha256": "9f8e7b1f91fad67700352bb6e1efaa9a3b2967e866baad8f969f0cf2e66af6aa"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-04.png",
+      "bytes": 2061077,
+      "sha256": "79f7bce79d29fb3960bc6fefe900a119180cabef8f0b77e9017ebd96bd146034"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-05.png",
+      "bytes": 1990146,
+      "sha256": "79bb733c400942cdedb73b12db2e5355df91a9ac6a085c384d0098e024f5e46e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-06.png",
+      "bytes": 1993794,
+      "sha256": "eb862d844ce90bc166fd538c25bb53f3d0f0b8aeb32b27346b6e4ee1ca511eb2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-07.png",
+      "bytes": 1789280,
+      "sha256": "7136c49116580c1e57e7b262fa7244fc3a0cbd48506d77560bd174950406b5de"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-08.png",
+      "bytes": 1712141,
+      "sha256": "ad74e481671db4c9bc22554f0a5bdef01f846673033047d8da6ca261db0c931b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-09.png",
+      "bytes": 2073110,
+      "sha256": "51c9ac1b15a288b4576b5a75f103e4017631384ddea996f24585f187b4e27be2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-10.png",
+      "bytes": 1688269,
+      "sha256": "4ac028de9fe316d405973f5bfe1dc53ad664e641ecfc7c85c1423b14c072a74e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-11.png",
+      "bytes": 1856111,
+      "sha256": "b9e2e3fbc4009df61459144baa5b5baabdd0aea2c6c8ad061e39a501b83ece17"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-12.png",
+      "bytes": 1773647,
+      "sha256": "cbfcc96ebe7d6f96ccc064b2cedc94267b5683d4527eba024b57b60053cda665"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-13.png",
+      "bytes": 2256315,
+      "sha256": "88e8feec1378d70f557ac5d6d22a119fa06a52168ae1ad074d24a328121fdad8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-14.png",
+      "bytes": 1835051,
+      "sha256": "051a1b31d8f50b5361438a0a471b04523d950ef625fb2ca4125b82a29920af6f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-15.png",
+      "bytes": 2046892,
+      "sha256": "f8c701c6cac0d337b8f37582aef1ea264ba6f1458fd742a98d1c87678cb99d96"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-16.png",
+      "bytes": 1970308,
+      "sha256": "e3dad1f0db7537159cf1300591c2a26d002b573da0309e10060bcbb1bd27e329"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-17.png",
+      "bytes": 1854514,
+      "sha256": "946e3a05fcdd4a72f994a877022bc84044d319374c2d1acdf4ea12e6ecbc46ee"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-18.png",
+      "bytes": 2074148,
+      "sha256": "a44e57ebd3a8e35e5d0f423e27192cf69d33ea222301124594a6d032be14e3ab"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-19.png",
+      "bytes": 2020544,
+      "sha256": "3bc1afb31859f335eef456edb4438a314119c61335012c3a5b0f821137bfa315"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-20.png",
+      "bytes": 1770569,
+      "sha256": "384052dd1e921dccc23718767c02d8565ef8a5cb88deb2868ddfab7430768161"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-21.png",
+      "bytes": 2197894,
+      "sha256": "f1ebde60976484f5296b07d68caa8fc77371bf6822b1c3d662bfc97d491c75ab"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-22.png",
+      "bytes": 1919170,
+      "sha256": "4f7cfde8c95ef3c568025cccf2371103b409c9c5dfe3f13a7d6ba8f1aa66535c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-23.png",
+      "bytes": 1978571,
+      "sha256": "b6741cb2a269c9dfe1ead8194831d1383225f0c276089d402fc40881bd350e5e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/orjenrn/role-24.png",
+      "bytes": 2223507,
+      "sha256": "c07d5a86a3e854dc2cb2bead848d764ca7313a4d87eae9afda1cde7ae7cf28d2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/README.md",
+      "bytes": 324,
+      "sha256": "c5230e648208b9e67516184f3c5ca75b456be137b1d99d5a2e77cc6d494786b5"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/package.json",
+      "bytes": 247070,
+      "sha256": "0086cd3b79b6e621eeb926bb8f5c4d4383c8e71b03e7936fb8d1e432b6fd91fe"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/prompts/new-role-image-prompts-oneline.txt",
+      "bytes": 1937,
+      "sha256": "6b6fc803352378e5fac31c8f0828949e5b146b3282ebb37820ec991987deebae"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/prompts/role-image-prompts-oneline.txt",
+      "bytes": 2466,
+      "sha256": "f88475e2eee934f4fbd79203bef74f8db567b9ece92959b9dbc5af6f8d1c2ac5"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/一之濑莹/persona-entry.encounter-layout.json",
+      "bytes": 4281,
+      "sha256": "de25bff6cbf22c7a8642c15cb843b64af26774175e933b890936f3b070913cb1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/一之濑莹/persona-entry.original.json",
+      "bytes": 4281,
+      "sha256": "de25bff6cbf22c7a8642c15cb843b64af26774175e933b890936f3b070913cb1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/一之濑莹/role.json",
+      "bytes": 11511,
+      "sha256": "6d464adac3a4b17fd5d0c3b7f769b58b8db70d9370abb05ee2458af13d299ee9"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/一之濑莹/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "00fbf0cb48a28def93aeb07116bfb8a081c9c381462e66ba7708465ee1704d9c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/一之濑莹/一之濑莹.png",
+      "bytes": 1688269,
+      "sha256": "4ac028de9fe316d405973f5bfe1dc53ad664e641ecfc7c85c1423b14c072a74e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/七濑萌花/image-prompt.txt",
+      "bytes": 397,
+      "sha256": "4cd679a1052b315a09b11748ec887aac4b7071980814f9e448d83ef4bd8b063d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/七濑萌花/persona-entry.encounter-layout.json",
+      "bytes": 4224,
+      "sha256": "f3bdef7b12b9ffe3ea907d4b659befc5075c957042ac4b039e8473729ae8d8c0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/七濑萌花/persona-entry.original.json",
+      "bytes": 4224,
+      "sha256": "f3bdef7b12b9ffe3ea907d4b659befc5075c957042ac4b039e8473729ae8d8c0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/七濑萌花/role.json",
+      "bytes": 11409,
+      "sha256": "d3f0b148d60f827e138732b007dc4f51d2e1a8af22d3b07c34a74b7e67e8c500"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/七濑萌花/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "c7232406f3f4fde619c047c6aa92364db0ee32e0051e92d4cf5715f8fc490f8e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/七濑萌花/七濑萌花.png",
+      "bytes": 1937746,
+      "sha256": "189c586295e672a1237dc5f1393fb7296a1896ceb5290a3f96527d3788a9c98d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/九条樱/persona-entry.encounter-layout.json",
+      "bytes": 4303,
+      "sha256": "eac83c1e9738aa1434106aaa374f299008b17ceab808b55b37e8251886fff8e6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/九条樱/persona-entry.original.json",
+      "bytes": 4303,
+      "sha256": "eac83c1e9738aa1434106aaa374f299008b17ceab808b55b37e8251886fff8e6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/九条樱/role.json",
+      "bytes": 11575,
+      "sha256": "5363560db0614119bd91d3acce0f651ad25930429be634e15623f5c89883519e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/九条樱/variable-entry.encounter-layout.json",
+      "bytes": 1914,
+      "sha256": "0db3966eac80ff725a58ee667c3da51bc562cccf45f9a6e84374b7822237feb4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/九条樱/九条樱.png",
+      "bytes": 1990146,
+      "sha256": "79bb733c400942cdedb73b12db2e5355df91a9ac6a085c384d0098e024f5e46e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/云居摩耶/persona-entry.encounter-layout.json",
+      "bytes": 4407,
+      "sha256": "a00b95c102531172fb3d5812ab61e3ba37f41485375d78c242e0225e9fb85820"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/云居摩耶/persona-entry.original.json",
+      "bytes": 4407,
+      "sha256": "a00b95c102531172fb3d5812ab61e3ba37f41485375d78c242e0225e9fb85820"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/云居摩耶/role.json",
+      "bytes": 11828,
+      "sha256": "27d4ad7da5da524c1e4707f154602d1ba6d92323f0bd91c2fc754b7e1b253640"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/云居摩耶/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "581915dffdcf97bbe8a5b75309a6b4300a90b15f0ddf8c2e71ebd60aaf140524"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/云居摩耶/云居摩耶.png",
+      "bytes": 2256315,
+      "sha256": "88e8feec1378d70f557ac5d6d22a119fa06a52168ae1ad074d24a328121fdad8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/佐伯千寻/persona-entry.encounter-layout.json",
+      "bytes": 4263,
+      "sha256": "ce3b0cc7b417c59320d0af81036296536098d3756eaad0d96e4243b2e6190ab3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/佐伯千寻/persona-entry.original.json",
+      "bytes": 4263,
+      "sha256": "ce3b0cc7b417c59320d0af81036296536098d3756eaad0d96e4243b2e6190ab3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/佐伯千寻/role.json",
+      "bytes": 11553,
+      "sha256": "acb694984eac0d0c8f550568faeceb356fdb419ed38c9d7727b5a911f802fcc1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/佐伯千寻/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "e5945baf7cd946e4375a27c6581dbb4004689467de16fe29bb8056b7163a8383"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/佐伯千寻/佐伯千寻.png",
+      "bytes": 2046892,
+      "sha256": "f8c701c6cac0d337b8f37582aef1ea264ba6f1458fd742a98d1c87678cb99d96"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/园崎诗乃/image-prompt.txt",
+      "bytes": 400,
+      "sha256": "cc85c1c13a1ea78ec57576ed4f24237e28e372d673270b3b3ee46a85796cff62"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/园崎诗乃/persona-entry.encounter-layout.json",
+      "bytes": 4159,
+      "sha256": "5347978efbe7cc244f0e7c6ce36b6706f64f7c4912ba3e693e649f44bd2385f4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/园崎诗乃/persona-entry.original.json",
+      "bytes": 4159,
+      "sha256": "5347978efbe7cc244f0e7c6ce36b6706f64f7c4912ba3e693e649f44bd2385f4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/园崎诗乃/role.json",
+      "bytes": 11299,
+      "sha256": "66634a4da5517211c3480e137c4e4522c2c4b9c7162d322d34d63eae90894b7b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/园崎诗乃/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "dbc4299c951028eba4ef17367fb54a13d1a3a7504f780af1c1264d273da1f156"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/园崎诗乃/园崎诗乃.png",
+      "bytes": 1912661,
+      "sha256": "af91fd441e6a577945c919940987c68d0ec767211f88be1bb6b0e93e65672631"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/小鸟游柚子/persona-entry.encounter-layout.json",
+      "bytes": 4138,
+      "sha256": "45082581a6111719bbd4911f463bbc2375a7e7b9926f1afd1bcacbbd8f62baed"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/小鸟游柚子/persona-entry.original.json",
+      "bytes": 4138,
+      "sha256": "45082581a6111719bbd4911f463bbc2375a7e7b9926f1afd1bcacbbd8f62baed"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/小鸟游柚子/role.json",
+      "bytes": 11341,
+      "sha256": "21797c4abf50abd4374f0f41c92b8671e6de174062fd133f411985feb0b2b0e7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/小鸟游柚子/variable-entry.encounter-layout.json",
+      "bytes": 1980,
+      "sha256": "2c8e122c2b708bdf04c83eee0155e0d16a6ae466eaf07258b91568660413d9ae"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/小鸟游柚子/小鸟游柚子.png",
+      "bytes": 2073110,
+      "sha256": "51c9ac1b15a288b4576b5a75f103e4017631384ddea996f24585f187b4e27be2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月咏皋月/persona-entry.encounter-layout.json",
+      "bytes": 4244,
+      "sha256": "700a0b1d2ecc6c4ff6f408aa5fd6e732f1a333c5ff6c7af70ef83f0b5c022914"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月咏皋月/persona-entry.original.json",
+      "bytes": 4244,
+      "sha256": "700a0b1d2ecc6c4ff6f408aa5fd6e732f1a333c5ff6c7af70ef83f0b5c022914"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月咏皋月/role.json",
+      "bytes": 11511,
+      "sha256": "6ed0e72a608890832e7134bc5a4add992152d6b6f4f6026f263c365a24ca34fc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月咏皋月/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "40ba7728436bcfb2c2b473bf2a38d678495b68dded879eb2a8490ef3104d53c1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月咏皋月/月咏皋月.png",
+      "bytes": 1773647,
+      "sha256": "cbfcc96ebe7d6f96ccc064b2cedc94267b5683d4527eba024b57b60053cda665"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月见里汐/persona-entry.encounter-layout.json",
+      "bytes": 4125,
+      "sha256": "53a0601f7eb5ea4058f1b2d8eeff48b8ac1bcdcf783b01cee741e9cf71816a8a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月见里汐/persona-entry.original.json",
+      "bytes": 4125,
+      "sha256": "53a0601f7eb5ea4058f1b2d8eeff48b8ac1bcdcf783b01cee741e9cf71816a8a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月见里汐/role.json",
+      "bytes": 11261,
+      "sha256": "44ff0da40171cf91db5b365e475b812a100d31e93d7c0b531e95baf8b12fc083"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月见里汐/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "57956b0a38ac58a06d58f22d46e05168bf1edaf6831d9ce8dfb1483cfaa27d7e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/月见里汐/月见里汐.png",
+      "bytes": 1856111,
+      "sha256": "b9e2e3fbc4009df61459144baa5b5baabdd0aea2c6c8ad061e39a501b83ece17"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/桐生刹那/persona-entry.encounter-layout.json",
+      "bytes": 4141,
+      "sha256": "fdeb3f73cd382b7768a1951e8cd621c9cab07cde5a9da048d4ee121ebb323a0c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/桐生刹那/persona-entry.original.json",
+      "bytes": 4141,
+      "sha256": "fdeb3f73cd382b7768a1951e8cd621c9cab07cde5a9da048d4ee121ebb323a0c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/桐生刹那/role.json",
+      "bytes": 11459,
+      "sha256": "f604baacc4ddacc026104928571d116d68ca0e8949c511629980fca0577b9f4c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/桐生刹那/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "8370a4c257e055b5d524b4a91da1f7aad6052c3e005779affcd05d64de3e9310"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/桐生刹那/桐生刹那1.png",
+      "bytes": 1876170,
+      "sha256": "2a6d2d6568ecc56987dd7ab0e744731ed8686deaaa47adbb3169628981b2d1c1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/桐生刹那/桐生刹那2.png",
+      "bytes": 1934322,
+      "sha256": "be454f98a31a5d6e71e59f66f9d8095a3e9451d781b5025c84ddec7bc0141f00"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/浅雾铃音/image-prompt.txt",
+      "bytes": 397,
+      "sha256": "db232400a075aaf1ba7cc1cba4faee6fc65fd95f2c7fdd11ea78e820f7856c13"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/浅雾铃音/persona-entry.encounter-layout.json",
+      "bytes": 4113,
+      "sha256": "b513ab53b16d4f098b4131851fc12cab2a49bf8b0acdd84ebfdafea5141b2231"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/浅雾铃音/persona-entry.original.json",
+      "bytes": 4113,
+      "sha256": "b513ab53b16d4f098b4131851fc12cab2a49bf8b0acdd84ebfdafea5141b2231"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/浅雾铃音/role.json",
+      "bytes": 11185,
+      "sha256": "c05007b770f263d6a0381f8e7ef3fa164cf6dd6b2a506661820daa0ebc09d74a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/浅雾铃音/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "62b201ee7b5d67ebc681d44fc8da1e45e25b9fc419ea4dda83e59386c551a084"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/浅雾铃音/浅雾铃音.png",
+      "bytes": 2010927,
+      "sha256": "81d5a8aedc6ca2c93bcfe611af92441d9fce964a48f72d965c72c43f2e98bce8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/白石响/persona-entry.encounter-layout.json",
+      "bytes": 4225,
+      "sha256": "a5c53b0733c6823501456c55713306a10b5197c1d6f78437f41fafd1b3360732"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/白石响/persona-entry.original.json",
+      "bytes": 4225,
+      "sha256": "a5c53b0733c6823501456c55713306a10b5197c1d6f78437f41fafd1b3360732"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/白石响/role.json",
+      "bytes": 11516,
+      "sha256": "34782a8925a62c5b414917c560fb55a13355c01c302aae99afe045374a57626f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/白石响/variable-entry.encounter-layout.json",
+      "bytes": 1914,
+      "sha256": "a94d39b001c949cb8dfb42430846d9f6936e05f1471334a85e6f7d0d77404123"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/白石响/白石响.png",
+      "bytes": 1200644,
+      "sha256": "7054c834bd7182a746b5b41796aadf5e1a5412b1ceab5906f8d3e868cabc49ca"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/真白阿丽亚/persona-entry.encounter-layout.json",
+      "bytes": 4500,
+      "sha256": "e4de9b1d04f3eda6a743c1d21bb200578a26460204e38226fa8f4b36aa92d026"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/真白阿丽亚/persona-entry.original.json",
+      "bytes": 4500,
+      "sha256": "e4de9b1d04f3eda6a743c1d21bb200578a26460204e38226fa8f4b36aa92d026"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/真白阿丽亚/role.json",
+      "bytes": 12067,
+      "sha256": "e881d3e9621cd068280d0c1016018a0ad4aabb27ec2c5dfa4606c4e6da41c134"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/真白阿丽亚/variable-entry.encounter-layout.json",
+      "bytes": 1980,
+      "sha256": "2c03d7364d09e965c478985e5f4cefee5934e1796afad09d9642beb1f678d2cf"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/真白阿丽亚/真白阿丽亚.png",
+      "bytes": 1835051,
+      "sha256": "051a1b31d8f50b5361438a0a471b04523d950ef625fb2ca4125b82a29920af6f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神乐坂艾米莉亚/persona-entry.encounter-layout.json",
+      "bytes": 4160,
+      "sha256": "bf7979d76bad62133f88ed5b6f4a02bdf1127062dbff5c556f5e223dc18550d4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神乐坂艾米莉亚/persona-entry.original.json",
+      "bytes": 4160,
+      "sha256": "bf7979d76bad62133f88ed5b6f4a02bdf1127062dbff5c556f5e223dc18550d4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神乐坂艾米莉亚/role.json",
+      "bytes": 11497,
+      "sha256": "1db64c9590f0b7c47d9d1f0e581faad121f7c6ae21532516c6d9cc3223e88bec"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神乐坂艾米莉亚/variable-entry.encounter-layout.json",
+      "bytes": 2046,
+      "sha256": "8624a1bb52d36678ee2e06a3b0048bb88be659bd7f80965f7169bd54211cc67a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神乐坂艾米莉亚/神乐坂艾米莉亚.png",
+      "bytes": 1993794,
+      "sha256": "eb862d844ce90bc166fd538c25bb53f3d0f0b8aeb32b27346b6e4ee1ca511eb2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神代琉璃/image-prompt.txt",
+      "bytes": 364,
+      "sha256": "3791b887536db192b787b84a11cde1e9167b8718f597e275312f5ecad38e7c76"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神代琉璃/persona-entry.encounter-layout.json",
+      "bytes": 4028,
+      "sha256": "17a621b42ff554411b0f4ab0fcfd5be41605dbabd10220193d5ec71bab79c760"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神代琉璃/persona-entry.original.json",
+      "bytes": 4028,
+      "sha256": "17a621b42ff554411b0f4ab0fcfd5be41605dbabd10220193d5ec71bab79c760"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神代琉璃/role.json",
+      "bytes": 11003,
+      "sha256": "258b74bf914e43d03e1e4612de5ab4eaf192e5ea26d08db3093cb137ee735c87"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神代琉璃/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "0ed7b90bec54bbb017a6b172a7019d9c8c3c2e71975a1010937c1409bb8ae63b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/神代琉璃/神代琉璃.png",
+      "bytes": 1775017,
+      "sha256": "d9e24091d6d19e7d4f1224abf571ece378106dd637471d3949f202d91dd81e99"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/羽生结衣/image-prompt.txt",
+      "bytes": 379,
+      "sha256": "f3126d5c43239f6f8846b5c4d1a138db3583ce1f53dabd2ce3a2db1124418302"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/羽生结衣/persona-entry.encounter-layout.json",
+      "bytes": 4441,
+      "sha256": "c0534acd8a582282a1fdd476258bfd5e79b1c6b5d93cd93d0b98452822b54091"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/羽生结衣/persona-entry.original.json",
+      "bytes": 4441,
+      "sha256": "c0534acd8a582282a1fdd476258bfd5e79b1c6b5d93cd93d0b98452822b54091"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/羽生结衣/role.json",
+      "bytes": 11863,
+      "sha256": "ab74117b7b634b52de430ccb9232090805a4f6f2691c63b7985539fcd343072a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/羽生结衣/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "7318654df2055ae0d3d42683a79813db88c0388cf6e5eea5f0a78d9e58a376b6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/羽生结衣/羽生结衣.png",
+      "bytes": 1885579,
+      "sha256": "11973dd783efbf4f248350947f7be62a31ea176b3a7064956b80d861b0df411c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/花开院椿/persona-entry.encounter-layout.json",
+      "bytes": 4060,
+      "sha256": "31ad35129d553edbc7a59fba91ea7b01608ec66829fae5c32fec1754cea32c7f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/花开院椿/persona-entry.original.json",
+      "bytes": 4060,
+      "sha256": "31ad35129d553edbc7a59fba91ea7b01608ec66829fae5c32fec1754cea32c7f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/花开院椿/role.json",
+      "bytes": 11149,
+      "sha256": "d7a22ed2958596de5e0ea0987f4219c75e4825db9074714948c3ea54fa7ec2ca"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/花开院椿/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "8a774e9c4527675a40efafe048384ed27e0f0fd5995b636fc2585a8f6c696bc7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/花开院椿/花开院椿.png",
+      "bytes": 2163401,
+      "sha256": "9f8e7b1f91fad67700352bb6e1efaa9a3b2967e866baad8f969f0cf2e66af6aa"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/藤乃静香/persona-entry.encounter-layout.json",
+      "bytes": 4030,
+      "sha256": "86ac7a89b3d2ca5f4e20f86c90656a3a84cf524be7870c9ed1bde71b0b9201df"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/藤乃静香/persona-entry.original.json",
+      "bytes": 4030,
+      "sha256": "86ac7a89b3d2ca5f4e20f86c90656a3a84cf524be7870c9ed1bde71b0b9201df"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/藤乃静香/role.json",
+      "bytes": 11097,
+      "sha256": "22855e8fb161f00af59fef0f3205d4b3e9d4194f4c26814ca45063a860ac695e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/藤乃静香/variable-entry.encounter-layout.json",
+      "bytes": 1947,
+      "sha256": "8c061a615eceeed6bc8e5e8909532f03e7d9e34b754e9150a4a9d6d14460a34f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/sdz-aser/roles/藤乃静香/藤乃静香.png",
+      "bytes": 1789280,
+      "sha256": "7136c49116580c1e57e7b262fa7244fc3a0cbd48506d77560bd174950406b5de"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/senkoro-momoka-school-uniform.png",
+      "bytes": 1954823,
+      "sha256": "1faffc4f86be5789a0724e8173d595affb78e0b61cdcc18adfcfac3b2a8f65d7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/senkoro-momoka.png",
+      "bytes": 1542291,
+      "sha256": "846abdc9e064e3ff6b1f4ebd81167cca2a7c8745c0cbf7e1f2edf2f69711a7db"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/shirakusu-anko.png",
+      "bytes": 1677640,
+      "sha256": "20dd1e8a206208df03eb788cd9748a2a34a7ce1b783065e6d5d626a56531c86c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/ui/buttons/customize-v1.webp",
+      "bytes": 16470,
+      "sha256": "b160be39b82e7ae7d86bcacc249c56608057e76f4ec08d6dad488f9e1ad13f7f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/ui/buttons/detail-v1.webp",
+      "bytes": 23702,
+      "sha256": "819e25127c2d43b26d8d5d530c7336e9b1f10c54f458fadfb2a17c9bb48c7bd7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/ui/buttons/manage-v1.webp",
+      "bytes": 18054,
+      "sha256": "e91f1fed9596511dc9077f6b5b790bf299a05cfdaa90ab9aa72533e8ce97a61a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/ui/buttons/use-v1.webp",
+      "bytes": 18960,
+      "sha256": "ab6343261689744cfe3d5a7f77d05831de97beca7b1785eac982a9818738f0ba"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/ui/encounter-comic-backdrop-v1.webp",
+      "bytes": 137338,
+      "sha256": "6f8f09d997d67108892f4a19469566781f63ea75a0c7e69c44c16ea23afc4e2d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/package.json",
+      "bytes": 283515,
+      "sha256": "5ab9baef1fac190808065478fc86339bf557249a324d7e298e0466f378814dd6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-01.png",
+      "bytes": 1828119,
+      "sha256": "1f682d3dc2864f421347efce9fadd199d9a04b83a66c0bc7b137fe0c51f7c9ac"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-02.png",
+      "bytes": 1775723,
+      "sha256": "3ebd2bfab4a5eab06882a2aba357b67eb9c547c4ed84510cdeedeb3889f5659f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-03.png",
+      "bytes": 1862012,
+      "sha256": "2b358ae744db3aa1d017f84851db8c103eccedf35c71d534f28a0b33250e7f9c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-04.png",
+      "bytes": 1693374,
+      "sha256": "f6cdc14869ef4143db2e1d3fb7546e2dadd8ba55f127ef3f14ec69075191fe2d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-05.png",
+      "bytes": 1749346,
+      "sha256": "9624fd8457c9df1b5d04da5513419d9e75f0433e086f1a91db4984f2edc40fe3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-06.png",
+      "bytes": 2011003,
+      "sha256": "a02721282241736a899f32140e9bcb4ab7fd1075dcceec7ecc25187ab730fdbd"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-07.png",
+      "bytes": 1739070,
+      "sha256": "fcc7bdd307a90389d44162917069403fa1d32f68a67cbada3ea0c7543a6c93b0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-08.png",
+      "bytes": 1801409,
+      "sha256": "bd623b031469ad0a31f8d67d4e8760c35d109a9dcfa81623424e2ee30a7100a0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/role-09.png",
+      "bytes": 1734136,
+      "sha256": "f7627ff2cfa7fc64cd7557193f6d60e59726ea223a8d79590652e318fb8e57d7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/image-prompt.txt",
+      "bytes": 334,
+      "sha256": "72c6cad03f9a4ead70f39eda2de177f7680ed92ecb9d4f544791ca4470a576ad"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/persona-entry.encounter-layout.json",
+      "bytes": 12557,
+      "sha256": "5f8662a57ebcd2f9008ee5fceecfbee9abad3974bb37b1e45b5e80a0dd60788b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/persona-entry.original.json",
+      "bytes": 12451,
+      "sha256": "189e7f1ca14f337ec8f56af8d752876736cd70b8a016d1776386012b156bbd3b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/role.json",
+      "bytes": 28431,
+      "sha256": "18e14ac79a358073e2d94c0c3884e15f8c56faf127c428104158d48d15697ac7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/variable-entry.encounter-layout.json",
+      "bytes": 2504,
+      "sha256": "28dfab359ee9393df9f7f74fda447b7f0e060e74e1add2adbdba6c319579e386"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/variable-entry.original.json",
+      "bytes": 2398,
+      "sha256": "a270b0b64a009e2d3bc9dc6db75e3a64aed72677ff828202db7399bbf3f0852d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/五十岚诗织/五十岚诗织.png",
+      "bytes": 1801409,
+      "sha256": "bd623b031469ad0a31f8d67d4e8760c35d109a9dcfa81623424e2ee30a7100a0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/image-prompt.txt",
+      "bytes": 337,
+      "sha256": "3b147a0dd3e4d48f7ab24f851557df232282e44cc16f6a0ad1ad4027b284be40"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/persona-entry.encounter-layout.json",
+      "bytes": 13048,
+      "sha256": "97a68f960e5c792c7b93214e3ec6daa7031e84d55cc079e651a21f24fe4d5e41"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/persona-entry.original.json",
+      "bytes": 12942,
+      "sha256": "a687d06c347c5d242d555c914620f113faa54594c0980842f24120cd675253f2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/role.json",
+      "bytes": 29315,
+      "sha256": "7accc8e8173932aa5a41215358b04cb01c84719bc84270ae50c6b6dbba7ec9b6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/variable-entry.encounter-layout.json",
+      "bytes": 2438,
+      "sha256": "08fc2e1a3d768858e126a73317c433be8c401c024f6a323c7ed99b07f69062a8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/variable-entry.original.json",
+      "bytes": 2332,
+      "sha256": "ffc3771fb87ef2f5dbb87770350cc2413a6248bf9b214aa6a1331c0c6e33d6af"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/星野紫/星野紫.png",
+      "bytes": 1734136,
+      "sha256": "f7627ff2cfa7fc64cd7557193f6d60e59726ea223a8d79590652e318fb8e57d7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/image-prompt.txt",
+      "bytes": 316,
+      "sha256": "21c9f0ac990ff7c0bf3bff5b83f75595405313848a016cda3476b05835aa1646"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/persona-entry.encounter-layout.json",
+      "bytes": 12781,
+      "sha256": "b9ec65751a49be5a4b934c99c041cdfd8071263ee43c80cfae565c53dfe7fc59"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/persona-entry.original.json",
+      "bytes": 12675,
+      "sha256": "78adf06b16d54bc4c12b970d751876d0e33571e09d6b13fc7bde3d3b7c6b1c71"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/role.json",
+      "bytes": 28727,
+      "sha256": "a8073247399bb4ca714f872e13ef2e4bbac37eba297518dd472b2fd00641a10a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/variable-entry.encounter-layout.json",
+      "bytes": 2405,
+      "sha256": "18a953bfe02bb52538794e957265815623e653c99674f83fa474f6e57e871977"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/variable-entry.original.json",
+      "bytes": 2299,
+      "sha256": "14ec627346b73f8e33091b295667d1fd1f12bdf9425b57d32be793ed755f7e8d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/柳柚/柳柚.png",
+      "bytes": 1693374,
+      "sha256": "f6cdc14869ef4143db2e1d3fb7546e2dadd8ba55f127ef3f14ec69075191fe2d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/image-prompt.txt",
+      "bytes": 313,
+      "sha256": "452dd0acc1a065f612153a79049ae58256ed0157469f46a42a6eb27683790905"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/persona-entry.encounter-layout.json",
+      "bytes": 13264,
+      "sha256": "e3de308bc971a02540138071ad47057949c1cf4dbbb7196e8f46e58cae005970"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/persona-entry.original.json",
+      "bytes": 13158,
+      "sha256": "21b9a252d93c9b3e350ace4af6d5e66dfd42543d73cbbc7e24df648db795a023"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/role.json",
+      "bytes": 29801,
+      "sha256": "e634b46b173f7666d3a57aa0a007e0546733f36f7b5d91bc758489462cfeb484"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/variable-entry.encounter-layout.json",
+      "bytes": 2471,
+      "sha256": "d096836715239f5f7083cced4c412eab21fe900726083970f134d717bc213303"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/variable-entry.original.json",
+      "bytes": 2365,
+      "sha256": "6677ea74784d6db92be33ad00ab2e62d77316535e69dfbb7075665408e69ff7a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/水濑彩岚/水濑彩岚.png",
+      "bytes": 1739070,
+      "sha256": "fcc7bdd307a90389d44162917069403fa1d32f68a67cbada3ea0c7543a6c93b0"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/image-prompt.txt",
+      "bytes": 337,
+      "sha256": "2913ba28a61e5093626c7d76d7de82143112c3ddc62592a8df670477f0f5ab45"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/persona-entry.encounter-layout.json",
+      "bytes": 12794,
+      "sha256": "383d8d3b7f8d4a847fdb62f5d61433cc7ea8438a5643100c3700306646c65930"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/persona-entry.original.json",
+      "bytes": 12688,
+      "sha256": "e91defe7b3fc415502e89e332fd9f9e703486d0cc17057ff43a50275368169c1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/role.json",
+      "bytes": 28861,
+      "sha256": "7da3161ee5041ac4d81c785244f2c55ea091dc10833da05d93bea6f9540d6ea4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/variable-entry.encounter-layout.json",
+      "bytes": 2471,
+      "sha256": "0cdd7093d7c0084b11680017e7ca11404bbee060cc01b212e7a89125e4a58249"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/variable-entry.original.json",
+      "bytes": 2365,
+      "sha256": "81dc3d09f1bcd6ae35ebe2d91dd31de6c4e236ae0451f70f9b60619bae091cda"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/浅野桃花/浅野桃花.png",
+      "bytes": 1749346,
+      "sha256": "9624fd8457c9df1b5d04da5513419d9e75f0433e086f1a91db4984f2edc40fe3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/image-prompt.txt",
+      "bytes": 309,
+      "sha256": "bbb6884b30514b78239f1a539046ef34586abe145decc340856b66d9a90298e9"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/persona-entry.encounter-layout.json",
+      "bytes": 12834,
+      "sha256": "f3eb0bc7779ba378dc393530b04d7cb9f28ece5a0d5d9d3750b3fa97eec70ee1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/persona-entry.original.json",
+      "bytes": 12728,
+      "sha256": "003cd88f0a9d65d31463d2acca2aad27c95592e9dee977d5510aaf1dddd8a044"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/role.json",
+      "bytes": 28937,
+      "sha256": "5d7fd84c2b1b10fe8fb761f77516b6ae713016bf26825af52da7a683022b1204"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/variable-entry.encounter-layout.json",
+      "bytes": 2471,
+      "sha256": "e02fcc799231f11f2787c73ec85dd8252b3127635379c479624960732ae050f9"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/variable-entry.original.json",
+      "bytes": 2365,
+      "sha256": "7454e58070eb7c51bf8bb6dfcd5735da8c11ff812c5d65d801341e9b6ed99b4f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/神崎绮晶/神崎绮晶.png",
+      "bytes": 2011003,
+      "sha256": "a02721282241736a899f32140e9bcb4ab7fd1075dcceec7ecc25187ab730fdbd"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/image-prompt.txt",
+      "bytes": 349,
+      "sha256": "94a11abd3a5a0bd77ea552a6a8ada9bac7478eea0be34ce5712e3473e91a4f1b"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/persona-entry.encounter-layout.json",
+      "bytes": 13022,
+      "sha256": "c834d812fa53176253df5ee6a8d5c50f437f9e167458fa30e9c3941915050b45"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/persona-entry.original.json",
+      "bytes": 12916,
+      "sha256": "80ed265d24416034e2809990dab66675c1b0905266cb8ef68b894b5d02dc2890"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/role.json",
+      "bytes": 29389,
+      "sha256": "1be309e4f55b4c595970c7bcd30ec9785bf470bfa81e19def6ab4d400775fc47"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/variable-entry.encounter-layout.json",
+      "bytes": 2471,
+      "sha256": "0584dd8955b776b77d2d6b5348fade6239647748f85f3ff7ee805794940099b1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/variable-entry.original.json",
+      "bytes": 2365,
+      "sha256": "feef83da7db0697623442124bc8d0f205f1b7bd2addc2d0f2002b6ffe7b45295"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/结城纱绫/结城纱绫.png",
+      "bytes": 1828119,
+      "sha256": "1f682d3dc2864f421347efce9fadd199d9a04b83a66c0bc7b137fe0c51f7c9ac"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/image-prompt.txt",
+      "bytes": 343,
+      "sha256": "d71d5863dc086eb7f535230443d4807733fdec8d46d377da0fa443176efcb00a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/persona-entry.encounter-layout.json",
+      "bytes": 12175,
+      "sha256": "16d552c1877a5a94faf6ec65265c72d0badbbebf118f49138baa6a07dffa57c2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/persona-entry.original.json",
+      "bytes": 12069,
+      "sha256": "06efd1e55f98c708b39b62e763ba21edc0be5961443442aaad0cde3bb53c5836"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/role.json",
+      "bytes": 27623,
+      "sha256": "b67e3ecbbde3c040976812ac5480c46dd9ac49cf8251950db11130d98fd8ffd7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/variable-entry.encounter-layout.json",
+      "bytes": 2471,
+      "sha256": "c6a964b7a8468c230847bc53089b4176929c7c9420b23c88a94400fefb99aa4a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/variable-entry.original.json",
+      "bytes": 2365,
+      "sha256": "9c2599508fef02e79879f5afaf2eec0c78c54d5c5429915b10d319047ab8a644"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳代/铃木佳代.png",
+      "bytes": 1775723,
+      "sha256": "3ebd2bfab4a5eab06882a2aba357b67eb9c547c4ed84510cdeedeb3889f5659f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/image-prompt.txt",
+      "bytes": 325,
+      "sha256": "a03fd9f2212a80cc3884ecb440147c1863e121204c5f76461f84451731f33c39"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/persona-entry.encounter-layout.json",
+      "bytes": 12414,
+      "sha256": "b4fd0865d4e11bb1e091ef5e64cb4db028128a8e888d17248d3c8750c7918002"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/persona-entry.original.json",
+      "bytes": 12308,
+      "sha256": "5b7850cf33ee11607be65a9dd8cf7304d181f44d5e1cd99a5aabc943d29a09fd"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/role.json",
+      "bytes": 28101,
+      "sha256": "18f232a17be013afb30122910f1ac82320b5a1584264088273042b602972c63c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/variable-entry.encounter-layout.json",
+      "bytes": 2471,
+      "sha256": "032acd709ce1a915350c102134955852b495af48de6a2635d36d7116bfd75ba7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/variable-entry.original.json",
+      "bytes": 2365,
+      "sha256": "40f177214f8367a4f5c864b8deaf338ca484d38cc7e23287f2e17ec09e8f10ac"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/wangfeng/roles/铃木佳惠/铃木佳惠.png",
+      "bytes": 1862012,
+      "sha256": "2b358ae744db3aa1d017f84851db8c103eccedf35c71d534f28a0b33250e7f9c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/package.json",
+      "bytes": 236493,
+      "sha256": "0040d90d0d0e3a95988cce641f855ff3522adffffff0fe60822075be1a0ef97f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/01_ann_takamaki.png",
+      "bytes": 2757473,
+      "sha256": "066d4b3d58341c87ae09d88171e6abaae0d17aecd1ec13c2bca9b0679f70add1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/02_makoto_niijima.png",
+      "bytes": 2537362,
+      "sha256": "57bf5ca7a849c85b3ddd903d738eb63763190548e0f390378c1c2e638ac7ed8a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/03_futaba_sakura.png",
+      "bytes": 5899909,
+      "sha256": "901f20d99f943e687cfd43c9e430bf3539d944481ceac651a30277dbef330898"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/04_haru_okumura.png",
+      "bytes": 2439017,
+      "sha256": "f36f1adc520cd28b0992520f27afef6d29f4773904f410954f4f51ec52a1c90d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/05_kasumi_yoshizawa.jpg",
+      "bytes": 391662,
+      "sha256": "55c1526fe556b8b461698b46d47a2771176f9dc3715e8d4abb41187102536482"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/06_sae_niijima.png",
+      "bytes": 1046396,
+      "sha256": "490deb5f72d0262308e5232724278e4fc3372243dbf03bb41e801c2b79293383"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/07_sadayo_kawakami.png",
+      "bytes": 2149063,
+      "sha256": "9282f35953599c3bb4fad7352585ff5e1185b2eb13a285fc2267370f1e6ddd58"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/08_tae_takemi.png",
+      "bytes": 2386177,
+      "sha256": "561a2983e330e64b0e711e1b8f40204501ce8a960bf1970f452152cd5f9d399f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/09_hifumi_togo.png",
+      "bytes": 2083675,
+      "sha256": "b066752b60706339042b570f8f4a6abb7504ab62a7d7c393ac7debd9d8bdaa00"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/10_chihaya_mifune.png",
+      "bytes": 1249067,
+      "sha256": "debca25bbfa268cb8f0c371bbf13594395434ec94ce7a5bcfad3037c52ee87a3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/encounter/xiao-qiao-p5r/roles/11_ichiko_ohya.png",
+      "bytes": 1184083,
+      "sha256": "d6efcc29643325fee6671777da880a5f52836d96378287f589d7b9d46fb344e5"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-alisa.png",
+      "bytes": 1089276,
+      "sha256": "b33b3641850c6607c9670b24b0b1c168c40bdc8a7edab7aad93ac98d047e5870"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-generic-female.png",
+      "bytes": 914240,
+      "sha256": "7d553f3c0c295abc6a900674d60af5dd8bd9e776af11b892a857f35ba1e72792"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-generic-female.svg",
+      "bytes": 1755,
+      "sha256": "e99b8302f650917fee01dfb16d30cd3166aa829256ba2e06e2ceb00741a4d756"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-honami.png",
+      "bytes": 1067244,
+      "sha256": "60e6b97c934adcc3968e5f95f31c2cab70b5c2c8015b56b3a89a96877d3e7274"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-kuki.png",
+      "bytes": 988775,
+      "sha256": "fdc4f11b0e5abd4606f575225ca7568e9b21f9ddf88c58a5ccff83abe124f4a8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-miyuki.png",
+      "bytes": 988858,
+      "sha256": "462fdf4891f053435e656a14c0839b58e5957bd917d77948445fc42ff5be7003"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-nakamura-sakura.png",
+      "bytes": 1048577,
+      "sha256": "c0d83997caadf8509c900a23cf4df7beb4ae032131c96384da05093e34c0cc48"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-natsumi.png",
+      "bytes": 945906,
+      "sha256": "60502db3fbc1c70fb2755e1f194a9289ddb8d883cfce1f90edd142ed7ac86d0f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-otaku-female.png",
+      "bytes": 965043,
+      "sha256": "5ce706c3d91a34d5e759ccd75e4548eb12797b4e95938185cebe9cda9861b850"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-sara.png",
+      "bytes": 964315,
+      "sha256": "b31a46d1d90a6da08dfb7dd177eb4e5559a2f6bdac56f1c05b448f9bf3924f02"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-senkoro-momoka.png",
+      "bytes": 1362966,
+      "sha256": "e297be32d64252790c746885dd29179c466a8905b9f05eebb8f2e0608ede37f8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/hospital/remodel-shirakusu-anko.png",
+      "bytes": 1380268,
+      "sha256": "6fb01c0eac98144153a449d684ea5cbd2f6e42a7f1c208815c3552538f1d4843"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/identity/id-easy.png",
+      "bytes": 1932004,
+      "sha256": "55cfda9b73ce0d508d770eb6fa567e74aff56c3e382793c4658882f407d0a31a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/identity/id-extreme.png",
+      "bytes": 2318646,
+      "sha256": "226fe2ef87eddcae0ae13c2ad263383a666e9fe4fab754f51d585a0b5a3b7ee1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/identity/id-hard.png",
+      "bytes": 1717191,
+      "sha256": "a6b7d2a2ee947d533d8b0bbaffff034e343d59d826cb0076a8321bee99f5d433"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/identity/id-normal.png",
+      "bytes": 1878065,
+      "sha256": "a5e19f19b3cb759467d86066a1c807ecafdacfa13684d1532543e434a2ca7d65"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/identity/id-outsider.png",
+      "bytes": 2282875,
+      "sha256": "3348f0a7bc9eda364617ca11f2cae46ae6d965a2ae7de6f76d9a17b56ce74d2e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/identity/student-id-cover.png",
+      "bytes": 2654788,
+      "sha256": "ac7a47d4e84bd4cb213d7ad482c9698c8a493b027ca7ba94c9b88e58a4dc32c3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/inventory/locker-inventory.png",
+      "bytes": 1735473,
+      "sha256": "c09bebabf9d0f8574d08c69e1db698b35c06aec80d9be46d8465ea5ae88c49a1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/maps/location-rule-radar-v1.png",
+      "bytes": 467197,
+      "sha256": "a97be0f7d778f45eead647f48b324a83b808c8f73cfe86fb83b1decbdfb10079"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/maps/location-rule-radar-v2.png",
+      "bytes": 472471,
+      "sha256": "d7efeea1d0a2643ceca48b2cbe851168d07d2c094355b5b5e5fc29af10e02fbc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-drag-v5.png",
+      "bytes": 43810,
+      "sha256": "b1bbbe3475520c157bbaae632f505c4e1f45a33b90088451f279c8a01933367d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-enter-v5.png",
+      "bytes": 94946,
+      "sha256": "7f24c3b49b9ad981ca08b216973ac622ae59c3ed723b700b2b40396563c73a56"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-exit-v5.png",
+      "bytes": 94947,
+      "sha256": "8f5219d78d89819fa166757fddc76e346c71b2c30fd8d9bcca4f7f20cc0c89ce"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-idle-v5.png",
+      "bytes": 75397,
+      "sha256": "b3552fa9ec87138a23fdcbcfadcb1ce6d675226cb6c22caa1080a9fa76fd03fc"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-landing-v5.png",
+      "bytes": 252003,
+      "sha256": "824e188979ec69520719d6db4bfeddeec4e0beb26e3a0928bd45f70d95b8a303"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-unique-a-v5.png",
+      "bytes": 75475,
+      "sha256": "e1d8ff7bed88054e8de9b73b2d5968466e36507c497e306db2424ad167473030"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/alisa/alisa-unique-b-v5.png",
+      "bytes": 78610,
+      "sha256": "71554ddcb0559cdcf1311c517e46a86097b6b1d245a7434b526e21981dd96b18"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-drag-v5.png",
+      "bytes": 39297,
+      "sha256": "585ec34f0125ce63645ba64a7cde34778108b2d8fe35181082249784e3a34165"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-enter-v5.png",
+      "bytes": 67093,
+      "sha256": "c7dc226fe5f4fda9f28ac7669100283daca105f1f9fb13d54b2d17350c37573e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-exit-v5.png",
+      "bytes": 67116,
+      "sha256": "24bfee6ed4ff2f879158b2594e0c03e394206ab45438ae74b035e72adffb9ae8"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-idle-v5.png",
+      "bytes": 52190,
+      "sha256": "ef884ef920ebd19614f7712d6e6458ffc058feb28eb4277ffdcb59d2b1940066"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-landing-v5.png",
+      "bytes": 175179,
+      "sha256": "0bca763fca91d774657c7ef0f3e6b49f8a2befeffc74fcce1ef55277d005612e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-unique-a-v5.png",
+      "bytes": 52243,
+      "sha256": "77e33e476a9639ef0cc55057acc0327435f83b320e531c68b0d671d9c695a3f1"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/pet/v5/hyakka/hyakka-unique-b-v5.png",
+      "bytes": 54068,
+      "sha256": "70aba9f6b205f151e957914f7e5c90902c7efa22d6f312981d1e2d13bdc1d151"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/kuki-trait-self-silhouette.png",
+      "bytes": 980940,
+      "sha256": "86b0bfcd45a528a4d66a41b53b48cfb27e01de76f2eb63ea83f200477de78df7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/kuki-trait-target-silhouette.png",
+      "bytes": 1110621,
+      "sha256": "1566238fbb3d367cfbfc66f9aed20ae50166a97e499276893572470bf08869cb"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-01.png",
+      "bytes": 1459044,
+      "sha256": "330edd419676760bee0ec71aafeef7216cf3deea0bedd1e13edcee5a6361e9b2"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-02.png",
+      "bytes": 1398016,
+      "sha256": "5677de051c222bfbb1b9f40f8b4f1b4f611fb5c602596042ec946fb84221366a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-03.png",
+      "bytes": 1413868,
+      "sha256": "0862edef9219591e7fba285256a5e67cdca113c387902db12201ab0bda97c35e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-04.png",
+      "bytes": 1499542,
+      "sha256": "2cd2bf26d47c2c0600aea853506381ec482d3327587aae5244cc78d2b664d013"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-05.png",
+      "bytes": 1202561,
+      "sha256": "4de1a5d06197d6788673183cc6f5b6eda51c168e17400fa81fb318615489a7d4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-06-otaku-female.png",
+      "bytes": 1018235,
+      "sha256": "6d840455be8bac12e496adf47a80e50ac1f623301f519a814d1105a139524548"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-generic-female.png",
+      "bytes": 982605,
+      "sha256": "a24e97226b441deaad63ff3fcede2a906ce03b178d9b5ba7ff2b97c405c1cd37"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-generic-female.svg",
+      "bytes": 3476,
+      "sha256": "98b44dfc2058f55db1d5098bb375f35f2e42db798562020a504d196b7dd3a24a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-nakamura-sakura.png",
+      "bytes": 1503428,
+      "sha256": "dbfce3ba19c5f5ea6f2555d5dec491ab4f9a600a699eadb35fb6002c11c76cd3"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-senkoro-momoka.png",
+      "bytes": 1569678,
+      "sha256": "d1a49db09952ac9907176f9fc597388a3538a8bfc83718ff7e2216ec73d9c6bd"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/police/trait-scene-shirakusu-anko.png",
+      "bytes": 1457908,
+      "sha256": "0a7275eacbfdd2b2b2117f9e1cdfc8c1b8f6bd3f8bf710961aec1c179d004f6c"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profile-ui/hypnosis-angel-side-v3.png",
+      "bytes": 1226985,
+      "sha256": "48bbc2715bb1907afe92ce01f27ced6dd1e447cef13533305ab2935135614274"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profile-ui/hypnosis-demon-side-v3.png",
+      "bytes": 1548857,
+      "sha256": "543863ade418ef1794a2b4bb5cf8cdffba03b56ee672d869c2e2612a32990830"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profile-ui/profile-nav-confidential-v1.png",
+      "bytes": 732077,
+      "sha256": "f9afbc6fccea1e5da54339ae389644055991fad3030fd7212c998cd8310cf988"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profile-ui/profile-nav-normal-v1.png",
+      "bytes": 1195622,
+      "sha256": "83e547de2e989a0a75e847e3c1eeb3eb6235f1a0bc0455a9995cdb59b6f5fb98"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profile-ui/profile-possession-grip-v4.png",
+      "bytes": 684721,
+      "sha256": "13e8d9d644f0751e258d0045f49b7f964f692f7a0ddbf2ebb6474625804d9409"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profile-ui/profile-possession-top-grip-v1.png",
+      "bytes": 630656,
+      "sha256": "5848492003623b27bf50b11580f086bb6044ea2dc61f02bc7656a2c49852fcd6"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/amagi-sara.png",
+      "bytes": 1777050,
+      "sha256": "01701d1f5d73a7ccf89848d37623de14e592be5754df83306d35e3e1e704cd65"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/inuzuka-honami.png",
+      "bytes": 1950804,
+      "sha256": "c1e6637eae387d7426867ae5692cfbc526e68bc17fafddb60034ac7d0299b995"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/inuzuka-natsumi.png",
+      "bytes": 1939756,
+      "sha256": "87b92becd6ae02c29e82e4caba0cbf6f4f838f80431f697e6500ae1b81569f9f"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/isaac.png",
+      "bytes": 14815,
+      "sha256": "aa75c60e6478f3ff874f87bd5b02a43cb2a4f48be2ad480f3a81e931ba8d680a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/kuki-mashiro-glasses-contempt.png",
+      "bytes": 1985595,
+      "sha256": "523e1f1ae66c7087e620452e8b26795f81648147966d3f465ad5ade956388670"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/kuki-mashiro-odor-fan-dance.png",
+      "bytes": 1570173,
+      "sha256": "396a80d4482a2bfb2a8a969e6a3bb1e88ef10439d94bb507dd255abe74b0f82d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/kuki-mashiro-prank-glasses.png",
+      "bytes": 2060508,
+      "sha256": "54e8d486ec33b4c23658ca50e86bfcee18117ba419c63fa2d63cda589265e7c7"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/kuki-mashiro.png",
+      "bytes": 1776680,
+      "sha256": "10fa2f5e00ad776c528934b30e0c00ec93b325ca4101905e7ac25b767619ca1e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/miryuko.png",
+      "bytes": 2371492,
+      "sha256": "58ba4b348581afffce47f9a4cc8f234fae143bff540d7fd9497e7af20d0549f4"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/otaku-female.png",
+      "bytes": 1909130,
+      "sha256": "3715669a5af9abc09af56a47b27cbc7beedaab0161f9476a70b92ce6f46be432"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/otaku.png",
+      "bytes": 2010439,
+      "sha256": "35c1dea069845af236cb09d26a4ca02747a9a1ed7d9da67f78d310335445ac97"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/saionji-alisa.png",
+      "bytes": 2020768,
+      "sha256": "983fa2710bb92f18a174e8de6a49694ec1fe788e5aaec35037f777a167d65b20"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/profiles/tsukuyomi-miyuki.png",
+      "bytes": 2033648,
+      "sha256": "6009c49462a8b0910876cc0612904be4bd1767634d752c64c76440972d207c79"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/wallpapers/inuzuka-natsumi-prank-v1.png",
+      "bytes": 1930725,
+      "sha256": "d9e37f326598efd4d1ef519d7e7aef2cb2375dd806f9b4cceedb8b909db82875"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/wallpapers/louishm-four-tone-v1.png",
+      "bytes": 2416736,
+      "sha256": "82d77b167ebe1da7b79be91f2ef3e1a00e75e96479623c37bdd0902edc05c09e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/assets/wallpapers/miyuki-miruko-yinyang-v1.png",
+      "bytes": 2711778,
+      "sha256": "0349623497425650dfd3c6171c509a71464bc1f9f4b8121837aa56e3ccb2d802"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/floating-bootstrap.js",
+      "bytes": 243384,
+      "sha256": "968cb8df6fca75a007dfab023a462d8373b145e4212d26aef3608aab28089f6a"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/identity.html",
+      "bytes": 118499,
+      "sha256": "349bc7008b14d4ca6ca4e68e4781c5b9690d90b224d12c0c30010a520f0df62e"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/index.html",
+      "bytes": 6828707,
+      "sha256": "cd19ffa2044e1159094fb334ee9ac0f6c18aec5488921a2c809f6f87fe69f296"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/source.html",
+      "bytes": 3790360,
+      "sha256": "aa17f95cd61fde553aee39fb1214f3d8522c8b95bf4f3052f585385d65dc4248"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/st-load-inline.html",
+      "bytes": 7269892,
+      "sha256": "b42c0c65bf808cba3807956fd1c4bf21c9117c8196c22adee2ebfb208130ba7d"
+    },
+    {
+      "path": "public/frontends/hypnosis-app/st-load.html",
+      "bytes": 6828812,
+      "sha256": "c75fe0742c531dd21b1b6bf56cf5fe742ec692e664347561c5366b464f63ce58"
+    },
+    {
+      "path": "public/frontends/mchan/index.html",
+      "bytes": 54452,
+      "sha256": "25f56705665fe8700839d71e62f0cc33738daa77d9780c4a4476edbc25794ac6"
+    },
+    {
+      "path": "public/vendor/jquery.min.js",
+      "bytes": 87533,
+      "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
+    },
+    {
+      "path": "public/vendor/jquery.mjs",
+      "bytes": 87652,
+      "sha256": "6c40bf5f3eaa56c49389ee926bb13d6683d2d04c53c5f13befd1536b9d6de7a0"
+    },
+    {
+      "path": "public/vendor/lodash.mjs",
+      "bytes": 71547,
+      "sha256": "ff515150b94d9cf12de7a5c9eb21246c5afd5f6c78f4e277b074890a927273b0"
+    },
+    {
+      "path": "public/vendor/scheduler.mjs",
+      "bytes": 5142,
+      "sha256": "f784ebca65bf7271b4c24eff62bcb33faa35d4f3e1a71699b42fd0421ea99e69"
+    },
+    {
+      "path": "public/vendor/vue.global.prod.js",
+      "bytes": 164901,
+      "sha256": "349cb8e0ede3449b4962458daa03418518af50b4a9959a552cce35a8bec92805"
+    },
+    {
+      "path": "public/vendor/vue.mjs",
+      "bytes": 169734,
+      "sha256": "8fc5f1a672693f8b91112155461b0f121c47ea2386b91f7de64e2b39f14241bd"
+    },
+    {
+      "path": "public/vendor/zod.mjs",
+      "bytes": 277150,
+      "sha256": "cd6987893a6524822dfceac30082998a3b3b186fd6b5c41f0a6773022af11969"
+    },
+    {
+      "path": "scripts/apply-orjenrn-polish.mjs",
+      "bytes": 8181,
+      "sha256": "7724c51c08a34f46c474724d27d6964b299db3e8c3be17d8b38eca5cc6c30c04"
+    },
+    {
+      "path": "scripts/build-alisa-pet-v2.py",
+      "bytes": 5219,
+      "sha256": "a8f0934920257a0d70301e82019539b200dab6556604c064f10d48e38075b7fb"
+    },
+    {
+      "path": "scripts/build-pet-v3.py",
+      "bytes": 6924,
+      "sha256": "470177adfeaab1d6a80b0e6a5b8b19042ce82b18d783d20888e1317a4d4c39b0"
+    },
+    {
+      "path": "scripts/build-pet-v4.py",
+      "bytes": 6617,
+      "sha256": "e673309345da5dfb54faa026774b09d851dc74fc18214dd62d02f449a18d4274"
+    },
+    {
+      "path": "scripts/build-pet-v5-landing.py",
+      "bytes": 10042,
+      "sha256": "2a31e99332ac3bde28173ec420a7a3ce8492be37669a081bbdd8bf624035b516"
+    },
+    {
+      "path": "scripts/build-pet-v5-swing.py",
+      "bytes": 3257,
+      "sha256": "0c4463d2c0617e229b78cf14744789644d52e8e429cb281e37ac2f8d19bb7b26"
+    },
+    {
+      "path": "scripts/build-pet-v5.py",
+      "bytes": 3450,
+      "sha256": "ad0e8f4a4fcabe52cce32f28fc07f015756452a070d9dc50ab48e9b7042d2f71"
+    },
+    {
+      "path": "scripts/build-phone-frontend.mjs",
+      "bytes": 37323,
+      "sha256": "448ed15e926bfe009e5bacfc129cc40baabb0d4cf2d03dcc16990f6646dd1d38"
+    },
+    {
+      "path": "scripts/build-regex-theme-preview.mjs",
+      "bytes": 3926,
+      "sha256": "7093382e14fa9e9645cf3898e02294d400f02987433d07d817a1050e1232e396"
+    },
+    {
+      "path": "scripts/card-config.mjs",
+      "bytes": 1803,
+      "sha256": "7626a56ff96dbb89ddf08af607480b36e7f43bd50c07237e107580bce1b428df"
+    },
+    {
+      "path": "scripts/card-integrity-contract.mjs",
+      "bytes": 22607,
+      "sha256": "91f581707f015e1bee6387ed89110e430afb9b11ef22aa5db8d00cba1f8b2f9c"
+    },
+    {
+      "path": "scripts/dev-server.mjs",
+      "bytes": 2905,
+      "sha256": "81db0facc46d9f41d4f9d9d86852d723217c9e7135f4272e554c0226d36a5c35"
+    },
+    {
+      "path": "scripts/extract-mchan-frontend.mjs",
+      "bytes": 6237,
+      "sha256": "11ea227b4ba05511275e00bedab47507b4ac7d9ffec34ce65f65e0f4e9bf3ad5"
+    },
+    {
+      "path": "scripts/finalize-card-v1_6.mjs",
+      "bytes": 607463,
+      "sha256": "43171792cb1246b076aa1bffac7dfc3c7066ec2836527b7e7aabe1529efd3e7f"
+    },
+    {
+      "path": "scripts/import-orjenrn-v075.mjs",
+      "bytes": 8045,
+      "sha256": "53e7e28fe8ef07b29c722ee88480e1b2f30f53f6f12581ba562468363d3af48d"
+    },
+    {
+      "path": "scripts/mirror-frontend.mjs",
+      "bytes": 2812898,
+      "sha256": "b4bc9eec33ae5537d72ca2b25aeb89fde42f81167d21f4f0c83c00c47b1167f2"
+    },
+    {
+      "path": "scripts/mvu-schema-contract.mjs",
+      "bytes": 16344,
+      "sha256": "80a21389d2794cbca049309d0301f82e243ec379d990cf5fd7af9eeefb53e8b2"
+    },
+    {
+      "path": "scripts/narrow-encounter-persona-keys.mjs",
+      "bytes": 1149,
+      "sha256": "b34a3fa2557e7025fca32420e71ec7a1ea08661c5eccb0014372fd622812d024"
+    },
+    {
+      "path": "scripts/orjenrn-initial-variables.mjs",
+      "bytes": 11974,
+      "sha256": "eef8a0c8c72318b6913da5ea2605f62894c8a065cfbc0a14366f72a4c3ca8b88"
+    },
+    {
+      "path": "scripts/orjenrn-persona-normalization.mjs",
+      "bytes": 4370,
+      "sha256": "0aad0ffdaa62ca4f9b9edcb85b06253d174b85d563976ef5edfe2d2ba7824dec"
+    },
+    {
+      "path": "scripts/prepare-encounter-worldbook-package.mjs",
+      "bytes": 20453,
+      "sha256": "e9ee418f50437bf223cdb8dc1182426bf6eeed5dd6e616443e1aea1daf20dcc2"
+    },
+    {
+      "path": "scripts/prune-card-outputs.mjs",
+      "bytes": 1522,
+      "sha256": "81da85c20a053e93b2cae518d2b6373c80c4d35962d5ae9e4e98e5b65a9c5b4d"
+    },
+    {
+      "path": "scripts/publish-card.mjs",
+      "bytes": 21495,
+      "sha256": "b3d186c5ac1be6509a42c27d7de1607a40e9335c4fb2a10e2b03be350e1c9ec9"
+    },
+    {
+      "path": "scripts/refresh-orjenrn-initial-variables.mjs",
+      "bytes": 563,
+      "sha256": "f950378dc0b708a014ca19fa9a2b60dada4d2d5a15ab6d9b549852dfb3bbc83a"
+    },
+    {
+      "path": "scripts/regex-theme-contract.mjs",
+      "bytes": 7956,
+      "sha256": "b1c16949c10e7caaea76917d7f4886e4934bc48b3d00f0e990d81139066f2285"
+    },
+    {
+      "path": "scripts/temporal-convergence-theme.mjs",
+      "bytes": 2760,
+      "sha256": "00bc05e0674e606064468045d41e88d1fa7b0335768508e00ac5cd3e2af6cc12"
+    },
+    {
+      "path": "scripts/verify-action-fold-compat.mjs",
+      "bytes": 9258,
+      "sha256": "cf2b6c95606445ee6bbbba77c71ca727371e3467e47cd3d831a7705442bb12bd"
+    },
+    {
+      "path": "scripts/verify-alisa-pet-v2.py",
+      "bytes": 2101,
+      "sha256": "19e01fe37e0a9a57fa7a24d8a17759e15d9a8b0e499cff694ef8b75e1c90334f"
+    },
+    {
+      "path": "scripts/verify-card-release.mjs",
+      "bytes": 296380,
+      "sha256": "f55df86f28d3ed388aa9195d252f175caa75329f2e2d61d05651f8a17e9c34f5"
+    },
+    {
+      "path": "scripts/verify-encounter-ejs.mjs",
+      "bytes": 4543,
+      "sha256": "f23ac06cfa3ed945580e6074592b78e0d13f7f72b9f064c2e435842d7a08b6ee"
+    },
+    {
+      "path": "scripts/verify-finalizer-idempotency.mjs",
+      "bytes": 2454,
+      "sha256": "5f87f0ffbfe1815f925cb576330a1e69267107f89b48e05cbf291e4a49016a67"
+    },
+    {
+      "path": "scripts/verify-operation-ownership.mjs",
+      "bytes": 17085,
+      "sha256": "67abf0e8d97fc9a08e420d03e51979c685609aea0c7bad46eb7b63fc77efacd0"
+    },
+    {
+      "path": "scripts/verify-pet-v3.py",
+      "bytes": 2199,
+      "sha256": "54327af95b443544b5c4ceddfc7f8ee07d28aca350c3ab57256ffbf0571d768b"
+    },
+    {
+      "path": "scripts/verify-pet-v5.py",
+      "bytes": 4122,
+      "sha256": "16ee89938d07550e7fe5d888e8defd8073904cf58990ff1d75ae98240863025d"
+    },
+    {
+      "path": "src/app.js",
+      "bytes": 43467,
+      "sha256": "f6d33d37b478d57f08f90d9968dec28a208e249ed1a19cbaf6a46543b4f4ab69"
+    },
+    {
+      "path": "src/card-cover/classroom-three-mascots-five-v1.640x800.png",
+      "bytes": 755011,
+      "sha256": "59a7abe4b65ac259cfd55cf39693d41859bc9c96d907fb552b4d5bd2ad61c006"
+    },
+    {
+      "path": "src/card-cover/classroom-three-mascots-five-v1.source.png",
+      "bytes": 2060871,
+      "sha256": "7d797a9c5d57ba84c644610bf1aad9fc057030c9685f99862f583bfda0f75153"
+    },
+    {
+      "path": "src/card-cover/classroom-three-mascots-five-v2.640x800.png",
+      "bytes": 763782,
+      "sha256": "c264fa2cc3e2b0f759d8954cf20f1a2cd263271ee88d0bb6e9c7fdf5d8ad6c1c"
+    },
+    {
+      "path": "src/card-cover/classroom-three-mascots-five-v2.source.png",
+      "bytes": 2092593,
+      "sha256": "af8e34c4db92066afb3025f0600c36eaa3d72af3c46b090a663d593ed5e6f68f"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v1.640x800.png",
+      "bytes": 886942,
+      "sha256": "ad5096304e5e49457e7ff09265b9d26c78e4bcbaf665a1fe6598e6594e40c128"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v1.source.png",
+      "bytes": 2517598,
+      "sha256": "3ba163da506121d966c4a7d923c9d3a9de50aefa3e7abfe2783d778b7cc37e33"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v2.640x800.png",
+      "bytes": 875342,
+      "sha256": "ef782db077020a9729a5b7cb16c0de22ea539ec60ed4927b4572c3b9ec9af3e6"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v2.source.png",
+      "bytes": 2473215,
+      "sha256": "ee86b7dad9bc2aef3cc6a2ecc01f54cf0215f1635960c333e1b48a44ee9f4047"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v3.640x800.png",
+      "bytes": 960358,
+      "sha256": "019f1b78d2d1828dae27e5d2ab94beb07a46946be98afc5dc95051a0f279d7c4"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v3.source.png",
+      "bytes": 2804028,
+      "sha256": "2d2ea54625ced65ecf67a528088b1551b4b8cad8bce1c2de665735feb0be6189"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v4.640x800.png",
+      "bytes": 886260,
+      "sha256": "0681e65aaa55625c7c39b4e8504f70aeff592390338d35de3eb4bd69a41af683"
+    },
+    {
+      "path": "src/card-cover/ghidorah-kigurumi-classroom-v4.source.png",
+      "bytes": 2539272,
+      "sha256": "1a4dbac4a47e81ca2593c240a6a6328ba73a6f6e6692dea530a6c8ff5d72441f"
+    },
+    {
+      "path": "src/card-cover/pool-seven-v1.640x800.png",
+      "bytes": 977158,
+      "sha256": "3d8197ba9009c7a9c0dc0e66cde1a00f02f3811d6ec29344c719a671a2d3a892"
+    },
+    {
+      "path": "src/card-cover/tokusatsu-three-v1.640x800.png",
+      "bytes": 1027118,
+      "sha256": "3817b2f26739a8678d85e64d71ecc0bf9cfdec47338361fb93b3ee8f81771c19"
+    },
+    {
+      "path": "src/card-cover/tokusatsu-three-v1.source.png",
+      "bytes": 2925970,
+      "sha256": "679ae10777e9664149b444e84c0fa182372ce843922f19bccd5f2985e970baac"
+    },
+    {
+      "path": "src/card-parser.js",
+      "bytes": 8033,
+      "sha256": "21a4d9efb334b97937eae9b5626b5adb9f82d626c5012a4ff9b7f9bc1eb725ea"
+    },
+    {
+      "path": "src/hypnoos-floating-bootstrap.js",
+      "bytes": 243384,
+      "sha256": "968cb8df6fca75a007dfab023a462d8373b145e4212d26aef3608aab28089f6a"
+    },
+    {
+      "path": "src/reward-defaults.js",
+      "bytes": 8716,
+      "sha256": "9e286f5d8e094cc8fb606b5b4c942ebe72961b10f8560e7828304b734a31ff91"
+    },
+    {
+      "path": "src/styles.css",
+      "bytes": 7603,
+      "sha256": "f9d7e8831d73787f0609d852ede1c724d9a54d09fadfca78da36bed857ed4c39"
+    },
+    {
+      "path": "src/worldbooks/miryuko-polished-persona.txt",
+      "bytes": 7887,
+      "sha256": "0a185bb0f2f57612a709a237f9804949e930f3f6999436638f48537b694b0e69"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>桌宠 v5 动作预览</title>
+  <style>
+    :root{color-scheme:dark;font-family:ui-sans-serif,system-ui,"PingFang SC",sans-serif;background:#090d16;color:#e8edf7}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:24px;background:radial-gradient(circle at 50% 15%,#1d2940,#090d16 60%)}
+    main{width:min(920px,100%);margin:auto;display:grid;gap:18px}.toolbar,.stage,.status{border:1px solid #334155;border-radius:18px;background:rgba(10,15,26,.88);box-shadow:0 18px 48px rgba(0,0,0,.32)}
+    .toolbar{padding:16px;display:flex;flex-wrap:wrap;gap:10px}.toolbar button{min-height:42px;padding:0 16px;border:1px solid #475569;border-radius:999px;background:#151e2e;color:#dbeafe;font-weight:800;cursor:pointer}.toolbar button.active{border-color:#67e8f9;background:#164e63;color:#ecfeff}.toolbar button:hover{border-color:#a5f3fc}
+    .stage{position:relative;min-height:440px;display:grid;place-items:center;overflow:hidden;background-color:#111827;background-image:linear-gradient(45deg,#172033 25%,transparent 25%),linear-gradient(-45deg,#172033 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#172033 75%),linear-gradient(-45deg,transparent 75%,#172033 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0}
+    .sprite{width:320px;height:320px;background-repeat:no-repeat;image-rendering:auto;filter:drop-shadow(0 14px 10px rgba(0,0,0,.55));transform-origin:50% 100%}
+    .status{padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 22px;color:#aebbd0;font:700 13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}.status strong{color:#fff}.hint{margin:0;color:#94a3b8;font-size:13px;line-height:1.65}
+    @media(max-width:560px){body{padding:12px}.stage{min-height:360px}.sprite{width:288px;height:288px;background-size:2304px 288px}}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="toolbar" aria-label="角色">
+      <button type="button" data-character="alisa" class="active">爱丽莎</button>
+      <button type="button" data-character="hyakka">千杀百花</button>
+    </section>
+    <section class="toolbar" aria-label="动作">
+      <button type="button" data-action="idle" class="active">静止 / 眨眼</button>
+      <button type="button" data-action="unique-a">打开悬浮窗口（A）</button>
+      <button type="button" data-action="unique-b">关闭悬浮窗口（B）</button>
+      <button type="button" data-action="drag">拖拽</button>
+      <button type="button" data-action="landing">松手落地</button>
+      <button type="button" data-action="enter">入场</button>
+      <button type="button" data-action="exit">退场</button>
+      <button type="button" data-prev>上一帧</button>
+      <button type="button" data-next>下一帧</button>
+      <button type="button" data-play>暂停</button>
+    </section>
+    <section class="stage"><div class="sprite" role="img" aria-label="桌宠动作预览"></div></section>
+    <section class="status"><span>角色 <strong data-role></strong></span><span>动作 <strong data-motion></strong></span><span>帧 <strong data-frame></strong></span><span>循环 <strong data-loop></strong></span><span>单帧 <strong data-delay></strong></span></section>
+    <p class="hint">“松手落地”只在桌宠确实被拖动并释放后播放。上一帧/下一帧可暂停后逐格检查拖拽首帧衔接、落地缓冲姿态、发丝和皮肤边缘。</p>
+  </main>
+  <script>
+    (() => {
+      const names = {alisa:"爱丽莎",hyakka:"千杀百花"};
+      const labels = {
+        idle:"静止 / 眨眼","unique-a":"打开悬浮窗口（A）","unique-b":"关闭悬浮窗口（B）",
+        drag:"拖拽",landing:"松手落地",enter:"入场",exit:"退场"
+      };
+      const simple = total => ({total,fps:7,loops:1});
+      const metadata = {
+        idle:{alisa:simple(8),hyakka:simple(8)},
+        "unique-a":{alisa:simple(8),hyakka:simple(8)},
+        "unique-b":{alisa:simple(8),hyakka:simple(8)},
+        drag:{alisa:{total:8,fps:6,loops:1},hyakka:{total:8,fps:6,loops:1}},
+        landing:{alisa:{total:12,fps:10,loops:1},hyakka:{total:12,fps:10,loops:1}},
+        enter:{alisa:simple(8),hyakka:simple(8)},exit:{alisa:simple(8),hyakka:simple(8)}
+      };
+      const sprite = document.querySelector(".sprite");
+      const playButton = document.querySelector("[data-play]");
+      let character = "alisa", action = "idle", playhead = 0, playing = true, timer = 0;
+      const asset = () => `/public/frontends/hypnosis-app/assets/pet/v5/${character}/${character}-${action}-v5.png`;
+      const scale = () => sprite.clientWidth / 160;
+      const meta = () => metadata[action][character];
+      const playbackLength = () => meta().total * meta().loops;
+      function paint(){
+        const current = meta();
+        const frame = playhead % current.total;
+        const unit = 160 * scale();
+        sprite.style.backgroundImage = `url("${asset()}")`;
+        sprite.style.backgroundSize = `${unit * current.total}px ${unit}px`;
+        sprite.style.backgroundPosition = `${-frame * unit}px 0`;
+        sprite.style.transform = "none";
+        document.querySelector("[data-role]").textContent = names[character];
+        document.querySelector("[data-motion]").textContent = typeof labels[action] === "string" ? labels[action] : labels[action][character];
+        document.querySelector("[data-frame]").textContent = `${frame + 1} / ${current.total}`;
+        document.querySelector("[data-loop]").textContent = `${Math.floor(playhead / current.total) + 1} / ${current.loops}`;
+        document.querySelector("[data-delay]").textContent = `${Math.round(1000 / current.fps)} ms`;
+      }
+      function schedule(){
+        clearTimeout(timer);
+        if(!playing)return;
+        timer=setTimeout(()=>{playhead=(playhead+1)%playbackLength();paint();schedule()},1000/meta().fps);
+      }
+      document.querySelectorAll("[data-character]").forEach(button=>button.addEventListener("click",()=>{
+        character=button.dataset.character;playhead=0;
+        document.querySelectorAll("[data-character]").forEach(item=>item.classList.toggle("active",item===button));
+        paint();schedule();
+      }));
+      document.querySelectorAll("[data-action]").forEach(button=>button.addEventListener("click",()=>{
+        action=button.dataset.action;playhead=0;
+        document.querySelectorAll("[data-action]").forEach(item=>item.classList.toggle("active",item===button));
+        paint();schedule();
+      }));
+      document.querySelector("[data-prev]").addEventListener("click",()=>{playing=false;playButton.textContent="播放";playhead=(playhead-1+playbackLength())%playbackLength();paint();schedule()});
+      document.querySelector("[data-next]").addEventListener("click",()=>{playing=false;playButton.textContent="播放";playhead=(playhead+1)%playbackLength();paint();schedule()});
+      playButton.addEventListener("click",()=>{playing=!playing;playButton.textContent=playing?"暂停":"播放";schedule()});
+      addEventListener("resize",paint,{passive:true});paint();schedule();
+    })();
+  </script>
+</body>
+</html>

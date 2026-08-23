@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.vite/
+tmp/
+图片/
+exports/
+scripts/export-current-worldbooks.mjs
+public/frontends/hypnosis-app/assets/encounter/*/layout/worldbook-layout-report.json
+demos/
+public/frontends/mobile-tavern/
+平时不改，与项目无关/
+public/cards/
+public/frontends/hypnosis-app/assets/**/*-old.png

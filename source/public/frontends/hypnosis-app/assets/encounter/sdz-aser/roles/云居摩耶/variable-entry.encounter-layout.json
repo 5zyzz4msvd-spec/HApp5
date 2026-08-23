@@ -1,0 +1,36 @@
+{
+  "key": [
+    "云居摩耶"
+  ],
+  "keys": [
+    "云居摩耶"
+  ],
+  "keysecondary": [],
+  "secondary_keys": [],
+  "comment": "[mvu_update]云居摩耶变量",
+  "content": "<%_ {\nvar groupNames = [\"衣着\",\"信息\",\"状态\",\"事件\",\"敏感\",\"效果\",\"劣迹\"];\nvar groupPaths = [\"stat_data.角色.云居摩耶.衣着\",\"stat_data.角色.云居摩耶.信息\",\"stat_data.角色.云居摩耶.状态\",\"stat_data.角色.云居摩耶.事件\",\"stat_data.角色.云居摩耶.敏感\",\"stat_data.角色.云居摩耶.效果\",\"stat_data.角色.云居摩耶.劣迹\"];\nvar groups = [];\nfor (var groupIndex = 0; groupIndex < groupPaths.length; groupIndex += 1) groups.push(getvar(groupPaths[groupIndex]) || {});\nfunction valueText(value) {\n  if (value && typeof value === 'object') return JSON.stringify(value);\n  return value === undefined || value === null ? '' : String(value);\n}\nprint('  ' + \"云居摩耶\" + ':' + String.fromCharCode(10));\nfor (var index = 0; index < groupNames.length; index += 1) {\n  var source = groups[index] && typeof groups[index] === 'object' && !Array.isArray(groups[index]) ? groups[index] : {};\n  print('    ' + groupNames[index] + ':' + String.fromCharCode(10));\n  for (var key in source) {\n    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;\n    print('      ' + key + ': ' + valueText(source[key]) + String.fromCharCode(10));\n  }\n}\n} _%>",
+  "constant": false,
+  "vectorized": false,
+  "selective": true,
+  "selectiveLogic": 0,
+  "addMemo": true,
+  "order": 23,
+  "insertion_order": 23,
+  "position": "before_char",
+  "disable": false,
+  "excludeRecursion": true,
+  "preventRecursion": true,
+  "probability": 100,
+  "useProbability": true,
+  "depth": 4,
+  "role": 0,
+  "extensions": {
+    "position": 0,
+    "depth": 4,
+    "role": 0,
+    "probability": 100,
+    "useProbability": true,
+    "exclude_recursion": true,
+    "prevent_recursion": true
+  }
+}

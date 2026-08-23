@@ -1,0 +1,24 @@
+{
+  "name": "sillytavern-card-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "start": "node scripts/dev-server.mjs",
+    "mirror:frontend": "node scripts/mirror-frontend.mjs",
+    "mirror:frontend:remote": "node scripts/mirror-frontend.mjs remote",
+    "webpack:phone": "node scripts/build-phone-frontend.mjs",
+    "publish:card": "node scripts/publish-card.mjs",
+    "prune:cards": "node scripts/prune-card-outputs.mjs",
+    "prune:cards:dry-run": "node scripts/prune-card-outputs.mjs --dry-run",
+    "verify:pet": "python3 scripts/verify-pet-v5.py",
+    "verify:card": "npm run verify:pet && node scripts/verify-encounter-ejs.mjs && node scripts/verify-action-fold-compat.mjs && node scripts/verify-operation-ownership.mjs && node scripts/verify-card-release.mjs && HYPNOOS_RELEASE_CARD=1 node scripts/verify-card-release.mjs && node scripts/verify-finalizer-idempotency.mjs && HYPNOOS_RELEASE_CARD=1 node scripts/verify-finalizer-idempotency.mjs",
+    "prepare:encounter-worldbook": "node scripts/prepare-encounter-worldbook-package.mjs",
+    "refresh:frontend-source": "curl -L https://testingcf.jsdelivr.net/gh/Ramiel-s/HypnosisAPP5/dist/%E5%82%AC%E7%9C%A0APP%E5%89%8D%E7%AB%AF/index.html -o public/frontends/hypnosis-app/source.html",
+    "extract:mchan": "node scripts/extract-mchan-frontend.mjs"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.0"
+  }
+}
