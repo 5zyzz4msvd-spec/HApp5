@@ -36,7 +36,7 @@ export async function ensureUserManagement(runtime,{legacyState={},userName=''}=
   else if(marker?.schema===1)values['player-personal-record']={...sourceProfile(legacyState,userName),...values['player-personal-record']};
   if(!Object.hasOwn(values,'player-possession'))values['player-possession']=String(legacyState?.系统?.附身??'');
   actor.elements=elements;actor.values=values;actor.ui={...actor.ui,userManagement:2};actor.aliases=[...new Set([...actor.aliases,'user','{{user}}',...(userName?[userName]:[])])];
-  const entries=actor.worldbook.entries.filter(x=>x.id!=='player-management-policy');entries.push({id:'player-management-policy',comment:'[mvu_plot][mvu_update]玩家独立管理',content:USER_MANAGEMENT_CONTRACT,constant:true,position:4,depth:0,order:9});actor.worldbook.entries=entries;
+  const entries=actor.worldbook.entries.filter(x=>x.id!=='player-management-policy');entries.push({id:'player-management-policy',comment:'玩家独立管理',content:USER_MANAGEMENT_CONTRACT,constant:true,position:4,depth:0,order:9});actor.worldbook.entries=entries;
   const slots=await runtime.store.getCharacterSlots();if(!slots.some(x=>x.ref.id==='user'&&x.enabled!==false))slots.push({slotId:'default-user',ref:USER_REF,enabled:true,order:0});
   const extra=new Map([['slots/characters.json',slots],[USER_MANAGEMENT_FILE,{schema:2,owner:USER_REF,source:'legacy user fields imported once; account resources stay at their existing owner'}]]);
   if(!await runtime.store.readJson('archives/user-source-v1.json',null))extra.set('archives/user-source-v1.json',{system:structuredClone(legacyState?.系统??{}),suspicion:legacyState?.系统?.主角可疑度,profile:sourceProfile(legacyState,userName)});

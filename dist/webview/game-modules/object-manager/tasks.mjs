@@ -33,7 +33,7 @@ export function activeTaskModelEntry(task, ownerName = "") {
   const value = normalizeTask(task);
   return {
     id: "active-task-state",
-    comment: `[mvu_plot][mvu_update][active_task]${value.id}`,
+    comment: `[active_task]${value.id}`,
     content: JSON.stringify({ task: { kind: "task", id: value.id }, owner: value.owner, ownerName, name: value.name, definition: value.definition, data: { completed: value.data.completed, progress: value.data.progress }, writable: value.definition.completion.mode === "script" ? ["/data/progress/<leaf>"] : ["/data/progress/<leaf>", "replace /data/completed=true"] }),
     constant: true, order: 850, position: 4, depth: 0, role: 0,
   };
