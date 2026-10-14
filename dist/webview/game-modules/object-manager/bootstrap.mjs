@@ -1,3 +1,4 @@
+import {hasTavernContext,readTavernChatId} from "./tavern-context.mjs";
 import { ObjectManagerRuntime } from "./runtime.mjs";
 import { ChatObjectStore, createBrowserFileDriver } from "./store.mjs";
 import { TavernChatWorldbookAdapter, resolveTavernWorldbookApi } from "./worldbook-host.mjs";
@@ -13,9 +14,9 @@ function candidateViews(start = globalThis) {
 }
 
 function resolveHost(start = globalThis) {
-  for (const view of candidateViews(start)) {
+  for (const view of candidateViews(start).reverse()) {
     try {
-      if (typeof view?.SillyTavern?.getCurrentChatId === "function") return view;
+      if (hasTavernContext(view)) return view;
     } catch {}
   }
   throw new Error("SillyTavern host is unavailable");
@@ -65,7 +66,7 @@ export async function createObjectManagerForCurrentChat({
   fileDriver = null,
 } = {}) {
   const host = resolveHost(start);
-  const chatId = String(host.SillyTavern.getCurrentChatId?.() ?? "").trim();
+  const chatId = String(readTavernChatId(host) ?? "").trim();
   if (!chatId) throw new Error("current chat id is unavailable");
   const driver = fileDriver ?? await createBrowserFileDriver({
     navigatorObject: host.navigator,
@@ -126,10 +127,10 @@ export async function installObjectManagerLifecycle(options = {}) {
   };
 
   const handleMessage = async (messageId, source = "model") => {
-    const chatIdAtRead = String(host.SillyTavern.getCurrentChatId?.() ?? "");
+    const chatIdAtRead = String(readTavernChatId(host) ?? "");
     const snapshot = assistantSnapshot(host, messageId);
     if (!snapshot) return { applied: 0, skipped: 0 };
-    if (!active || active.chatId !== String(host.SillyTavern.getCurrentChatId?.() ?? "")) await transition();
+    if (!active || active.chatId !== String(readTavernChatId(host) ?? "")) await transition();
     if (active.chatId !== chatIdAtRead) throw new Error("chat changed before reply processing");
     const chat = host.SillyTavern.getContext?.()?.chat ?? host.SillyTavern.chat ?? [];
     const cursor = (await active.runtime.store.readJson("meta.json")).lastReplyOrdinal ?? 0;
@@ -202,7 +203,7 @@ export async function installObjectManagerLifecycle(options = {}) {
       request.promise = (async () => {
         const text = await generateUpdate(await runtime.buildUpdateRequest(snapshot.content));
         const current = assistantSnapshot(host, messageId);
-        if (generation !== token || facade.runtime !== runtime || facade.chatId !== chatId || String(host.SillyTavern.getCurrentChatId?.() ?? '') !== chatId || current?.replyAnchor !== snapshot.replyAnchor || current?.content !== snapshot.content) {
+        if (generation !== token || facade.runtime !== runtime || facade.chatId !== chatId || String(readTavernChatId(host) ?? '') !== chatId || current?.replyAnchor !== snapshot.replyAnchor || current?.content !== snapshot.content) {
           throw new Error('chat, reply or swipe changed while extra model was running');
         }
         return runtime.handleModelOutput(text, { ...snapshot, source: 'extra' });

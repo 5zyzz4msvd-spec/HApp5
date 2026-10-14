@@ -122,6 +122,7 @@
     "game-modules/object-manager/structure-projection.mjs",
     "game-modules/object-manager/structure-schema.mjs",
     "game-modules/object-manager/tasks.mjs",
+    "game-modules/object-manager/tavern-context.mjs",
     "game-modules/object-manager/user-management.mjs",
     "game-modules/object-manager/worldbook-host.mjs",
     "game-modules/object-manager/worldbook-policy.mjs",

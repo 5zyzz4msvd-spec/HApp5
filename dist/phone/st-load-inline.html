@@ -41301,6 +41301,7 @@ async function iphone16PhotoLibrary(){
 </script><script id="hypnoos-object-runtime">/* Generated from src/object-manager and browser workshop modules. */
 (function(){
 const factories={"src/object-manager/phone-integration.mjs":function(module, load){
+const {hasTavernContext,readTavernChatId} = load("src/object-manager/tavern-context.mjs");
 const {ensureUserManagement,hasLegacyUserState,userNotebookSources} = load("src/object-manager/user-management.mjs");
 const {installLocationHypnosisHooks,stageLegacyLocationHypnosis,migrateLegacyLocationHypnosis} = load("src/object-manager/location-hypnosis.mjs");
 const { surfaceLifecycle : lifecycle, runSceneTransition : transition } = load("src/ui/surface-motion.mjs");
@@ -41393,7 +41394,7 @@ function sceneLocation(locations, text) {
 
 function findHost(start) {
   for (const view of [start.top, start.parent, start]) {
-    try { if (view?.SillyTavern?.getCurrentChatId) return view; } catch {}
+    try { if (hasTavernContext(view)) return view; } catch {}
   }
   throw new Error("当前聊天宿主尚未就绪");
 }
@@ -41401,7 +41402,7 @@ function findHost(start) {
 async function ensurePhoneObjectRuntime(start = globalThis, { graphs = [], characters, encounterRole = null, assetLoader = null } = {}) {
   const host = findHost(start);
   const bridge=host.__ST_GAME_RUNTIME_BRIDGE__;if(bridge&&bridge.ensurePhoneObjectRuntime!==ensurePhoneObjectRuntime)return bridge.ensurePhoneObjectRuntime(start,{graphs,characters,encounterRole,assetLoader});
-  const chatId = String(host.SillyTavern.getCurrentChatId() ?? "");
+  const chatId = String(readTavernChatId(host) ?? "");
   if (!chatId) throw new Error("无法确认当前聊天");
   let facade = host.__HYPNOOS_OBJECT_MANAGER_V1__;
   if (facade?.chatId && facade.chatId !== chatId) { await facade.destroy?.(); facade = null; }
@@ -41447,7 +41448,7 @@ async function ensurePhoneObjectRuntime(start = globalThis, { graphs = [], chara
 }
 
 async function publishGraphViews(runtime, host) {
-  if (String(host.SillyTavern.getCurrentChatId() ?? "") !== runtime.store.chatId) return;
+  if (String(readTavernChatId(host) ?? "") !== runtime.store.chatId) return;
   const views = {};
   for (const scope of ["world", "school"]) {
     const root = await runtime.store.getObject({ kind: "location", id: `map-${scope}` });
@@ -41501,6 +41502,21 @@ function surfaceLifecycle(doc,node,toolbar,dispose,prepare){return lifecycle(doc
 function runSceneTransition(doc,action){return transition(doc,action);}
 
 Object.assign(module.exports,{mountDesktopPet,personnelPermissions,mountCharacterSlots,mountDetectiveDesk,validatePhoneHypnosis,mountIphone16Phone,iphone16SceneSnapshot,mountNotebook,connectPersonnelBusiness,notebookAccess,sceneObjectSnapshot,mountRoutineScene,sceneCalendar,sceneLocation,ensurePhoneObjectRuntime,mountPhoneObjects,initializeObjectHost,validatePhoneHypnosisBatch,stagePhoneLocationHypnosisLegacy,mountInventoryCollection,mountSceneTools,mountSceneLocations,mountFloatingWindow,bindFloatingDrag,sceneWindowController,dockSceneToolbar,surfaceLifecycle,runSceneTransition});
+},
+"src/object-manager/tavern-context.mjs":function(module, load){
+// Native SillyTavern exposes chat APIs through getContext(); older helpers may
+// also expose the same function directly on the namespace.
+function hasTavernContext(view){
+ return typeof view?.SillyTavern?.getContext==='function'||typeof view?.SillyTavern?.getCurrentChatId==='function';
+}
+function readTavernChatId(view){
+ const api=view?.SillyTavern;
+ if(typeof api?.getCurrentChatId==='function')return String(api.getCurrentChatId()??'');
+ const context=api?.getContext?.();
+ return String(typeof context?.getCurrentChatId==='function'?context.getCurrentChatId()??'':context?.chatId??'');
+}
+
+Object.assign(module.exports,{hasTavernContext,readTavernChatId});
 },
 "src/object-manager/user-management.mjs":function(module, load){
 const { normalizeCharacter } = load("src/object-manager/contracts.mjs");
@@ -42219,6 +42235,7 @@ function inventoryFromState(state){const system=state?.系统??{},result=new Map
 Object.assign(module.exports,{normalizeStoryDate,inventoryFromState});
 },
 "src/object-manager/location-hypnosis.mjs":function(module, load){
+const {readTavernChatId} = load("src/object-manager/tavern-context.mjs");
 const {normalizeLocation,normalizeRef,refKey,cloneValue} = load("src/object-manager/contracts.mjs");
 const {HYPNOSIS_COMMANDS} = load("src/phone-v2/hypnosis-catalog.mjs");
 const {locationForest} = load("src/object-manager/locations.mjs");
@@ -42255,7 +42272,7 @@ async function syncLocationHypnosisHostContext(runtime,system={}){let clock={dat
 async function registerLocationHypnosisUserMessage(runtime,message,{promptAnchor,system=null}={}){if(!(message?.is_user===true||message?.role==='user'))return{registered:0};const text=String(message.mes??message.message??message.content??''),block=text.match(/<玩家日程>([\s\S]*?)<\/玩家日程>/)?.[1];if(block){const packet=JSON.parse(block);return registerSentLocationHypnosis(runtime,packet,{promptAnchor});}const drafts=await runtime.store.readJson('services/location-hypnosis-staged.json',{}),auth=await locationHypnosisAuthorizations(runtime);let total=0;for(const [marker,action]of Object.entries(drafts)){if(!text.includes(marker)||Object.values(auth.requests).some(row=>row.template.requestId.startsWith(marker+'-')))continue;if(!system)continue;const clock=storyClock(system),index=Math.floor((Number(clock.time.slice(0,2))*60+Number(clock.time.slice(3)))/120),packet={type:'schedule',date:clock.date,start:clock.time,cells:[{index,attachments:[action],actions:[]}]};total+=(await registerSentLocationHypnosis(runtime,packet,{promptAnchor})).registered;}return{registered:total};}
 function installLocationHypnosisHooks(runtime,start=globalThis){if(runtime.__locationHypnosisHooks)return runtime.__locationHypnosisHooks;const views=[];for(const view of [start,start?.parent,start?.top,globalThis])try{if(view&&!views.includes(view))views.push(view);}catch{}const host=views.find(view=>view.SillyTavern?.getContext),owner=views.flatMap(view=>[view,view.TavernHelper]).find(view=>typeof view?.eventOn==='function'),variables=views.flatMap(view=>[view,view.TavernHelper]).find(view=>typeof view?.getVariables==='function');if(!host||!owner||!variables)return{available:false};const events=owner.tavern_events??host.tavern_events??{},offs=[];let destroyed=false,type='normal';const bind=(name,fallback,fn)=>{const key=events[name]??fallback,result=owner.eventOn(key,fn);offs.push(typeof result==='function'?result:()=>result?.stop?.());};
  bind('GENERATION_STARTED','generation_started',(next,options,dry)=>{type=String(next??'normal');if(options?.dry_run||dry)type='dry';});
- bind('GENERATE_BEFORE_COMBINE_PROMPTS','generate_before_combine_prompts',async(_type,_options,dry)=>{if(destroyed||dry||!['normal','regenerate','swipe','continue'].includes(type)||String(host.SillyTavern.getCurrentChatId?.())!==runtime.store.chatId)return;const chat=host.SillyTavern.getContext().chat??[];for(let i=chat.length-1;i>=0;i--)if(chat[i].is_user||chat[i].role==='user'){const raw=await variables.getVariables({type:'message',message_id:'latest'});const system=(raw?.stat_data??raw??{}).系统??{};await syncLocationHypnosisHostContext(runtime,system);await registerLocationHypnosisUserMessage(runtime,chat[i],{promptAnchor:'user-'+i,system});break;}});
+ bind('GENERATE_BEFORE_COMBINE_PROMPTS','generate_before_combine_prompts',async(_type,_options,dry)=>{if(destroyed||dry||!['normal','regenerate','swipe','continue'].includes(type)||String(readTavernChatId(host))!==runtime.store.chatId)return;const chat=host.SillyTavern.getContext().chat??[];for(let i=chat.length-1;i>=0;i--)if(chat[i].is_user||chat[i].role==='user'){const raw=await variables.getVariables({type:'message',message_id:'latest'});const system=(raw?.stat_data??raw??{}).系统??{};await syncLocationHypnosisHostContext(runtime,system);await registerLocationHypnosisUserMessage(runtime,chat[i],{promptAnchor:'user-'+i,system});break;}});
  const handle={available:true,destroy(){destroyed=true;for(const off of offs.splice(0))off();delete runtime.__locationHypnosisHooks;}};bind('CHAT_CHANGED','chat_id_changed',()=>handle.destroy());runtime.__locationHypnosisHooks=handle;return handle;
 }
 function legacyLocationRule(row){if(!plain(row))return false;const command=HYPNOSIS_COMMANDS.find(x=>x.id===row.commandId||x.id===row.指令ID);return plain(row)&&(row.持续类型==='临时'||row.lifetime==='temporary')&&(command&&['group','location'].includes(command.scope)||['开放空间常识修改','范围催眠','催眠APP'].includes(row.来源));}
@@ -47518,6 +47535,7 @@ class TavernChatWorldbookAdapter {
 Object.assign(module.exports,{resolveTavernWorldbookApi,TavernChatWorldbookAdapter});
 },
 "src/object-manager/bootstrap.mjs":function(module, load){
+const {hasTavernContext,readTavernChatId} = load("src/object-manager/tavern-context.mjs");
 const { ObjectManagerRuntime } = load("src/object-manager/runtime.mjs");
 const { ChatObjectStore, createBrowserFileDriver } = load("src/object-manager/store.mjs");
 const { TavernChatWorldbookAdapter, resolveTavernWorldbookApi } = load("src/object-manager/worldbook-host.mjs");
@@ -47532,9 +47550,9 @@ function candidateViews(start = globalThis) {
 }
 
 function resolveHost(start = globalThis) {
-  for (const view of candidateViews(start)) {
+  for (const view of candidateViews(start).reverse()) {
     try {
-      if (typeof view?.SillyTavern?.getCurrentChatId === "function") return view;
+      if (hasTavernContext(view)) return view;
     } catch {}
   }
   throw new Error("SillyTavern host is unavailable");
@@ -47584,7 +47602,7 @@ async function createObjectManagerForCurrentChat({
   fileDriver = null,
 } = {}) {
   const host = resolveHost(start);
-  const chatId = String(host.SillyTavern.getCurrentChatId?.() ?? "").trim();
+  const chatId = String(readTavernChatId(host) ?? "").trim();
   if (!chatId) throw new Error("current chat id is unavailable");
   const driver = fileDriver ?? await createBrowserFileDriver({
     navigatorObject: host.navigator,
@@ -47645,10 +47663,10 @@ async function installObjectManagerLifecycle(options = {}) {
   };
 
   const handleMessage = async (messageId, source = "model") => {
-    const chatIdAtRead = String(host.SillyTavern.getCurrentChatId?.() ?? "");
+    const chatIdAtRead = String(readTavernChatId(host) ?? "");
     const snapshot = assistantSnapshot(host, messageId);
     if (!snapshot) return { applied: 0, skipped: 0 };
-    if (!active || active.chatId !== String(host.SillyTavern.getCurrentChatId?.() ?? "")) await transition();
+    if (!active || active.chatId !== String(readTavernChatId(host) ?? "")) await transition();
     if (active.chatId !== chatIdAtRead) throw new Error("chat changed before reply processing");
     const chat = host.SillyTavern.getContext?.()?.chat ?? host.SillyTavern.chat ?? [];
     const cursor = (await active.runtime.store.readJson("meta.json")).lastReplyOrdinal ?? 0;
@@ -47721,7 +47739,7 @@ async function installObjectManagerLifecycle(options = {}) {
       request.promise = (async () => {
         const text = await generateUpdate(await runtime.buildUpdateRequest(snapshot.content));
         const current = assistantSnapshot(host, messageId);
-        if (generation !== token || facade.runtime !== runtime || facade.chatId !== chatId || String(host.SillyTavern.getCurrentChatId?.() ?? '') !== chatId || current?.replyAnchor !== snapshot.replyAnchor || current?.content !== snapshot.content) {
+        if (generation !== token || facade.runtime !== runtime || facade.chatId !== chatId || String(readTavernChatId(host) ?? '') !== chatId || current?.replyAnchor !== snapshot.replyAnchor || current?.content !== snapshot.content) {
           throw new Error('chat, reply or swipe changed while extra model was running');
         }
         return runtime.handleModelOutput(text, { ...snapshot, source: 'extra' });

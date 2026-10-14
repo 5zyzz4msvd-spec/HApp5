@@ -1,3 +1,4 @@
+import {hasTavernContext,readTavernChatId} from "./tavern-context.mjs";
 import {ensureUserManagement,hasLegacyUserState,userNotebookSources} from './user-management.mjs';
 import {installLocationHypnosisHooks,stageLegacyLocationHypnosis,migrateLegacyLocationHypnosis} from './location-hypnosis.mjs';
 import { surfaceLifecycle as lifecycle, runSceneTransition as transition } from '../ui/surface-motion.mjs';
@@ -90,7 +91,7 @@ export function sceneLocation(locations, text) {
 
 function findHost(start) {
   for (const view of [start.top, start.parent, start]) {
-    try { if (view?.SillyTavern?.getCurrentChatId) return view; } catch {}
+    try { if (hasTavernContext(view)) return view; } catch {}
   }
   throw new Error("当前聊天宿主尚未就绪");
 }
@@ -98,7 +99,7 @@ function findHost(start) {
 export async function ensurePhoneObjectRuntime(start = globalThis, { graphs = [], characters, encounterRole = null, assetLoader = null } = {}) {
   const host = findHost(start);
   const bridge=host.__ST_GAME_RUNTIME_BRIDGE__;if(bridge&&bridge.ensurePhoneObjectRuntime!==ensurePhoneObjectRuntime)return bridge.ensurePhoneObjectRuntime(start,{graphs,characters,encounterRole,assetLoader});
-  const chatId = String(host.SillyTavern.getCurrentChatId() ?? "");
+  const chatId = String(readTavernChatId(host) ?? "");
   if (!chatId) throw new Error("无法确认当前聊天");
   let facade = host.__HYPNOOS_OBJECT_MANAGER_V1__;
   if (facade?.chatId && facade.chatId !== chatId) { await facade.destroy?.(); facade = null; }
@@ -144,7 +145,7 @@ export async function ensurePhoneObjectRuntime(start = globalThis, { graphs = []
 }
 
 async function publishGraphViews(runtime, host) {
-  if (String(host.SillyTavern.getCurrentChatId() ?? "") !== runtime.store.chatId) return;
+  if (String(readTavernChatId(host) ?? "") !== runtime.store.chatId) return;
   const views = {};
   for (const scope of ["world", "school"]) {
     const root = await runtime.store.getObject({ kind: "location", id: `map-${scope}` });
