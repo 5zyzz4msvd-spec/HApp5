@@ -1,0 +1,23 @@
+import { installSerialMotion } from './serial-motion.mjs';
+let order=100;
+export function sceneSurfaceRect(doc){
+ const style=doc.documentElement.style,win=doc.defaultView;
+ const number=(key,fallback)=>{const value=parseFloat(style.getPropertyValue('--hypno-scene-'+key));return Number.isFinite(value)?value:fallback;};
+ return{left:number('left',0),top:number('top',0),width:number('width',win.innerWidth),height:number('height',win.innerHeight)};
+}
+export function bindFloatingDrag(handle,panel,{visibleTop=()=>0}={}){
+ const win=panel.ownerDocument.defaultView;let active=null,x=0,y=0;
+ handle.style.touchAction='none';handle.style.cursor='grab';
+ function down(event){if(event.button!==0||event.target.closest('button,input,textarea,select,a'))return;active={id:event.pointerId,startX:event.clientX,startY:event.clientY,x,y};handle.style.cursor='grabbing';handle.setPointerCapture?.(event.pointerId);event.preventDefault();}
+ function move(event){if(!active||event.pointerId!==active.id)return;const bounds=sceneSurfaceRect(panel.ownerDocument),parent=panel.parentElement,parentRect=parent?.getBoundingClientRect(),sx=parent?.clientWidth?parentRect.width/parent.clientWidth||1:1,sy=parent?.clientHeight?parentRect.height/parent.clientHeight||1:1,dx=(event.clientX-active.startX)/sx,dy=(event.clientY-active.startY)/sy,rect=panel.getBoundingClientRect(),panelTop=rect.top+visibleTop();let nx=active.x+dx,ny=active.y+dy;const offsetX=(nx-x)*sx,offsetY=(ny-y)*sy;nx-=Math.max(0,rect.right+offsetX-bounds.left-bounds.width+8)/sx;nx+=Math.max(0,bounds.left+8-(rect.left+offsetX))/sx;ny-=Math.max(0,rect.bottom+offsetY-bounds.top-bounds.height+8)/sy;ny+=Math.max(0,bounds.top+8-(panelTop+offsetY))/sy;x=nx;y=ny;panel.style.translate=x+'px '+y+'px';}
+ function up(event){if(!active||event.pointerId!==active.id)return;active=null;handle.style.cursor='grab';try{handle.releasePointerCapture?.(event.pointerId);}catch{}}
+ handle.addEventListener('pointerdown',down);handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',up);handle.addEventListener('pointercancel',up);
+ return{destroy(){handle.removeEventListener('pointerdown',down);handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',up);handle.removeEventListener('pointercancel',up);}};
+}
+export function mountFloatingWindow(container,{title,width=960,height=660,onClose}){
+ const doc=container.ownerDocument;installSerialMotion(doc);const host=doc.createElement('section');host.className='fw-host';host.setAttribute('role','dialog');host.setAttribute('aria-label',title+'窗口');host.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:'+(2147483400+order++);
+ const style=doc.createElement('style');style.textContent='.fw-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:96vw;max-height:92vh;border:1px solid #bca17b55;border-radius:20px;box-shadow:0 24px 90px #0005;background:#201a29;overflow:hidden;pointer-events:auto;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#e8dcec}.fw-header{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:linear-gradient(120deg,#332538,#221d2c);border-bottom:1px solid #9f826737;user-select:none}.fw-header strong{font-size:13px;font-weight:500;letter-spacing:1px}.fw-header button{border:0;background:#4b3c50;color:#dfcde6;width:25px;height:25px;border-radius:50%;font-size:18px;cursor:pointer}.fw-body{position:absolute;inset:43px 0 0;min-height:0;overflow:hidden}.fw-panel:focus-within{border-color:#baa08788}';
+ const panel=doc.createElement('div');panel.className='fw-panel';panel.style.width=height/width>1.5?'min('+width+'px, calc(92vh * '+(width/height)+'))':width+'px';panel.style.height=height+'px';const header=doc.createElement('header');header.className='fw-header';const name=doc.createElement('strong');name.textContent=title;const close=doc.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','关闭'+title+'窗口');close.addEventListener('click',onClose);header.append(name,close);const body=doc.createElement('main');body.className='fw-body';panel.append(header,body);host.append(style,panel);container.append(host);const drag=bindFloatingDrag(header,panel);
+ panel.addEventListener('pointerdown',()=>{host.style.zIndex=String(2147483400+order++);});const key=event=>{if(event.key==='Escape'&&event.target===close)onClose();};panel.addEventListener('keydown',key);
+ return{root:host,panel,body,header,destroy(){drag.destroy();host.remove();}};
+}

@@ -1,0 +1,71 @@
+{
+  "schema": 2,
+  "method": "built-in image_gen; original generated pixels retained",
+  "camera": "orthographic-top-down",
+  "chairCount": 8,
+  "seats": [
+    {
+      "index": 0,
+      "turn": 0
+    },
+    {
+      "index": 1,
+      "turn": 0.125
+    },
+    {
+      "index": 2,
+      "turn": 0.25
+    },
+    {
+      "index": 3,
+      "turn": 0.375
+    },
+    {
+      "index": 4,
+      "turn": 0.5
+    },
+    {
+      "index": 5,
+      "turn": 0.625
+    },
+    {
+      "index": 6,
+      "turn": 0.75
+    },
+    {
+      "index": 7,
+      "turn": 0.875
+    }
+  ],
+  "geometry": {
+    "size": 1200,
+    "cx": 588,
+    "cy": 588,
+    "seatRadius": 324,
+    "runRadius": 468
+  },
+  "files": [
+    {
+      "source": "src/art/hypnosis-app/v2/inventory/2026-10-14/round-room-v2/source.png",
+      "asset": "inventory/round-room-v2.png",
+      "sha256": "b60ca2fe8a4c55e0e284bc7a571814bbf2a58ec312b43f4ff634c2f3d561edbc",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
+    },
+    {
+      "source": "src/art/hypnosis-app/v2/inventory/2026-10-14/round-room-v2/lin-an-top-head-v2.png",
+      "asset": "inventory/lin-an-top-head-v2.png",
+      "sha256": "5b74811e8e12c5de3d1fae918328e72b972db2564bed764e0a68d14c61dc12e1",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
+    }
+  ],
+  "motion": "one top-down head; clockwise corridor travel, radial approach then seated facing table; UI motion, no fake pose frames",
+  "plans": [
+    "generation-plan.json",
+    "top-head-plan.json",
+    "top-head-correction-v2.json"
+  ]
+}

@@ -9,9 +9,12 @@
     assetBase: String(script.dataset.assetBase || ""),
     revision: String(script.dataset.revision || "local"),
     mode: String(script.dataset.mode || "stage"),
+    layout: String(script.dataset.layout || "legacy"),
+    sceneUrl: String(script.dataset.sceneUrl || ""),
     galgameScriptId: String(script.dataset.galgameScriptId || "8f69fa0e-1a51-4f63-9dc0-1129ef0ab4d7"),
     galgameScriptName: String(script.dataset.galgameScriptName || "国王游戏·Galgame输出协议")
   };
+  var sceneLayout = config.layout === "scene" && Boolean(config.sceneUrl);
   var token = "hypnoos-owner-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
 
   function textId(value) {
@@ -102,6 +105,81 @@
     var frame = null;
     var launcher = null;
     var panel = null;
+    var sceneArtLoading = false;
+    var routineSceneView = null;
+    var routineSceneAssets = null;
+    var routineSceneLoading = null;
+    var routineSceneLibraryLoading = null;
+    var routineSceneToken = 0;
+    var notebookView = null;
+    var notebookHost = null;
+    function releaseSceneWindow(close){host.__HYPNOOS_OBJECTS_LIB__?.sceneWindowController?.(hostDocument).release(close);}
+    var scenePhoneToolbar=null,scenePhoneToolbarDock=null,scenePhoneLifecycle=null,scenePhoneOrientation="portrait";
+    async function closeScenePhone(){if(scenePhoneLifecycle){var lifecycle=scenePhoneLifecycle;await lifecycle.close();scenePhoneLifecycle=null;}else applyTimetableFocus("none");releaseSceneWindow(closeScenePhone);}
+    async function setPhoneOrientation(value,options){var cluster=panel?.querySelector('.scene-phone-cluster'),oldScale=cluster&&host.getComputedStyle(cluster).transform!=='none'?new host.DOMMatrix(host.getComputedStyle(cluster).transform).a:1,savedTransition=cluster?.style.transition;if(cluster&&options?.animate)cluster.style.transition='none';scenePhoneOrientation=value==="landscape"?"landscape":"portrait";if(!panel)return;var landscape=scenePhoneOrientation==="landscape",width=landscape?874:415,height=landscape?415:874;[cluster,panel.querySelector('.phone-surface'),panel.querySelector('.phone-wrap'),panel.querySelector('iframe.phone')].forEach(function(node){if(node){node.style.width=width+'px';node.style.height=height+'px';}});if(scenePhoneToolbar){var rotate=scenePhoneToolbar.querySelector('[data-phone-rotate]');rotate.textContent=landscape?'竖屏':'横屏';rotate.setAttribute('aria-label',landscape?'切换手机为竖屏':'切换手机为横屏');}syncSceneCanvas(true);if(cluster&&options?.animate&&cluster.animate){var targetScale=Number(panel.style.getPropertyValue('--scene-phone-scale'))||1,animation=cluster.animate([{transform:'rotate('+(landscape?90:-90)+'deg) scale('+oldScale+')'},{transform:'rotate(0deg) scale('+targetScale+')'}],{duration:480,easing:'cubic-bezier(.22,.8,.2,1)',fill:'both'});try{await animation.finished;}catch{}animation.cancel();}if(cluster&&options?.animate)cluster.style.transition=savedTransition||'';}
+    function beginSceneWindow(close){var controller=host.__HYPNOOS_OBJECTS_LIB__?.sceneWindowController?.(hostDocument);return controller?controller.open(close):{isCurrent:function(){return true;}};}
+    var detectiveDeskView = null, detectiveDeskHost = null;
+    async function closeDetectiveDesk() { await detectiveDeskView?.close?.();detectiveDeskView?.destroy(); detectiveDeskView = null; detectiveDeskHost?.remove(); detectiveDeskHost = null; releaseSceneWindow(closeDetectiveDesk); }
+    function openDetectiveDesk(initialKind, initialTarget) {return host.__HYPNOOS_OBJECTS_LIB__.runSceneTransition(hostDocument,async()=>{
+      if(initialKind === "scout") { if(!notebookView) await openNotebookCore(""); await notebookView?.openScouting(); return; }
+      var lease=beginSceneWindow(closeDetectiveDesk);await lease.ready;
+      try {
+        var access = await phoneApi("__ST_HYPNOOS_NOTEBOOK_ACCESS__", [], true); await refreshRoutineScene();
+        var library = host.__HYPNOOS_OBJECTS_LIB__; if (!access || !library?.mountDetectiveDesk) throw new Error("委托运行库尚未就绪");
+        if(!lease.isCurrent())return; detectiveDeskHost = hostDocument.createElement("div"); detectiveDeskHost.style.cssText = "position:fixed;inset:0;z-index:2147483602;opacity:0"; hostDocument.body.appendChild(detectiveDeskHost);
+        var response = await host.fetch(String(config.assetBase || "").replace(/\/?$/, "/") + "notebook/catalog.json");
+        if (!response.ok) throw new Error("物色簿素材读取失败"); var assets = await response.json();if(!lease.isCurrent())return;
+        var ownDeskHost=detectiveDeskHost, view=await library.mountDetectiveDesk(ownDeskHost, Object.assign({}, access, { assets: assets, resolveFile: function(file) { return String(config.assetBase || "").replace(/\/?$/, "/") + file; }, initialKind: initialKind, initialTarget: initialTarget, onClose: function(){return library.runSceneTransition(hostDocument,closeDetectiveDesk);}, onChanged: async function() { await notebookView?.refresh(); await refreshRoutineScene(); } }));var deskDestroy=view.destroy.bind(view),deskLife=library.surfaceLifecycle(hostDocument,ownDeskHost,null,function(){deskDestroy();ownDeskHost.remove();});view=Object.assign(view,deskLife);if(lease.isCurrent()){detectiveDeskView=view;await view.ready;}else{view.destroy();ownDeskHost.remove();}
+      } catch(error) { if(lease.isCurrent())closeDetectiveDesk(); console.warn("[HypnoOS] 委托柜台打开失败", error); }
+    });}
+    var characterSlotsView = null, characterSlotsHost = null;
+    async function closeCharacterSlots() { await characterSlotsView?.close?.();characterSlotsView?.destroy(); characterSlotsView = null; characterSlotsHost?.remove(); characterSlotsHost = null; releaseSceneWindow(closeCharacterSlots); }
+    function openCharacterSlots() {return host.__HYPNOOS_OBJECTS_LIB__.runSceneTransition(hostDocument,async()=>{
+      var lease=beginSceneWindow(closeCharacterSlots);await lease.ready;
+      try {
+        var access = await phoneApi("__ST_HYPNOOS_NOTEBOOK_ACCESS__", [], true);
+        await refreshRoutineScene();
+        var library = host.__HYPNOOS_OBJECTS_LIB__;
+        if (!access || !library?.mountCharacterSlots) throw new Error("卡槽运行库尚未就绪");
+        var response = await host.fetch(String(config.assetBase || "").replace(/\/?$/, "/") + "notebook/catalog.json");
+        if (!response.ok) throw new Error("卡槽素材读取失败");
+        var assets = await response.json(); if(!lease.isCurrent())return;
+        characterSlotsHost = hostDocument.createElement("div"); characterSlotsHost.style.cssText = "position:fixed;inset:0;z-index:2147483601;opacity:0"; hostDocument.body.appendChild(characterSlotsHost);
+        var ownSlotsHost=characterSlotsHost, view=await library.mountCharacterSlots(ownSlotsHost, Object.assign({}, access, { assets: assets, resolveFile: function(file) { return String(config.assetBase || "").replace(/\/?$/, "/") + file; }, onClose: function() { return library.runSceneTransition(hostDocument,async function(){await closeCharacterSlots(); notebookView?.refresh(); refreshRoutineScene();}); } }));var slotsDestroy=view.destroy.bind(view),slotsLife=library.surfaceLifecycle(hostDocument,ownSlotsHost,null,function(){slotsDestroy();ownSlotsHost.remove();});view=Object.assign(view,slotsLife);if(lease.isCurrent()){characterSlotsView=view;await view.ready;}else{view.destroy();ownSlotsHost.remove();}
+      } catch(error) { if(lease.isCurrent())closeCharacterSlots(); console.warn("[HypnoOS] 卡槽打开失败", error); }
+    });}
+
+    async function closeNotebook() { await notebookView?.close?.();notebookView?.destroy(); notebookView = null; notebookHost?.remove(); notebookHost = null; releaseSceneWindow(closeNotebook); }
+    function openNotebook(roleName){return host.__HYPNOOS_OBJECTS_LIB__.runSceneTransition(hostDocument,function(){return openNotebookCore(roleName);});}
+    async function openNotebookCore(roleName){
+      var lease=beginSceneWindow(closeNotebook);await lease.ready;if(!lease.isCurrent())return;
+      try {
+        var access = await phoneApi("__ST_HYPNOOS_NOTEBOOK_ACCESS__", [], true);
+        if (!access) throw new Error("人物管理脚本尚未就绪");
+        await refreshRoutineScene();
+        var library = host.__HYPNOOS_OBJECTS_LIB__;
+        if (!library?.mountNotebook) throw new Error("笔记运行库尚未就绪");
+        var response = await host.fetch(String(config.assetBase || "").replace(/\/?$/, "/") + "notebook/catalog.json");
+        if (!response.ok) throw new Error("笔记素材读取失败");
+        var assets = await response.json(); if(!lease.isCurrent())return;
+        notebookHost = hostDocument.createElement("div"); notebookHost.style.cssText = "position:fixed;inset:0;z-index:2147483600;pointer-events:none"; hostDocument.body.appendChild(notebookHost);
+        var ownNotebookHost=notebookHost, view=await library.mountNotebook(ownNotebookHost, Object.assign({}, access, { assets: assets, resolveFile: function (file) { return String(config.assetBase || "").replace(/\/?$/, "/") + file; }, initialRole: roleName || "", onOpenDetective: function(kind, target) { openDetectiveDesk(kind || "investigate", target); }, onClose: function(){return host.__HYPNOOS_OBJECTS_LIB__.runSceneTransition(hostDocument,closeNotebook);} }));if(lease.isCurrent()){notebookView=view;await view.ready;}else{view.destroy();ownNotebookHost.remove();}
+      } catch (error) { if(lease.isCurrent())closeNotebook(); console.warn("[HypnoOS] 笔记打开失败", error); }
+    }
+    var collectionView=null,collectionHost=null,locationsView=null,locationsHost=null;
+    async function closeCollection(){await collectionView?.close?.();collectionView?.destroy();collectionView=null;collectionHost?.remove();collectionHost=null;releaseSceneWindow(closeCollection);}
+    function openCollection(){return host.__HYPNOOS_OBJECTS_LIB__.runSceneTransition(hostDocument,async()=>{
+      var lease=beginSceneWindow(closeCollection);await lease.ready;if(!lease.isCurrent())return;
+      try{var library=host.__HYPNOOS_OBJECTS_LIB__;if(!library?.mountInventoryCollection)throw new Error("库存运行库尚未就绪");collectionHost=hostDocument.createElement("div");collectionHost.style.cssText="position:fixed;inset:0;z-index:2147483603;pointer-events:none;background:transparent";hostDocument.body.append(collectionHost);
+      collectionView=library.mountInventoryCollection(collectionHost,{assetUrl:String(config.assetBase||"").replace(/\/?$/,"/")+"inventory/collection-tray-v1.png",getSnapshot:function(){return phoneApi("__ST_COLLECTION_SNAPSHOT__",[],true);},useItem:function(item,note,chatId){return phoneApi("__ST_COLLECTION_USE__",[item.name,note,chatId],false);},deleteItem:function(item,chatId){return phoneApi("__ST_COLLECTION_DISCARD__",[item.name,chatId],false);},onClose:function(){return library.runSceneTransition(hostDocument,closeCollection);}});await collectionView.ready;
+      }catch(error){closeCollection();console.warn("[HypnoOS] 收藏匣打开失败",error);}
+    });}
+    async function closeLocations(){await locationsView?.close?.();locationsView?.destroy();locationsView=null;locationsHost?.remove();locationsHost=null;releaseSceneWindow(closeLocations);}
+    function openLocations(locationId){return host.__HYPNOOS_OBJECTS_LIB__.runSceneTransition(hostDocument,async()=>{
+      var lease=beginSceneWindow(closeLocations);await lease.ready;if(!lease.isCurrent())return;
+      try{var library=host.__HYPNOOS_OBJECTS_LIB__,runtime=await phoneApi("__ST_SCENE_LOCATIONS_RUNTIME__",[],true);if(!library?.mountSceneLocations||!runtime)throw new Error("地点运行库尚未就绪");if(!lease.isCurrent())return;locationsHost=hostDocument.createElement("section");locationsHost.style.cssText="position:fixed;inset:0;z-index:2147483603;pointer-events:none";hostDocument.body.append(locationsHost);var ownHost=locationsHost,view=await library.mountSceneLocations(locationsHost,{runtime:runtime,locationId:typeof locationId==="string"?locationId:"map-world",onClose:function(){return library.runSceneTransition(hostDocument,closeLocations);}});if(!lease.isCurrent()||ownHost!==locationsHost||!ownHost.isConnected)view.destroy();else{locationsView=view;await view.ready;}
+      }catch(error){if(lease.isCurrent())closeLocations();console.warn("[HypnoOS] 地点窗口打开失败",error);}
+    });}
     var floorSelect = null;
     var modeButton = null;
     var stateBadge = null;
@@ -122,6 +200,11 @@
     var locationRuleRadarTimer = 0;
     var timetableRefreshTimer = 0;
     var timetableEditorCell = null;
+    var timetableEditorError = "";
+    var timetableEditorSaving = false;
+    var timetableEditMode = false;
+    var timetableViewPage = sceneLayout ? "user" : "week";
+    var timetableRecordPage = 0;
     var galgameBusy = false;
     var selectedId = "";
     var selectionMode = "follow";
@@ -131,6 +214,9 @@
     var launcherDragState = null;
     var suppressLauncherClick = false;
     var petSprite = null;
+    var desktopPetController = null;
+    var desktopPetLoading = null;
+    var desktopPetGeneration = 0;
     var petMenu = null;
     var petMenuOpen = false;
     var petMenuLongPressTimer = 0;
@@ -1469,6 +1555,44 @@
       if (token !== resourceRefreshToken || id !== textId(selectedId || writableId())) return;
       var root = usableSnapshot(snapshot) ? unwrapStat(snapshot) : null;
       paintSidecarResources(root && root["系统"], false);
+      refreshRoutineScene(root && root["系统"]);
+    }
+
+    async function refreshRoutineScene(system) {
+      if (!panel || !sceneLayout) return;
+      var token = ++routineSceneToken;
+      try {
+        if (!phoneApi("__ST_HYPNOOS_SCENE_LIBRARY__", [], true)) return;
+        var library = host.__HYPNOOS_OBJECTS_LIB__;
+        if (!library?.mountRoutineScene) {
+          if (!routineSceneLibraryLoading) routineSceneLibraryLoading = new Promise(function (resolve, reject) {
+            var loader = hostDocument.createElement("script");
+            loader.src = String(config.assetBase || "").replace(/\/?$/, "/") + "../object-runtime.js";
+            loader.onload = function () { resolve(host.__HYPNOOS_OBJECTS_LIB__); };
+            loader.onerror = function () { reject(new Error("场景运行库加载失败")); };
+            hostDocument.head.appendChild(loader);
+          });
+          library = await routineSceneLibraryLoading;
+        }
+        if (!routineSceneLoading) routineSceneLoading = host.fetch(String(config.assetBase || "").replace(/\/?$/, "/") + "scene-presence/catalog.json").then(function (response) { if (!response.ok) throw new Error("场景素材目录读取失败"); return response.json(); });
+        routineSceneAssets = await routineSceneLoading;
+        var context = await phoneApi("__ST_HYPNOOS_SCENE_CONTEXT__", [system], true);
+        if (!context || token !== routineSceneToken || !panel) return;
+        if (!routineSceneView) {
+          var mount = hostDocument.createElement("div"); mount.className = "routine-scene-mount"; mount.style.cssText = "position:absolute;inset:0;z-index:2;pointer-events:none";
+          panel.appendChild(mount);
+          routineSceneView = library.mountRoutineScene(mount, { assets: routineSceneAssets, resolveFile: function (file) { return String(config.assetBase || "").replace(/\/?$/, "/") + file; } });
+          routineSceneView.root.style.pointerEvents = "none";
+          routineSceneView.root.addEventListener('hypno:scene-fit',function(){syncSceneCanvas(true);});
+          var sceneResources=panel.querySelector('.sidecar');if(sceneResources)routineSceneView.root.querySelector('.scene-workspace-body').append(sceneResources);
+          var phoneSurface=panel.querySelector(".phone-surface"),phoneCluster=panel.querySelector(".scene-phone-cluster"),phoneHeader=hostDocument.createElement("header");phoneHeader.className="scene-phone-window-header";phoneHeader.innerHTML="<strong>手机</strong><span class='phone-toolbar-actions'><button type='button' data-phone-rotate aria-label='切换手机为横屏'>横屏</button><button type='button' data-phone-home aria-label='回首页'>回首页</button></span><button type='button' data-phone-close aria-label='关闭手机窗口'>×</button>";phoneHeader.style.cssText="position:absolute;left:24px;right:24px;top:-35px;height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:transparent;border:0;color:#decbe8;font:13px system-ui;z-index:92;pointer-events:auto";phoneHeader.querySelectorAll('button').forEach(function(button){button.style.cssText="border:0;border-radius:8px;background:#4b3c50;color:#eddfef;padding:5px 9px;cursor:pointer";});phoneHeader.querySelector('[data-phone-home]').addEventListener('click',function(){phoneApi('__ST_HYPNOOS_GO_HOME_APP__',[],true);});phoneHeader.querySelector('[data-phone-close]').addEventListener('click',function(){return library.runSceneTransition(hostDocument,closeScenePhone);});phoneHeader.querySelector('[data-phone-rotate]').addEventListener('click',function(){void phoneApi('__ST_PHONE16_TOGGLE_ORIENTATION__',[],true);});phoneSurface.append(phoneHeader);scenePhoneToolbar=phoneHeader;library.bindFloatingDrag(phoneHeader,phoneCluster||phoneSurface);if(timetableFocus==='phone'){void library.runSceneTransition(hostDocument,async function(){if(timetableFocus!=='phone'||scenePhoneToolbarDock)return;scenePhoneToolbarDock=library.dockSceneToolbar(hostDocument,phoneHeader);phoneApi('__ST_PHONE16_CONTROLS_DOCKED__',[true],true);if(scenePhoneLifecycle)await scenePhoneLifecycle.setToolbar(scenePhoneToolbarDock);});}
+          await ensureDesktopPet();
+          library.mountSceneTools(routineSceneView.root,{assetBase:config.assetBase,petController:desktopPetController,phone:function(){timetableSetFocus("phone");},notebook:function(){openNotebook("");},inventory:openCollection,locations:openLocations,slots:openCharacterSlots,detective:function(){openDetectiveDesk("investigate");}});
+          panel.classList.add("has-routine-scene");void setPhoneOrientation(scenePhoneOrientation);
+        }
+        if (!isWritable()) context.characters = [];
+        routineSceneView.render(Object.assign({}, context, { viewport: { width: panel.clientWidth, height: panel.clientHeight } }));
+      } catch (error) { console.warn("[HypnoOS] 地点人物场景读取失败", error); routineSceneLoading = null; }
     }
 
     function paintVariableFormatButton(report) {
@@ -1753,6 +1877,7 @@
     }
 
     function panelSidecarReserve(width) {
+      if (sceneLayout) return 0;
       if (timetableFocus === "phone") return 0;
       var viewport = hostViewportRect();
       var available = Math.max(0, viewport.width - Number(width || 0) - 24);
@@ -1761,9 +1886,25 @@
 
     function syncPanelSize() {
       if (!panel) return;
-      var baseWidth = timetableFocus === "phone" ? 650 : timetableFocus === "timetable" ? 850 : 1240;
+      if (sceneLayout) {
+        var sceneViewport = hostViewportRect();
+        var safeStyle = host.getComputedStyle(panel);
+        var safeX = (parseFloat(safeStyle.marginLeft) || 0) + (parseFloat(safeStyle.marginRight) || 0);
+        var safeY = (parseFloat(safeStyle.marginTop) || 0) + (parseFloat(safeStyle.marginBottom) || 0);
+        panel.style.width = Math.max(1, sceneViewport.width - 16 - safeX) + "px";
+        panel.style.height = Math.max(1, sceneViewport.height - 16 - safeY) + "px";
+        panel.style.setProperty("--phone-scale", "1");
+        panel.style.setProperty("--stage-scale", String(Math.min(panel.clientWidth / 1280, panel.clientHeight / 600)));
+        panel.style.setProperty("--stage-offset-x", "0px");
+        panel.style.setProperty("--phone-face-width", "430px");
+        panel.style.setProperty("--scene-phone-scale", "0.66");
+        panel.style.setProperty("--scene-timetable-scale", "0.66");
+        syncSceneCanvas();
+        return;
+      }
+      var baseWidth = timetableFocus === "phone" ? 650 : timetableFocus === "timetable" ? 1030 : 1420;
       var baseHeight = 812;
-      var visibleLeft = timetableFocus === "phone" ? 520 : timetableFocus === "timetable" ? -24 : 0;
+      var visibleLeft = timetableFocus === "phone" ? 700 : timetableFocus === "timetable" ? -24 : 0;
       var viewport = hostViewportRect();
       var viewportWidth = viewport.width;
       var viewportHeight = viewport.height;
@@ -1776,6 +1917,29 @@
       panel.style.setProperty("--stage-scale", String(scale));
       panel.style.setProperty("--stage-offset-x", (-visibleLeft * scale) + "px");
       panel.style.setProperty("--phone-face-width", (430 * scale) + "px");
+    }
+
+    function syncSceneCanvas(sceneReady) {
+      if (!panel || !sceneLayout) return;
+      var scale = Math.min(panel.clientWidth / 1280, panel.clientHeight / 600);
+      var left = (panel.clientWidth - 1280 * scale) / 2;
+      var top = (panel.clientHeight - 600 * scale) / 2;
+      panel.dataset.sceneFit = "fixed-landscape";
+      panel.style.setProperty("--scene-phone-scale",String(Math.min(1,panel.clientHeight*.82/812,panel.clientWidth*.75/430)/scale));
+      panel.style.setProperty("--scene-ui-scale", String(scale));
+      panel.style.setProperty("--scene-ui-left", left + "px");
+      panel.style.setProperty("--scene-ui-top", top + "px");
+      [panel.querySelector(".scene-backdrop"), panel.querySelector(".dual-stage")].forEach(function (node) {
+        if (!node) return;
+        node.style.width = "1280px"; node.style.height = "600px";
+        node.style.left = left + "px"; node.style.top = top + "px";
+        node.style.transformOrigin = "top left"; node.style.transform = "scale(" + scale + ")";
+      });
+      var scroll = panel.querySelector(".scene-scroll");
+      if (scroll) { scroll.style.overflow = "hidden"; scroll.scrollLeft = 0; }
+      if(routineSceneView&&!sceneReady)routineSceneView.resize();
+      if(routineSceneView){var worldRect=routineSceneView.root.querySelector('.routine-world').getBoundingClientRect(),panelRect=panel.getBoundingClientRect(),cluster=panel.querySelector('.scene-phone-cluster');panel.style.setProperty('--scene-phone-scale',String(Math.min(1,worldRect.height*.88/(scenePhoneOrientation==='landscape'?415:874),worldRect.width*.90/(scenePhoneOrientation==='landscape'?874:415))/scale));if(cluster){cluster.style.left=((worldRect.left+worldRect.width/2-panelRect.left-left)/scale-(scenePhoneOrientation==='landscape'?874:415)/2)+'px';cluster.style.top=((worldRect.top+worldRect.height/2-panelRect.top-top)/scale-(scenePhoneOrientation==='landscape'?415:874)/2)+'px';}var table=panel.querySelector('.timetable-surface');panel.style.setProperty('--scene-timetable-scale',String(Math.min(1,worldRect.height*.94/812,worldRect.width*.94/900)/scale));if(table){table.style.left=((worldRect.left+worldRect.width/2-panelRect.left-left)/scale-450)+'px';table.style.top=((worldRect.top+worldRect.height/2-panelRect.top-top)/scale-406)+'px';}}
+
     }
 
     function clampPosition(x, y) {
@@ -1811,6 +1975,11 @@
       if (!panel) return;
       syncPanelSize();
       var viewport = hostViewportRect();
+      if (sceneLayout) {
+        panel.style.left = (viewport.left + 8) + "px";
+        panel.style.top = (viewport.top + 8) + "px";
+        return;
+      }
       var saved = readUiState();
       var fallbackX = Math.max(viewport.left + 8, viewport.left + viewport.width - panel.offsetWidth - panelSidecarReserve(panel.offsetWidth) - 28);
       var fallbackY = Math.max(viewport.top + 8, Math.min(viewport.top + 88, viewport.top + viewport.height - panel.offsetHeight - 8));
@@ -1842,6 +2011,37 @@
 
     function petAssetUrl(name) {
       return String(config.assetBase || "").replace(/\/?$/, "/") + "pet/" + name;
+    }
+
+    function ensureDesktopPet() {
+      if (desktopPetController) return Promise.resolve(desktopPetController);
+      if (desktopPetLoading) return desktopPetLoading;
+      var generation = desktopPetGeneration;
+      var moduleUrl = String(config.assetBase || "").replace(/\/?$/, "/") + "../game-modules/pet-v6/desktop-pet.mjs";
+      desktopPetLoading = import(moduleUrl).then(async function (module) {
+        if (generation !== desktopPetGeneration || !launcher) return null;
+        var controller = module.mountDesktopPet(hostDocument.body, {
+          assetBase: config.assetBase,
+          initialCharacter: petCharacterId,
+          storageKey: "hypno-pet-v6-tavern",
+          onCharacter: function (id) { petCharacterId = id; saveUiState(); updatePetCharacterButton(); },
+          actions: {
+            phone: function () { toggleShell(true); return timetableSetFocus("phone"); },
+            notebook: function () { toggleShell(true); return openNotebook(""); },
+            inventory: function () { toggleShell(true); return openCollection(); },
+            locations: function () { toggleShell(true); return openLocations(); }
+          }
+        });
+        try { await controller.ready; } catch (error) { controller.destroy(); throw error; }
+        if (generation !== desktopPetGeneration || !launcher) { controller.destroy(); return null; }
+        desktopPetController = controller;
+        launcher.hidden = true;
+        launcher.style.display = "none";
+        if (petMenu) petMenu.style.display = "none";
+        clearPetFrameTimer(); clearPetActivityTimer(); clearPetMotionFrame();
+        return controller;
+      }).catch(function (error) { console.warn("[HypnoOS] 新桌宠加载失败", error); return null; }).finally(function () { desktopPetLoading = null; });
+      return desktopPetLoading;
     }
 
     var PET_BASE_FACING = 1;
@@ -2096,6 +2296,7 @@
     }
 
     function setPetState(name, options) {
+      if (desktopPetController) return;
       var nextName = String(name || "idle");
       var opts = options || {};
       if (petReducedMotion() && /^(unique_a|unique_b|landing)$/.test(nextName)) nextName = "idle";
@@ -2323,7 +2524,7 @@
       petMenu.classList.add("open");
       petMenu.setAttribute("aria-hidden", "false");
       launcher.setAttribute("aria-expanded", "true");
-      if (focusMenu) petMenu.querySelector("button")?.focus();
+      if (focusMenu) petMenu.querySelector("button")?.focus({ preventScroll: true });
     }
 
     function closePetMenu(refocus) {
@@ -2333,7 +2534,7 @@
       petMenu.classList.remove("open");
       petMenu.setAttribute("aria-hidden", "true");
       if (launcher) launcher.setAttribute("aria-expanded", shellOpen ? "true" : "false");
-      if (refocus && launcher) launcher.focus();
+      if (refocus && launcher) launcher.focus({ preventScroll: true });
       else if (!launcherDragState && !shellOpen && !petSwitching) resumePetAutonomy();
     }
 
@@ -2345,13 +2546,15 @@
         ".pet-fallback{position:absolute;left:15px;top:15px;width:66px;height:66px;border:1px solid rgba(196,116,255,.7);border-radius:24px;background:linear-gradient(145deg,#58115d,#19142d 62%,#0b1022);box-shadow:0 16px 44px rgba(20,0,35,.48),inset 0 1px rgba(255,255,255,.18);display:grid;place-items:center;transition:opacity .18s ease}.launcher.pet-ready .pet-fallback{opacity:0;pointer-events:none}.pet-fallback svg{width:30px;height:30px}",
         ".pet-menu{position:fixed;z-index:4;width:56px;height:56px;pointer-events:none;opacity:0;transform:translateY(8px) scale(.9);transform-origin:50% 100%;transition:opacity .14s ease,transform .14s ease}.pet-menu.open{pointer-events:auto;opacity:1;transform:none}.pet-menu button{position:absolute;inset:0;width:56px;height:56px;padding:0;border:1px solid rgba(226,232,240,.7);border-radius:50%;background:linear-gradient(145deg,rgba(30,41,59,.97),rgba(15,23,42,.98));box-shadow:0 8px 22px rgba(2,6,23,.48),inset 0 1px rgba(255,255,255,.14);color:#f8fafc;font:850 11px/1.1 system-ui;cursor:pointer;touch-action:manipulation}.pet-menu button:hover,.pet-menu button:focus-visible{border-color:#a5f3fc;background:linear-gradient(145deg,#155e75,#172554);outline:2px solid rgba(165,243,252,.72);outline-offset:2px}",
         ".launcher i{position:absolute;z-index:2;right:1px;top:1px;min-width:20px;height:20px;padding:0 5px;border:2px solid rgba(255,255,255,.88);border-radius:10px;background:#f25aa6;color:white;font:800 11px/16px system-ui;text-align:center;box-shadow:0 3px 8px rgba(15,23,42,.46)}@media(prefers-reduced-motion:reduce){.pet-sprite,.pet-fallback{transition:none!important}}",
-        ".panel{pointer-events:none;position:fixed;width:1240px;height:812px;border:0;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1;--stage-scale:1;--phone-drag-x:0px;--phone-drag-y:0px;--timetable-drag-x:0px;--timetable-drag-y:0px;perspective:1800px}",
+        ".panel{pointer-events:none;position:fixed;width:1420px;height:812px;border:0;background:transparent;box-shadow:none;overflow:visible;z-index:2;display:none;isolation:isolate;--floor-sidecar-width:270px;--phone-scale:1;--stage-scale:1;--phone-drag-x:0px;--phone-drag-y:0px;--timetable-drag-x:0px;--timetable-drag-y:0px;perspective:1800px}",
         ".panel.open{display:block}",
-        ".dual-stage{position:absolute;z-index:4;left:0;top:0;width:1240px;height:812px;pointer-events:none;transform:translateX(var(--stage-offset-x,0px)) scale(var(--stage-scale));transform-origin:0 0;transform-style:preserve-3d;perspective:1800px;perspective-origin:720px 50%}.cuboid{position:absolute;inset:0;pointer-events:none;transform:rotateY(-45deg);transform-origin:720px 50%;transform-style:preserve-3d;transition:transform .78s cubic-bezier(.2,.82,.2,1);will-change:transform}.panel.focus-timetable .cuboid{transform:rotateY(-12deg)}.panel.focus-phone .cuboid{transform:rotateY(-78deg)}.cuboid:after{content:'';position:absolute;z-index:30;left:717px;top:18px;width:6px;height:776px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(7,9,17,.82),rgba(255,255,255,.08));box-shadow:0 0 28px rgba(0,0,0,.58);pointer-events:none;transform:translateZ(2px)}.surface{position:absolute;top:0;height:812px;pointer-events:auto;transform-style:preserve-3d;backface-visibility:visible}.surface:after{content:'';position:absolute;z-index:40;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(3,5,12,.32),rgba(3,5,12,.04) 42%,transparent);opacity:0;pointer-events:none;transition:opacity .34s ease}.panel.focus-phone .timetable-surface:after,.panel.focus-timetable .phone-surface:after{opacity:.28}.surface-drag-handle{position:absolute;z-index:45;left:50%;top:4px;width:96px;height:34px;translate:-50% 0;border:0;border-radius:999px;background:transparent;cursor:grab;touch-action:none}.surface-drag-handle:active{cursor:grabbing}.timetable-surface{left:0;width:720px;z-index:5;transform:translate3d(var(--timetable-drag-x),var(--timetable-drag-y),0);transform-origin:right center}.phone-surface{left:720px;width:430px;z-index:6;transform:translate3d(var(--phone-drag-x),var(--phone-drag-y),0) rotateY(90deg);transform-origin:left center}.phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:38px;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent;pointer-events:auto}.surface-switch{position:absolute;z-index:55;top:50%;width:46px;height:78px;margin:0;padding:0;border:3px solid #191713;border-radius:9px;background:#fffaf0;color:#1e1c18;box-shadow:5px 5px 0 #ef5d50;font:950 30px/1 system-ui;cursor:pointer;pointer-events:auto;display:grid;place-items:center;transition:transform .18s ease,filter .18s ease}.surface-switch.prev{left:-56px;transform:translateY(-50%) rotate(-2deg)}.surface-switch.next{right:-56px;transform:translateY(-50%) rotate(2deg)}.surface-switch:hover{filter:brightness(1.06)}.surface-switch.prev:hover{transform:translate(-3px,-50%) rotate(1deg)}.surface-switch.next:hover{transform:translate(3px,-50%) rotate(-1deg)}.surface-switch:focus-visible{outline:4px solid #7dd3fc;outline-offset:4px}.timetable-surface .surface-switch.next{top:43%}.phone-surface .surface-switch.prev{top:57%}@media(prefers-reduced-motion:reduce){.cuboid,.surface:after,.surface-switch{transition:none!important}}",
-        ".timetable-wrap{position:absolute;inset:0;border:4px solid #24201a;border-radius:18px;background:#fffaf0;color:#29251f;box-shadow:12px 16px 0 rgba(23,20,16,.28);overflow:hidden;font-family:'Klee One','Hiragino Maru Gothic ProN','Noto Sans SC',cursive}.timetable-paper{height:100%;padding:20px 18px 16px;background-image:repeating-linear-gradient(0deg,transparent 0 29px,rgba(80,135,180,.12) 30px)}.tt-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px}.tt-title{margin:0;font:900 30px/1 cursive;letter-spacing:.08em;transform:rotate(-1deg)}.tt-date{padding:6px 10px;border:2px dashed #225c91;background:#eef8ff;font-weight:800;transform:rotate(1deg)}.tt-rhythm{display:flex;gap:7px;overflow:auto;padding:3px 2px 10px}.tt-rhythm span{flex:0 0 auto;padding:5px 9px;border:2px solid #29251f;border-radius:50% 42% 48% 44%;background:#fff;box-shadow:2px 3px 0 #f2b24f;font-size:12px;font-weight:800}.tt-layout{display:grid;grid-template-columns:minmax(0,1fr) 150px 210px;gap:10px;height:660px}.tt-week,.tt-today,.tt-user{min-width:0;border:3px solid #29251f;background:rgba(255,255,255,.86);overflow:auto}.tt-week{display:grid;grid-template-columns:58px repeat(5,minmax(82px,1fr));grid-auto-rows:minmax(62px,auto)}.tt-cell{position:relative;border-right:1px dashed #6b6358;border-bottom:1px dashed #6b6358;padding:7px 6px;background:transparent;text-align:left;font:700 12px/1.3 inherit}.tt-cell.head{position:sticky;top:0;z-index:3;background:#fffaf0;text-align:center;font-weight:900}.tt-cell.today{background:#fff0a8}.tt-cell.period{background:#f1eee8;text-align:center;font-weight:900}.tt-cell.modified{background:#ffd9d2}.tt-cell button{width:100%;border:0;background:transparent;text-align:left;font:inherit;cursor:pointer}.tt-side-title{position:sticky;top:0;z-index:3;margin:0;padding:8px;background:#29251f;color:white;text-align:center;font:900 14px/1.2 inherit}.tt-today-list,.tt-action-list{display:grid;gap:7px;padding:8px}.tt-note{padding:8px;border:2px solid #29251f;background:#fffaf0;box-shadow:3px 3px 0 #7ab6d8;font-size:12px}.tt-slot{min-height:76px;padding:8px;border:2px dashed #29251f;background:#fff;box-shadow:3px 3px 0 #f2b24f}.tt-slot.locked{opacity:.5;background:#ddd8cf}.tt-slot.sent{background:#dcebd9}.tt-slot strong{display:block;font-size:12px}.tt-slot small{display:block;margin-top:4px;color:#645b50}.tt-pending{margin:8px;padding:8px;border:3px solid #29251f;background:#eaf7ff;box-shadow:4px 4px 0 #6ea9cc}.tt-pending h4{margin:0 0 7px;font:900 12px/1.2 inherit}.tt-card{display:grid;gap:4px;margin:6px 0;padding:8px;border:2px solid #29251f;background:#fff;box-shadow:2px 2px 0 #ef5d50;cursor:grab;touch-action:none}.tt-card.free{background:#e9fff0}.tt-card.hypnosis{background:#f7eaff}.tt-card.note{background:#fff4bf}.tt-card.busy{opacity:.58;cursor:not-allowed}.tt-card select,.tt-card button,.tt-note-form input,.tt-note-form button{min-height:32px;border:2px solid #29251f;background:#fffaf0;padding:5px;font:800 11px/1 inherit}.tt-note-form{display:grid;grid-template-columns:1fr auto;gap:5px;margin-top:7px}.tt-actions{display:flex;gap:8px;align-items:center;padding:8px}.tt-actions button{border:2px solid #29251f;background:#fffaf0;padding:8px;font:900 12px/1 inherit;box-shadow:3px 3px 0 #ef5d50;cursor:pointer}.tt-error{padding:6px 8px;color:#9f1239;font:850 11px/1.4 inherit}.tt-empty{padding:14px;color:#6a6258;text-align:center;font-size:12px}@media(prefers-reduced-motion:reduce){.surface{transition:none!important}}",
+        ".dual-stage{position:absolute;z-index:4;left:0;top:0;width:1420px;height:812px;pointer-events:none;transform:translateX(var(--stage-offset-x,0px)) scale(var(--stage-scale));transform-origin:0 0;transform-style:preserve-3d;perspective:1800px;perspective-origin:900px 50%}.cuboid{position:absolute;inset:0;pointer-events:none;transform:rotateY(-45deg);transform-origin:900px 50%;transform-style:preserve-3d;transition:transform .78s cubic-bezier(.2,.82,.2,1);will-change:transform}.panel.focus-timetable .cuboid{transform:rotateY(-12deg)}.panel.focus-phone .cuboid{transform:rotateY(-78deg)}.cuboid:after{content:'';position:absolute;z-index:30;left:897px;top:18px;width:6px;height:776px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(7,9,17,.82),rgba(255,255,255,.08));box-shadow:0 0 28px rgba(0,0,0,.58);pointer-events:none;transform:translateZ(2px)}.surface{position:absolute;top:0;height:812px;pointer-events:auto;transform-style:preserve-3d;backface-visibility:visible}.surface:after{content:'';position:absolute;z-index:40;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(3,5,12,.32),rgba(3,5,12,.04) 42%,transparent);opacity:0;pointer-events:none;transition:opacity .34s ease}.panel.focus-phone .timetable-surface:after,.panel.focus-timetable .phone-surface:after{opacity:.28}.surface-drag-handle{position:absolute;z-index:45;left:50%;top:4px;width:96px;height:34px;translate:-50% 0;border:0;border-radius:999px;background:transparent;cursor:grab;touch-action:none}.surface-drag-handle:active{cursor:grabbing}.timetable-surface{left:0;width:900px;z-index:5;transform:translate3d(var(--timetable-drag-x),var(--timetable-drag-y),0);transform-origin:right center}.phone-surface{left:900px;width:430px;z-index:6;transform:translate3d(var(--phone-drag-x),var(--phone-drag-y),0) rotateY(90deg);transform-origin:left center}.phone-wrap{position:absolute;z-index:4;left:0;top:0;width:430px;height:812px;border:1px solid rgba(221,184,255,.42);border-radius:38px;background:#05070f;box-shadow:0 32px 110px rgba(0,0,0,.72),0 0 0 6px rgba(17,12,30,.72);overflow:hidden;isolation:isolate}.phone-wrap:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);pointer-events:none;z-index:8}.phone{display:block;width:430px;height:812px;border:0;background:transparent;pointer-events:auto}.surface-switch{position:absolute;z-index:55;top:50%;width:46px;height:78px;margin:0;padding:0;border:3px solid #191713;border-radius:9px;background:#fffaf0;color:#1e1c18;box-shadow:5px 5px 0 #ef5d50;font:950 30px/1 system-ui;cursor:pointer;pointer-events:auto;display:grid;place-items:center;transition:transform .18s ease,filter .18s ease}.surface-switch.prev{left:-56px;transform:translateY(-50%) rotate(-2deg)}.surface-switch.next{right:-56px;transform:translateY(-50%) rotate(2deg)}.surface-switch:hover{filter:brightness(1.06)}.surface-switch.prev:hover{transform:translate(-3px,-50%) rotate(1deg)}.surface-switch.next:hover{transform:translate(3px,-50%) rotate(-1deg)}.surface-switch:focus-visible{outline:4px solid #7dd3fc;outline-offset:4px}.timetable-surface .surface-switch.next{top:43%}.phone-surface .surface-switch.prev{top:57%}@media(prefers-reduced-motion:reduce){.cuboid,.surface:after,.surface-switch{transition:none!important}}",
+        ".scene-surface-hitbox,.scene-surface-return{display:none}.layout-scene.panel{overflow:hidden;border:1px solid rgba(255,255,255,.2);border-radius:22px;background:#111827;box-shadow:0 26px 80px rgba(0,0,0,.62);perspective:none}.layout-scene .scene-scroll{position:absolute;z-index:1;inset:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.42) rgba(4,7,15,.42);pointer-events:auto}.layout-scene .scene-backdrop{position:absolute;z-index:0;left:0;top:0;width:max(100%,1180px);height:100%;display:block;object-fit:cover;object-position:center;user-select:none;-webkit-user-drag:none;pointer-events:none}.layout-scene .dual-stage{position:absolute;z-index:2;left:0;top:0;width:max(100%,1180px);height:100%;transform:none;perspective:none}.layout-scene .cuboid{inset:0;transform:none!important;transform-style:flat;transition:none}.layout-scene .cuboid:after{display:none}.layout-scene .surface,.layout-scene .scene-phone-cluster{transition:none!important}.layout-scene .surface{height:812px;opacity:1;visibility:visible;backface-visibility:visible;transition:left .72s cubic-bezier(.18,.84,.22,1),top .72s cubic-bezier(.18,.84,.22,1),transform .72s cubic-bezier(.18,.84,.22,1)}.layout-scene .timetable-surface{z-index:6;left:-565px;top:calc(100% - 355px);width:900px;pointer-events:auto;transform:scale(.5);transform-origin:center}.layout-scene .scene-phone-cluster{position:absolute;z-index:7;left:calc(100% - 220px);top:calc(100% - 335px);width:430px;height:812px;pointer-events:none;isolation:isolate;transform:scale(.55);transform-origin:center;transition:left .72s cubic-bezier(.18,.84,.22,1),top .72s cubic-bezier(.18,.84,.22,1),transform .72s cubic-bezier(.18,.84,.22,1)}.layout-scene .scene-phone-cluster .phone-surface{position:absolute;z-index:6;inset:0;width:430px;height:812px;pointer-events:auto;transform:none;transform-origin:center}.layout-scene.focus-timetable .timetable-surface{z-index:20;left:calc(50% - 450px);top:calc(50% - 406px);transform:scale(var(--scene-timetable-scale,.9))}.layout-scene.focus-phone .scene-phone-cluster{z-index:20;left:calc(50% - 215px);top:calc(50% - 406px);transform:scale(var(--scene-phone-scale,.9))}.layout-scene:not(.focus-phone) .scene-phone-window-header{display:none!important}.layout-scene .surface:after,.layout-scene .surface-switch,.layout-scene .surface-drag-handle{display:none}.layout-scene .scene-surface-hitbox{position:absolute;z-index:90;inset:0;display:block;margin:0;padding:0;border:0;border-radius:inherit;background:transparent;color:transparent;cursor:pointer;pointer-events:auto;touch-action:manipulation}.layout-scene.focus-timetable .timetable-surface>.scene-surface-hitbox,.layout-scene.focus-phone .phone-surface>.scene-surface-hitbox{display:none}.layout-scene .scene-surface-return{position:absolute;z-index:91;right:10px;top:10px;width:40px;height:40px;margin:0;padding:0;border:2px solid rgba(255,255,255,.84);border-radius:50%;background:rgba(8,15,28,.76);box-shadow:0 8px 22px rgba(0,0,0,.34);color:#fff;font:900 19px/1 system-ui;cursor:pointer;pointer-events:auto;place-items:center;touch-action:manipulation}.layout-scene.focus-timetable .timetable-surface>.scene-surface-return,.layout-scene.focus-phone .phone-surface>.scene-surface-return{display:grid}.layout-scene .scene-surface-hitbox:focus-visible,.layout-scene .scene-surface-return:focus-visible{outline:4px solid #7dd3fc;outline-offset:-6px}.layout-scene .sidecar{position:absolute!important;z-index:70;left:12px!important;top:12px;width:auto;display:block;opacity:1;visibility:visible;pointer-events:none;transform:none!important}.layout-scene .sidecar>:not(.resource-panel){display:none!important}.layout-scene .resource-panel{width:auto;display:grid;gap:7px;pointer-events:none}.layout-scene .resource-row{width:clamp(104px,14vw,172px);height:34px;padding-inline:12px;background:rgba(7,12,24,.72);font-size:10px}.layout-scene .resource-row strong{font-size:11px}@media(max-width:520px){.layout-scene .sidecar{left:8px!important;top:8px}.layout-scene .resource-panel{gap:4px}.layout-scene .resource-row{width:106px;height:31px;padding-inline:7px;font-size:8px}.layout-scene .resource-row strong{font-size:9px}.layout-scene .scene-surface-return{right:8px;top:8px;width:36px;height:36px}}@media(prefers-reduced-motion:reduce){.layout-scene .surface,.layout-scene .scene-phone-cluster,.layout-scene .scene-surface-return{transition:none!important}}",
+        ".timetable-wrap{position:absolute;inset:0;border:4px solid #24201a;border-radius:18px;background:#fffaf0;color:#29251f;box-shadow:12px 16px 0 rgba(23,20,16,.28);overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans CJK SC','Noto Sans SC',sans-serif}.timetable-paper{height:100%;padding:16px 18px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:9px;background-image:repeating-linear-gradient(0deg,transparent 0 29px,rgba(80,135,180,.12) 30px)}.tt-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}.tt-title{margin:0;font:900 30px/1 'Klee One','Hiragino Maru Gothic ProN',cursive;letter-spacing:.08em;transform:rotate(-1deg)}.tt-date{padding:6px 10px;border:2px dashed #225c91;background:#eef8ff;font-weight:800;transform:rotate(1deg)}.tt-rhythm{display:flex;flex-wrap:wrap;gap:5px;overflow:hidden;padding:1px 2px}.tt-rhythm span{flex:0 0 auto;padding:4px 7px;border:2px solid #29251f;border-radius:50% 42% 48% 44%;background:#fff;box-shadow:2px 3px 0 #f2b24f;font-size:11px;font-weight:800}.tt-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px}.tt-view-tabs{display:flex;gap:6px;min-width:0}.tt-view-tab,.tt-magic,.tt-page-button{min-height:34px;border:2px solid #29251f;background:#fffaf0;color:#29251f;padding:6px 11px;font:900 12px/1 inherit;box-shadow:3px 3px 0 #7ab6d8;cursor:pointer}.tt-view-tab[aria-pressed='true']{background:#29251f;color:#fff}.tt-magic{margin-left:auto;box-shadow:3px 3px 0 #ef5d50}.tt-magic[aria-pressed='true']{background:#ef5d50;color:#fff}.tt-magic:disabled,.tt-page-button:disabled{cursor:not-allowed;opacity:.48}.tt-edit-hint{font-size:11px;font-weight:800;color:#6a6258}.tt-page-body{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;border:3px solid #29251f;background:rgba(255,255,255,.9)}.tt-week{height:100%;display:grid;grid-template-columns:64px repeat(5,minmax(0,1fr));grid-template-rows:42px repeat(6,minmax(68px,1fr));overflow:hidden}.tt-cell{min-width:0;position:relative;border-right:1px dashed #6b6358;border-bottom:1px dashed #6b6358;padding:7px;background:transparent;text-align:left;font:700 13px/1.35 inherit}.tt-cell.head{display:grid;place-items:center;background:#fffaf0;text-align:center;font-weight:900}.tt-cell.today{background:#fff0a8}.tt-cell.period{display:grid;place-items:center;background:#f1eee8;text-align:center;font-weight:900}.tt-cell.modified{background:#ffd9d2}.tt-cell button{width:100%;height:100%;border:0;background:transparent;text-align:left;font:inherit;cursor:default}.tt-cell button strong,.tt-cell button small{display:block}.tt-cell button small{margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#5d554c}.tt-week.is-editing .tt-cell button:not(:disabled){cursor:pointer;outline:2px dashed #b91c1c;outline-offset:-3px;background:rgba(255,255,255,.28)}.tt-week.is-editing .tt-cell button:not(:disabled):hover,.tt-week.is-editing .tt-cell button:not(:disabled):focus-visible{background:#fff4bf;outline-style:solid}.tt-today-grid{height:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:10px;padding:12px}.tt-note{padding:12px;border:2px solid #29251f;background:#fffaf0;box-shadow:3px 3px 0 #7ab6d8;font-size:13px;line-height:1.5}.tt-note strong{display:block;margin-bottom:4px}.tt-user-page{min-height:100%;padding:10px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px}.tt-pending{padding:9px;border:3px solid #29251f;background:#eaf7ff;box-shadow:4px 4px 0 #6ea9cc}.tt-pending h4{margin:0 0 7px;font:900 13px/1.2 inherit}.tt-pending-cards,.tt-action-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tt-card{display:grid;gap:4px;margin:0;padding:7px;border:2px solid #29251f;background:#fff;box-shadow:2px 2px 0 #ef5d50;cursor:grab;touch-action:none}.tt-card.free{background:#e9fff0}.tt-card.hypnosis{background:#f7eaff}.tt-card.note{background:#fff4bf}.tt-card.busy{opacity:.58;cursor:not-allowed}.tt-card select,.tt-card input,.tt-card button,.tt-note-form input,.tt-note-form button{min-width:0;min-height:30px;border:2px solid #29251f;background:#fffaf0;padding:4px;font:800 11px/1.2 inherit}.tt-note-form{display:grid;grid-template-columns:1fr auto;gap:5px;margin-top:7px}.tt-slot{min-height:112px;padding:8px;border:2px dashed #29251f;background:#fff;box-shadow:3px 3px 0 #f2b24f}.tt-slot.locked{opacity:.5;background:#ddd8cf}.tt-slot.sent{background:#dcebd9}.tt-slot strong{display:block;font-size:12px}.tt-slot small{display:block;margin-top:4px;color:#645b50}.tt-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tt-actions button{border:2px solid #29251f;background:#fffaf0;padding:8px;font:900 12px/1 inherit;box-shadow:3px 3px 0 #ef5d50;cursor:pointer}.tt-record-pager{display:flex;gap:6px;margin-right:auto}.tt-editor-layer{position:absolute;z-index:70;inset:0;display:grid;place-items:center;padding:28px;background:rgba(36,32,26,.58);backdrop-filter:blur(2px)}.tt-free{width:min(520px,92%);display:grid;grid-template-columns:1fr auto;gap:9px;padding:18px;border:4px solid #29251f;background:#fffaf0;box-shadow:10px 10px 0 #ef5d50}.tt-free strong,.tt-free textarea,.tt-free .tt-error{grid-column:1/-1}.tt-free input,.tt-free textarea,.tt-free button{border:2px solid #29251f;background:#fff;padding:8px;font:800 13px/1.4 inherit}.tt-free textarea{min-height:120px;resize:vertical}.tt-error{padding:6px 8px;color:#9f1239;font:850 12px/1.4 inherit}.tt-empty{padding:14px;color:#6a6258;text-align:center;font-size:12px}@media(prefers-reduced-motion:reduce){.surface{transition:none!important}}",
         ".location-rule-radar{position:absolute;left:50%;top:-112px;width:min(230px,62%);height:160px;object-fit:contain;object-position:center bottom;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0;transform:translate3d(-50%,-142px,0) rotate(-5deg) scale(.86);transform-origin:50% 86%;transition:transform .7s cubic-bezier(.16,.92,.2,1.12),opacity .24s ease;will-change:transform,opacity}.location-rule-radar.rear{z-index:3;filter:drop-shadow(0 19px 15px rgba(0,0,0,.64))}.location-rule-radar.front{z-index:6;clip-path:inset(70% 0 0 0);filter:drop-shadow(0 7px 5px rgba(0,0,0,.78))}.panel.location-rule-radar-visible .location-rule-radar{opacity:1;transform:translate3d(-50%,0,0) rotate(0) scale(1)}.panel.location-rule-radar-hiding .location-rule-radar{opacity:0;transform:translate3d(-50%,-154px,0) rotate(4deg) scale(.82);transition-duration:.52s,.2s}@media(max-width:760px){.location-rule-radar{top:-96px;width:min(202px,68%);height:140px}}",
         ".map-extra-chain-host{position:absolute;z-index:7;right:calc(100% - 18px);top:118px;width:176px;display:none;pointer-events:none;filter:drop-shadow(0 18px 16px rgba(0,0,0,.65));font-family:Impact,'Arial Black','Noto Sans SC',sans-serif;user-select:none}.panel.map-extra-chain-visible .map-extra-chain-host{display:block}.map-extra-chain{display:grid;gap:5px;pointer-events:auto}.map-extra-chain__head{justify-self:end;max-width:160px;padding:7px 9px 7px 12px;border:3px solid #080808;background:#f3eee4;color:#080808;box-shadow:5px 5px 0 #ed1831;font:950 12px/1.1 Impact,'Arial Black','Noto Sans SC',sans-serif;letter-spacing:.04em;transform:rotate(-2deg);clip-path:polygon(4% 0,100% 5%,94% 100%,0 88%);display:flex;align-items:center;gap:8px}.map-extra-chain__head strong{min-width:0}.map-extra-chain__head button{flex:0 0 27px;width:27px;height:27px;border:2px solid #080808;background:#ed1831;color:#fff;font:950 18px/1 Impact,sans-serif;cursor:pointer;box-shadow:2px 2px 0 #080808}.map-extra-chain__belt{display:grid;gap:2px}.map-extra-chain__row{position:relative;width:160px;margin-left:auto}.map-extra-chain__item{position:relative;width:160px;min-height:47px;border:3px solid #080808;background:#f3eee4;color:#080808;padding:7px 25px 7px 13px;text-align:left;cursor:pointer;pointer-events:auto;box-shadow:5px 4px 0 #ed1831;clip-path:polygon(0 8%,92% 0,100% 48%,92% 100%,0 92%,7% 50%);font:950 12px/1.2 'Arial Black','Noto Sans SC',sans-serif;white-space:normal;overflow-wrap:anywhere;transition:translate .16s ease,filter .16s ease}.map-extra-chain__item:before{content:'';position:absolute;right:9px;top:50%;width:9px;height:9px;border:3px solid #080808;border-radius:50%;background:#ed1831;transform:translateY(-50%)}.map-extra-chain__row:after{content:'';position:absolute;right:12px;top:calc(100% - 1px);width:3px;height:9px;background:#080808}.map-extra-chain__row:last-child:after{display:none}.map-extra-chain__item:hover,.map-extra-chain__item.active{translate:-9px 0;filter:brightness(1.08)}.map-extra-chain__item.active{background:#ed1831;color:#fff;box-shadow:5px 4px 0 #f3eee4}.map-extra-chain__item.favorite{padding-left:29px}.map-extra-chain__item.favorite span:before{content:'★';position:absolute;left:11px;color:#ed1831}.map-extra-chain__delete{position:absolute;z-index:3;right:7px;top:50%;width:25px;height:25px;border:2px solid #080808;background:#ed1831;color:#fff;box-shadow:2px 2px 0 #080808;font:950 17px/1 Impact,sans-serif;cursor:pointer;pointer-events:auto;transform:translateY(-50%) rotate(2deg)}.map-extra-chain__row.deletable .map-extra-chain__item{padding-right:37px}.map-extra-chain__row.deletable .map-extra-chain__item:before{display:none}.map-extra-chain__delete:hover{filter:brightness(1.1);transform:translateY(-50%) rotate(-3deg) scale(1.06)}.map-extra-chain__pager{justify-self:end;display:flex;align-items:center;gap:5px;margin-top:4px;pointer-events:auto}.map-extra-chain__pager button{width:34px;height:30px;border:3px solid #080808;background:#f3eee4;color:#080808;box-shadow:3px 3px 0 #ed1831;font:950 15px/1 Impact,sans-serif;cursor:pointer}.map-extra-chain__pager button:disabled{opacity:.32;cursor:default}.map-extra-chain__pager span{padding:5px 8px;background:#080808;color:#fff;font:950 10px/1 Impact,sans-serif;letter-spacing:.08em}@media(max-width:760px){.map-extra-chain-host{right:calc(100% - 14px);top:112px;width:148px}.map-extra-chain__head,.map-extra-chain__row,.map-extra-chain__item{max-width:136px}.map-extra-chain__item{font-size:10px;min-height:42px}}",
         ".hypnosis-judgement-perch{position:absolute;inset:0;display:none;pointer-events:none;user-select:none;-webkit-user-drag:none}.panel.hypnosis-perch-visible:not(.profile-possession-visible) .hypnosis-judgement-perch{display:block}.hypnosis-judgement-figure{position:absolute;top:76px;bottom:58px;width:152px;pointer-events:none}.hypnosis-judgement-figure.is-demon{right:calc(100% - 14px)}.hypnosis-judgement-figure.is-angel{left:calc(100% - 14px)}.hypnosis-judgement-figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}.hypnosis-judgement-figure.is-demon img{object-position:right center}.hypnosis-judgement-figure.is-angel img{object-position:left center}.hypnosis-judgement-figure__rear{z-index:3;filter:drop-shadow(0 18px 13px rgba(0,0,0,.66)) saturate(.86) contrast(1.08)}.hypnosis-judgement-figure__front{z-index:7;filter:drop-shadow(0 5px 3px rgba(0,0,0,.78)) saturate(.9) contrast(1.12)}.hypnosis-judgement-figure.is-demon .hypnosis-judgement-figure__front{clip-path:inset(0 0 0 79%)}.hypnosis-judgement-figure.is-angel .hypnosis-judgement-figure__front{clip-path:inset(0 79% 0 0)}@media(max-width:760px){.hypnosis-judgement-figure{top:92px;bottom:72px;width:118px}.hypnosis-judgement-figure.is-demon{right:calc(100% - 11px)}.hypnosis-judgement-figure.is-angel{left:calc(100% - 11px)}}",
+        ".phone-wrap{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}.phone-wrap:after{display:none!important}.phone{background:transparent!important}",
         ".profile-neighbor-host{position:absolute;z-index:2;inset:0;pointer-events:none}.profile-neighbor-rail{--rail-red:#ed1831;position:absolute;top:25%;width:114px;height:48%;min-height:270px;padding:0;border:3px solid #080808;background:#f4efe6;color:#080808;box-shadow:7px 8px 0 var(--rail-red),0 20px 34px rgba(0,0,0,.5);overflow:hidden;cursor:pointer;pointer-events:auto;display:none;isolation:isolate;touch-action:manipulation;transition:transform .28s cubic-bezier(.2,.85,.25,1),filter .2s ease}.panel.profile-neighbors .profile-neighbor-rail{display:block}.profile-neighbor-rail.prev{right:calc(100% - 42px);transform:perspective(420px) rotateY(18deg) rotate(-2deg);clip-path:polygon(0 4%,100% 0,95% 100%,6% 95%)}.profile-neighbor-rail.next{left:calc(100% - 42px);transform:perspective(420px) rotateY(-18deg) rotate(2deg);clip-path:polygon(5% 0,100% 4%,94% 95%,0 100%)}.profile-neighbor-rail:before{content:attr(data-kicker);position:absolute;z-index:3;top:10px;padding:5px 9px;background:#080808;color:#fff;font:950 10px/1 Impact,'Arial Black',sans-serif;letter-spacing:.12em}.profile-neighbor-rail.prev:before{left:8px}.profile-neighbor-rail.next:before{right:8px}.profile-neighbor-rail img,.profile-neighbor-rail__empty{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center 18%;background:#d7d1c8;filter:saturate(.72) contrast(1.08)}.profile-neighbor-rail__empty{display:grid;place-items:center;font:950 38px/1 Impact,sans-serif}.profile-neighbor-rail strong{position:absolute;z-index:3;left:7px;right:7px;bottom:12px;padding:6px 5px;background:#080808;color:#fff;font:950 11px/1.2 'Arial Black','Noto Sans SC',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:3px 3px 0 var(--rail-red)}.profile-neighbor-rail:hover{filter:brightness(1.06)}.profile-neighbor-rail.prev:hover{transform:translateX(-8px) perspective(420px) rotateY(10deg) rotate(-1deg)}.profile-neighbor-rail.next:hover{transform:translateX(8px) perspective(420px) rotateY(-10deg) rotate(1deg)}.panel.profile-neighbors .sidecar{left:calc(100% + 88px)}.panel.profile-turning-prev .profile-neighbor-rail.prev{transform:translateX(26px) scale(1.08) perspective(420px) rotateY(-4deg) rotate(3deg)}.panel.profile-turning-prev .profile-neighbor-rail.next{transform:translateX(8px) scale(.96) perspective(420px) rotateY(-22deg) rotate(2deg)}.panel.profile-turning-next .profile-neighbor-rail.next{transform:translateX(-26px) scale(1.08) perspective(420px) rotateY(4deg) rotate(-3deg)}.panel.profile-turning-next .profile-neighbor-rail.prev{transform:translateX(-8px) scale(.96) perspective(420px) rotateY(22deg) rotate(-2deg)}",
         ".profile-possession-host,.encounter-possession-decor-host{position:absolute;z-index:9;left:50%;top:-88px;width:calc(100% + 34px);height:150px;transform:translateX(-50%) rotate(-.5deg);display:none;pointer-events:none;overflow:visible}.encounter-possession-decor-host[hidden]{display:none!important}.panel.profile-possession-visible .profile-possession-host{display:block}.panel.encounter-possession-decor-visible:not(.profile-possession-visible) .encounter-possession-decor-host:not([hidden]){display:block}.encounter-possession-decor-host img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;clip-path:inset(0 0 18% 0);filter:grayscale(.2) saturate(.82) blur(.55px) drop-shadow(0 8px 8px rgba(0,0,0,.5));opacity:.82;transform:translate(2px,-1px)}.encounter-possession-decor-host:after{content:'';position:absolute;inset:0;background:url('" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "') center/contain no-repeat;clip-path:inset(0 0 18% 0);opacity:.14;filter:blur(4px);transform:translate(-5px,-1px)}.profile-possession-grip{position:absolute;inset:0;border:0;padding:0;background:transparent;pointer-events:auto;cursor:pointer;touch-action:manipulation;clip-path:inset(0 0 18% 0);filter:grayscale(.24) saturate(.76) blur(.7px);opacity:.6;transform:translate(2px,-1px);transition:transform .25s cubic-bezier(.2,.85,.22,1),filter .25s ease,opacity .25s ease}.profile-possession-grip img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}.profile-possession-grip:after{content:'';position:absolute;inset:0;background:url('" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "') center/contain no-repeat;opacity:.2;filter:blur(4px);transform:translate(-6px,-1px);pointer-events:none}.profile-possession-grip:hover{opacity:.8;filter:grayscale(.1) saturate(.9) blur(.35px);transform:translateY(2px) rotate(.25deg)}.profile-possession-grip:active{transform:translateY(4px) scale(.992)}.profile-possession-grip.active{opacity:1;filter:saturate(1.06) contrast(1.04);transform:none}.profile-possession-grip.active:after{opacity:.07;filter:blur(2px);transform:translate(-2px,-1px)}",
         ".encounter-detail-host{--ed-red:#ef1b2d;position:absolute;z-index:18;right:calc(100% + 16px);top:20px;width:500px;max-height:calc(100% - 40px);display:none;overflow:auto;pointer-events:auto;color:#fff;font-family:Impact,'Arial Black','Noto Sans SC',system-ui;filter:drop-shadow(0 28px 45px rgba(0,0,0,.5));scrollbar-width:thin;scrollbar-color:#ef1b2d #080808}.encounter-detail-host.open{display:block}.encounter-detail-host__frame{position:relative;min-height:620px;overflow:hidden;border:5px solid #080808;background:#f3eee4;clip-path:polygon(3% 0,100% 3%,97% 94%,86% 91%,79% 100%,4% 96%,0 12%);isolation:isolate}.encounter-detail-host__frame:before{content:'';position:absolute;inset:-20%;z-index:-3;background:repeating-linear-gradient(113deg,transparent 0 22px,rgba(0,0,0,.08) 23px 25px),radial-gradient(circle at 18% 22%,#ef1b2d 0 3%,transparent 3.3%),linear-gradient(145deg,#eee7dc 0 38%,#d9d1c6 38% 45%,#f7f3ea 45% 100%)}.encounter-detail-host__frame:after{content:'';position:absolute;z-index:-2;left:-18%;right:16%;bottom:-22%;height:66%;background:#080808;transform:rotate(-8deg);clip-path:polygon(0 12%,100% 0,86% 100%,8% 84%)}.encounter-detail-host__close{position:absolute;z-index:8;right:18px;top:18px;width:46px;height:42px;border:4px solid #080808;background:#ef1b2d;color:#fff;font:950 24px/1 Impact,'Arial Black',sans-serif;transform:rotate(3deg);cursor:pointer;box-shadow:6px 6px 0 #080808}.encounter-detail-host__kicker{display:inline-block;margin:28px 0 0 26px;padding:5px 18px;background:#080808;color:#fff;font:950 14px/1 Impact,'Arial Black','Noto Sans SC',sans-serif;letter-spacing:.12em;transform:rotate(-3deg);clip-path:polygon(4% 0,100% 8%,94% 100%,0 84%)}.encounter-detail-host__name{position:relative;z-index:2;margin:10px 58px 0 24px;color:#080808;font:950 clamp(30px,4vw,54px)/.92 Impact,'Arial Black','Noto Sans SC',sans-serif;letter-spacing:.02em;text-transform:uppercase;transform:rotate(-2deg);text-shadow:3px 3px 0 #fff,6px 6px 0 #ef1b2d;overflow-wrap:anywhere}.encounter-detail-host__alias{display:inline-block;margin:10px 0 0 32px;padding:5px 13px;background:#ef1b2d;color:#fff;font:900 13px/1.2 system-ui;transform:rotate(1deg)}.encounter-detail-host__visual{position:relative;height:285px;margin:8px 18px 0;overflow:hidden;clip-path:polygon(3% 8%,94% 0,100% 88%,8% 100%,0 55%);background:#080808}.encounter-detail-host__visual img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 18%;filter:saturate(.8) contrast(1.14)}.encounter-detail-host__visual:after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,rgba(239,27,45,.45),transparent 34%,transparent 70%,rgba(0,0,0,.5)),repeating-linear-gradient(0deg,transparent 0 4px,rgba(255,255,255,.07) 5px);mix-blend-mode:screen;pointer-events:none}.encounter-detail-host__source{position:absolute;z-index:4;right:16px;bottom:18px;max-width:70%;padding:7px 13px;background:#fff;color:#080808;border:3px solid #080808;font:950 12px/1.2 system-ui;transform:rotate(-2deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.encounter-detail-host__body{position:relative;z-index:3;margin:-18px 26px 30px;padding:22px 18px 18px;background:#ef1b2d;color:#fff;clip-path:polygon(0 7%,100% 0,96% 100%,5% 94%);transform:rotate(.5deg)}.encounter-detail-host__intro{margin:0 0 13px;font:750 13px/1.65 system-ui;white-space:pre-wrap}.encounter-detail-host__facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.encounter-detail-host__fact{min-width:0;padding:8px 9px;background:#080808;color:#fff;transform:skew(-4deg)}.encounter-detail-host__fact span{display:block;color:#ff9aa4;font:850 9px/1.2 system-ui;letter-spacing:.08em}.encounter-detail-host__fact strong{display:block;margin-top:3px;font:850 12px/1.3 system-ui;overflow-wrap:anywhere}.encounter-detail-host__thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 27px 28px}.encounter-detail-host__thumbs img{width:100%;aspect-ratio:1/1;object-fit:cover;border:3px solid #080808;background:#ddd;transform:rotate(var(--thumb-tilt,0deg))}.encounter-detail-host__empty{display:grid;height:100%;place-items:center;color:#fff;font:950 54px/1 Impact,sans-serif;background:repeating-linear-gradient(135deg,#080808 0 18px,#ef1b2d 19px 34px)}",
@@ -2371,6 +2574,7 @@
         ".select{grid-column:1/-1;width:100%;height:38px;border:1px solid rgba(201,155,232,.34);border-radius:11px;background:rgba(24,21,43,.72);backdrop-filter:blur(10px);color:#f7effc;padding:0 31px 0 10px;font:700 11px system-ui}",
         ".mode{height:32px;padding:0 10px;border:1px solid rgba(201,155,232,.34);border-radius:10px;background:rgba(24,21,43,.5);backdrop-filter:blur(10px);color:#efe4f8;font:750 10px system-ui;cursor:pointer}",
         ".badge{grid-column:1/-1;min-height:28px;padding:6px 9px;border-radius:9px;display:flex;align-items:center;background:rgba(19,78,59,.32);backdrop-filter:blur(10px);border:1px solid rgba(51,211,153,.32);color:#a7f3d0;font:800 10px/1.25 system-ui}.badge.history{background:rgba(76,48,13,.34);border-color:rgba(251,191,36,.3);color:#fde68a}",
+        ".layout-scene .dual-stage{z-index:4}.layout-scene:not(.focus-phone) .scene-phone-cluster,.layout-scene:not(.focus-timetable) .timetable-surface{visibility:hidden;pointer-events:none}.layout-scene.panel{margin-left:env(safe-area-inset-left,0px);margin-right:env(safe-area-inset-right,0px);margin-top:env(safe-area-inset-top,0px);margin-bottom:env(safe-area-inset-bottom,0px)}.layout-scene.has-routine-scene .scene-backdrop{display:none}.layout-scene .sidecar{left:var(--scene-ui-left)!important;top:var(--scene-ui-top)!important;width:235px;transform:scale(var(--scene-ui-scale))!important;transform-origin:top left!important;padding:15px}.layout-scene .resource-panel{gap:6px}.layout-scene .resource-row{width:210px;height:38px;font-size:24px;padding-inline:10px}.layout-scene .resource-row strong{font-size:24px}.layout-scene .timetable-surface{left:20px;top:340px;transform:scale(.32);transform-origin:top left}.layout-scene .scene-phone-cluster{left:1020px;top:340px;transform:scale(.32);transform-origin:top left}.layout-scene.focus-timetable .timetable-surface{left:190px;top:-106px;transform:scale(var(--scene-timetable-scale,.66));transform-origin:center}.layout-scene.focus-phone .scene-phone-cluster{left:425px;top:-106px;transform:scale(var(--scene-phone-scale,.66));transform-origin:center}.layout-scene .scene-workspace-body .sidecar{position:static!important;left:auto!important;top:auto;width:auto;padding:10px 0;transform:none!important}.layout-scene .scene-workspace-body .resource-panel{display:flex;flex-wrap:wrap;gap:10px}.layout-scene .scene-workspace-body .resource-row{width:150px;height:32px;font-size:11px}.layout-scene .scene-workspace-body .resource-row strong{font-size:12px}.layout-scene .scene-surface-return{font-size:32px;width:64px;height:64px}",
         "@media(max-width:980px){.encounter-detail-host{position:fixed;left:8px;right:auto;top:8px;width:min(440px,calc(100vw - 16px));max-height:calc(100vh - 16px)}}",
         "@media(max-width:760px){.panel{--floor-sidecar-width:clamp(104px,28vw,220px);width:min(430px,calc(100vw - var(--floor-sidecar-width) - 30px))}.profile-neighbor-rail{width:84px;min-height:220px}.profile-neighbor-rail.prev{right:calc(100% - 34px)}.profile-neighbor-rail.next{left:calc(100% - 34px)}.panel.profile-neighbors .sidecar{left:calc(100% + 58px)}.sidecar{left:calc(100% + 10px)}.floor-toggle,.galgame-toggle,.variable-format-toggle,.pet-character-toggle,.resource-panel{width:min(128px,100%);min-width:0}.floor-toggle,.galgame-toggle,.variable-format-toggle,.pet-character-toggle{padding-inline:8px}.floor-drawer{grid-template-columns:minmax(0,1fr)}.floor-title,.mode,.select,.badge{grid-column:1/-1;width:100%}.encounter-detail-host__frame{min-height:560px}}"
       ].join("");
@@ -2449,7 +2653,8 @@
       return visible;
     }
 
-    function timetableSetFocus(next) {
+    function timetableSetFocus(next){var library=host.__HYPNOOS_OBJECTS_LIB__;if(sceneLayout&&library?.runSceneTransition&&(next==='phone'||next==='timetable'))return library.runSceneTransition(hostDocument,async()=>{var lease=beginSceneWindow(closeScenePhone);await lease.ready;if(!lease.isCurrent())return;var surface=panel?.querySelector(next==='phone'?'.scene-phone-cluster':'.timetable-surface');if(surface){surface.style.opacity='0';surface.classList.add('floating-surface');}applyTimetableFocus(next);var toolbar=scenePhoneToolbar;if(next==='timetable'){toolbar=hostDocument.createElement('header');toolbar.innerHTML='<strong>日程表</strong><button type="button" aria-label="收起日程表">×</button>';surface.append(toolbar);toolbar.querySelector('button').addEventListener('click',function(){library.runSceneTransition(hostDocument,closeScenePhone);});}if(toolbar){scenePhoneToolbarDock=library.dockSceneToolbar(hostDocument,toolbar);if(next==='phone')phoneApi('__ST_PHONE16_CONTROLS_DOCKED__',[true],true);scenePhoneLifecycle=library.surfaceLifecycle(hostDocument,surface,scenePhoneToolbarDock,function(){applyTimetableFocus('none');scenePhoneToolbarDock=null;if(next==='timetable')toolbar.remove();phoneApi('__ST_PHONE16_CONTROLS_DOCKED__',[false],true);});await scenePhoneLifecycle.ready;}else{scenePhoneLifecycle=library.surfaceLifecycle(hostDocument,surface,null,function(){applyTimetableFocus('none');scenePhoneToolbarDock=null;});await scenePhoneLifecycle.ready;}});if(sceneLayout&&next==='none'&&scenePhoneLifecycle)return library.runSceneTransition(hostDocument,closeScenePhone);applyTimetableFocus(next);}
+    function applyTimetableFocus(next) {
       timetableFocus = next === "phone" || next === "timetable" ? next : "none";
       if (!panel) return;
       panel.classList.toggle("focus-phone", timetableFocus === "phone");
@@ -2462,8 +2667,9 @@
         phoneSurface.classList.toggle("is-active", timetableFocus === "phone");
         var phoneContent = phoneSurface.querySelector(".phone-wrap");
         if (phoneContent) {
-          phoneContent.inert = timetableFocus === "timetable";
-          phoneContent.setAttribute("aria-hidden", timetableFocus === "timetable" ? "true" : "false");
+          var phoneHidden = sceneLayout ? timetableFocus !== "phone" : timetableFocus === "timetable";
+          phoneContent.inert = phoneHidden;
+          phoneContent.setAttribute("aria-hidden", phoneHidden ? "true" : "false");
         }
       }
       if (timetableSurface) {
@@ -2472,17 +2678,35 @@
         timetableSurface.classList.toggle("is-active", timetableFocus === "timetable");
         var timetableContent = timetableSurface.querySelector(".timetable-wrap");
         if (timetableContent) {
-          timetableContent.inert = timetableFocus === "phone";
-          timetableContent.setAttribute("aria-hidden", timetableFocus === "phone" ? "true" : "false");
+          var timetableHidden = sceneLayout ? timetableFocus !== "timetable" : timetableFocus === "phone";
+          timetableContent.inert = timetableHidden;
+          timetableContent.setAttribute("aria-hidden", timetableHidden ? "true" : "false");
         }
       }
       panel.querySelectorAll("[data-surface-switch]").forEach(function (button) {
         var target = button.getAttribute("data-surface-switch");
         var selected = target === timetableFocus;
         button.setAttribute("aria-pressed", selected ? "true" : "false");
-        button.disabled = selected;
+        button.disabled = sceneLayout ? false : selected;
+      });
+      panel.querySelectorAll("[data-scene-focus]").forEach(function (button) {
+        button.setAttribute("aria-pressed", button.getAttribute("data-scene-focus") === timetableFocus ? "true" : "false");
       });
       applySavedPosition();
+      if (sceneLayout && timetableFocus !== "none") {
+        var sceneScroll = panel.querySelector(".scene-scroll");
+        if (sceneScroll) {
+          var centerScene = function () {
+            var left = Math.max(0, (sceneScroll.scrollWidth - sceneScroll.clientWidth) / 2);
+            var reduced = false;
+            try { reduced = Boolean(host.matchMedia && host.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (_) {}
+            try { sceneScroll.scrollTo({ left: left, behavior: reduced ? "auto" : "smooth" }); }
+            catch (_) { sceneScroll.scrollLeft = left; }
+          };
+          if (host.requestAnimationFrame) host.requestAnimationFrame(centerScene);
+          else host.setTimeout(centerScene, 0);
+        }
+      }
     }
 
     function applySurfaceOffsets() {
@@ -2571,22 +2795,25 @@
       renderTimetableWindow();
     }
 
-    function timetableScheduleHtml(schedule) {
+    function timetableScheduleHtml(schedule, page) {
       var slots = Array.isArray(schedule && schedule.slots) ? schedule.slots : [];
       var pending = Array.isArray(schedule && schedule.pending) ? schedule.pending : [];
+      var recordPage = Math.max(0, Math.min(1, Number(page) || 0));
+      var visibleSlots = slots.slice(recordPage * 3, recordPage * 3 + 3);
       var slotOptions = "<option value=''>待安排</option>" + slots.filter(function (slot) { return !slot.locked && !slot.sent; }).map(function (slot) { return "<option value='" + escapeHtml(slot.id) + "'>" + escapeHtml(slot.label + " · " + slot.time) + "</option>"; }).join("");
       var pendingCards = pending.map(function (item) {
         return "<article class='tt-card " + escapeHtml(item.kind || "action") + (item.busy ? " busy" : "") + "' draggable='" + (item.busy ? "false" : "true") + "' data-schedule-card='" + escapeHtml(item.id) + "'><strong>" + escapeHtml(item.title) + "</strong>" + "<select data-card-slot-select='" + escapeHtml(item.id) + "'" + (item.busy ? " disabled" : "") + ">" + slotOptions + "</select><input data-card-note-input='" + escapeHtml(item.id) + "' maxlength='500' value='" + escapeHtml(item.note || "") + "' placeholder='这张卡的备注'><button type='button' data-card-note='" + escapeHtml(item.id) + "'>保存备注</button></article>";
       }).join("");
-      var external = "<section class='tt-pending' data-schedule-pending><h4>待安排 · " + pending.length + "</h4>" + (pendingCards || "<small>手机操作会先出现在这里。</small>") + "<form class='tt-note-form' data-standalone-note><input name='note' maxlength='500' placeholder='新增占一次机会的备注格'><button type='submit'>添加</button></form></section>";
-      var slotHtml = slots.map(function (slot) {
+      var external = "<section class='tt-pending' data-schedule-pending><h4>待安排 · " + pending.length + "</h4><div class='tt-pending-cards'>" + (pendingCards || "<small>手机操作会先出现在这里。</small>") + "</div><form class='tt-note-form' data-standalone-note><input name='note' maxlength='500' placeholder='新增占一次机会的备注格'><button type='submit'>添加</button></form></section>";
+      var slotHtml = visibleSlots.map(function (slot) {
         var classes = ["tt-slot"];
         if (slot.locked) classes.push("locked");
         if (slot.sent) classes.push("sent");
         var cards = (slot.cards || []).map(function (item) { return "<article class='tt-card " + escapeHtml(item.kind || "action") + "' draggable='" + (!slot.locked && !slot.sent ? "true" : "false") + "' data-schedule-card='" + escapeHtml(item.id) + "'><strong>" + escapeHtml(item.title) + "</strong>" + (!slot.locked && !slot.sent ? "<select data-card-slot-select='" + escapeHtml(item.id) + "'>" + slotOptions.replace("value='" + escapeHtml(slot.id) + "'", "value='" + escapeHtml(slot.id) + "' selected") + "</select><input data-card-note-input='" + escapeHtml(item.id) + "' maxlength='500' value='" + escapeHtml(item.note || "") + "' placeholder='这张卡的备注'><button type='button' data-card-note='" + escapeHtml(item.id) + "'>保存备注</button>" : (item.note ? "<small>备注 · " + escapeHtml(item.note) + "</small>" : "")) + "</article>"; }).join("");
         return "<div class='" + classes.join(" ") + "' data-schedule-slot='" + escapeHtml(slot.id) + "'><strong>" + escapeHtml(slot.label) + " · " + escapeHtml(slot.time) + "</strong>" + (cards || "<small>空白行动格</small>") + "</div>";
       }).join("");
-      return external + "<div class='tt-action-list'>" + slotHtml + "</div>" + (schedule.lastError ? "<div class='tt-error'>" + escapeHtml(schedule.lastError) + "</div>" : "") + "<div class='tt-actions'><button type='button' data-advance>推进到最后有内容格</button><button type='button' data-next-day>过日</button></div>";
+      var pager = "<span class='tt-record-pager'><button class='tt-page-button' type='button' data-tt-record-page='0'" + (recordPage === 0 ? " disabled" : "") + ">1–3限</button><button class='tt-page-button' type='button' data-tt-record-page='1'" + (recordPage === 1 ? " disabled" : "") + ">4–6限</button></span>";
+      return "<div class='tt-user-page'>" + external + "<div class='tt-action-list'>" + slotHtml + "</div>" + (schedule.lastError ? "<div class='tt-error'>" + escapeHtml(schedule.lastError) + "</div>" : "") + "<div class='tt-actions'>" + pager + "<button type='button' data-advance>推进到最后有内容格</button><button type='button' data-next-day>过日</button></div></div>";
     }
 
     function renderTimetableWindow() {
@@ -2597,6 +2824,14 @@
         return false;
       }
       var days = Array.isArray(snapshot.days) ? snapshot.days : [];
+      var couponCount = Math.max(0, Number(snapshot.couponCount) || 0);
+      var hasEditableModified = days.some(function (day) { return (day.cells || []).some(function (cell) { return Boolean(cell && cell.editable && cell.modified); }); });
+      var canToggleMagic = snapshot.writable !== false && (couponCount > 0 || hasEditableModified);
+      if (!canToggleMagic) {
+        timetableEditMode = false;
+        timetableEditorCell = null;
+        timetableEditorError = "";
+      }
       var cells = [];
       cells.push("<div class='tt-cell head'>時限</div>");
       days.forEach(function (day) { cells.push("<div class='tt-cell head" + (day.active ? " today" : "") + "'>" + escapeHtml(day.label) + "</div>"); });
@@ -2605,15 +2840,27 @@
         cells.push("<div class='tt-cell period'>" + period + "限<br><small>" + escapeHtml(reference && reference.time || "") + "</small></div>");
         days.forEach(function (day) {
           var cell = day.cells && day.cells[period - 1] || {};
-          cells.push("<div class='tt-cell" + (day.active ? " today" : "") + (cell.modified ? " modified" : "") + "'><button type='button' data-course-day='" + day.day + "' data-course-period='" + period + "'" + (cell.editable ? "" : " disabled") + "><strong>" + escapeHtml(cell.subject || "自习") + "</strong><small>" + escapeHtml(cell.description || "") + "</small></button></div>");
+          var canEdit = Boolean(timetableEditMode && cell.editable && (cell.modified || couponCount > 0));
+          cells.push("<div class='tt-cell" + (day.active ? " today" : "") + (cell.modified ? " modified" : "") + "'><button type='button' data-course-day='" + day.day + "' data-course-period='" + period + "'" + (canEdit ? "" : " disabled") + " aria-label='" + escapeHtml((cell.modified ? "重命名" : "魔改") + " " + day.label + " " + period + "限") + "'><strong>" + escapeHtml(cell.subject || "自习") + "</strong><small>" + escapeHtml(cell.description || "") + "</small></button></div>");
         });
       }
       var today = days.find(function (day) { return day.active; });
       var todayList = snapshot.special && snapshot.special.blocksClass
         ? "<div class='tt-note'><strong>" + escapeHtml(snapshot.special.title || "休日") + "</strong><br>" + escapeHtml(snapshot.special.description || snapshot.special.detail || "今日无固定课程") + "</div>"
         : ((today && today.cells) || []).map(function (cell) { return "<div class='tt-note'><strong>" + escapeHtml(cell.label) + " · " + escapeHtml(cell.subject) + "</strong><br>" + escapeHtml(cell.time + "　" + (cell.description || "")) + "</div>"; }).join("");
-      var editor = timetableEditorCell ? "<form class='tt-free' data-course-editor><strong>修改 " + escapeHtml(timetableEditorCell.label) + "</strong><input name='subject' value='" + escapeHtml(timetableEditorCell.subject) + "' aria-label='课程名'><textarea name='description' aria-label='课程描述'>" + escapeHtml(timetableEditorCell.description) + "</textarea><button type='submit'>写入课程表</button><button type='button' data-course-cancel>取消</button></form>" : "";
-      timetableHost.innerHTML = "<div class='timetable-paper'><header class='tt-head'><h2 class='tt-title'>週間時間割</h2><span class='tt-date'>" + escapeHtml(snapshot.date + " · " + snapshot.weekday + " · " + snapshot.time) + "</span></header><div class='tt-rhythm'>" + (snapshot.rhythm || []).map(function (item) { return "<span>" + escapeHtml(item.label + " " + item.start + (item.end ? "–" + item.end : "")) + "</span>"; }).join("") + "</div>" + editor + "<div class='tt-layout'><div class='tt-week'>" + cells.join("") + "</div><section class='tt-today'><h3 class='tt-side-title'>本日</h3><div class='tt-today-list'>" + todayList + "</div></section><section class='tt-user'><h3 class='tt-side-title'>USER 日程 · " + escapeHtml(String(snapshot.actionSchedule && snapshot.actionSchedule.remaining || 0)) + " / 6</h3>" + timetableScheduleHtml(snapshot.actionSchedule || {}) + "</section></div></div>";
+      var editor = timetableEditorCell ? "<div class='tt-editor-layer'><form class='tt-free' data-course-editor><strong>修改 " + escapeHtml(timetableEditorCell.label) + (timetableEditorCell.modified ? " · 已魔改课程重命名" : " · 消耗 1 张魔改券") + "</strong><input name='subject' value='" + escapeHtml(timetableEditorCell.subject) + "' aria-label='课程名'" + (timetableEditorSaving ? " disabled" : "") + "><textarea name='description' aria-label='课程描述'" + (timetableEditorSaving ? " disabled" : "") + ">" + escapeHtml(timetableEditorCell.description) + "</textarea>" + (timetableEditorError ? "<div class='tt-error' role='alert'>" + escapeHtml(timetableEditorError) + "</div>" : "") + "<button type='submit'" + (timetableEditorSaving ? " disabled" : "") + ">" + (timetableEditorSaving ? "正在写入…" : "写入课程表") + "</button><button type='button' data-course-cancel" + (timetableEditorSaving ? " disabled" : "") + ">取消</button></form></div>" : "";
+      var views = sceneLayout
+        ? [["user", "日程安排"], ["week", "周课表"], ["today", "本日课程"]]
+        : [["week", "周课表"], ["today", "本日课程"], ["user", "USER 日程"]];
+      var tabs = views.map(function (view) { return "<button class='tt-view-tab' type='button' data-tt-view='" + view[0] + "' aria-pressed='" + (timetableViewPage === view[0] ? "true" : "false") + "'>" + view[1] + "</button>"; }).join("");
+      var magicLabel = snapshot.writable === false ? "历史楼只读" : (!canToggleMagic ? "需要魔改券" : (timetableEditMode ? "退出课程表魔改" : "课程表魔改") + " · 券 " + couponCount);
+      var magic = timetableViewPage === "week" ? "<button class='tt-magic' type='button' data-course-edit-toggle aria-pressed='" + (timetableEditMode ? "true" : "false") + "'" + (canToggleMagic ? "" : " disabled") + ">" + escapeHtml(magicLabel) + "</button>" : "<span class='tt-edit-hint'>记录分页显示，页面内只保留一个滚动区</span>";
+      var pageHtml = timetableViewPage === "today"
+        ? "<section class='tt-today-grid' aria-label='本日课程'>" + (todayList || "<p class='tt-empty'>今日无固定课程</p>") + "</section>"
+        : timetableViewPage === "user"
+          ? timetableScheduleHtml(snapshot.actionSchedule || {}, timetableRecordPage)
+          : "<div class='tt-week" + (timetableEditMode ? " is-editing" : "") + "'>" + cells.join("") + "</div>";
+      timetableHost.innerHTML = "<div class='timetable-paper'><header class='tt-head'><h2 class='tt-title'>週間時間割</h2><span class='tt-date'>" + escapeHtml(snapshot.date + " · " + snapshot.weekday + " · " + snapshot.time) + "</span></header><div class='tt-rhythm'>" + (snapshot.rhythm || []).map(function (item) { return "<span>" + escapeHtml(item.label + " " + item.start + (item.end ? "–" + item.end : "")) + "</span>"; }).join("") + "</div><div class='tt-toolbar'><nav class='tt-view-tabs' aria-label='课程表分页'>" + tabs + "</nav>" + magic + "</div><div class='tt-page-body' data-tt-page='" + escapeHtml(timetableViewPage) + "'>" + pageHtml + "</div></div>" + editor;
       return true;
     }
 
@@ -2772,7 +3019,7 @@
     function bridgePrelude() {
       var asset = JSON.stringify(config.assetBase);
       return "<script>(function(){var r=parent.__ST_HYPNOOS_FLOATING_SINGLETON__;window.__ST_HYPNOOS_FLOATING_PHONE__=true;window.__ST_HYPNOOS_FLOATING_REGISTRY__=r;window.__ST_HYPNOOS_ASSET_BASE__=" + asset + ";" +
-        "function option(o){return r.normalizeMessageOption(o)}function writeOption(o){return r.normalizeWriteMessageOption(o)}" +
+        "window.addEventListener('error',function(e){if(parent.__ST_LOCAL_PREVIEW__)parent.document.documentElement.dataset.phoneBootError=e.error&&e.error.stack||e.message;});function option(o){return r.normalizeMessageOption(o)}function writeOption(o){return r.normalizeWriteMessageOption(o)}" +
         "globalThis.getCurrentMessageId=function(){return r.getSelectedId()};" +
         "globalThis.__ST_HYPNOOS_REQUIRE_WRITABLE_FLOOR__=function(){if(r.isWritable())return true;r.notifyReadOnly();return false};" +
         "if(r.hasApi('getVariables'))globalThis.getVariables=function(o){return r.readApi('getVariables',[option(o)])};" +
@@ -2860,12 +3107,28 @@
       shadow.innerHTML = "<style>" + shellCss() + "</style>" +
         "<button class='launcher' type='button' aria-label='打开悬浮手机' aria-haspopup='menu' aria-expanded='false'><span class='pet-sprite' aria-hidden='true'></span><span class='pet-fallback' aria-hidden='true'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'><rect x='6' y='2.5' width='12' height='19' rx='3'/><path d='M10 5h4M11 18.5h2'/></svg></span><i>0</i></button>" +
         "<nav class='pet-menu' role='menu' aria-label='桌宠切换' aria-hidden='true'><button type='button' role='menuitem' data-pet-action='switch'>切换</button></nav>" +
-        "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='dual-stage'><div class='cuboid'><section class='surface timetable-surface'><button class='surface-switch prev' type='button' data-surface-switch='phone' aria-label='向左切换到手机'>‹</button><div class='timetable-wrap' aria-label='课程表'></div><button class='surface-drag-handle' type='button' data-surface-drag='timetable' aria-label='拖动课程表'></button><button class='surface-switch next' type='button' data-surface-switch='phone' aria-label='向右切换到手机'>›</button></section><section class='surface phone-surface'><button class='surface-switch prev' type='button' data-surface-switch='timetable' aria-label='向左切换到课程表'>‹</button><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div><button class='surface-drag-handle' type='button' data-surface-drag='phone' aria-label='拖动手机'></button><button class='surface-switch next' type='button' data-surface-switch='timetable' aria-label='向右切换到课程表'>›</button></section></div></div><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='pet-character-toggle' type='button'>人物 · 爱丽莎</button><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
+        "<section class='panel' aria-label='HypnoOS 悬浮手机'><aside class='map-extra-chain-host' aria-label='更多地图区域' aria-hidden='true'></aside><aside class='hypnosis-judgement-perch' aria-hidden='true'><span class='hypnosis-judgement-figure is-demon'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-demon-side-v3.png") + "'></span><span class='hypnosis-judgement-figure is-angel'><img class='hypnosis-judgement-figure__rear' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'><img class='hypnosis-judgement-figure__front' alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/hypnosis-angel-side-v3.png") + "'></span></aside><aside class='encounter-detail-host' aria-hidden='true'></aside><aside class='profile-neighbor-host' aria-label='相邻人物档案'><button class='profile-neighbor-rail prev' type='button' data-kicker='PREV' data-profile-neighbor='prev'></button><button class='profile-neighbor-rail next' type='button' data-kicker='NEXT' data-profile-neighbor='next'></button></aside><aside class='encounter-possession-decor-host' aria-hidden='true' hidden><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></aside><aside class='profile-possession-host' aria-label='附身控制'><button class='profile-possession-grip' type='button' data-profile-possession-host='' aria-pressed='false'><img alt='' draggable='false' src='" + escapeHtml(String(config.assetBase || "").replace(/\/?$/, "/") + "profile-ui/profile-possession-top-grip-v1.png") + "'></button></aside><div class='dual-stage'><div class='cuboid'><section class='surface timetable-surface'><button class='surface-switch prev' type='button' data-surface-switch='phone' aria-label='向左切换到手机'>‹</button><div class='timetable-wrap' aria-label='课程表'></div><button class='surface-drag-handle' type='button' data-surface-drag='timetable' aria-label='拖动课程表'></button><button class='surface-switch next' type='button' data-surface-switch='phone' aria-label='向右切换到手机'>›</button><button class='scene-surface-hitbox' type='button' data-scene-focus='timetable' aria-label='展开课程表'></button><button class='scene-surface-return' type='button' data-scene-return aria-label='收起课程表'>↙</button></section><section class='surface phone-surface'><button class='surface-switch prev' type='button' data-surface-switch='timetable' aria-label='向左切换到课程表'>‹</button><div class='phone-wrap'><iframe class='phone' title='HypnoOS 手机前端'></iframe><div class='galgame-dialog' role='dialog' aria-modal='true' aria-hidden='true' aria-labelledby='hypnoos-galgame-dialog-title'><section class='galgame-dialog__card'><strong id='hypnoos-galgame-dialog-title' data-galgame-dialog-title>Galgame人物演出</strong><p data-galgame-dialog-body></p><button type='button' data-galgame-dialog-close>知道了</button></section></div><div class='variable-format-dialog' role='dialog' aria-modal='true' aria-hidden='true'><section class='variable-format-dialog__card'><strong data-variable-format-title>变量格式检查</strong><p data-variable-format-body></p><div class='variable-format-dialog__actions'><button type='button' data-variable-format-close>关闭</button><button type='button' data-variable-format-repair>清理并补齐</button></div></section></div></div><button class='surface-drag-handle' type='button' data-surface-drag='phone' aria-label='拖动手机'></button><button class='surface-switch next' type='button' data-surface-switch='timetable' aria-label='向右切换到课程表'>›</button><button class='scene-surface-hitbox' type='button' data-scene-focus='phone' aria-label='展开手机'></button><button class='scene-surface-return' type='button' data-scene-return aria-label='收起手机'>↘</button></section></div></div><aside class='sidecar'><button class='galgame-toggle' type='button' aria-pressed='false' disabled>Galgame --</button><section class='resource-panel loading' aria-label='当前楼层资源'><div class='resource-row money'><span>零花钱</span><strong data-resource-money>--</strong></div><div class='resource-row starlight'><span>星光点</span><strong data-resource-starlight>--</strong></div><div class='resource-row energy'><span>MC能量</span><strong data-resource-energy>--</strong></div></section><button class='variable-format-toggle' type='button'>变量格式检查</button><span class='readonly'>历史楼层 · 只读；切回当前楼后才能操作</span><button class='pet-character-toggle' type='button'>人物 · 爱丽莎</button><button class='floor-toggle' type='button' aria-expanded='false'>楼层</button><section class='floor-drawer'><span class='floor-title'></span><button class='mode' type='button'>跟随视口</button><select class='select' aria-label='选择变量楼层'></select><span class='badge'></span></section></aside></section>";
       hostDocument.body.appendChild(shell);
       launcher = shadow.querySelector(".launcher");
       petSprite = shadow.querySelector(".pet-sprite");
       petMenu = shadow.querySelector(".pet-menu");
       panel = shadow.querySelector(".panel");
+      if (panel && sceneLayout) {
+        panel.classList.add("layout-scene");
+        var sceneStage = panel.querySelector(":scope > .dual-stage");
+        if (sceneStage) {
+          var sceneScroll = hostDocument.createElement("div");
+          sceneScroll.className = "scene-scroll";
+          var sceneBackdrop = hostDocument.createElement("img");
+          sceneBackdrop.className = "scene-backdrop";
+          sceneBackdrop.alt = "";
+          sceneBackdrop.draggable = false;
+          sceneBackdrop.src = config.sceneUrl;
+          panel.insertBefore(sceneScroll, sceneStage);
+          sceneScroll.appendChild(sceneBackdrop);
+          sceneScroll.appendChild(sceneStage);
+        }
+      }
       if (panel && !panel.querySelector(".location-rule-radar")) {
         ["rear", "front"].forEach(function (layer) {
           var radar = hostDocument.createElement("img");
@@ -2877,6 +3140,29 @@
           if (stageAnchor && stageAnchor.parentNode === panel) panel.insertBefore(radar, stageAnchor);
           else panel.appendChild(radar);
         });
+      }
+      if (panel && sceneLayout) {
+        var sceneCuboid = panel.querySelector(".dual-stage > .cuboid");
+        var scenePhoneSurface = sceneCuboid?.querySelector(":scope > .phone-surface");
+        if (sceneCuboid && scenePhoneSurface) {
+          var scenePhoneCluster = hostDocument.createElement("div");
+          scenePhoneCluster.className = "scene-phone-cluster";
+          sceneCuboid.insertBefore(scenePhoneCluster, scenePhoneSurface);
+          scenePhoneCluster.appendChild(scenePhoneSurface);
+          [
+            ".map-extra-chain-host",
+            ".hypnosis-judgement-perch",
+            ".encounter-detail-host",
+            ".profile-neighbor-host",
+            ".encounter-possession-decor-host",
+            ".profile-possession-host",
+            ".location-rule-radar.rear",
+            ".location-rule-radar.front"
+          ].forEach(function (selector) {
+            var attachment = panel.querySelector(selector);
+            if (attachment) scenePhoneCluster.appendChild(attachment);
+          });
+        }
       }
       frame = shadow.querySelector(".phone");
       floorSelect = shadow.querySelector(".select");
@@ -2899,37 +3185,99 @@
         handle.addEventListener("pointerdown", beginSurfaceDrag);
       });
       panel.querySelectorAll("[data-surface-switch]").forEach(function (button) {
-        button.addEventListener("click", function () {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
           timetableSetFocus(button.getAttribute("data-surface-switch"));
         });
       });
+      panel.querySelectorAll("[data-scene-focus]").forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          var target = button.getAttribute("data-scene-focus");
+          timetableSetFocus(timetableFocus === target ? "none" : target);
+        });
+      });
+      panel.querySelectorAll("[data-scene-return]").forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          timetableSetFocus("none");
+        });
+      });
+      if (sceneLayout) {
+        panel.querySelector(".scene-scroll")?.addEventListener("click", function (event) {
+          if (event.target !== event.currentTarget || timetableFocus === "none") return;
+          timetableSetFocus("none");
+        });
+      }
       timetableHost?.addEventListener("click", async function (event) {
+        var viewButton = event.target.closest("[data-tt-view]");
+        if (viewButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          timetableViewPage = viewButton.dataset.ttView || "week";
+          timetableEditorCell = null;
+          timetableEditorError = "";
+          renderTimetableWindow();
+          return;
+        }
+        var recordPageButton = event.target.closest("[data-tt-record-page]");
+        if (recordPageButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          timetableRecordPage = Math.max(0, Math.min(1, Number(recordPageButton.dataset.ttRecordPage) || 0));
+          renderTimetableWindow();
+          return;
+        }
+        var magicButton = event.target.closest("[data-course-edit-toggle]");
+        if (magicButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (magicButton.disabled) return;
+          timetableEditMode = !timetableEditMode;
+          timetableEditorCell = null;
+          timetableEditorError = "";
+          renderTimetableWindow();
+          return;
+        }
         var course = event.target.closest("[data-course-day][data-course-period]");
         if (course) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!timetableEditMode || course.disabled) return;
           var snapshot = phoneApi("__ST_HYPNOOS_TIMETABLE_SNAPSHOT__", [], true);
           var day = Number(course.dataset.courseDay);
           var period = Number(course.dataset.coursePeriod);
           var dayData = snapshot && snapshot.days && snapshot.days.find(function (item) { return item.day === day; });
           var cell = dayData && dayData.cells && dayData.cells[period - 1];
-          if (cell && cell.editable) {
-            timetableEditorCell = { day: day, period: period, label: dayData.label + " " + period + "限", subject: cell.subject || "", description: cell.description || "" };
+          if (cell && cell.editable && (cell.modified || Number(snapshot.couponCount) > 0)) {
+            timetableEditorCell = { day: day, period: period, label: dayData.label + " " + period + "限", subject: cell.subject || "", description: cell.description || "", modified: Boolean(cell.modified) };
+            timetableEditorError = "";
             renderTimetableWindow();
           }
           return;
         }
-        if (event.target.closest("[data-course-cancel]")) { timetableEditorCell = null; renderTimetableWindow(); return; }
+        if (event.target.closest("[data-course-cancel]")) { event.preventDefault(); event.stopPropagation(); if (timetableEditorSaving) return; timetableEditorCell = null; timetableEditorError = ""; renderTimetableWindow(); return; }
         if (event.target.closest("[data-advance]")) {
+          event.preventDefault();
+          event.stopPropagation();
           await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_ADVANCE__", [], false));
           scheduleTimetableRefresh(80);
           return;
         }
         if (event.target.closest("[data-next-day]")) {
+          event.preventDefault();
+          event.stopPropagation();
           await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_NEXT_DAY__", [], false));
           scheduleTimetableRefresh(80);
           return;
         }
         var noteButton = event.target.closest("[data-card-note]");
         if (noteButton) {
+          event.preventDefault();
+          event.stopPropagation();
           var noteInput = timetableHost.querySelector("[data-card-note-input='" + noteButton.dataset.cardNote + "']");
           var note = noteInput ? noteInput.value : "";
           if (note) await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_ADD_NOTE__", [note, noteButton.dataset.cardNote], false));
@@ -2951,11 +3299,28 @@
           return;
         }
         var form = event.target.closest("[data-course-editor]");
-        if (!form || !timetableEditorCell) return;
+        if (!form || !timetableEditorCell || timetableEditorSaving) return;
         event.preventDefault();
-        var result = await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_COMMIT__", [{ day: timetableEditorCell.day, period: timetableEditorCell.period, subject: form.elements.subject.value, description: form.elements.description.value }], false));
-        if (result && result.ok) timetableEditorCell = null;
-        else form.dataset.error = String(result && result.reason || "课程表写入失败");
+        var nextSubject = form.elements.subject.value;
+        var nextDescription = form.elements.description.value;
+        timetableEditorCell.subject = nextSubject;
+        timetableEditorCell.description = nextDescription;
+        timetableEditorSaving = true;
+        timetableEditorError = "";
+        renderTimetableWindow();
+        var result;
+        try {
+          result = await Promise.resolve(phoneApi("__ST_HYPNOOS_TIMETABLE_COMMIT__", [{ day: timetableEditorCell.day, period: timetableEditorCell.period, subject: nextSubject, description: nextDescription }], false));
+        } catch (error) {
+          result = { ok: false, reason: error && error.message || "课程表写入失败" };
+        }
+        timetableEditorSaving = false;
+        if (result && result.ok) {
+          timetableEditorCell = null;
+          timetableEditorError = "";
+        } else {
+          timetableEditorError = String(result && result.reason || "课程表写入失败");
+        }
         renderTimetableWindow();
       });
       timetableHost?.addEventListener("dragstart", function (event) {
@@ -3077,7 +3442,7 @@
         if (event.key === "Home") index = 0;
         else if (event.key === "End") index = buttons.length - 1;
         else index = (Math.max(0, index) + (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) + buttons.length) % buttons.length;
-        buttons[index]?.focus();
+        buttons[index]?.focus({ preventScroll: true });
       });
       launcher.addEventListener("pointerdown", beginLauncherDrag);
       launcher.addEventListener("pointermove", moveLauncherDrag);
@@ -3159,6 +3524,7 @@
       hostDocument.addEventListener("visibilitychange", petVisibilityHandler);
       loadPetAssets();
       shellReady = true;
+      void ensureDesktopPet();
       updateChrome();
       syncGalgameState();
       return true;
@@ -3351,6 +3717,7 @@
     }
 
     function openProfileRole(roleName) {
+      if (sceneLayout) return openNotebook(roleName);
       pendingProfileRole = textId(roleName);
       if (!pendingProfileRole) return false;
       toggleShell(true);
@@ -3545,6 +3912,13 @@
       renderActionFoldMarkers: scheduleActionFoldRender,
       subscribeStage: function (fn) { stageSubscribers.add(fn); return function () { stageSubscribers.delete(fn); }; },
       openPhone: function () { toggleShell(true); },
+      phoneControlsDocked:function(){return Boolean(scenePhoneToolbarDock?.docked);},
+      setPhoneOrientation:setPhoneOrientation,
+      openNotebook: openNotebook,
+      openCollection: openCollection,
+      openLocations: openLocations,
+      openCharacterSlots: openCharacterSlots,
+      openDetectiveDesk: openDetectiveDesk,
       openProfileRole: openProfileRole,
       showEncounterDetail: showEncounterDetail,
       hideEncounterDetail: hideEncounterDetail,
@@ -3559,6 +3933,9 @@
       ensureOpeningWorldbooks: ensureOpeningWorldbooks,
       updateChrome: updateChrome,
       destroy: function () {
+        desktopPetGeneration += 1;
+        desktopPetController?.destroy();
+        desktopPetController = null;
         if (mountTimer) host.clearTimeout(mountTimer);
         mountTimer = 0;
         clearPetFrameTimer();
@@ -3644,6 +4021,14 @@
         if (timetableRefreshTimer) host.clearTimeout(timetableRefreshTimer);
         timetableRefreshTimer = 0;
         timetableHost = null;
+        routineSceneToken += 1;
+        routineSceneView?.destroy();
+        closeNotebook();
+        closeCharacterSlots();
+        closeDetectiveDesk();
+        closeCollection();closeLocations();
+        routineSceneView = null;
+        routineSceneLoading = null;
 	        mapExtraChainHost = null;
 	        resourcePanel = null;
 	        variableFormatButton = null;
