@@ -17,6 +17,8 @@ export function commandBattleProfile(requests=[]){
 }
 export async function runHypnosisResistanceGate(batch,people,{runBattle,storyEvents={},vipRank}={}){
  if(batch.requests.every(x=>x.scope==='location'))return {gate:'not-required',required:false,plotGate:'pending',targets:[],rule:'地点催眠无需小游戏；效果仅由剧情按命令、地点和条件判断。双胞胎与林安不受影响。'};
- return runBattle(people,{commandRequests:batch.requests,storyEvents,vipRank});
+ const result=await runBattle(people,{commandRequests:batch.requests,storyEvents,vipRank});
+ if(result?.confirmed!==true)return{gate:'resistance',required:true,success:false,reason:'cancelled',confirmed:false,targets:[],plotGate:'pending'};
+ return{...result,plotGate:'pending'};
 }
 export function hypnosisGatePrompt(scope){return scope==='location'?'地点催眠不运行抵抗小游戏，resistance.required=false；仅依据所选地点、催眠命令、人设与剧情条件判定效果，不把跳过小游戏当成成功，不影响双胞胎或林安。只按实际剧情结果结算能量，前端暂存不扣款。':'逐目标读取 resistance.targets.resisted：true代表目标抵抗成功，不可写催眠成功效果；false仅代表机制上的抵抗突破。旧结果无该字段时读取resistance.success。突破后仍依据人设、命令越界程度、条件和剧情阻碍独立判断，越界仍可失败，不得直接接受极端要求。只按实际剧情结果写入效果并结算能量，前端暂存不扣款。';}

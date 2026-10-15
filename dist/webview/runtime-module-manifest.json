@@ -160,6 +160,7 @@
     "game-modules/reward-defaults.js",
     "game-modules/safety/character-content-policy-client.mjs",
     "game-modules/safety/character-content-policy-spec.mjs",
+    "game-modules/ui/background-image.mjs",
     "game-modules/ui/floating-window.mjs",
     "game-modules/ui/scene-dom.mjs",
     "game-modules/ui/scene-toolbar.mjs",

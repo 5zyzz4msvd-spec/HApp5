@@ -3,6 +3,7 @@ import { installSerialMotion } from '../ui/serial-motion.mjs';
 import { actorsAtScene, chooseSceneActor, landscapeFit } from "./scene-presence.mjs";
 import { sceneStandeeLayout } from "./scene-layout.mjs";
 import { sceneActorMatchesCast, sceneActorAsset, sceneStandeeEntries } from './scene-character-presentation.mjs';
+import {createBackgroundSwap} from '../ui/background-image.mjs';
 
 export function mountScheduleScene(container, { assets, resolveFile, onSelect = () => {} }) {
   const doc = container.ownerDocument;installSerialMotion(doc);
@@ -22,7 +23,8 @@ export function mountScheduleScene(container, { assets, resolveFile, onSelect = 
   const root = doc.createElement("section"); root.className = "routine-scene"; root.setAttribute("aria-label", "地点人物场景");
   root.innerHTML = '<header class="scene-topbar"><div class="routine-context"><strong class="routine-place"></strong><span class="routine-time"></span></div><div class="routine-wheel"><button class="routine-multiple" type="button" aria-label="复选人物" aria-pressed="false">多选</button><button class="routine-wheel-arrow prev" type="button" aria-label="上一位人物">‹</button><nav class="routine-roster" aria-label="此时在场人物"></nav><button class="routine-wheel-arrow next" type="button" aria-label="下一位人物">›</button></div></header><main class="routine-viewport"><div class="routine-world"><img class="routine-background" alt="" hidden><div class="routine-shade"></div><div class="routine-actor-layer"></div><p class="routine-empty" hidden></p></div></main><section class="scene-workspace" aria-label="下方预留栏位"><div class="scene-workspace-head"><div class="scene-tools-slot"></div><div class="routine-caption" aria-live="polite"></div></div><div class="scene-workspace-body"></div></section>';
   root.prepend(style);container.append(root);registerSceneRoot(doc,root);installSerialMotion(doc,root.getRootNode());
-  const viewportArea=root.querySelector('.routine-viewport'),world = root.querySelector('.routine-world'), roster = root.querySelector('.routine-roster'), layer = root.querySelector('.routine-actor-layer'), caption = root.querySelector('.routine-caption'), bg = root.querySelector('.routine-background'), empty = root.querySelector('.routine-empty');
+  const viewportArea=root.querySelector('.routine-viewport'),world = root.querySelector('.routine-world'), roster = root.querySelector('.routine-roster'), layer = root.querySelector('.routine-actor-layer'), caption = root.querySelector('.routine-caption'), empty = root.querySelector('.routine-empty');
+  let bg=root.querySelector('.routine-background');
   const wheel = root.querySelector('.routine-wheel'), prev = root.querySelector('.routine-wheel-arrow.prev'), nextButton = root.querySelector('.routine-wheel-arrow.next');
   let stageHeight=Number(assets.stage?.height)||720,actorGroundFloor=stageHeight+24;
   let selectedId = "", locationId = "", state = null, actors = [], rosterKey = "", animation = null, epoch = 0, transitionTarget = "", scrollTimer = 0, wheelTime = 0;
@@ -42,7 +44,13 @@ export function mountScheduleScene(container, { assets, resolveFile, onSelect = 
     return fit;
   }
   const viewportObserver=doc.defaultView.ResizeObserver?new doc.defaultView.ResizeObserver(()=>resize()):null;viewportObserver?.observe(viewportArea);
-  bg.addEventListener('load',resize);root.addEventListener('hypno:toolbar-change',resize);
+  const backgroundSwap=createBackgroundSwap({
+    createImage(){const image=doc.createElement('img');image.className='routine-background';image.alt='';return image;},
+    onPending(){root.dataset.backgroundState='loading';},
+    onCommit(image,detail){bg.replaceWith(image);bg=image;root.dataset.backgroundAvailable='true';root.dataset.backgroundState='ready';root.dataset.backgroundLocationId=detail.locationId;resize();},
+    onFallback({image}){root.dataset.backgroundAvailable=String(Boolean(image));root.dataset.backgroundState=image?'fallback':'empty';if(!image)bg.hidden=true;},
+  });
+  root.addEventListener('hypno:toolbar-change',resize);
   function select(id, toggle = true) {
     if(state?.dialogue)return;
     const oldIndex = actors.findIndex((x) => x.id === selectedId), index = actors.findIndex((x) => x.id === id);
@@ -73,8 +81,7 @@ export function mountScheduleScene(container, { assets, resolveFile, onSelect = 
     root.querySelector(".routine-time").textContent = next.time || "时间未确认";
     const scene = assets.backgrounds.find((x) => x.locationId === locationId);
     const file = next.location?.ui?.sceneBackground ?? scene?.file;
-    if (file) { if (bg.getAttribute("src") !== resolveFile(file)) bg.src = resolveFile(file); bg.hidden = false; } else { bg.removeAttribute("src"); bg.hidden = true; }
-    root.dataset.backgroundAvailable = String(Boolean(file));
+    void backgroundSwap.select(file?resolveFile(file):'',{key:locationId+':'+(file??''),locationId});
     const key = actors.map((x) => `${x.id}:${x.name}:${x.mounted}:${x.headUrl??''}`).join("|");
     if (key !== rosterKey) { rosterKey = key; roster.replaceChildren(); }
     for (const actor of actors.filter((x) => ![...roster.children].some((button) => button.dataset.actor === x.id))) {
@@ -86,8 +93,8 @@ export function mountScheduleScene(container, { assets, resolveFile, onSelect = 
     for (const button of roster.children) { button.setAttribute("aria-pressed", String(multiple ? selectedIds.has(button.dataset.actor) : button.dataset.actor === selectedId)); button.title = `${actors.find((x) => x.id === button.dataset.actor)?.name ?? ""}${multiple ? " · 点击复选" : ""}`; }
     const activeButton = [...roster.children].find((x) => x.dataset.actor === selectedId);
     if (activeButton) roster.scrollTo({ left: activeButton.offsetLeft + activeButton.offsetWidth / 2 - roster.clientWidth / 2, behavior: animate && !reduced() ? "smooth" : "instant" });
-    const index = actors.findIndex((x) => x.id === selectedId); prev.disabled = index <= 0; nextButton.disabled = index >= actors.length - 1; wheel.hidden = !actors.length;
-    if(next.dialogue){epoch++;animation?.cancel();delete root.dataset.sceneMoving;paintActor(actors);for(const image of layer.querySelectorAll('img')){const active=next.dialogue.speaker&&(image.alt===next.dialogue.speaker||image.dataset.actor===next.dialogue.speaker||JSON.parse(image.dataset.speakerNames??'[]').includes(next.dialogue.speaker));image.style.opacity=active?'1':next.dialogue.speaker?'.32':'.58';image.dataset.opacity=image.style.opacity;}multipleButton.disabled=true;}
+    const index = actors.findIndex((x) => x.id === selectedId); prev.disabled = index <= 0; nextButton.disabled = index >= actors.length - 1; wheel.hidden = Boolean(next.dialogue)||!actors.length;multipleButton.disabled=Boolean(next.dialogue);
+    if(next.dialogue){epoch++;animation?.cancel();delete root.dataset.sceneMoving;paintActor(actors);for(const image of layer.querySelectorAll('img')){const active=next.dialogue.speaker&&(image.alt===next.dialogue.speaker||image.dataset.actor===next.dialogue.speaker||JSON.parse(image.dataset.speakerNames??'[]').includes(next.dialogue.speaker));image.style.opacity=active?'1':next.dialogue.speaker?'.32':'.58';image.dataset.opacity=image.style.opacity;}}
     else if (multiple) {
       epoch++; animation?.cancel(); transitionTarget = "";delete root.dataset.sceneMoving;
       const chosen = actors.filter((x) => selectedIds.has(x.id));
@@ -145,5 +152,5 @@ export function mountScheduleScene(container, { assets, resolveFile, onSelect = 
     } catch (_) { /* A newer selection cancels this motion; it owns the next frame. */ }
     finally { if (version === epoch) { animation = null; transitionTarget = ""; delete root.dataset.motion;delete root.dataset.sceneMoving; } }
   }
-  return { root, render, resize, destroy() { epoch++; animation?.cancel(); clearTimeout(scrollTimer); viewportObserver?.disconnect();bg.removeEventListener('load',resize);root.removeEventListener('hypno:toolbar-change',resize);root.remove();unregisterSceneRoot(doc,root);if(!sceneRootFor(doc))for(const name of ['left','top','width','height','right','bottom','center-x','center-y'])doc.documentElement.style.removeProperty('--hypno-scene-'+name);state=null; } };
+  return { root, render, resize, destroy() { epoch++;backgroundSwap.destroy(); animation?.cancel(); clearTimeout(scrollTimer); viewportObserver?.disconnect();root.removeEventListener('hypno:toolbar-change',resize);root.remove();unregisterSceneRoot(doc,root);if(!sceneRootFor(doc))for(const name of ['left','top','width','height','right','bottom','center-x','center-y'])doc.documentElement.style.removeProperty('--hypno-scene-'+name);state=null; } };
 }
