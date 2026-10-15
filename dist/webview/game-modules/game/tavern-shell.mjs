@@ -1,3 +1,4 @@
+import {requireDistributionAccess} from '../distribution/access.mjs';
 import {gameViewport,portraitBlocked,viewportOrientation,ORIENTATION_CSS,ORIENTATION_MARKUP} from './viewport.mjs';
 
 const ROOT_ID='hypno-game-root',SHELL_KEY='__ST_GAME_SHELL__';
@@ -23,6 +24,7 @@ export function sceneFrameDocument(template,{sceneBase,assetBase}){
 }
 
 export function mountTavernGameShell({host=window,template,sceneBase,assetBase,expectedCardName=''}){
+ requireDistributionAccess(host);
  const active=host.SillyTavern?.getContext?.(),name=active?.characters?.[active.characterId??active.chid]?.name;if(expectedCardName&&name&&name!==expectedCardName)return;
  const doc=host.document;if(doc.getElementById(ROOT_ID))return host[SHELL_KEY];
  const root=doc.createElement('section');root.id=ROOT_ID;root.setAttribute('aria-label','HypnoOS 游戏画面');
@@ -48,8 +50,9 @@ export function mountTavernGameShell({host=window,template,sceneBase,assetBase,e
  const headerMutation=new host.MutationObserver(schedule);headerMutation.observe(doc.body,{childList:true,attributes:true,attributeFilter:['style','class']});headerMutation.observe(doc.documentElement,{attributes:true,attributeFilter:['style','class']});
  host.addEventListener('resize',schedule);host.screen?.orientation?.addEventListener?.('change',schedule);host.visualViewport?.addEventListener('resize',schedule);host.visualViewport?.addEventListener('scroll',schedule);coarse?.addEventListener?.('change',schedule);sync();
  const context=host.SillyTavern?.getContext?.(),source=context?.eventSource,chatChanged=context?.eventTypes?.CHAT_CHANGED??host.event_types?.CHAT_CHANGED??'chat_id_changed';
- const onChatChanged=()=>{const current=host.SillyTavern.getContext(),name=current.characters?.[current.characterId??current.chid]?.name;if(expectedCardName&&name&&name!==expectedCardName)api.destroy();else api.reload();};
- const api={root,frame,sync,reload(){frame.srcdoc=sceneFrameDocument(template,{sceneBase,assetBase});},destroy(){if(destroyed)return;destroyed=true;if(queued)host.cancelAnimationFrame(queued);observer?.disconnect();headerMutation.disconnect();source?.removeListener?.(chatChanged,onChatChanged);host.removeEventListener('resize',schedule);host.screen?.orientation?.removeEventListener?.('change',schedule);host.visualViewport?.removeEventListener('resize',schedule);host.visualViewport?.removeEventListener('scroll',schedule);coarse?.removeEventListener?.('change',schedule);root.remove();style.remove();if(previous===null)delete doc.documentElement.dataset.hypnoGameHost;else doc.documentElement.setAttribute('data-hypno-game-host',previous);for(const node of doc.querySelectorAll('style[data-hypno-galgame-input]'))node.remove();if(host[SHELL_KEY]===api)delete host[SHELL_KEY];}};
+ const onChatChanged=()=>{try{requireDistributionAccess(host);}catch{api.destroy();return;}const current=host.SillyTavern.getContext(),name=current.characters?.[current.characterId??current.chid]?.name;if(expectedCardName&&name&&name!==expectedCardName)api.destroy();else api.reload();};
+ const api={root,frame,sync,reload(){requireDistributionAccess(host);frame.srcdoc=sceneFrameDocument(template,{sceneBase,assetBase});},destroy(){if(destroyed)return;destroyed=true;if(queued)host.cancelAnimationFrame(queued);observer?.disconnect();headerMutation.disconnect();source?.removeListener?.(chatChanged,onChatChanged);host.removeEventListener('resize',schedule);host.screen?.orientation?.removeEventListener?.('change',schedule);host.visualViewport?.removeEventListener('resize',schedule);host.visualViewport?.removeEventListener('scroll',schedule);coarse?.removeEventListener?.('change',schedule);root.remove();style.remove();if(previous===null)delete doc.documentElement.dataset.hypnoGameHost;else doc.documentElement.setAttribute('data-hypno-game-host',previous);for(const node of doc.querySelectorAll('style[data-hypno-galgame-input]'))node.remove();if(host[SHELL_KEY]===api)delete host[SHELL_KEY];}};
  source?.on?.(chatChanged,onChatChanged);
+ host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?.register('game-shell',()=>api.destroy());
  host[SHELL_KEY]=api;return api;
 }

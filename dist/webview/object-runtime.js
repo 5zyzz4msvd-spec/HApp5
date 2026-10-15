@@ -1,6 +1,44 @@
+(function(){
+function inspectDistributionContext(start = globalThis) {
+ const views=[];
+ for(const view of [start,start?.parent,start?.top])try{if(view&&!views.includes(view))views.push(view);}catch{}
+ let host,context;
+ for(const view of views.reverse())try{if(typeof view?.SillyTavern?.getContext==='function'){host=view;context=view.SillyTavern.getContext();break;}}catch{}
+ const fail=(code,reason)=>({ok:false,code,reason,host});
+ if(!host)return fail('platform','仅支持在 SillyTavern 中运行。');
+ const id=context?.characterId??context?.chid;
+ const character=id===undefined||id===null?null:context.characters?.[id];
+ if(!character)return fail('character','当前角色卡尚未就绪。');
+ const card=character.data&&typeof character.data==='object'?character.data:character;
+ const marked=name=>typeof name==='string'&&name.includes('louisHM')&&name.includes('完全免费');
+ if(!marked(card.name)||(character.name!==undefined&&!marked(character.name)))return fail('card-name','角色卡名必须同时包含 louisHM、完全免费。');
+ const embedded=card.character_book?.name,binding=card.extensions?.world;
+ if(!marked(embedded)||!marked(binding))return fail('worldbook-name','角色绑定的世界书名必须同时包含 louisHM、完全免费。');
+ if(embedded!==binding)return fail('worldbook-binding','内嵌世界书与当前绑定的世界书名称不一致。');
+ return {ok:true,host,context,card};
+}
+function reportDistributionFailure(host,reason) {
+ try{
+  const doc=host.document;if(!doc?.body)return;
+  let status=doc.getElementById('hypnoos-distribution-error');
+  if(!status){status=doc.createElement('aside');status.id='hypnoos-distribution-error';status.setAttribute('role','alert');status.style.cssText='position:fixed;left:20px;right:20px;bottom:24px;z-index:2147483646;padding:16px 20px;border:1px solid #ab6b76;border-radius:16px;background:#291b24;color:#fff;font:14px/1.7 system-ui';doc.body.append(status);}
+  status.textContent='HypnoOS 已停止加载：'+reason;
+ }catch{}
+}
+function requireDistributionAccess(start = globalThis) {
+ const result=inspectDistributionContext(start),gate=result.host?.__ST_HYPNOOS_INTEGRITY_GATE_V1__;
+ if(!result.ok||!gate?.authorize?.(gate.revision)){
+  const reason=result.ok?'角色卡完整性授权尚未通过。':result.reason;
+  reportDistributionFailure(result.host??start,reason);
+  throw new Error('[HypnoOS 来源校验] '+reason);
+ }
+ return result.host;
+}
+requireDistributionAccess(globalThis);
 /* Generated from src/object-manager and browser workshop modules. */
 (function(){
 const factories={"src/object-manager/phone-integration.mjs":function(module, load){
+const {requireDistributionAccess} = load("src/distribution/access.mjs");
 const {hasTavernContext,readTavernChatId} = load("src/object-manager/tavern-context.mjs");
 const {ensureUserManagement,hasLegacyUserState,userNotebookSources} = load("src/object-manager/user-management.mjs");
 const {installLocationHypnosisHooks,stageLegacyLocationHypnosis,migrateLegacyLocationHypnosis} = load("src/object-manager/location-hypnosis.mjs");
@@ -101,6 +139,7 @@ function findHost(start) {
 
 async function ensurePhoneObjectRuntime(start = globalThis, { graphs = [], characters, encounterRole = null, assetLoader = null } = {}) {
   const host = findHost(start);
+  const accessGuard=host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?()=>requireDistributionAccess(host):()=>{};accessGuard();
   const bridge=host.__ST_GAME_RUNTIME_BRIDGE__;if(bridge&&bridge.ensurePhoneObjectRuntime!==ensurePhoneObjectRuntime)return bridge.ensurePhoneObjectRuntime(start,{graphs,characters,encounterRole,assetLoader});
   const chatId = String(readTavernChatId(host) ?? "");
   if (!chatId) throw new Error("无法确认当前聊天");
@@ -117,10 +156,10 @@ async function ensurePhoneObjectRuntime(start = globalThis, { graphs = [], chara
       host.__HYPNOOS_OBJECT_MANAGER_V1__ = facade;
     } else {
       if (!resolveTavernWorldbookApi(start) && !resolveTavernWorldbookApi(host)) throw new Error("酒馆助手世界书接口尚未就绪");
-      facade = await installObjectManagerLifecycle({ start });
+      facade = await installObjectManagerLifecycle({ start, authorize:accessGuard });
     }
   }
-  await facade.ready;
+  await facade.ready;accessGuard();
   const runtime = facade.runtime;
   installLocationHypnosisHooks(runtime,start);
   if(runtime.__personnelPermissionHost!==host){runtime.setPersonnelPermissionSource(()=>readHostPersonnelPermissions(host));runtime.__personnelPermissionHost=host;}
@@ -202,6 +241,48 @@ function surfaceLifecycle(doc,node,toolbar,dispose,prepare){return lifecycle(doc
 function runSceneTransition(doc,action){return transition(doc,action);}
 
 Object.assign(module.exports,{mountDesktopPet,personnelPermissions,mountCharacterSlots,mountDetectiveDesk,validatePhoneHypnosis,mountIphone16Phone,iphone16SceneSnapshot,mountNotebook,connectPersonnelBusiness,notebookAccess,sceneObjectSnapshot,mountRoutineScene,sceneCalendar,sceneLocation,ensurePhoneObjectRuntime,mountPhoneObjects,initializeObjectHost,validatePhoneHypnosisBatch,stagePhoneLocationHypnosisLegacy,mountInventoryCollection,mountSceneTools,mountSceneLocations,mountFloatingWindow,bindFloatingDrag,sceneWindowController,dockSceneToolbar,surfaceLifecycle,runSceneTransition});
+},
+"src/distribution/access.mjs":function(module, load){
+// Shared by the card gate and compiled entry points. Keep this function self-contained.
+function inspectDistributionContext(start = globalThis) {
+ const views=[];
+ for(const view of [start,start?.parent,start?.top])try{if(view&&!views.includes(view))views.push(view);}catch{}
+ let host,context;
+ for(const view of views.reverse())try{if(typeof view?.SillyTavern?.getContext==='function'){host=view;context=view.SillyTavern.getContext();break;}}catch{}
+ const fail=(code,reason)=>({ok:false,code,reason,host});
+ if(!host)return fail('platform','仅支持在 SillyTavern 中运行。');
+ const id=context?.characterId??context?.chid;
+ const character=id===undefined||id===null?null:context.characters?.[id];
+ if(!character)return fail('character','当前角色卡尚未就绪。');
+ const card=character.data&&typeof character.data==='object'?character.data:character;
+ const marked=name=>typeof name==='string'&&name.includes('louisHM')&&name.includes('完全免费');
+ if(!marked(card.name)||(character.name!==undefined&&!marked(character.name)))return fail('card-name','角色卡名必须同时包含 louisHM、完全免费。');
+ const embedded=card.character_book?.name,binding=card.extensions?.world;
+ if(!marked(embedded)||!marked(binding))return fail('worldbook-name','角色绑定的世界书名必须同时包含 louisHM、完全免费。');
+ if(embedded!==binding)return fail('worldbook-binding','内嵌世界书与当前绑定的世界书名称不一致。');
+ return {ok:true,host,context,card};
+}
+
+function requireDistributionAccess(start = globalThis) {
+ const result=inspectDistributionContext(start),gate=result.host?.__ST_HYPNOOS_INTEGRITY_GATE_V1__;
+ if(!result.ok||!gate?.authorize?.(gate.revision)){
+  const reason=result.ok?'角色卡完整性授权尚未通过。':result.reason;
+  reportDistributionFailure(result.host??start,reason);
+  throw new Error('[HypnoOS 来源校验] '+reason);
+ }
+ return result.host;
+}
+
+function reportDistributionFailure(host,reason) {
+ try{
+  const doc=host.document;if(!doc?.body)return;
+  let status=doc.getElementById('hypnoos-distribution-error');
+  if(!status){status=doc.createElement('aside');status.id='hypnoos-distribution-error';status.setAttribute('role','alert');status.style.cssText='position:fixed;left:20px;right:20px;bottom:24px;z-index:2147483646;padding:16px 20px;border:1px solid #ab6b76;border-radius:16px;background:#291b24;color:#fff;font:14px/1.7 system-ui';doc.body.append(status);}
+  status.textContent='HypnoOS 已停止加载：'+reason;
+ }catch{}
+}
+
+Object.assign(module.exports,{inspectDistributionContext,requireDistributionAccess,reportDistributionFailure});
 },
 "src/object-manager/tavern-context.mjs":function(module, load){
 // Native SillyTavern exposes chat APIs through getContext(); older helpers may
@@ -3476,7 +3557,7 @@ Object.assign(module.exports,{mountDaggerTransfer});
 },
 "src/pet-v6/desktop-pet.mjs":function(module, load){
 const {phoneIcon} = load("src/phone-v2/icons.mjs");
-const {PET_CHARACTERS,PET_NAMES,clampPetPosition,stepDragSpring,chooseIdle,frameAt,legacyClips,clipDuration,dragGripForClip,anchoredPetPosition,continuousTurnDelta,impulseDragRotation,advanceClipClock,reversedMenuClip,decodePetImage} = load("src/pet-v6/motion.mjs");
+const {PET_CHARACTERS,PET_NAMES,clampPetPosition,stepDragSpring,chooseIdle,frameAt,legacyClips,clipDuration,dragGripForClip,anchoredPetPosition,continuousTurnDelta,impulseDragRotation,advanceClipClock,reversedMenuClip,decodePetImage,releasePetFlight,stepPetFlight,flightPetPosition,petFlightLandingPosition} = load("src/pet-v6/motion.mjs");
 function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/assets/',actions={},initialCharacter='alisa',storageKey='hypno-pet-v6',onCharacter=()=>{},transitionHooks={}}={}){
  const doc=container.ownerDocument??container,win=doc.defaultView;
  const root=doc.createElement('div');root.className='desktop-pet-v6';
@@ -3501,6 +3582,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  const pet=root.querySelector('.dp-pet'),sprite=root.querySelector('.dp-sprite'),ghost=root.querySelector('.dp-ghost'),ring=root.querySelector('.dp-ring');
  const media=win.matchMedia('(prefers-reduced-motion: reduce)'),abort=new win.AbortController(),signal=abort.signal;
  let role=PET_CHARACTERS.includes(initialCharacter)?initialCharacter:'alisa',position={x:Math.max(8,win.innerWidth-160),y:Math.max(8,win.innerHeight-190)},clips={},state='idle',started=0,painted=-1,raf=0,last=0,idleDeadline=0,lastIdleVariant='idle',drag=null,spring={angle:0,omega:0},destroyed=false,locked=false,transitionToken=0,suppressClick=false,suppressClickUntil=0,manifest=null,transitionAbort=null,menuJump=null,landingStage='idle',settledPromise=Promise.resolve();
+ let flight=null,flightFinish=null;
  let texture=root.querySelector('.dp-texture'),textureUrl=null;texture.decoding='sync';let activeClip=null,clock={elapsed:0,at:0},clipFinish=null,clipWaiters=[],paintedTexture=-1;
  const animations=new Set(),timers=new Map();
  try{const saved=JSON.parse(win.localStorage.getItem(storageKey));if(saved){if(PET_CHARACTERS.includes(saved.role))role=saved.role;if(Number.isFinite(saved.x)&&Number.isFinite(saved.y))position={x:saved.x,y:saved.y};}}catch{}
@@ -3526,8 +3608,9 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  }
  function resetIdleDeadline(now){idleDeadline=now+45000+Math.random()*45000;}
  function frame(now){raf=0;if(destroyed||doc.hidden)return;const dt=last?Math.min(.05,(now-last)/1000):1/60;last=now;
+  if(flight){flight=stepPetFlight(flight,viewport(),dt);spring={angle:flight.angle,omega:flight.omega};move(flightPetPosition(flight),{anchored:true});sprite.style.setProperty('--dp-angle',spring.angle+'rad');if(flight.done){const complete=flightFinish;flightFinish=null;complete?.(true);}}
   if(drag?.moved&&role==='alisa'){spring=stepDragSpring(spring,0,dt,drag.manualAngle??null);sprite.style.setProperty('--dp-angle',spring.angle+'rad');}
-  const c=activeClip??clips[state];if(c&&!media.matches&&landingStage!=='righting'){clock=advanceClipClock(clock,now);const elapsed=clock.elapsed;let result=frameAt(c,elapsed);
+  const c=activeClip??clips[state];if(c&&!media.matches&&landingStage!=='righting'&&landingStage!=='flight'){clock=advanceClipClock(clock,now);const elapsed=clock.elapsed;let result=frameAt(c,elapsed);
    if(state==='charge'&&drag?.moved){result.index=Math.min(result.index,c.holdFrame??3);result.done=false;}
    if(state==='drag'&&drag?.moved&&role==='alisa'&&result.done){if(clips['drag-hold']){play('drag-hold',now);result=frameAt(clips[state],0);}else{result.index=c.holdFrame??c.frames-1;result.done=false;}}
    paint(result.index);if(result.done&&clipFinish){clipFinish(true);clipFinish=null;}if(result.done&&!locked&&!drag){if(state==='menu-open')play(ring.hidden?'menu-close':'menu-idle',now);else if(state==='menu-close'){play('idle',now);if(!ring.hidden)startMenuPose(now);}else play('idle',now);resetIdleDeadline(now);}
@@ -3541,7 +3624,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  function buildMenu(){ring.replaceChildren();const entries=[['phone','手机','phone'],['notebook','笔记','notebook'],['inventory','库存','inventory'],['locations','地点','map'],['switch','换人','people']];for(let i=0;i<entries.length;i++){const [id,label,icon]=entries[i];if(id!=='switch'&&!actions[id])continue;const button=doc.createElement('button');button.type='button';button.dataset.petAction=id;button.setAttribute('aria-label',id==='switch'?'切换桌宠':'打开'+label);button.innerHTML=phoneIcon(icon)+'<span>'+label+'</span>';const angle=(-90+i*72)*Math.PI/180;button.style.setProperty('--bx',Math.cos(angle)*76+'px');button.style.setProperty('--by',Math.sin(angle)*76+'px');button.style.setProperty('--delay',i*18+'ms');button.addEventListener('click',()=>{closeMenu();if(id==='switch')void switchCharacter();else void actions[id]?.();},{signal});ring.append(button);}}
  async function animate(element,keyframes,options){if(media.matches)return;const a=element.animate(keyframes,options);animations.add(a);try{await a.finished;}catch{}finally{a.cancel();animations.delete(a);}}
  function hideGhost(){ghost.dataset.visible='false';}
- function cancelDrag(){if(!drag)return;const active=drag;drag=null;closeMenu({immediate:true});hideGhost();pet.dataset.dragging='false';move(active.origin);sprite.style.setProperty('--dp-angle','0rad');spring={angle:0,omega:0};suppressClick=active.moved;suppressClickUntil=win.performance.now()+80;releaseDragCaptures(active);play('idle');resetIdleDeadline(win.performance.now());}
+ function cancelDrag(){if(!drag){if(flight)cancelTransition();return;}const active=drag;drag=null;closeMenu({immediate:true});hideGhost();pet.dataset.dragging='false';move(active.origin);sprite.style.setProperty('--dp-angle','0rad');spring={angle:0,omega:0};suppressClick=active.moved;suppressClickUntil=win.performance.now()+80;releaseDragCaptures(active);play('idle');resetIdleDeadline(win.performance.now());}
  function releaseDragCaptures(value){for(const id of [value.id,value.rotationPointer?.id])if(id!=null){try{pet.releasePointerCapture(id);}catch{}}}
  function down(e){if(drag&&role==='alisa'&&e.pointerId!==drag.id){if(drag.rotationPointer)return;drag.rotationPointer={id:e.pointerId,x:e.clientX,y:e.clientY};drag.twistStart=Math.atan2(e.clientY-drag.pointer.y,e.clientX-drag.pointer.x);drag.twistBase=drag.manualAngle??spring.angle;try{pet.setPointerCapture(e.pointerId);}catch{}return;}if(locked||drag||e.button!==0&&e.pointerType==='mouse')return;e.stopPropagation();drag={id:e.pointerId,start:{x:e.clientX,y:e.clientY},origin:{...position},target:{...position},grip:{x:e.clientX-position.x,y:e.clientY-position.y},moved:false,pointer:{x:e.clientX,y:e.clientY},sampleAt:win.performance.now(),sampleX:e.clientX,sampleY:e.clientY,vx:0,vy:0};suppressClick=false;try{pet.setPointerCapture(e.pointerId);}catch{}}
  function pointerMove(e){if(drag?.rotationPointer?.id===e.pointerId){e.preventDefault();const point=drag.pointer,theta=Math.atan2(e.clientY-point.y,e.clientX-point.x),delta=continuousTurnDelta(drag.twistStart,theta);drag.manualAngle=(drag.manualAngle??drag.twistBase)+delta;drag.twistStart=theta;drag.rotationPointer.x=e.clientX;drag.rotationPointer.y=e.clientY;wake();return;}if(!drag||e.pointerId!==drag.id)return;drag.pointer={x:e.clientX,y:e.clientY};if(drag.rotationPointer){const p=drag.rotationPointer,theta=Math.atan2(p.y-e.clientY,p.x-e.clientX);drag.manualAngle=(drag.manualAngle??drag.twistBase)+continuousTurnDelta(drag.twistStart,theta);drag.twistStart=theta;}e.preventDefault();e.stopPropagation();const dx=e.clientX-drag.start.x,dy=e.clientY-drag.start.y;if(!drag.moved&&Math.hypot(dx,dy)<6)return;if(!drag.moved){closeMenu({immediate:true});drag.moved=true;pet.dataset.dragging='true';play(role==='hyakka'?'charge':'drag');anchorDrag(0);}
@@ -3551,6 +3634,12 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  function slash(from,to){if(media.matches)return;const dx=to.x-from.x,dy=to.y-from.y,distance=Math.hypot(dx,dy),angle=Math.atan2(dy,dx)*180/Math.PI,count=Math.min(18,Math.max(5,Math.round(distance/35)));const blade=doc.createElement('i');blade.className='dp-blade';blade.style.cssText=`left:${from.x+56}px;top:${from.y+58}px;width:${Math.max(72,distance+42)}px;rotate:${angle}deg;`;root.append(blade);void animate(blade,[{opacity:0,scale:'.04 1'},{opacity:1,scale:'1 1.2',offset:.18},{opacity:.8,scale:'1.04 .8',offset:.45},{opacity:0,scale:'1.08 .15'}],{duration:340,easing:'cubic-bezier(.16,.8,.25,1)'}).finally(()=>blade.remove());const impact=doc.createElement('i');impact.className='dp-impact';impact.style.left=(to.x+56)+'px';impact.style.top=(to.y+99)+'px';root.append(impact);void animate(impact,[{opacity:0,scale:'.3'},{opacity:1,scale:'.9',offset:.2},{opacity:0,scale:'1.8'}],{duration:300,delay:80,easing:'ease-out'}).finally(()=>impact.remove());for(let i=0;i<count;i++){const t=(i+1)/(count+1),p=doc.createElement('i');p.className='dp-particle';p.style.cssText=`left:${from.x+56+dx*t}px;top:${from.y+70+dy*t}px;width:${38+Math.random()*58}px;transform:rotate(${angle+(i%2?36:-36)}deg);`;root.append(p);void animate(p,[{opacity:0,translate:'-12px 0',scale:'.4 1'},{opacity:1,offset:.2},{opacity:0,translate:'20px 0',scale:'1.4 1'}],{duration:320+i*9,delay:i*7,easing:'ease-out'}).finally(()=>p.remove());}}
  async function up(e){if(drag?.rotationPointer?.id===e.pointerId){drag.rotationPointer=null;return;}if(!drag||e.pointerId!==drag.id)return;if(!drag.moved&&Math.hypot(e.clientX-drag.start.x,e.clientY-drag.start.y)>=6)pointerMove(e);if(drag.moved&&role==='alisa'){drag.pointer={x:e.clientX,y:e.clientY};anchorDrag();}const ended=drag,releaseClip=activeClip,releaseFrame=paintedTexture,earlyRelease=role==='alisa'&&state==='drag'&&paintedTexture<(clips.drag.holdFrame??clips.drag.frames-1);drag=null;pet.dataset.dragging='false';hideGhost();releaseDragCaptures(ended);if(!ended.moved){resetIdleDeadline(win.performance.now());return;}e.preventDefault();e.stopPropagation();suppressClick=true;suppressClickUntil=win.performance.now()+80;locked=true;const token=++transitionToken;transitionAbort=new win.AbortController();
   try{if(role==='hyakka'){play('blink');await animate(sprite,[{opacity:1,filter:'brightness(1)'},{opacity:0,filter:'brightness(3)'}],{duration:80,easing:'ease-in'});if(token!==transitionToken)return;slash(ended.origin,ended.target);move(ended.target);await animate(sprite,[{opacity:0,filter:'brightness(3)'},{opacity:1,filter:'brightness(1)'}],{duration:170,easing:'ease-out'});}else{
+    const launched=media.matches?null:releasePetFlight({position,grip:ended.grip,angle:spring.angle,omega:spring.omega,vx:ended.vx,vy:ended.vy,velocityAge:(win.performance.now()-ended.sampleAt)/1000});
+    if(launched){
+     flight=launched;landingStage='flight';sprite.style.setProperty('--dp-pivot-x','56px');sprite.style.setProperty('--dp-pivot-y','56px');move(flightPetPosition(flight),{anchored:true});wake();
+     await new Promise(resolve=>{flightFinish=resolve;});if(token!==transitionToken)return;
+     ended.target=petFlightLandingPosition(flight,viewport());flight=null;
+    }
     landingStage='righting';const restAngle=Math.round(spring.angle/(Math.PI*2))*Math.PI*2;
     // Right the complete suspension drawing before the landing strip starts;
     // its first frame and authored timing must never be consumed during a turn.
@@ -3569,7 +3658,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  function pause(ms,token){return new Promise(resolve=>{const id=win.setTimeout(()=>{timers.delete(id);resolve();},media.matches?0:ms);timers.set(id,resolve);}).then(()=>token===transitionToken);}
  function clearTimers(){for(const [id,resolve]of timers){win.clearTimeout(id);resolve();}timers.clear();}
  async function transition(kind,token){const handled=await transitionHooks[kind]?.({role,position:{...position},play,sprite,root,signal:transitionAbort?.signal});if(token!==transitionToken)return;if(!handled){play(kind);await animate(sprite,kind==='exit'?[{opacity:1,translate:'0 0'},{opacity:0,translate:'0 14px'}]:[{opacity:0,translate:'0 14px'},{opacity:1,translate:'0 0'}],{duration:Math.max(kind==='exit'?280:320,(clips[kind]?.durations??[]).reduce((a,b)=>a+b,0))});if(kind==='enter'&&token===transitionToken)play('idle');}}
- function cancelTransition(){if(!locked||!transitionAbort)return;transitionToken++;transitionAbort.abort();transitionAbort=null;clearTimers();landingStage='idle';for(const a of animations)a.cancel();animations.clear();locked=false;pet.disabled=false;sprite.style.visibility='';sprite.style.setProperty('--dp-angle','0rad');spring={angle:0,omega:0};sprite.style.opacity='';sprite.style.removeProperty('translate');play('idle');resetIdleDeadline(win.performance.now());}
+ function cancelTransition(){if(!locked||!transitionAbort)return;transitionToken++;flight=null;const resolveFlight=flightFinish;flightFinish=null;resolveFlight?.(false);move(position);transitionAbort.abort();transitionAbort=null;clearTimers();landingStage='idle';for(const a of animations)a.cancel();animations.clear();locked=false;pet.disabled=false;sprite.style.visibility='';sprite.style.setProperty('--dp-angle','0rad');spring={angle:0,omega:0};sprite.style.opacity='';sprite.style.removeProperty('translate');play('idle');resetIdleDeadline(win.performance.now());}
  async function switchCharacter(){if(locked||drag)return;locked=true;closeMenu({immediate:true});const token=++transitionToken,next=role==='alisa'?'hyakka':'alisa';transitionAbort=new win.AbortController();const nextClips=manifest?.characters?.[next]?.clips?{}:legacyClips(next,assetBase);for(const [name,c]of Object.entries(manifest?.characters?.[next]?.clips??{}))nextClips[name]={...c,url:assetBase+c.file};
   try{const preparing=Promise.all([...["idle","enter","exit","menu-open","menu-idle","drag","drag-hold"].filter(name=>nextClips[name]).map(name=>decode(nextClips[name])),transitionHooks.prepare?.(next)]);preparing.catch(()=>{});await transition('exit',token);if(token!==transitionToken)return;sprite.style.visibility='hidden';await preparing;if(token!==transitionToken)return;role=next;updateClips();pet.dataset.character=role;play('enter');pet.title=role==='alisa'?'抓住双马尾轻甩可连续旋转；滚轮或双指辅助':'拖动虚影选点，松开后瞬闪';onCharacter(role);await transition('enter',token);if(token===transitionToken){sprite.style.visibility='';save();void Promise.allSettled(Object.values(nextClips).map(decode));}}catch(error){if(token===transitionToken){sprite.style.visibility='';sprite.style.opacity='';play('idle');win.console.warn('[HypnoOS pet] 换人资源暂未就绪',error.message);}}finally{if(token===transitionToken){transitionAbort=null;locked=false;resetIdleDeadline(win.performance.now());wake();}}
  }
@@ -3581,7 +3670,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  doc.addEventListener('pointerdown',e=>{if(!e.composedPath().includes(root))closeMenu();},{signal});doc.addEventListener('visibilitychange',()=>{if(doc.hidden){cancelDrag();cancelTransition();closeMenu({immediate:true});win.cancelAnimationFrame(raf);raf=0;last=0;}else{started=win.performance.now();clock={...clock,at:started};resetIdleDeadline(started);wake();}},{signal});win.addEventListener('blur',()=>{closeMenu({immediate:true});cancelDrag();cancelTransition();},{signal});win.addEventListener('resize',()=>{cancelDrag();cancelTransition();move(position);closeMenu({immediate:true});},{signal});media.addEventListener('change',()=>{cancelDrag();cancelTransition();if(state.startsWith('menu-')){cancelMenuJump();play(ring.hidden?'idle':'menu-idle');}sprite.style.setProperty('--dp-angle','0rad');wake();},{signal});
  buildMenu();move(position);updateClips();pet.dataset.character=role;pet.title=role==='alisa'?'抓住双马尾轻甩可连续旋转；滚轮或双指辅助':'拖动虚影选点，松开后瞬闪';pet.disabled=true;resetIdleDeadline(win.performance.now());
  const ready=(async()=>{try{const response=await win.fetch(assetBase+'pet/v6/manifest.json');if(response.ok){manifest=await response.json();updateClips();}}catch{}await Promise.all(['idle','enter','exit','drag','drag-hold','landing','charge','blink','menu-open','menu-idle','menu-close'].filter(name=>clips[name]).map(name=>decode(clips[name])));if(destroyed)return;const warmBackground=async()=>{const other=role==='alisa'?'hyakka':'alisa',otherAuthored=manifest?.characters?.[other]?.clips??{};await Promise.allSettled([...Object.entries(otherAuthored).filter(([name])=>['idle','enter','exit','menu-open','menu-idle','drag','drag-hold'].includes(name)).map(([,clip])=>decode({...clip,url:assetBase+clip.file})),transitionHooks.prepare?.(other)]);if(!destroyed)await Promise.allSettled([...Object.values(clips),...Object.values(otherAuthored).map(clip=>({...clip,url:assetBase+clip.file}))].map(decode));};locked=true;const token=++transitionToken;transitionAbort=new win.AbortController();try{await transition('enter',token);}finally{if(token===transitionToken){transitionAbort=null;locked=false;pet.disabled=false;resetIdleDeadline(win.performance.now());wake();}}if(!destroyed)void warmBackground();})();
- return {root,pet,ready,openMenu,closeMenu,switchCharacter,play,cancelDrag,cancelTransition,whenSettled:()=>settledPromise,place(next,{persist=false}={}){if(drag||locked)return;move(next);closeMenu({immediate:true});if(persist)save();},setActions(next){actions=next;buildMenu();},snapshot(){return {role,state,position:{...position},drag:drag?{moved:drag.moved,origin:{...drag.origin},target:{...drag.target},pointer:{...drag.pointer},grip:{...drag.grip},manualAngle:drag.manualAngle??null,rotationPointerId:drag.rotationPointer?.id??null}:null,landingStage,frameIndex:painted,textureFrameIndex:paintedTexture,clipElapsed:clock.elapsed,angle:spring.angle,locked,menuOpen:!ring.hidden,menuAnimating:!!menuJump};},destroy(){destroyed=true;clipFinish?.(false);clipFinish=null;for(const waiter of clipWaiters)waiter.resolve(false);clipWaiters=[];transitionToken++;transitionAbort?.abort();clearTimers();abort.abort();win.cancelAnimationFrame(raf);for(const a of animations)a.cancel();animations.clear();root.remove();}};
+ return {root,pet,ready,openMenu,closeMenu,switchCharacter,play,cancelDrag,cancelTransition,whenSettled:()=>settledPromise,place(next,{persist=false}={}){if(drag||locked)return;move(next);closeMenu({immediate:true});if(persist)save();},setActions(next){actions=next;buildMenu();},snapshot(){return {role,state,position:{...position},drag:drag?{moved:drag.moved,origin:{...drag.origin},target:{...drag.target},pointer:{...drag.pointer},grip:{...drag.grip},manualAngle:drag.manualAngle??null,rotationPointerId:drag.rotationPointer?.id??null}:null,landingStage,frameIndex:painted,textureFrameIndex:paintedTexture,clipElapsed:clock.elapsed,angle:spring.angle,omega:spring.omega,flight:flight?{...flight}:null,locked,menuOpen:!ring.hidden,menuAnimating:!!menuJump};},destroy(){destroyed=true;flight=null;flightFinish?.(false);flightFinish=null;clipFinish?.(false);clipFinish=null;for(const waiter of clipWaiters)waiter.resolve(false);clipWaiters=[];transitionToken++;transitionAbort?.abort();clearTimers();abort.abort();win.cancelAnimationFrame(raf);for(const a of animations)a.cancel();animations.clear();root.remove();}};
 }
 
 Object.assign(module.exports,{mountDesktopPet});
@@ -3655,7 +3744,42 @@ function legacyClips(role,base){
  return {idle:{...make('idle'),durations:[1500,90,70,55,65,80,100,100],loop:true},'idle-look':make('unique-a'), 'idle-greet':make('unique-b'),drag:{...make('drag'),loop:true},landing:make('landing',12,20),enter:make('enter',8,18),exit:make('exit',8,18),charge:make('drag'),blink:make('landing',12,24)};
 }
 
-Object.assign(module.exports,{decodePetImage,PET_CHARACTERS,PET_NAMES,clampPetPosition,impulseDragRotation,stepDragSpring,advanceClipClock,reversedMenuClip,clipDuration,dragGripForClip,anchoredPetPosition,continuousTurnDelta,chooseIdle,frameAt,legacyClips});
+// Launch in world coordinates. Replacing the hair pivot with the body centre
+// preserves every drawn pixel at release; v = omega × radius supplies the toss.
+function releasePetFlight({position,grip={x:56,y:18},angle=0,omega=0,vx=0,vy=0,velocityAge=Infinity,size=112}={}){
+ if(!position||!Number.isFinite(angle)||!Number.isFinite(omega)||Math.abs(omega)<5.2)return null;
+ const half=size/2,dx=half-grip.x,dy=half-grip.y,cos=Math.cos(angle),sin=Math.sin(angle),rx=dx*cos-dy*sin,ry=dx*sin+dy*cos;
+ const freshness=Number.isFinite(velocityAge)?Math.exp(-Math.max(0,velocityAge)/.075):0,carry=.18*freshness;
+ let launchVx=-omega*ry+Math.max(-1800,Math.min(1800,vx))*carry,launchVy=omega*rx+Math.max(-1800,Math.min(1800,vy))*carry;
+ const speed=Math.hypot(launchVx,launchVy);if(speed>1150){launchVx*=1150/speed;launchVy*=1150/speed;}
+ return{cx:position.x+grip.x+rx,cy:position.y+grip.y+ry,vx:launchVx,vy:launchVy,angle,omega,size,elapsed:0,wallBounces:0,floorBounces:0,done:false};
+}
+function flightPetPosition(state){return{x:state.cx-state.size/2,y:state.cy-state.size/2};}
+function petFlightLandingPosition(state,viewport){const position=flightPetPosition(state);return clampPetPosition({...position,y:viewport.top+viewport.height-state.size-8},viewport,state.size);}
+// A fixed 240Hz solver keeps the same bounces at 30/60/120Hz. A stalled tab
+// consumes at most 50ms, matching the visible animation clock instead of warping.
+function stepPetFlight(state,viewport,dt){
+ if(!state||state.done)return state;
+ const result={...state},h=Math.max(0,Math.min(Number(dt)||0,.05)),count=Math.max(1,Math.ceil(h*240-1e-10)),step=h/count;
+ for(let i=0;i<count&&!result.done;i++){
+  const drag=Math.exp(-.16*step),spin=Math.exp(-.72*step);result.elapsed+=step;result.vx*=drag;result.vy=(result.vy+1100*step)*drag;result.cx+=result.vx*step;result.cy+=result.vy*step;result.angle+=result.omega*(1-spin)/.72;result.omega*=spin;
+  const radius=result.size/2*(Math.abs(Math.cos(result.angle))+Math.abs(Math.sin(result.angle))),padding=8;
+  let left=viewport.left+padding+radius,right=viewport.left+viewport.width-padding-radius,top=viewport.top+padding+radius,bottom=viewport.top+viewport.height-padding-radius;
+  if(left>right)left=right=viewport.left+viewport.width/2;if(top>bottom)top=bottom=viewport.top+viewport.height/2;
+  if(result.cx<left){result.cx=left;if(result.vx<0){result.vx=-result.vx*.62;result.omega*=.9;result.wallBounces++;}}
+  if(result.cx>right){result.cx=right;if(result.vx>0){result.vx=-result.vx*.62;result.omega*=.9;result.wallBounces++;}}
+  if(result.cy<top){result.cy=top;if(result.vy<0){result.vy=-result.vy*.58;result.omega*=.9;result.wallBounces++;}}
+  if(result.cy>=bottom){
+   result.cy=bottom;
+   if(result.vy>75){result.vy=-result.vy*.32;result.vx*=.76;result.omega*=.76;result.floorBounces++;}
+   else{result.vy=0;result.vx*=Math.exp(-8*step);result.omega*=Math.exp(-3*step);}
+   if((Math.abs(result.vy)<28&&Math.abs(result.vx)<42)||result.elapsed>=6){result.done=true;result.vy=0;}
+  }
+ }
+ return result;
+}
+
+Object.assign(module.exports,{decodePetImage,PET_CHARACTERS,PET_NAMES,clampPetPosition,impulseDragRotation,stepDragSpring,advanceClipClock,reversedMenuClip,clipDuration,dragGripForClip,anchoredPetPosition,continuousTurnDelta,chooseIdle,frameAt,legacyClips,releasePetFlight,flightPetPosition,petFlightLandingPosition,stepPetFlight});
 },
 "src/pet-v6/hyakka-lifecycle.mjs":function(module, load){
 // Whole-character entrance/exit clips are model drawn. Only detached props and
@@ -3858,6 +3982,7 @@ function normalizeHypnosisBatch(draft,snapshot) {
 Object.assign(module.exports,{hypnosisCommands,hypnosisCost,normalizeHypnosisRequest,hypnosisOrganTargetEligible,hypnosisBodyParts,normalizeHypnosisBatch});
 },
 "src/phone-v2/phone.mjs":function(module, load){
+const {inspectDistributionContext,requireDistributionAccess} = load("src/distribution/access.mjs");
 const { animateIosApp } = load("src/phone-v2/app-motion.mjs");
 const { CREDIT } = load("src/game/credits.mjs");
 const { PHONE_HELP_ACKNOWLEDGEMENTS } = load("src/phone-v2/help-content.mjs");
@@ -3909,7 +4034,7 @@ async function mountIphone16Phone(container,{getSnapshot,stageHypnosis,getPhotos
   if(appId==='clock'){const [hours,minutes]=String(snapshot.time??'10:40').split(':').map(Number);body=`<div class="ip-clock-face"><span class="ip-clock-digit" style="left:calc(50% - 8px);top:12px">12</span><span class="ip-clock-digit" style="right:15px;top:calc(50% - 8px)">3</span><span class="ip-clock-digit" style="bottom:12px;left:calc(50% - 5px)">6</span><span class="ip-clock-digit" style="left:15px;top:calc(50% - 8px)">9</span><i class="ip-clock-hand hour" style="transform:rotate(${hours%12*30+minutes*.5}deg)"></i><i class="ip-clock-hand" style="transform:rotate(${minutes*6}deg)"></i></div><h2 style="text-align:center;font-size:37px;font-weight:350;color:#8e749f">${escape(snapshot.time)}</h2><p class="ip-subtitle" style="text-align:center">${escape(snapshot.location?.name)}</p>`;}
   else if(appId==='calendar'){body=`<h2 style="font-size:24px;font-weight:450;color:#9d82ac;margin-top:30px">${date.year} 年 ${date.month} 月</h2><div class="ip-calendar-grid">${['日','一','二','三','四','五','六'].map(x=>`<span style="font-size:10px;color:#beacc8">${x}</span>`).join('')}${Array(date.first).fill('<span></span>').join('')}${Array.from({length:date.days},(_,i)=>`<span class="${i+1===date.day?'today':''}">${i+1}</span>`).join('')}</div><div class="ip-context-chip">${phoneIcon('location')}${escape(snapshot.location?.name??'当前地点')} · ${escape(snapshot.time)}</div>`;}
   else if(appId==='help'){body='<div class="ip-summary">个人催眠可复选在场人物，逐人计费与结算。<br>地点催眠包含封闭与开放空间，均为临时生效。<br>抵抗突破后仍需独立剧情判定。<br><br>操作写入日程，读完对话后推进。消息按当前聊天保存；给联系人发消息同样会加入日程。</div><h2 style="margin:28px 0 12px;font-size:19px;font-weight:600">感谢与署名</h2>'+PHONE_HELP_ACKNOWLEDGEMENTS.map(item=>`<section style="padding:12px 0;border-bottom:1px solid #dcd3e3"><strong style="font-size:12px;color:#9573a1">${escape(item.title)}</strong><p style="font-size:12px;line-height:1.9;color:#786581;overflow-wrap:anywhere">${escape(item.text)}</p></section>`).join('');}
-  else if(appId==='settings'){body=`<div class="ip-simple-row">${phoneIcon('moon')}<span>外观</span><small>暮紫</small></div><button class="ip-simple-row" data-action="legacy" style="width:100%;background:none;border-left:0;border-right:0;border-top:0">${phoneIcon('settings')}<span>聊天与模型设置</span>${phoneIcon('chevron')}</button><div class="ip-simple-row">${phoneIcon('hypnosis')}<span>HypnoOS</span><small>完全免费</small></div><a class="ip-simple-row" href="${escape(new URL('../pet-resources.zip',new URL(snapshot.assetBase??win.__ST_GAME_ASSET_BASE__??'/public/frontends/hypnosis-app/assets/',doc.baseURI)).href)}" download="桌宠本地资源包.zip" style="color:inherit;text-decoration:none">${phoneIcon('inventory')}<span>下载桌宠资源包</span>${phoneIcon('chevron')}</a><p class="ip-subtitle" style="margin:12px 0;line-height:1.8">可选的本地图片包。解压到酒馆当前用户的 user/files 目录，重载聊天后生效。未安装或文件不完整时继续使用 CDN。</p>`;}
+  else if(appId==='settings'){const access=inspectDistributionContext(win),canDownload=access.ok&&access.host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?.authorize?.(access.host.__ST_HYPNOOS_INTEGRITY_GATE_V1__.revision);body=`<div class="ip-simple-row">${phoneIcon('moon')}<span>外观</span><small>暮紫</small></div><button class="ip-simple-row" data-action="legacy" style="width:100%;background:none;border-left:0;border-right:0;border-top:0">${phoneIcon('settings')}<span>聊天与模型设置</span>${phoneIcon('chevron')}</button><div class="ip-simple-row">${phoneIcon('hypnosis')}<span>HypnoOS</span><small>完全免费</small></div>${canDownload?`<a class="ip-simple-row" data-action="resource-download" href="${escape(new URL('../pet-resources.zip',new URL(snapshot.assetBase??win.__ST_GAME_ASSET_BASE__??'/public/frontends/hypnosis-app/assets/',doc.baseURI)).href)}" download="桌宠本地资源包.zip" style="color:inherit;text-decoration:none">${phoneIcon('inventory')}<span>下载桌宠资源包</span>${phoneIcon('chevron')}</a><p class="ip-subtitle" style="margin:12px 0;line-height:1.8">可选的本地图片包。解压到酒馆当前用户的 user/files 目录，重载聊天后生效。未安装或文件不完整时继续使用 CDN。</p>`:''}`;}
   else body=`<button class="ip-primary" data-action="legacy">打开${escape(app.name)}${phoneIcon('chevron')}</button>`;
   return `<section class="ip-app-page"><div class="ip-scroll"><p class="ip-kicker">HYPNOOS</p><h1 class="ip-title">${escape(app.name)}</h1><p class="ip-subtitle">${appId==='photos'?'保留下来的每一个瞬间。':appId==='clock'||appId==='calendar'?'当前故事时间':''}</p>${body||'<div class="ip-empty">暂无记录</div>'}<p class="ip-subtitle">${CREDIT}</p></div></section>`;
  }
@@ -3931,7 +4056,7 @@ async function mountIphone16Phone(container,{getSnapshot,stageHypnosis,getPhotos
  function go(next,id=appId,source=null){return motion.run(async()=>{if(destroyed||(next===route&&id===appId))return;const previous=route,previousApp=appId,origin=(source?.querySelector('.ip-app-icon')??source)?.getBoundingClientRect()??iconRect(id),kind=next==='home'?'close':previous==='home'||previous==='app-search'?'open':'push';appChanging=true;try{await animateIosApp(content,{kind,origin:kind==='close'?()=>iconRect(previousApp):origin,render(){if(previous==='legacy'){onHome();win.__ST_IPHONE16_LEGACY_ROOT__=null;}appId=id;route=next;if(next==='home')search='';render();}});}finally{appChanging=false;}});}
  async function launch(id,source=null){if(source)appOrigins.set(id,source.classList.contains('ip-widget')?'ip-widget':'ip-app');if(!PHONE_APPS.some(x=>x.id===id))return;if(['hypnosis','photos','music'].includes(id)){await go(id,id,source);return;}if(['clock','calendar','help','settings'].includes(id)){await go('simple',id,source);return;}await legacy(id,source);}
  async function legacy(id=appId,source=null){if(!openApp){notify('此应用尚未连接');return;}await go('legacy',id,source);if(destroyed||route!=='legacy'||appId!==id)return;try{await openApp(id,content.querySelector('.ip-legacy-slot'));}catch(error){if(!destroyed){route='simple';render();notify(error.message);}}}
- root.addEventListener('click',async event=>{const button=event.target.closest('[data-open],[data-route],[data-scope],[data-action],[data-detail]');if(!button||button.disabled)return;
+ root.addEventListener('click',async event=>{const button=event.target.closest('[data-open],[data-route],[data-scope],[data-action],[data-detail]');if(!button||button.disabled)return;if(button.dataset.action==='resource-download'){try{requireDistributionAccess(win);}catch(error){event.preventDefault();notify(error.message);}return;}
   if(button.dataset.open){await launch(button.dataset.open,button);return;}if(button.dataset.route){go(button.dataset.route);return;}if(button.dataset.scope){draft={...draft,scope:button.dataset.scope};search='';go('hypnosis','hypnosis',button);return;}
   if(button.dataset.action==='search'){search='';go('app-search');return;}
   if(button.dataset.action==='legacy'){await legacy();return;}
@@ -6376,7 +6501,9 @@ async function createObjectManagerForCurrentChat({
   promptAnchor = "",
   workshopClient = null,
   fileDriver = null,
+  authorize = () => {},
 } = {}) {
+  authorize();
   const host = resolveHost(start);
   const chatId = String(readTavernChatId(host) ?? "").trim();
   if (!chatId) throw new Error("current chat id is unavailable");
@@ -6385,6 +6512,7 @@ async function createObjectManagerForCurrentChat({
     indexedDBObject: host.indexedDB,
     allowIndexedDbFallback,
   });
+  authorize();
   const store = new ChatObjectStore({ driver, chatId, maxCheckpoints });
   const api = resolveTavernWorldbookApi(start) ?? resolveTavernWorldbookApi(host);
   if (!api) throw new Error("Tavern Helper chat-worldbook API is unavailable");
@@ -6395,7 +6523,9 @@ async function createObjectManagerForCurrentChat({
     workshopClient,
     personnelPermissionSource:()=>readHostPersonnelPermissions(host),
   });
+  authorize();
   await runtime.init({ promptAnchor });
+  authorize();
   installLocationHypnosisHooks(runtime,start);
   // Catch up the floor clock without replaying historical output into HEAD.
   const chat = host.SillyTavern.getContext?.()?.chat ?? host.SillyTavern.chat ?? [];
@@ -6410,6 +6540,7 @@ async function installObjectManagerLifecycle(options = {}) {
   const eventHost = typeof options.start?.eventOn === "function" ? options.start : typeof globalThis.eventOn === "function" ? globalThis : host;
   const globalKey = "__HYPNOOS_OBJECT_MANAGER_V1__";
   try { await host[globalKey]?.destroy?.(); } catch {}
+  const authorize=options.authorize??(()=>{});
   let active = null;
   let generation = 0;
   const disposers = [];
@@ -6419,7 +6550,8 @@ async function installObjectManagerLifecycle(options = {}) {
   const automaticExtraAttempts = new Set();
   const extraKey = (snapshot, chatId) => JSON.stringify([generation, chatId, snapshot.replyAnchor, snapshot.content]);
 
-  const transition = () => {
+  const transition = async () => {
+    authorize();
     const token = ++generation;
     extraRequests.clear();
     automaticExtraAttempts.clear();
@@ -6427,7 +6559,9 @@ async function installObjectManagerLifecycle(options = {}) {
     active?.runtime?.__locationHypnosisHooks?.destroy?.();
     const task = createObjectManagerForCurrentChat(options).then(async (next) => {
       if (token !== generation) return active;
+      authorize();
       await options.prepareRuntime?.(next.runtime);
+      authorize();
       if (token !== generation) return active;
       active = next;
       facade.chatId = next.chatId;
@@ -6439,6 +6573,7 @@ async function installObjectManagerLifecycle(options = {}) {
   };
 
   const handleMessage = async (messageId, source = "model") => {
+    authorize();
     const chatIdAtRead = String(readTavernChatId(host) ?? "");
     const snapshot = assistantSnapshot(host, messageId);
     if (!snapshot) return { applied: 0, skipped: 0 };
@@ -6452,6 +6587,7 @@ async function installObjectManagerLifecycle(options = {}) {
     }
     const userIndex=Number(snapshot.promptAnchor.replace(/^user-/,''));
     if(Number.isInteger(userIndex)&&chat[userIndex])await registerLocationHypnosisUserMessage(active.runtime,chat[userIndex],{promptAnchor:snapshot.promptAnchor});
+    authorize();
     const result = await active.runtime.handleModelOutput(snapshot.content, {
       ...snapshot,
       promptAnchor: snapshot.promptAnchor,
@@ -6498,13 +6634,13 @@ async function installObjectManagerLifecycle(options = {}) {
     ready: Promise.resolve(null),
     handleMessage,
     async applyExtraOutput(messageId, text) {
-      await facade.ready;
+      await facade.ready;authorize();
       const snapshot = assistantSnapshot(host, messageId);
       if (!snapshot) throw new Error("extra output requires an existing AI floor");
       return facade.runtime.handleModelOutput(text, { ...snapshot, source: "extra" });
     },
     async requestExtraUpdate(messageId, generateUpdate) {
-      await facade.ready;
+      await facade.ready;authorize();
       if (typeof generateUpdate !== "function") throw new Error("independent extra model transport is not configured");
       const snapshot = assistantSnapshot(host, messageId), chatId = facade.chatId;
       if (!snapshot) throw new Error("AI reply is missing");
@@ -6518,6 +6654,7 @@ async function installObjectManagerLifecycle(options = {}) {
         if (generation !== token || facade.runtime !== runtime || facade.chatId !== chatId || String(readTavernChatId(host) ?? '') !== chatId || current?.replyAnchor !== snapshot.replyAnchor || current?.content !== snapshot.content) {
           throw new Error('chat, reply or swipe changed while extra model was running');
         }
+        authorize();
         return runtime.handleModelOutput(text, { ...snapshot, source: 'extra' });
       })();
       extraRequests.set(key, request);
@@ -9156,4 +9293,5 @@ Object.assign(module.exports,{mountDetectiveDesk});
 }};
 const cache={};function load(id){if(cache[id])return cache[id].exports;const module={exports:{}};cache[id]=module;factories[id](module,load);return module.exports;}
 globalThis.__HYPNOOS_OBJECTS_LIB__=load("src/object-manager/phone-integration.mjs");
+})();
 })();

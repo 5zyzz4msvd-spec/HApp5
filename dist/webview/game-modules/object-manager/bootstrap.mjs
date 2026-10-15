@@ -64,7 +64,9 @@ export async function createObjectManagerForCurrentChat({
   promptAnchor = "",
   workshopClient = null,
   fileDriver = null,
+  authorize = () => {},
 } = {}) {
+  authorize();
   const host = resolveHost(start);
   const chatId = String(readTavernChatId(host) ?? "").trim();
   if (!chatId) throw new Error("current chat id is unavailable");
@@ -73,6 +75,7 @@ export async function createObjectManagerForCurrentChat({
     indexedDBObject: host.indexedDB,
     allowIndexedDbFallback,
   });
+  authorize();
   const store = new ChatObjectStore({ driver, chatId, maxCheckpoints });
   const api = resolveTavernWorldbookApi(start) ?? resolveTavernWorldbookApi(host);
   if (!api) throw new Error("Tavern Helper chat-worldbook API is unavailable");
@@ -83,7 +86,9 @@ export async function createObjectManagerForCurrentChat({
     workshopClient,
     personnelPermissionSource:()=>readHostPersonnelPermissions(host),
   });
+  authorize();
   await runtime.init({ promptAnchor });
+  authorize();
   installLocationHypnosisHooks(runtime,start);
   // Catch up the floor clock without replaying historical output into HEAD.
   const chat = host.SillyTavern.getContext?.()?.chat ?? host.SillyTavern.chat ?? [];
@@ -98,6 +103,7 @@ export async function installObjectManagerLifecycle(options = {}) {
   const eventHost = typeof options.start?.eventOn === "function" ? options.start : typeof globalThis.eventOn === "function" ? globalThis : host;
   const globalKey = "__HYPNOOS_OBJECT_MANAGER_V1__";
   try { await host[globalKey]?.destroy?.(); } catch {}
+  const authorize=options.authorize??(()=>{});
   let active = null;
   let generation = 0;
   const disposers = [];
@@ -107,7 +113,8 @@ export async function installObjectManagerLifecycle(options = {}) {
   const automaticExtraAttempts = new Set();
   const extraKey = (snapshot, chatId) => JSON.stringify([generation, chatId, snapshot.replyAnchor, snapshot.content]);
 
-  const transition = () => {
+  const transition = async () => {
+    authorize();
     const token = ++generation;
     extraRequests.clear();
     automaticExtraAttempts.clear();
@@ -115,7 +122,9 @@ export async function installObjectManagerLifecycle(options = {}) {
     active?.runtime?.__locationHypnosisHooks?.destroy?.();
     const task = createObjectManagerForCurrentChat(options).then(async (next) => {
       if (token !== generation) return active;
+      authorize();
       await options.prepareRuntime?.(next.runtime);
+      authorize();
       if (token !== generation) return active;
       active = next;
       facade.chatId = next.chatId;
@@ -127,6 +136,7 @@ export async function installObjectManagerLifecycle(options = {}) {
   };
 
   const handleMessage = async (messageId, source = "model") => {
+    authorize();
     const chatIdAtRead = String(readTavernChatId(host) ?? "");
     const snapshot = assistantSnapshot(host, messageId);
     if (!snapshot) return { applied: 0, skipped: 0 };
@@ -140,6 +150,7 @@ export async function installObjectManagerLifecycle(options = {}) {
     }
     const userIndex=Number(snapshot.promptAnchor.replace(/^user-/,''));
     if(Number.isInteger(userIndex)&&chat[userIndex])await registerLocationHypnosisUserMessage(active.runtime,chat[userIndex],{promptAnchor:snapshot.promptAnchor});
+    authorize();
     const result = await active.runtime.handleModelOutput(snapshot.content, {
       ...snapshot,
       promptAnchor: snapshot.promptAnchor,
@@ -186,13 +197,13 @@ export async function installObjectManagerLifecycle(options = {}) {
     ready: Promise.resolve(null),
     handleMessage,
     async applyExtraOutput(messageId, text) {
-      await facade.ready;
+      await facade.ready;authorize();
       const snapshot = assistantSnapshot(host, messageId);
       if (!snapshot) throw new Error("extra output requires an existing AI floor");
       return facade.runtime.handleModelOutput(text, { ...snapshot, source: "extra" });
     },
     async requestExtraUpdate(messageId, generateUpdate) {
-      await facade.ready;
+      await facade.ready;authorize();
       if (typeof generateUpdate !== "function") throw new Error("independent extra model transport is not configured");
       const snapshot = assistantSnapshot(host, messageId), chatId = facade.chatId;
       if (!snapshot) throw new Error("AI reply is missing");
@@ -206,6 +217,7 @@ export async function installObjectManagerLifecycle(options = {}) {
         if (generation !== token || facade.runtime !== runtime || facade.chatId !== chatId || String(readTavernChatId(host) ?? '') !== chatId || current?.replyAnchor !== snapshot.replyAnchor || current?.content !== snapshot.content) {
           throw new Error('chat, reply or swipe changed while extra model was running');
         }
+        authorize();
         return runtime.handleModelOutput(text, { ...snapshot, source: 'extra' });
       })();
       extraRequests.set(key, request);

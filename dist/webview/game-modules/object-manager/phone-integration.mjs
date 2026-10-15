@@ -1,3 +1,4 @@
+import {requireDistributionAccess} from '../distribution/access.mjs';
 import {hasTavernContext,readTavernChatId} from "./tavern-context.mjs";
 import {ensureUserManagement,hasLegacyUserState,userNotebookSources} from './user-management.mjs';
 import {installLocationHypnosisHooks,stageLegacyLocationHypnosis,migrateLegacyLocationHypnosis} from './location-hypnosis.mjs';
@@ -98,6 +99,7 @@ function findHost(start) {
 
 export async function ensurePhoneObjectRuntime(start = globalThis, { graphs = [], characters, encounterRole = null, assetLoader = null } = {}) {
   const host = findHost(start);
+  const accessGuard=host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?()=>requireDistributionAccess(host):()=>{};accessGuard();
   const bridge=host.__ST_GAME_RUNTIME_BRIDGE__;if(bridge&&bridge.ensurePhoneObjectRuntime!==ensurePhoneObjectRuntime)return bridge.ensurePhoneObjectRuntime(start,{graphs,characters,encounterRole,assetLoader});
   const chatId = String(readTavernChatId(host) ?? "");
   if (!chatId) throw new Error("无法确认当前聊天");
@@ -114,10 +116,10 @@ export async function ensurePhoneObjectRuntime(start = globalThis, { graphs = []
       host.__HYPNOOS_OBJECT_MANAGER_V1__ = facade;
     } else {
       if (!resolveTavernWorldbookApi(start) && !resolveTavernWorldbookApi(host)) throw new Error("酒馆助手世界书接口尚未就绪");
-      facade = await installObjectManagerLifecycle({ start });
+      facade = await installObjectManagerLifecycle({ start, authorize:accessGuard });
     }
   }
-  await facade.ready;
+  await facade.ready;accessGuard();
   const runtime = facade.runtime;
   installLocationHypnosisHooks(runtime,start);
   if(runtime.__personnelPermissionHost!==host){runtime.setPersonnelPermissionSource(()=>readHostPersonnelPermissions(host));runtime.__personnelPermissionHost=host;}

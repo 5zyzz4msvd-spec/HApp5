@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "files": [
+    "game-modules/distribution/access.mjs",
     "game-modules/game/app-account-adapter.mjs",
     "game-modules/game/app-upgrade-services.mjs",
     "game-modules/game/chat-adapter.mjs",
