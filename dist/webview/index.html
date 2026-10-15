@@ -44081,7 +44081,7 @@ function createResourceInstaller({manifest,remoteBase,host,authorize=()=>require
  const base64=bytes=>{let binary='';const array=new Uint8Array(bytes);for(let i=0;i<array.length;i+=32768)binary+=String.fromCharCode(...array.subarray(i,i+32768));return host.btoa(binary);};
  const save=()=>{const saved=JSON.stringify(receipt);saveChain=saveChain.catch(()=>{}).then(()=>upload(RESOURCE_INDEX,base64(new TextEncoder().encode(saved))));return saveChain;};
  async function install(){if(running)return running;running=(async()=>{
-  let cursor=0,failure=null;const pending=manifest.files.filter(f=>!completed.has(f.path));
+  saveChain=saveChain.catch(()=>{});let cursor=0,failure=null;const pending=manifest.files.filter(f=>!completed.has(f.path));
   async function worker(){while(!failure){const file=pending[cursor++];if(!file)return;try{authorize();const bytes=await request(new URL(file.path,remoteBase).href,{credentials:'omit',cache:'force-cache'},'arrayBuffer');if(bytes.byteLength!==file.size||hex(await host.crypto.subtle.digest('SHA-256',bytes))!==file.sha256)throw Error('文件校验未通过：'+file.path);await upload(resourceFileName(file),base64(bytes));completed.add(file.path);receipt.files[file.path]=file.sha256;notify();await save();}catch(error){failure=error;}}}
   await Promise.all(Array.from({length:4},worker));await saveChain;if(failure)throw failure;if(completed.size!==manifest.count)throw Error('资源尚未完整保存');await save();return activate();
  })().finally(()=>{running=null;});return running;}
