@@ -74,29 +74,26 @@ export function releasePetFlight({position,grip={x:56,y:18},angle=0,omega=0,vx=0
  const freshness=Number.isFinite(velocityAge)?Math.exp(-Math.max(0,velocityAge)/.075):0,carry=.18*freshness;
  let launchVx=-omega*ry+Math.max(-1800,Math.min(1800,vx))*carry,launchVy=omega*rx+Math.max(-1800,Math.min(1800,vy))*carry;
  const speed=Math.hypot(launchVx,launchVy);if(speed>1150){launchVx*=1150/speed;launchVy*=1150/speed;}
- return{cx:position.x+grip.x+rx,cy:position.y+grip.y+ry,vx:launchVx,vy:launchVy,angle,omega,size,elapsed:0,wallBounces:0,floorBounces:0,done:false};
+ return{cx:position.x+grip.x+rx,cy:position.y+grip.y+ry,vx:launchVx,vy:launchVy,angle,omega,size,elapsed:0,wallBounces:0,done:false};
 }
 export function flightPetPosition(state){return{x:state.cx-state.size/2,y:state.cy-state.size/2};}
-export function petFlightLandingPosition(state,viewport){const position=flightPetPosition(state);return clampPetPosition({...position,y:viewport.top+viewport.height-state.size-8},viewport,state.size);}
-// A fixed 240Hz solver keeps the same bounces at 30/60/120Hz. A stalled tab
+export function petFlightLandingPosition(state,viewport){return clampPetPosition(flightPetPosition(state),viewport,state.size);}
+// Friction acts equally along both screen-plane axes; there is no gravity,
+// floor attraction or preferred resting height. A fixed 240Hz solver keeps the same bounces at 30/60/120Hz. A stalled tab
 // consumes at most 50ms, matching the visible animation clock instead of warping.
 export function stepPetFlight(state,viewport,dt){
  if(!state||state.done)return state;
  const result={...state},h=Math.max(0,Math.min(Number(dt)||0,.05)),count=Math.max(1,Math.ceil(h*240-1e-10)),step=h/count;
  for(let i=0;i<count&&!result.done;i++){
-  const drag=Math.exp(-.16*step),spin=Math.exp(-.72*step);result.elapsed+=step;result.vx*=drag;result.vy=(result.vy+1100*step)*drag;result.cx+=result.vx*step;result.cy+=result.vy*step;result.angle+=result.omega*(1-spin)/.72;result.omega*=spin;
+  const drag=Math.exp(-1.65*step),spin=Math.exp(-1.25*step);result.elapsed+=step;result.cx+=result.vx*(1-drag)/1.65;result.cy+=result.vy*(1-drag)/1.65;result.vx*=drag;result.vy*=drag;result.angle+=result.omega*(1-spin)/1.25;result.omega*=spin;
   const radius=result.size/2*(Math.abs(Math.cos(result.angle))+Math.abs(Math.sin(result.angle))),padding=8;
   let left=viewport.left+padding+radius,right=viewport.left+viewport.width-padding-radius,top=viewport.top+padding+radius,bottom=viewport.top+viewport.height-padding-radius;
   if(left>right)left=right=viewport.left+viewport.width/2;if(top>bottom)top=bottom=viewport.top+viewport.height/2;
   if(result.cx<left){result.cx=left;if(result.vx<0){result.vx=-result.vx*.62;result.omega*=.9;result.wallBounces++;}}
   if(result.cx>right){result.cx=right;if(result.vx>0){result.vx=-result.vx*.62;result.omega*=.9;result.wallBounces++;}}
-  if(result.cy<top){result.cy=top;if(result.vy<0){result.vy=-result.vy*.58;result.omega*=.9;result.wallBounces++;}}
-  if(result.cy>=bottom){
-   result.cy=bottom;
-   if(result.vy>75){result.vy=-result.vy*.32;result.vx*=.76;result.omega*=.76;result.floorBounces++;}
-   else{result.vy=0;result.vx*=Math.exp(-8*step);result.omega*=Math.exp(-3*step);}
-   if((Math.abs(result.vy)<28&&Math.abs(result.vx)<42)||result.elapsed>=6){result.done=true;result.vy=0;}
-  }
+  if(result.cy<top){result.cy=top;if(result.vy<0){result.vy=-result.vy*.62;result.omega*=.9;result.wallBounces++;}}
+  if(result.cy>bottom){result.cy=bottom;if(result.vy>0){result.vy=-result.vy*.62;result.omega*=.9;result.wallBounces++;}}
+  if((Math.hypot(result.vx,result.vy)<8&&Math.abs(result.omega)<.14)||result.elapsed>=8){result.done=true;result.vx=0;result.vy=0;result.omega=0;}
  }
  return result;
 }

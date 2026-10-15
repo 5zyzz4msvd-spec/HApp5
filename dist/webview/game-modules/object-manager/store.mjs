@@ -62,7 +62,8 @@ export class OpfsFileDriver {
     const segments = String(path).split("/").filter(Boolean);
     const filename = segments.pop();
     const directory = await opfsDirectory(this.root, segments, true);
-    const tempName = `.${filename}.${Date.now().toString(36)}.tmp`;
+    const nonce=globalThis.crypto?.randomUUID?.()??`${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    const tempName = `.${filename}.${nonce}.tmp`;
     const temp = await directory.getFileHandle(tempName, { create: true });
     const tempWriter = await temp.createWritable();
     await tempWriter.write(String(text));

@@ -174,7 +174,8 @@ export async function mountPhoneObjects(container, options = {}) {
 }
 
 export async function initializeObjectHost(start = globalThis) {
-  const facade = await installObjectManagerLifecycle({ start, prepareRuntime: async (runtime) => {
+  const host=findHost(start),authorize=host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?()=>requireDistributionAccess(host):()=>{};authorize();
+  const facade = await installObjectManagerLifecycle({ start, authorize, prepareRuntime: async (runtime) => {
     runtime.__helperStart = start;
     await seedPhoneObjects(runtime, { rewards: buildDefaultRewardDatabase() });
     runtime.rewardAccount = createObjectRewardAccount(runtime.store);

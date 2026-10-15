@@ -81,6 +81,7 @@ export function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis
     if(launched){
      flight=launched;landingStage='flight';sprite.style.setProperty('--dp-pivot-x','56px');sprite.style.setProperty('--dp-pivot-y','56px');move(flightPetPosition(flight),{anchored:true});wake();
      await new Promise(resolve=>{flightFinish=resolve;});if(token!==transitionToken)return;
+     // The toss rests anywhere on the screen plane, with no bottom-edge snap.
      ended.target=petFlightLandingPosition(flight,viewport());flight=null;
     }
     landingStage='righting';const restAngle=Math.round(spring.angle/(Math.PI*2))*Math.PI*2;
