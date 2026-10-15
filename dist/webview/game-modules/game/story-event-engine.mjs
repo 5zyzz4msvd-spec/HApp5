@@ -35,10 +35,7 @@ const stamp=(schedule,index)=>({date:schedule.today.date,index,slotId:'cell-'+in
 function markSent(snapshot,packet){
  const schedule=new PlayerSchedule({state:structuredClone(snapshot)});
  if(schedule.today.date===packet.date){
-  for(const cell of packet.cells){if(schedule.today.cells[cell.index])schedule.today.cells[cell.index].sent=true;}
-  schedule.cursor=Math.max(schedule.cursor,Number(packet.cells.at(-1)?.index??-1)+1);
-  schedule.minuteCursor=Math.max(schedule.minuteCursor,schedule.cursor*120);
-  if(packet.crossDay&&schedule.cursor===DAY_SLOTS){schedule.previous=schedule.today;schedule.today={date:new Date(new Date(packet.date+'T00:00:00Z').getTime()+86400000).toISOString().slice(0,10),cells:Array.from({length:12},(_,index)=>({index,time:slotTime(index),actions:[],note:'',sent:false}))};schedule.cursor=0;schedule.minuteCursor=0;}
+  schedule.acknowledgeSent(packet);
  }
  return schedule.snapshot();
 }
@@ -62,7 +59,7 @@ export function createStoryEventEngine({runtime,getContext=async()=>({}),getDefi
     }
     if(added.length)await store.applyFileBatch(new Map([['ui/player-schedule.json',schedule.snapshot()],[STORY_HISTORY_FILE,history]]));
     return added;
-   }catch(error){schedule.today=before.today;schedule.previous=before.previous;schedule.cursor=before.cursor;schedule.minuteCursor=before.minuteCursor;throw error;}
+   }catch(error){schedule.today=before.today;schedule.previous=before.previous;schedule.cursor=before.cursor;schedule.minuteCursor=before.minuteCursor;schedule.dispatchCursor=before.dispatchCursor;schedule.dispatchMinute=before.dispatchMinute;throw error;}
   });
  }
  async function decoratePayload(packet){

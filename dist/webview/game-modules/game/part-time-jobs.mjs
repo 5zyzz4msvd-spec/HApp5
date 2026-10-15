@@ -25,10 +25,7 @@ export function partTimeChoices(schedule,location,{writable=true}={}){
 }
 const markSent=(raw,packet)=>{
  if(!raw)return null;const schedule=new PlayerSchedule({state:clone(raw)});if(schedule.today.date!==packet.date)return schedule.snapshot();
- for(const cell of packet.cells)if(schedule.today.cells[cell.index])schedule.today.cells[cell.index].sent=true;
- schedule.cursor=Math.max(schedule.cursor,Number(packet.cells.at(-1)?.index??-1)+1);schedule.minuteCursor=Math.max(schedule.minuteCursor,schedule.cursor*120);
- if(packet.crossDay&&schedule.cursor===DAY_SLOTS){schedule.previous=schedule.today;schedule.today=new PlayerSchedule({date:shiftDate(packet.date,1)}).today;schedule.cursor=0;schedule.minuteCursor=0;}
- schedule.selected=Math.min(schedule.cursor,DAY_SLOTS-1);return schedule.snapshot();
+ schedule.acknowledgeSent(packet);return schedule.snapshot();
 };
 export function createPartTimeJobs({runtime,getSchedule,getContext,readResources,compareAndSetResources,isWritable=()=>true,onChange=()=>{}}){
  const store=runtime.store;
@@ -59,7 +56,7 @@ export function createPartTimeJobs({runtime,getSchedule,getContext,readResources
   }
   const restored=await store.readJson('ui/player-schedule.json',null);
   if(restored&&liveSchedule&&!liveSchedule.sending&&same(liveSchedule.snapshot(),beforeLive)&&!same(restored,beforeLive)){
-   const recovered=new PlayerSchedule({state:restored});liveSchedule.today=recovered.today;liveSchedule.previous=recovered.previous;liveSchedule.cursor=recovered.cursor;liveSchedule.minuteCursor=recovered.minuteCursor;liveSchedule.selected=recovered.selected;onChange();
+   const recovered=new PlayerSchedule({state:restored});liveSchedule.today=recovered.today;liveSchedule.previous=recovered.previous;liveSchedule.cursor=recovered.cursor;liveSchedule.minuteCursor=recovered.minuteCursor;liveSchedule.dispatchCursor=recovered.dispatchCursor;liveSchedule.dispatchMinute=recovered.dispatchMinute;liveSchedule.selected=recovered.selected;onChange();
   }
   return true;
  }

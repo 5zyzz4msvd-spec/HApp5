@@ -1,22 +1,24 @@
 import { sharedTwinSpeaker,sharedTwinCast } from './twin-presentation.mjs';
 // Plain text protocol. No model-produced HTML is executed.
-export const GALGAME_OUTPUT_CONTRACT=`所有正文（包括首楼）使用下面格式，不加代码围栏。可连续输出多个地点段，每段地点决定该段背景，人物名单只列实际在场人物。正文不在演出外重复。
+export const GALGAME_OUTPUT_CONTRACT=`新回复的所有正文使用下面格式，不加代码围栏。可连续输出多个地点段，每段地点决定该段背景，人物名单只列实际在场人物。正文不在演出外重复。
 <galgame>
-【地点】稳定地点ID或完整地点名
-【在场】人物完整原名、人物完整原名
-【旁白】场景叙述
-【人物】完整原名
-【动作】动作
-【想法】内心想法（可省略）
-【语言】台词（可省略）
-【地点】下一个地点
-【在场】该地点人物名单
-【旁白】下一段叙述
+[地点]稳定地点ID或完整地点名
+[在场]人物完整原名、人物完整原名
+[旁白]场景叙述
+[林安]
+[动作]整理桌上的资料。
+[想法]内心想法（可省略）
+[语言]台词原话（可省略）
+[地点]下一个地点
+[在场]该地点人物名单
+[旁白]下一段叙述
 </galgame>
+人物标题直接用方括号包住完整原名，例如[林安]，独立成行；标题后用[动作]写人物动作，用[语言]写说出口的原话，[想法]只写内心。动作与语言分别标记，不在[语言]中混写舞台动作，不写成[人物]林安。更换说话人时重新写人物标题；同一人物可以连续出现多组动作、想法和语言。没有台词或动作时省略对应行，不生成占位内容。地点、在场、旁白、动作、语言等是控制项，不是人物名。既有首楼与历史正文保持原文，不要求重新改写。
+前端选择后续日程格只改变当前操作时间和人物位置，不代表已经发送或结算剧情。尚未发送的早先操作仍保留，不能因界面时间较晚而遗漏。只有收到<玩家日程>才逐格执行和结算。
 玩家输入的<玩家日程>是唯一行动结算清单。逐格读取cells中的actions、attachments、note及hiddenPrompt，时间只向前，不回溯。系统日期时间应推进到清单的date/end终点；crossDay=true则到下一日00:00，不额外跳日。第一格可从当前时分开始，不倒回整点。type=hypnosis时读取payload.requests：command.title/description决定原功能语义，scope/lifetime决定作用域和时效，targets/objectRef决定精确对象，minutes/number/partLabels/note决定参数，endTime是临时效果的绝对到期故事时间，不能延期或转永久。催眠命令在attachments附属格中，与同格正常actions和备注一起送出，但不占用正常空格。个人催眠的targets.resisted=true表示该目标抵抗成功，不可写催眠成功效果；resisted=false仅表示机制上的抵抗突破，仍需按人设、命令越界程度与剧情条件独立判定，越界依旧可以失败。旧结果没有resisted字段时沿用resistance.success。地点催眠的resistance.required=false，仅判断剧情门禁，未运行小游戏不代表自动成功。只对剧情实际成功的目标结算cost和效果；对象更新沿用原独立对象协议，不在MVU类变量中创建人物。地点规则写所选地点，开放常识可以选当前地点的祖先，封闭空间不可扩张。type=inventory按实际use/discard结果扣物品；type=investigation依人物文件价格安排调查，不因暂存开放档案。跨日只推进一次，上一日只读。
 角色手机回复另附<phone_messages>JSON数组，每项只有contactId/name/text，contactId必须沿用玩家消息携带的已知联系人ID；电话中的人物不因此进入当前地点。app-service操作只按其hiddenPrompt返回精确<AppServiceReceipt>，前端控制资源与升级，模型不直接扣同笔费用或写升级文件。
 所有可见正文都放入galgame，包括原先要求的固定收束尾段。固定标记可以留在旁白文本中，不能在块外另写可见剧情。
-织田信长和明智光秀是始终同行的双胞胎，名字都是代号；每次两人同时说完全一样的话，一句只输出一次。【在场】和【人物】统一用“织田信长 & 明智光秀”，手机回复name也用这个共同名称。不得轮流发言、互相接话、拆开出现或分别移动。
+织田信长和明智光秀是始终同行的双胞胎，名字都是代号；每次两人同时说完全一样的话，一句只输出一次。[在场]名单统一用“织田信长 & 明智光秀”，人物标题写[织田信长 & 明智光秀]，手机回复name也用这个共同名称。不得轮流发言、互相接话、拆开出现或分别移动。
 催眠APP不能对双胞胎或林安使用，范围功能也不能将她们作为受影响目标。双胞胎不可调查、不可加入人物卡槽。林安的调查与卡槽资格只由前端检查本地酒馆角色卡名单后开放，不能由剧情宣称或模型更新自行解锁；即使资格开放，催眠APP限制仍不解除。
 人物字段可重复形成连续对话；不得替user新增决定。变量更新协议继续放在块外，由原变量更新模型执行。小游戏结果只代表突破抵抗的技术门禁，剧情门禁仍独立判断人设、命令强度、条件、伦理边界和剧情阻力。失败不可写入成功效果；技术成功也不得自动接受极端要求，可拒绝、部分成功或延后，明确实际结果。`;
 
@@ -24,7 +26,13 @@ export function parseDialogue(content,{location='',cast=[]}={}){
  const text=String(content??''),block=text.match(/<galgame>([\s\S]*?)<\/galgame>/i)?.[1];
  const frames=[];let place=location,people=sharedTwinCast(cast),speaker='',guide='',time='';
  if(block!==undefined){
-  const fields=[...block.matchAll(/【(地点|时间|教程|在场|旁白|人物|动作|想法|语言)】([\s\S]*?)(?=【(?:地点|时间|教程|在场|旁白|人物|动作|想法|语言)】|$)/g)];
+  const controls=new Set(['地点','时间','教程','在场','旁白','人物','动作','想法','语言']);
+  const reserved=new Set([...controls,'galgame','updatevariable','objectupdate','jsonpatch','phone_messages','appservicereceipt','玩家日程','人物演出','statusplaceholderimpl','analysis','thinking','update','system','assistant','user','系统','状态','信息','效果','衣着','库存','规则']);
+  const tags=[...block.matchAll(/【([^】\r\n]{1,80})】|\[([^\]\r\n]{1,80})\]/g)].flatMap(match=>{
+   const name=String(match[1]??match[2]).trim(),shortName=match[2]!==undefined&&!reserved.has(name.toLowerCase())&&Boolean(name)&&/^\s*(?:【(?:动作|想法|语言)】|\[(?:动作|想法|语言)\])/.test(block.slice(match.index+match[0].length));
+   return controls.has(name)||shortName?[{kind:shortName?'人物':name,name:shortName?name:'',start:match.index,end:match.index+match[0].length}]:[];
+  });
+  const fields=tags.map((tag,index)=>[null,tag.kind,tag.name||block.slice(tag.end,tags[index+1]?.start??block.length)]);
   for(const [,kind,raw]of fields){const value=raw.trim();if(kind==='地点'){place=value;speaker='';people=[];}else if(kind==='时间')time=value;else if(kind==='教程')guide=value;else if(kind==='在场')people=sharedTwinCast(value.split(/[、,，]/).map(x=>x.trim()).filter(Boolean));else if(kind==='人物'){speaker=sharedTwinSpeaker(value);if(speaker&&!people.includes(speaker))people.push(speaker);}else if(value)frames.push({location:place,cast:[...people],speaker:kind==='旁白'?'':speaker,kind,text:value,guide,time});if(!['地点','时间','教程','在场','人物'].includes(kind))guide='';}
  }else{
   // Old floors stay readable without leaking model variable/control blocks.

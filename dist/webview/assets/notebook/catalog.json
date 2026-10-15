@@ -183,13 +183,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-2a6b53376fd61959.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-2a6b53376fd61959.png",
+      "portrait": "encounter/akashi-maho/role-01.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-2a6b53376fd61959.png"
+        "encounter/akashi-maho/role-01.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/akashi-maho/role-01.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "akashi-maho",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-2a6b53376fd61959-head.png",
@@ -205,13 +209,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-97ec3379bf501a39.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-97ec3379bf501a39.png",
+      "portrait": "encounter/akashi-maho/role-02.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-97ec3379bf501a39.png"
+        "encounter/akashi-maho/role-02.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/akashi-maho/role-02.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "akashi-maho",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-97ec3379bf501a39-head.png",
@@ -227,13 +235,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-77ebb75f374cbdef.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-77ebb75f374cbdef.png",
+      "portrait": "encounter/baikai/roles/古河诗织/古河诗织.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-77ebb75f374cbdef.png"
+        "encounter/baikai/roles/古河诗织/古河诗织.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/古河诗织/古河诗织.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-77ebb75f374cbdef-head.png",
@@ -249,13 +261,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-55dd9c5242cf1329.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-55dd9c5242cf1329.png",
+      "portrait": "encounter/baikai/roles/凯瑟琳/凯瑟琳.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-55dd9c5242cf1329.png"
+        "encounter/baikai/roles/凯瑟琳/凯瑟琳.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/凯瑟琳/凯瑟琳.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-55dd9c5242cf1329-head.png",
@@ -271,13 +287,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-ac0046cab3a00799.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-ac0046cab3a00799.png",
+      "portrait": "encounter/baikai/roles/林语薇/林语薇.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-ac0046cab3a00799.png"
+        "encounter/baikai/roles/林语薇/林语薇.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/林语薇/林语薇.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-ac0046cab3a00799-head.png",
@@ -293,13 +313,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-f23e207f634f62e2.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-f23e207f634f62e2.png",
+      "portrait": "encounter/baikai/roles/浅仓步美/浅仓步美.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-f23e207f634f62e2.png"
+        "encounter/baikai/roles/浅仓步美/浅仓步美.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/浅仓步美/浅仓步美.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-f23e207f634f62e2-head.png",
@@ -315,13 +339,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-07a3ba10d0a17eb8.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-07a3ba10d0a17eb8.png",
+      "portrait": "encounter/baikai/roles/浅野绘里/浅野绘里.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-07a3ba10d0a17eb8.png"
+        "encounter/baikai/roles/浅野绘里/浅野绘里.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/浅野绘里/浅野绘里.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-07a3ba10d0a17eb8-head.png",
@@ -337,13 +365,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-04d16815d239379c.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-04d16815d239379c.png",
+      "portrait": "encounter/baikai/roles/神宫寺凛/神宫寺凛.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-04d16815d239379c.png"
+        "encounter/baikai/roles/神宫寺凛/神宫寺凛.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/神宫寺凛/神宫寺凛.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-04d16815d239379c-head.png",
@@ -359,13 +391,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-e91ce20c2c12b6c8.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-e91ce20c2c12b6c8.png",
+      "portrait": "encounter/baikai/roles/神谷凛/神谷凛.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-e91ce20c2c12b6c8.png"
+        "encounter/baikai/roles/神谷凛/神谷凛.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/神谷凛/神谷凛.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-e91ce20c2c12b6c8-head.png",
@@ -381,13 +417,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-a2ce7f4cdc200477.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-a2ce7f4cdc200477.png",
+      "portrait": "encounter/baikai/roles/苏清寒/苏清寒.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-a2ce7f4cdc200477.png"
+        "encounter/baikai/roles/苏清寒/苏清寒.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/苏清寒/苏清寒.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-a2ce7f4cdc200477-head.png",
@@ -403,13 +443,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-52d32d0a7cdaf62a.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-52d32d0a7cdaf62a.png",
+      "portrait": "encounter/baikai/roles/天海真/天海真.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-52d32d0a7cdaf62a.png"
+        "encounter/baikai/roles/天海真/天海真.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/天海真/天海真.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-52d32d0a7cdaf62a-head.png",
@@ -425,13 +469,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-7accd86ac3eb6117.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-7accd86ac3eb6117.png",
+      "portrait": "encounter/baikai/roles/天泽爱音/天泽爱音.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-7accd86ac3eb6117.png"
+        "encounter/baikai/roles/天泽爱音/天泽爱音.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/天泽爱音/天泽爱音.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-7accd86ac3eb6117-head.png",
@@ -447,13 +495,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-39d1a157f9f4d916.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-39d1a157f9f4d916.png",
+      "portrait": "encounter/baikai/roles/西园寺美织/西园寺美织.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-39d1a157f9f4d916.png"
+        "encounter/baikai/roles/西园寺美织/西园寺美织.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/西园寺美织/西园寺美织.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-39d1a157f9f4d916-head.png",
@@ -469,13 +521,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-ca83c7739c45eb6b.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-ca83c7739c45eb6b.png",
+      "portrait": "encounter/baikai/roles/夏沐/夏沐.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-ca83c7739c45eb6b.png"
+        "encounter/baikai/roles/夏沐/夏沐.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/夏沐/夏沐.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-ca83c7739c45eb6b-head.png",
@@ -491,13 +547,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-6bcd1f4577c4100d.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-6bcd1f4577c4100d.png",
+      "portrait": "encounter/baikai/roles/夏织/夏织.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-6bcd1f4577c4100d.png"
+        "encounter/baikai/roles/夏织/夏织.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/夏织/夏织.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-6bcd1f4577c4100d-head.png",
@@ -513,13 +573,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-c9356419a553a1cb.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-c9356419a553a1cb.png",
+      "portrait": "encounter/baikai/roles/星野海/星野海.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-c9356419a553a1cb.png"
+        "encounter/baikai/roles/星野海/星野海.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/星野海/星野海.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-c9356419a553a1cb-head.png",
@@ -535,13 +599,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-1ef1638d177d829a.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-1ef1638d177d829a.png",
+      "portrait": "encounter/baikai/roles/星野千夏/星野千夏.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-1ef1638d177d829a.png"
+        "encounter/baikai/roles/星野千夏/星野千夏.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/星野千夏/星野千夏.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-1ef1638d177d829a-head.png",
@@ -557,13 +625,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-8efc69032fe0fe4c.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-8efc69032fe0fe4c.png",
+      "portrait": "encounter/baikai/roles/源薰子/源薰子.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-8efc69032fe0fe4c.png"
+        "encounter/baikai/roles/源薰子/源薰子.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/源薰子/源薰子.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "baikai",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-8efc69032fe0fe4c-head.png",
@@ -579,13 +651,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-064db9003c338210.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-064db9003c338210.png",
+      "portrait": "encounter/orjenrn/role-08.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-064db9003c338210.png"
+        "encounter/orjenrn/role-08.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-08.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-064db9003c338210-head.png",
@@ -601,13 +677,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-0dc77c0dfa0e6b67.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-0dc77c0dfa0e6b67.png",
+      "portrait": "encounter/sdz-aser/roles/白石响/白石响.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-0dc77c0dfa0e6b67.png"
+        "encounter/sdz-aser/roles/白石响/白石响.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/sdz-aser/roles/白石响/白石响.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-0dc77c0dfa0e6b67-head.png",
@@ -623,13 +703,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-b3bf905f02a76688.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-b3bf905f02a76688.png",
+      "portrait": "encounter/orjenrn/role-01.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-b3bf905f02a76688.png"
+        "encounter/orjenrn/role-01.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-01.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b3bf905f02a76688-head.png",
@@ -645,13 +729,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-b2db19dc554e9eaa.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-b2db19dc554e9eaa.png",
+      "portrait": "encounter/orjenrn/role-18.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-b2db19dc554e9eaa.png"
+        "encounter/orjenrn/role-18.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-18.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b2db19dc554e9eaa-head.png",
@@ -667,13 +755,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-764cabc48e088e85.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-764cabc48e088e85.png",
+      "portrait": "encounter/orjenrn/role-19.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-764cabc48e088e85.png"
+        "encounter/orjenrn/role-19.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-19.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-764cabc48e088e85-head.png",
@@ -689,13 +781,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-5878e65c790e3c59.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-5878e65c790e3c59.png",
+      "portrait": "encounter/orjenrn/role-20.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-5878e65c790e3c59.png"
+        "encounter/orjenrn/role-20.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-20.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-5878e65c790e3c59-head.png",
@@ -711,13 +807,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-6e30e22016b4d37b.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-6e30e22016b4d37b.png",
+      "portrait": "encounter/orjenrn/role-03.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-6e30e22016b4d37b.png"
+        "encounter/orjenrn/role-03.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-03.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-6e30e22016b4d37b-head.png",
@@ -733,13 +833,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-0b771c68e778fdd3.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-0b771c68e778fdd3.png",
+      "portrait": "encounter/orjenrn/role-04.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-0b771c68e778fdd3.png"
+        "encounter/orjenrn/role-04.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-04.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-0b771c68e778fdd3-head.png",
@@ -755,13 +859,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-1600360ec82ab663.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-1600360ec82ab663.png",
+      "portrait": "encounter/orjenrn/role-21.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-1600360ec82ab663.png"
+        "encounter/orjenrn/role-21.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-21.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-1600360ec82ab663-head.png",
@@ -777,13 +885,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-3346cda602c54efc.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-3346cda602c54efc.png",
+      "portrait": "encounter/orjenrn/role-05.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-3346cda602c54efc.png"
+        "encounter/orjenrn/role-05.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-05.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-3346cda602c54efc-head.png",
@@ -799,13 +911,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-7eb42f662d49e883.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-7eb42f662d49e883.png",
+      "portrait": "encounter/orjenrn/role-16.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-7eb42f662d49e883.png"
+        "encounter/orjenrn/role-16.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-16.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-7eb42f662d49e883-head.png",
@@ -821,13 +937,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-b28f5fbf21d4b618.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-b28f5fbf21d4b618.png",
+      "portrait": "encounter/orjenrn/role-22.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-b28f5fbf21d4b618.png"
+        "encounter/orjenrn/role-22.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-22.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b28f5fbf21d4b618-head.png",
@@ -843,13 +963,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-3d51d06757c02c01.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-3d51d06757c02c01.png",
+      "portrait": "encounter/orjenrn/role-06.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-3d51d06757c02c01.png"
+        "encounter/orjenrn/role-06.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-06.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-3d51d06757c02c01-head.png",
@@ -865,13 +989,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-de9249f3709ccf8e.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-de9249f3709ccf8e.png",
+      "portrait": "encounter/orjenrn/role-07.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-de9249f3709ccf8e.png"
+        "encounter/orjenrn/role-07.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-07.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-de9249f3709ccf8e-head.png",
@@ -887,13 +1015,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-bdf07de03d895d52.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-bdf07de03d895d52.png",
+      "portrait": "encounter/orjenrn/role-17.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-bdf07de03d895d52.png"
+        "encounter/orjenrn/role-17.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-17.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-bdf07de03d895d52-head.png",
@@ -909,13 +1041,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-fe61aa58c8b762c5.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-fe61aa58c8b762c5.png",
+      "portrait": "encounter/orjenrn/role-09.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-fe61aa58c8b762c5.png"
+        "encounter/orjenrn/role-09.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-09.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-fe61aa58c8b762c5-head.png",
@@ -931,13 +1067,17 @@
       "standees": [
         "scene-presence/encounters/standees/encounter-a264655b118468f4.png"
       ],
-      "portrait": "scene-presence/encounters/standees/encounter-a264655b118468f4.png",
+      "portrait": "encounter/orjenrn/role-10.png",
       "portraits": [
-        "scene-presence/encounters/standees/encounter-a264655b118468f4.png"
+        "encounter/orjenrn/role-10.png"
       ],
-      "portraitKind": "full-body-fallback",
-      "portraitFallback": true,
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
       "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-10.png"
+        ],
         "catalog": "scene-presence/encounter-catalog.json",
         "sourcePackage": "orjenrn",
         "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-a264655b118468f4-head.png",

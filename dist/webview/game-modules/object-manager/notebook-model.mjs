@@ -1,3 +1,4 @@
+import {ENCOUNTER_NOTEBOOK_PORTRAITS} from './encounter-notebook-portraits.mjs';
 import {contentPolicyFieldApplicable} from '../safety/character-content-policy-client.mjs';
 import {NOTEBOOK_EVENT_CHARACTER_NAMES} from '../game/story-event-index.mjs';
 import {userNotebookGroups} from './user-management.mjs';
@@ -6,14 +7,16 @@ import {CASH_POLICY_ID,CASH_DATE_ID} from './character-cash.mjs';
 
 // Preserve the source schema hierarchy; persona prose is deliberately outside this view.
 export function notebookPhotoSources(asset, media, mode, resolveFile) {
-  const defaults = mode === 'head' ? asset?.head ? [asset.head] : [] : mode === 'standee' ? asset?.standees ?? [] : asset?.portraits?.length ? asset.portraits : asset?.portrait ? [asset.portrait] : [];
+  const originals=ENCOUNTER_NOTEBOOK_PORTRAITS[asset?.name]?.portraits;
+  const defaults = mode === 'head' ? asset?.head ? [asset.head] : [] : mode === 'standee' ? asset?.standees ?? [] : [...(originals??[]),...(asset?.portraits?.length ? asset.portraits : asset?.portrait ? [asset.portrait] : [])];
   const live = mode === 'portrait' ? media?.portraits ?? [] : [];
   const liveFiles = live.map(url => ({ key: url, url: /^(?:data:|blob:|https?:|\/)/.test(url)?url:resolveFile(url) }));
   const defaultFiles = defaults.map(file => ({ key: file, url: /^(?:data:|blob:|https?:|\/)/.test(file)?file:resolveFile(file) }));
   // Old solo media stays stored, but cannot split the inseparable pair in the UI.
   const files = asset?.presentationMode === 'joint' ? defaultFiles : [...liveFiles, ...defaultFiles];
   const seen = new Set();
-  return files.filter(file => { if (!file.url || seen.has(file.url)) return false; seen.add(file.url); return true; });
+  const isStandee=file=>mode==='portrait'&&(asset?.standees??[]).some(standee=>{const clean=value=>{try{return decodeURIComponent(String(value).split(/[?#]/)[0]);}catch{return String(value).split(/[?#]/)[0];}};const left=clean(file.url),right=clean(standee);return left===right||left.endsWith('/'+right)||right.endsWith('/'+left);});
+  return files.filter(file => { if (isStandee(file)||!file.url || seen.has(file.url)) return false; seen.add(file.url); return true; });
 }
 export function notebookVariableGroups(actor) {
   const groups = [], ungrouped = [];
