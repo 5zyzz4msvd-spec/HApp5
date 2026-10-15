@@ -1,3 +1,4 @@
+import {readTavernChatId} from './game-modules/object-manager/tavern-context.mjs';
 import {resolveLocalPetResources} from './game-modules/pet-v6/local-resources.mjs';
 import {phoneOverlayBounds} from './game-modules/phone-v2/layout.mjs';
 import { parseDialogue } from './game-modules/game/dialogue.mjs';
@@ -29,7 +30,7 @@ import { mountScheduleScene } from './game-modules/object-manager/scene-view.mjs
 import { mountSceneTools } from './game-modules/object-manager/scene-tools.mjs';
 import { mountInventoryCollection } from './game-modules/inventory/collection.mjs';
 import { readSceneObjects, resolveSceneLocation } from './game-modules/object-manager/scene-presence.mjs';
-await installTutorialWorld(runtime,HACKER_TWINS);if(!liveHost)context.time='08:25';
+await installTutorialWorld(runtime,HACKER_TWINS);if(!liveHost)context.time='08:25';else await getSnapshot();
 const gameRoot=window.__ST_GAME_ROOT__??document;
 installSceneOrientationGate(document);
 const sceneAssets=await(await fetch(base+'scene-presence/catalog.json')).json(),scene=mountScheduleScene(gameRoot.querySelector('#scene'),{assets:sceneAssets,resolveFile:file=>base+file});
@@ -46,9 +47,11 @@ function openCollection(){return runSceneTransition(document,async()=>{const lea
 async function closeLocations(){const view=locationView;await view?.close?.();view?.destroy();if(locationView===view)locationView=null;sceneWindows.release(closeLocations);}
 const movementWritable=()=>!player.playback.historical&&!player.playback.generating&&player.playback.canAdvance;
 async function commitOperationTime(schedule){
+ const chatId=liveHost?readTavernChatId(liveHost):'',anchor=player.playback.floors.at(-1)?.signature,current=()=>movementWritable()&&player.playback.floors.at(-1)?.signature===anchor&&(!liveHost||readTavernChatId(liveHost)===chatId)&&(!window.frameElement||window.frameElement.isConnected);
+ if(liveHost)await getSnapshot();if(!current())throw Error('聊天或对白已改变，请重新选择操作时间');
  const time=String(Math.floor(schedule.minuteCursor/60)).padStart(2,'0')+':'+String(schedule.minuteCursor%60).padStart(2,'0'),date=schedule.today.date,weekday=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][new Date(date+'T00:00:00Z').getUTCDay()],before=structuredClone(runtime.locationContext);
- if(!movementWritable())throw Error('请先读完当前对白');await runtime.setLocationContext(context.location,{state:{...before.state,date,time,weekday}});
- try{if(liveHost){if(typeof helper?.updateVariablesWith!=='function')throw Error('时间保存接口尚未连接');await helper.updateVariablesWith(variables=>{const system=(variables.stat_data??variables).系统??={};system.当前时间=time;system.当前日期=date;system.当前出场角色=[];return variables;},{type:'message',message_id:'latest'});}}catch(error){await runtime.setLocationContext(before.location,{state:before.state??{}});throw error;}
+ if(!current())throw Error('请先读完当前对白');await runtime.setLocationContext(context.location,{state:{...before.state,date,time,weekday}});
+ try{if(liveHost){if(typeof helper?.updateVariablesWith!=='function')throw Error('时间保存接口尚未连接');let committed=false;await helper.updateVariablesWith(variables=>{if(!current())return variables;committed=true;const system=(variables.stat_data??variables).系统??={};system.当前时间=time;system.当前日期=date;system.当前出场角色=[];return variables;},{type:'message',message_id:'latest'});if(!committed)throw Error('聊天已改变，未写入新时间');}}catch(error){await runtime.setLocationContext(before.location,{state:before.state??{}});throw error;}
  setNarrativeContext({date,time,weekday,confirmedNames:[]},false);try{await refreshStoryEvents();await refreshScene();await phoneView.refresh();}catch(error){console.warn('[HypnoOS clock] 时间已保存，界面刷新稍后重试',error.message);}
 }
 async function commitLocationMove(place){
@@ -72,7 +75,7 @@ async function closePhone(){await phoneLifecycle?.close();sceneWindows.release(c
 phoneToolbar.querySelector('[data-phone-home]').addEventListener('click',()=>phoneView.home());
 phoneToolbar.querySelector('[aria-label="收起手机"]').addEventListener('click',()=>runSceneTransition(document,closePhone));phoneToolbar.querySelector('[data-phone-rotate]').addEventListener('click',()=>phoneView.toggleOrientation());
 phoneHost.addEventListener('hypno:phone-orientation',event=>{phoneHost.dataset.orientation=event.detail.orientation;const button=phoneToolbar.querySelector('[data-phone-rotate]'),portrait=event.detail.orientation==='portrait';button.textContent=portrait?'横屏':'竖屏';button.setAttribute('aria-label',portrait?'切换手机为横屏':'切换手机为竖屏');phoneView.resize();});
-function openPhone(){return runSceneTransition(document,async()=>{const lease=sceneWindows.open(closePhone);await lease.ready;if(lease.reused||!lease.isCurrent())return;await phoneView.refresh();phoneHost.style.opacity='0';phoneHost.hidden=false;phoneToolbarDock=dockSceneToolbar(document,phoneToolbar);phoneView.setControlsDocked(phoneToolbarDock.docked);resizePhoneOverlay();phoneLifecycle=surfaceLifecycle(document,phoneHost,phoneToolbarDock,()=>{phoneToolbarDock=null;phoneLifecycle=null;phoneHost.hidden=true;phoneView.setControlsDocked(false);},phoneToolbarDock.ready.then(resizePhoneOverlay));await phoneLifecycle.ready;});}
+function openPhone(){return runSceneTransition(document,async()=>{const lease=sceneWindows.open(closePhone);await lease.ready;if(lease.reused||!lease.isCurrent())return;await phoneView.refresh();await refreshScene();phoneHost.style.opacity='0';phoneHost.hidden=false;phoneToolbarDock=dockSceneToolbar(document,phoneToolbar);phoneView.setControlsDocked(phoneToolbarDock.docked);resizePhoneOverlay();phoneLifecycle=surfaceLifecycle(document,phoneHost,phoneToolbarDock,()=>{phoneToolbarDock=null;phoneLifecycle=null;phoneHost.hidden=true;phoneView.setControlsDocked(false);},phoneToolbarDock.ready.then(resizePhoneOverlay));await phoneLifecycle.ready;});}
 let contacts,tutorial,player,jobs;
 async function refreshScene(){await service.tick({...context,writable:!player?.playback?.historical});const data=await readSceneObjects(runtime,{context});data.location=resolveSceneLocation(data.locations,context.location);scene.render({...data,weekday:context.weekday,time:context.time});syncLocationServices(data);}
 if(!liveHost&&runtime.locationContext?.location&&(await runtime.store.readJson('ui/opening-tutorial.json',{})).complete)context.location=structuredClone(runtime.locationContext.location);
