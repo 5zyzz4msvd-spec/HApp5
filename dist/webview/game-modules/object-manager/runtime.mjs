@@ -574,7 +574,6 @@ export class ObjectManagerRuntime {
     if (await this.store.readJson("rewards/pending.json", null)) throw new Error("存在未确认的奖励事务，请先核验，避免重复发放");
     if (receipts.some((item) => item.id === receipt)) throw new Error("奖励收据与对象状态不一致，请先检查本地文件");
     const rewards = child.definition.rewards;
-    if (!Number.isInteger(rewards.starlight ?? 0) || (rewards.starlight ?? 0) < 0) throw new Error("奖励星光点无效");
     for (const item of rewards.items ?? []) {
       if (!item.name || !Number.isInteger(item.quantity) || item.quantity < 1 || ["__proto__", "prototype", "constructor"].includes(item.name)) throw new Error("奖励物品无效");
     }

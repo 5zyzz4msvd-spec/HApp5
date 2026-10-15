@@ -16,16 +16,14 @@ export function normalizeTaskSubmission(raw) {
   const normalized = normalizeTask({ kind: "task", id: "workshop-template", name, owner: { kind: "character", id: targetCharacterId }, definition });
   if (!normalized.definition.description || !normalized.definition.completion.text) throw new Error("task description and completion text are required");
   const rewards = normalized.definition.rewards;
-  if (Object.keys(rewards).some((key) => !["starlight", "items"].includes(key))) throw new Error("unsupported reward type");
-  const starlight = rewards.starlight ?? 0;
-  if (!Number.isInteger(starlight) || starlight < 0 || starlight > 10000) throw new Error("invalid starlight reward");
+  if (Object.keys(rewards).some((key) => !["items"].includes(key))) throw new Error("unsupported reward type");
   if (rewards.items !== undefined && (!Array.isArray(rewards.items) || rewards.items.length > 20)) throw new Error("invalid reward items");
   const items = (rewards.items ?? []).map((item) => {
     if (!isPlainObject(item) || Object.keys(item).some((key) => !["name", "description", "quantity"].includes(key))) throw new Error("invalid reward item");
     if (typeof item.name !== "string" || !item.name.trim() || item.name.length > 120 || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 1000) throw new Error("invalid reward item fields");
     return { name: item.name.trim(), description: String(item.description ?? ""), quantity: item.quantity };
   });
-  const task = { name, targetCharacterId, definition: { ...normalized.definition, rewards: { starlight, items } } };
+  const task = { name, targetCharacterId, definition: { ...normalized.definition, rewards: { items } } };
   const text = JSON.stringify(task);
   if (text.length > 32000 || /<%|<\/?script\b/i.test(text)) throw new Error("workshop tasks must be bounded data, not executable templates");
   return task;

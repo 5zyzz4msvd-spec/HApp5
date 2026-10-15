@@ -1,30 +1,3 @@
-export const DEFAULT_STARLIGHT_REWARD = 5;
-
-export const STARLIGHT_VOUCHER_DESCRIPTION =
-  "APP任务奖励道具。VIP5及以上用户可在邂逅商店消耗本券，并以10000零花钱兑换1星光点；仅有零花钱但没有兑换券时不能兑换。";
-
-function starlightReward(items = []) {
-  return {
-    starlight: DEFAULT_STARLIGHT_REWARD,
-    items,
-  };
-}
-
-function starlightRewardAmount(starlight, items = []) {
-  return {
-    starlight,
-    items,
-  };
-}
-
-function starlightVoucher(quantity = 1) {
-  return {
-    name: "星光点兑换券",
-    description: STARLIGHT_VOUCHER_DESCRIPTION,
-    quantity,
-  };
-}
-
 function variableCondition(path, operator, value) {
   return {
     path,
@@ -45,7 +18,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "主角可疑度达到 30。",
       condition: "系统.主角可疑度 >= 30",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.主角可疑度", ">=", 30),
     },
     {
@@ -54,7 +27,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "主角可疑度达到 60。",
       condition: "系统.主角可疑度 >= 60",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.主角可疑度", ">=", 60),
     },
     {
@@ -63,7 +36,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "主角可疑度达到 100。",
       condition: "系统.主角可疑度 >= 100",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.主角可疑度", ">=", 100),
     },
     {
@@ -72,7 +45,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "持有零花钱达到 50000。",
       condition: "系统.持有零花钱 >= 50000",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.持有零花钱", ">=", 50000),
     },
     {
@@ -81,7 +54,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "持有零花钱达到 500000。",
       condition: "系统.持有零花钱 >= 500000",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.持有零花钱", ">=", 500000),
     },
     {
@@ -90,7 +63,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "MC能量上限达到 100。",
       condition: "系统.MC能量上限 >= 100",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.MC能量上限", ">=", 100),
     },
     {
@@ -99,7 +72,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "MC能量上限达到 500。",
       condition: "系统.MC能量上限 >= 500",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.MC能量上限", ">=", 500),
     },
     {
@@ -108,7 +81,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "MC能量上限达到 3000。",
       condition: "系统.MC能量上限 >= 3000",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.MC能量上限", ">=", 3000),
     },
     {
@@ -117,7 +90,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "阿宅好感度达到 100。",
       condition: "角色.阿宅.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.阿宅.状态.好感度", ">=", 100),
     },
     {
@@ -126,7 +99,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "犬冢夏美好感度达到 100。",
       condition: "角色.犬冢夏美.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.犬冢夏美.状态.好感度", ">=", 100),
     },
     {
@@ -135,7 +108,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "西园寺爱丽莎好感度达到 100。",
       condition: "角色.西园寺爱丽莎.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.西园寺爱丽莎.状态.好感度", ">=", 100),
     },
     {
@@ -144,7 +117,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "月咏深雪好感度达到 100。",
       condition: "角色.月咏深雪.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.月咏深雪.状态.好感度", ">=", 100),
     },
     {
@@ -153,7 +126,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "完成警视厅线。",
       condition: "系统._警视厅线 >= 2",
       scope: "self",
-      reward: starlightRewardAmount(30),
+      reward: { items: [] },
       variableCondition: variableCondition("系统._警视厅线", ">=", 2),
     },
     {
@@ -162,7 +135,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "完成医院线。",
       condition: "系统._医院线 >= 2",
       scope: "self",
-      reward: starlightRewardAmount(30),
+      reward: { items: [] },
       variableCondition: variableCondition("系统._医院线", ">=", 2),
     },
     {
@@ -171,7 +144,7 @@ export const DEFAULT_REWARD_DATABASE = {
       description: "完成隐藏线。",
       condition: "系统._灵异线 >= 2",
       scope: "self",
-      reward: starlightRewardAmount(30),
+      reward: { items: [] },
       variableCondition: variableCondition("系统._灵异线", ">=", 2),
     },
   ],
@@ -199,7 +172,7 @@ export const DEFAULT_REWARD_DATABASE = {
     description: condition,
     condition,
     scope,
-    reward: starlightReward(),
+    reward: { items: [] },
   })).concat({
     id: "quest_naked_double_standard",
     title: "赤身裸体与裸体赤身",
@@ -207,8 +180,7 @@ export const DEFAULT_REWARD_DATABASE = {
     condition: "让两个角色在公共场合都不穿衣服，但是指责对方不穿衣服不知廉耻。",
     scope: "other",
     reward: {
-      starlight: 0,
-      items: [starlightVoucher(2)],
+      items: [],
     },
   }, {
     id: "quest_orgasm_strongest",
@@ -217,8 +189,7 @@ export const DEFAULT_REWARD_DATABASE = {
     condition: "让角色的快感值到达500后高潮。",
     scope: "other",
     reward: {
-      starlight: 0,
-      items: [starlightVoucher()],
+      items: [],
     },
   }),
 };

@@ -301,6 +301,7 @@ function readTavernChatId(view){
 Object.assign(module.exports,{hasTavernContext,readTavernChatId});
 },
 "src/object-manager/user-management.mjs":function(module, load){
+const {normalizeObjectResources,withoutRetiredCurrency} = load("src/object-manager/account.mjs");
 const { normalizeCharacter } = load("src/object-manager/contracts.mjs");
 const {inventoryFromState} = load("src/game/live-context.mjs");
 const USER_MANAGEMENT_FILE='migrations/user-management-v1.json';
@@ -315,10 +316,10 @@ const fields=[
 const USER_MANAGEMENT_CONTRACT='{{user}}是独立玩家对象character:user，其自身状态、资料、事件、任务与成就由该对象及归属子对象维护。可疑度只使用ObjectUpdate的replace /values/player-suspicion；自身资料只更新 /values/player-personal-record 的完整记录。不再修改旧系统.主角可疑度和系统._user身份，不创建第二个玩家，不把玩家算作调查、物色、催眠目标或人物卡槽候选。金钱、MC能量、MC上限、VIP仍由应用账户单一结算入口维护，不通过玩家资料字段或模型补发奖励。';
 function sourceProfile(state,userName){
  const sources=[state?.主角,state?.用户,state?.user,state?.玩家,state?.角色?.['{{user}}'],state?.角色?.user,userName?state?.角色?.[userName]:null,state?.系统?.主角信息,state?.系统?.玩家信息];
- const profile={};for(const source of sources.filter(own))for(const [key,value]of Object.entries(source))if(!Object.hasOwn(profile,key)&&!['主角可疑度','可疑度','MC能量','MC能量上限','持有零花钱','催眠APP订阅等级','_催眠APP订阅等级','VIP等级','_VIP等级','星光点','持有物品','库存','道具'].includes(key))profile[key]=structuredClone(value);
+ const profile={};for(const source of sources.filter(own))for(const [key,value]of Object.entries(source))if(!Object.hasOwn(profile,key)&&!['主角可疑度','可疑度','MC能量','MC能量上限','持有零花钱','催眠APP订阅等级','_催眠APP订阅等级','VIP等级','_VIP等级','持有物品','库存','道具'].includes(key))profile[key]=structuredClone(value);
  for(const [key,value]of Object.entries(state?.系统??{}))if(/^主角/.test(key)&&!['主角可疑度','主角信息'].includes(key)&&!Object.hasOwn(profile,key))profile[key]=structuredClone(value);
  if(state?.系统?._user身份!==undefined)profile.身份=structuredClone(state.系统._user身份);
- return profile;
+ return withoutRetiredCurrency(profile);
 }
 async function ensureUserManagement(runtime,{legacyState={},userName=''}={}){
  return runtime.personnelTransaction(async()=>{
@@ -341,7 +342,7 @@ async function ensureUserManagement(runtime,{legacyState={},userName=''}={}){
   const entries=actor.worldbook.entries.filter(x=>x.id!=='player-management-policy');entries.push({id:'player-management-policy',comment:'玩家独立管理',content:USER_MANAGEMENT_CONTRACT,constant:true,position:4,depth:0,order:9});actor.worldbook.entries=entries;
   const slots=await runtime.store.getCharacterSlots();if(!slots.some(x=>x.ref.id==='user'&&x.enabled!==false))slots.push({slotId:'default-user',ref:USER_REF,enabled:true,order:0});
   const extra=new Map([['slots/characters.json',slots],[USER_MANAGEMENT_FILE,{schema:2,owner:USER_REF,source:'legacy user fields imported once; account resources stay at their existing owner'}]]);
-  if(!await runtime.store.readJson('archives/user-source-v1.json',null))extra.set('archives/user-source-v1.json',{system:structuredClone(legacyState?.系统??{}),suspicion:legacyState?.系统?.主角可疑度,profile:sourceProfile(legacyState,userName)});
+  if(!await runtime.store.readJson('archives/user-source-v1.json',null))extra.set('archives/user-source-v1.json',{system:withoutRetiredCurrency(legacyState?.系统??{}),suspicion:legacyState?.系统?.主角可疑度,profile:sourceProfile(legacyState,userName)});
   await runtime._writeLocalObjects([actor],extra);
   return runtime.store.getObject(USER_REF);
  });
@@ -349,17 +350,17 @@ async function ensureUserManagement(runtime,{legacyState={},userName=''}={}){
 async function readUserManagement(runtime){const actor=await runtime.store.getObject(USER_REF);return{actor,suspicion:Number(actor?.values?.[USER_SUSPICION_FIELD])||0};}
 // Views read the existing resource owners; they never create another balance.
 async function userNotebookSources(runtime,{legacyState={},preview=false}={}){
- const system=legacyState.系统??{},owned=await runtime.store.readJson('account/resources.json',{starlight:0,items:{}});
- const playerResources=preview?{...await runtime.store.readJson('ui/demo-resources.json',{money:18000,energy:120,energyCap:1500,vipRank:0}),starlight:0}:{money:Number(system.持有零花钱??0),energy:Number(system.MC能量??0),energyCap:Number(system.MC能量上限??0),vipRank:Number(String(system.催眠APP订阅等级??system._催眠APP订阅等级??system.VIP等级??system._VIP等级??0).replace(/[^0-9]/g,'')),starlight:Number(system.星光点??0)};
- playerResources.rewardStarlight=Number(owned.starlight??0);
- const items=new Map(inventoryFromState(legacyState).map(item=>[item.name,item]));
+ const system=legacyState.系统??{},saved=await runtime.store.readJson('account/resources.json',{items:{}}),owned=normalizeObjectResources(saved);
+ if(JSON.stringify(saved)!==JSON.stringify(owned))await runtime.store.writeJson('account/resources.json',owned);
+ const playerResources=preview?withoutRetiredCurrency(await runtime.store.readJson('ui/demo-resources.json',{money:18000,energy:120,energyCap:1500,vipRank:0})):{money:Number(system.持有零花钱??0),energy:Number(system.MC能量??0),energyCap:Number(system.MC能量上限??0),vipRank:Number(String(system.催眠APP订阅等级??system._催眠APP订阅等级??system.VIP等级??system._VIP等级??0).replace(/[^0-9]/g,''))};
+ const items=new Map(withoutRetiredCurrency(inventoryFromState(legacyState)).map(item=>[item.name,item]));
  for(const [name,item]of Object.entries(owned.items??{})){const previous=items.get(name)??{name,count:0,description:''};items.set(name,{...previous,count:previous.count+Number(item.quantity??0),description:previous.description||item.description||''});}
  const playerContext=Object.fromEntries([['year',system.当前年份],['weekdayLabel',system._当前周几],['activity',system._当前日程],['specialDate',system._当前特殊日期],['event',system.当前事件]].filter(([,value])=>value!==undefined&&value!==''));
  return{playerResources,playerInventory:[...items.values()].filter(item=>item.count>0),playerContext};
 }
 function userNotebookGroups(actor,resources=null,{context=null,inventory=null}={}){
  const state={id:'player-state',label:'状态',fields:[{id:USER_SUSPICION_FIELD,label:'可疑度',path:[],type:'number',min:0,max:100,value:Number(actor.values[USER_SUSPICION_FIELD])||0}]};
- if(resources)state.fields.push(...[['energy','MC能量','MC'],['energyCap','MC能量上限','MC'],['vipRank','VIP等级',''],['money','持有零花钱','日元'],['starlight','星光点',''],['rewardStarlight','成就任务奖励星光点','']].filter(([id])=>Object.hasOwn(resources,id)&&(id!=='rewardStarlight'||resources[id]!==0)).map(([id,label,unit])=>({id:'account-view-'+id,label,unit,path:[],type:'number',value:Number(resources[id])||0,readOnly:true})));
+ if(resources)state.fields.push(...[['energy','MC能量','MC'],['energyCap','MC能量上限','MC'],['vipRank','VIP等级',''],['money','持有零花钱','日元']].filter(([id])=>Object.hasOwn(resources,id)).map(([id,label,unit])=>({id:'account-view-'+id,label,unit,path:[],type:'number',value:Number(resources[id])||0,readOnly:true})));
  if(actor.values['player-possession'])state.fields.push({id:'player-possession',label:'附身状态',path:[],type:'text',value:actor.values['player-possession'],readOnly:true});
  const result=[state,{id:'player-profile',label:'自身资料',fields:[{id:'player-personal-record',label:'个人资料',path:[],type:'record',value:structuredClone(actor.values['player-personal-record']??{})}]}];
  if(inventory)result.push({id:'player-inventory-view',label:'持有物品',fields:[{id:'inventory-view',label:'物品',path:[],type:'record',value:Object.fromEntries(inventory.map(item=>[item.name,{数量:item.count,描述:item.description||''}])),readOnly:true}]});
@@ -373,7 +374,54 @@ function userNotebookGroups(actor,resources=null,{context=null,inventory=null}={
 
 Object.assign(module.exports,{USER_MANAGEMENT_FILE,USER_REF,USER_SUSPICION_FIELD,hasLegacyUserState,USER_MANAGEMENT_CONTRACT,ensureUserManagement,readUserManagement,userNotebookSources,userNotebookGroups});
 },
+"src/object-manager/account.mjs":function(module, load){
+// Remove retired currency from old chat files without converting balances or rewards.
+const retiredKeys = new Set(['starlight', 'rewardStarlight', '奖励星光点', '星光点', 'reward_starlight', 'starlightCost']);
+const retiredElement = item => item && typeof item === 'object' && (['星光点', '奖励星光点', '成就任务奖励星光点'].includes(item.label) || item.name === '星光点兑换券' || ['starlight', 'rewardStarlight', 'account-view-starlight', 'account-view-rewardStarlight'].includes(item.id));
+function withoutRetiredCurrency(value) {
+  if (Array.isArray(value)) return value.filter(item => !retiredElement(item)).map(withoutRetiredCurrency);
+  if (!value || typeof value !== 'object') return value;
+  const result = Object.fromEntries(Object.entries(value).filter(([key]) => !retiredKeys.has(key) && key !== '星光点兑换券').map(([key, item]) => [key, withoutRetiredCurrency(item)]));
+  if (result.values && Array.isArray(value.elements)) {
+    const visit = (elements, removed = false) => { for (const element of elements) { const remove = removed || retiredElement(element); if (remove) delete result.values[element.id]; if (Array.isArray(element.elements)) visit(element.elements, remove); } };
+    visit(value.elements);
+  }
+  return result;
+}
+function normalizeObjectResources(value = {}) {
+  const result = withoutRetiredCurrency(value && typeof value === 'object' && !Array.isArray(value) ? value : {});
+  return {...result, items: result.items && typeof result.items === 'object' && !Array.isArray(result.items) ? result.items : {}};
+}
+// Resource settlement belongs to this chat's object files, never to MVU.
+function createObjectRewardAccount(store) {
+  const snapshot = async () => {
+    const saved = await store.readJson("account/resources.json", { items: {} });
+    const value = normalizeObjectResources(saved);
+    if (JSON.stringify(saved) !== JSON.stringify(value)) await store.writeJson("account/resources.json", value);
+    return value;
+  };
+  return {
+    snapshot,
+    async apply(reward) {
+      const value = await snapshot();
+      for (const item of withoutRetiredCurrency(reward).items ?? []) {
+        const previous = value.items[item.name] ?? { quantity: 0, description: item.description ?? "" };
+        value.items[item.name] = { ...previous, quantity: previous.quantity + item.quantity };
+      }
+      await store.writeJson("account/resources.json", value);
+      return value;
+    },
+    async restoreIfUnchanged(before, written) {
+      if (JSON.stringify(await snapshot()) !== JSON.stringify(written)) throw new Error("object account changed; refusing reward compensation");
+      await store.writeJson("account/resources.json", normalizeObjectResources(before));
+    }
+  };
+}
+
+Object.assign(module.exports,{withoutRetiredCurrency,normalizeObjectResources,createObjectRewardAccount});
+},
 "src/object-manager/contracts.mjs":function(module, load){
+const { withoutRetiredCurrency } = load("src/object-manager/account.mjs");
 const { normalizeCondition } = load("src/object-manager/conditions.mjs");
 const { worldbookImplicitFields, worldbookRecursion, worldbookEffect } = load("src/object-manager/worldbook-policy.mjs");
 const { normalizeStructure, defaultCharacterElements } = load("src/object-manager/structure-schema.mjs");
@@ -486,6 +534,7 @@ function normalizeRefArray(value, kind) {
 }
 
 function normalizeCharacter(value) {
+  value = withoutRetiredCurrency(value);
   if (!isPlainObject(value)) throw new Error("character must be an object");
   const id = assertObjectId(value.id, "character id");
   const name = String(value.name ?? "").trim();
@@ -636,7 +685,7 @@ function normalizeCharacterChild(value, kind) {
     definition: {
       description: String(definition.description ?? "").trim(),
       completion: { mode, text: String(completion.text ?? "").trim(), when },
-      rewards: isPlainObject(definition.rewards) ? cloneValue(definition.rewards) : {},
+      rewards: isPlainObject(definition.rewards) ? withoutRetiredCurrency(definition.rewards) : {},
     },
     data: { completed: data.completed === true, claimed: data.claimed === true, progress: isPlainObject(data.progress) ? cloneValue(data.progress) : {}, claimReceipt: data.claimReceipt ? String(data.claimReceipt) : null },
     source,
@@ -1000,7 +1049,7 @@ const migrateCharacterCash=runtime=>runtime.personnelTransaction(()=>refreshChar
 function validateCharacterCashUpdate(actor,fieldId,value){
   if(actor.kind==='character'&&cashAmountField(actor)?.id===fieldId&&(!Number.isSafeInteger(value)||value<0))throw Error('人物现金必须为非负整数');
 }
-const CHARACTER_CASH_RULE=`人物现金来自各自独立人物文件的现金属性，单位日元，表示当天随身可支配的钱而非家族或公司总资产。模型只能读取及结算当前余额，不得自行刷新或追加每日额度。钱包金额多不代表角色愿意给钱。索要、交易或催眠命令只有在剧情中实际交付后才结算；拒绝、越界失败、小游戏胜利但未交付均不转钱。交给user的实际金额不得超过该人物当前现金：同笔收入增加系统.持有零花钱并用ObjectUpdate等额减少该人物现金，只各结算一次；不得只给user加钱、扣成负数、凭空透支或拿星光点代替。user付给人物的钱同理等额记账。未入人物卡槽的现金不可更新。双胞胎同属一个人物文件，共用一份现金，不能各领取一次。`;
+const CHARACTER_CASH_RULE=`人物现金来自各自独立人物文件的现金属性，单位日元，表示当天随身可支配的钱而非家族或公司总资产。模型只能读取及结算当前余额，不得自行刷新或追加每日额度。钱包金额多不代表角色愿意给钱。索要、交易或催眠命令只有在剧情中实际交付后才结算；拒绝、越界失败、小游戏胜利但未交付均不转钱。交给user的实际金额不得超过该人物当前现金：同笔收入增加系统.持有零花钱并用ObjectUpdate等额减少该人物现金，只各结算一次；不得只给user加钱、扣成负数或凭空透支。user付给人物的钱同理等额记账。未入人物卡槽的现金不可更新。双胞胎同属一个人物文件，共用一份现金，不能各领取一次。`;
 
 Object.assign(module.exports,{CASH_POLICY_ID,CASH_DATE_ID,cashAmountField,retainCharacterCashState,cashProfileFor,normalizeCashRefresh,ensureCharacterCash,dailyCashAmount,refreshActorCash,refreshCharacterCashInTransaction,migrateCharacterCash,validateCharacterCashUpdate,CHARACTER_CASH_RULE});
 },
@@ -2242,16 +2291,14 @@ function normalizeTaskSubmission(raw) {
   const normalized = normalizeTask({ kind: "task", id: "workshop-template", name, owner: { kind: "character", id: targetCharacterId }, definition });
   if (!normalized.definition.description || !normalized.definition.completion.text) throw new Error("task description and completion text are required");
   const rewards = normalized.definition.rewards;
-  if (Object.keys(rewards).some((key) => !["starlight", "items"].includes(key))) throw new Error("unsupported reward type");
-  const starlight = rewards.starlight ?? 0;
-  if (!Number.isInteger(starlight) || starlight < 0 || starlight > 10000) throw new Error("invalid starlight reward");
+  if (Object.keys(rewards).some((key) => !["items"].includes(key))) throw new Error("unsupported reward type");
   if (rewards.items !== undefined && (!Array.isArray(rewards.items) || rewards.items.length > 20)) throw new Error("invalid reward items");
   const items = (rewards.items ?? []).map((item) => {
     if (!isPlainObject(item) || Object.keys(item).some((key) => !["name", "description", "quantity"].includes(key))) throw new Error("invalid reward item");
     if (typeof item.name !== "string" || !item.name.trim() || item.name.length > 120 || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 1000) throw new Error("invalid reward item fields");
     return { name: item.name.trim(), description: String(item.description ?? ""), quantity: item.quantity };
   });
-  const task = { name, targetCharacterId, definition: { ...normalized.definition, rewards: { starlight, items } } };
+  const task = { name, targetCharacterId, definition: { ...normalized.definition, rewards: { items } } };
   const text = JSON.stringify(task);
   if (text.length > 32000 || /<%|<\/?script\b/i.test(text)) throw new Error("workshop tasks must be bounded data, not executable templates");
   return task;
@@ -4658,6 +4705,7 @@ function phoneSnapshotFromScene(scene,{time='',date='',year=2026,energy=0,vipRan
 Object.assign(module.exports,{phoneSnapshotFromScene});
 },
 "src/object-manager/store.mjs":function(module, load){
+const { withoutRetiredCurrency } = load("src/object-manager/account.mjs");
 const { MAX_REPLY_CHECKPOINTS, cloneValue, normalizeObject, normalizeRef, refKey } = load("src/object-manager/contracts.mjs");
 const { applyObjectPatchEnvelope, normalizeObjectPatchEnvelope } = load("src/object-manager/json-patch.mjs");
 const { normalizeTaskSlots } = load("src/object-manager/tasks.mjs");
@@ -4844,6 +4892,16 @@ class ChatObjectStore {
     if ((await this.driver.readText(this.path("slots/characters.json"))) === null) await this.writeJson("slots/characters.json", []);
     if ((await this.driver.readText(this.path("slots/tasks.json"))) === null) await this.writeJson("slots/tasks.json", []);
     if ((await this.driver.readText(this.path("revisions/index.json"))) === null) await this.writeJson("revisions/index.json", []);
+    if (!meta.retiredCurrencyRemoved) {
+      const writes = new Map();
+      for (const path of await this.driver.listTree(this.root + "/")) {
+        if (!path.endsWith(".json")) continue;
+        const raw = JSON.parse(await this.driver.readText(path)), clean = withoutRetiredCurrency(raw);
+        if (JSON.stringify(raw) !== JSON.stringify(clean)) writes.set(path.slice(this.root.length + 1), clean);
+      }
+      meta.retiredCurrencyRemoved = true; writes.set("meta.json", meta);
+      await this.applyFileBatch(writes);
+    }
     return { chatKey: this.chatKey, driver: this.driver.describe() };
   }
 
@@ -5672,7 +5730,6 @@ class ObjectManagerRuntime {
     if (await this.store.readJson("rewards/pending.json", null)) throw new Error("存在未确认的奖励事务，请先核验，避免重复发放");
     if (receipts.some((item) => item.id === receipt)) throw new Error("奖励收据与对象状态不一致，请先检查本地文件");
     const rewards = child.definition.rewards;
-    if (!Number.isInteger(rewards.starlight ?? 0) || (rewards.starlight ?? 0) < 0) throw new Error("奖励星光点无效");
     for (const item of rewards.items ?? []) {
       if (!item.name || !Number.isInteger(item.quantity) || item.quantity < 1 || ["__proto__", "prototype", "constructor"].includes(item.name)) throw new Error("奖励物品无效");
     }
@@ -6909,8 +6966,6 @@ async function mountPhoneObjectPanel(container, { runtime, tab = "tasks", roleNa
     const text = field(form, value.kind === "character" ? "简介 / 知识说明" : "说明", value.summary ?? value.definition?.description ?? value.data?.description ?? "", true);
     const child = ["task", "achievement"].includes(value.kind);
     const goal = child ? field(form, "完成条件（剧情目标）", value.definition?.completion.text ?? "", true) : null;
-    const starlight = child ? field(form, "奖励星光点", value.definition?.rewards.starlight ?? 0) : null;
-    if (starlight) { starlight.type = "number"; starlight.min = "0"; starlight.step = "1"; }
     const aliases = value.kind === "character" ? field(form, "别名（逗号分隔）", (value.aliases ?? []).join("，")) : null;
     const mapScope = null;
     if (mapScope) { const label = make("label", "所属地图"); for (const [id, text] of [["world", "城市"], ["school", "校园"]]) { const option = make("option", text); option.value = id; option.selected = (value.data?.mapScope ?? "world") === id; mapScope.append(option); } label.append(mapScope); form.append(label); }
@@ -6926,7 +6981,7 @@ async function mountPhoneObjectPanel(container, { runtime, tab = "tasks", roleNa
       if (!form.reportValidity()) return;
       const next = { ...value, name: name.value.trim() };
       if (child) {
-        next.definition = { description: text.value.trim(), completion: { ...(value.definition?.completion ?? { mode: "narrative", when: null }), text: goal.value.trim() }, rewards: { ...(value.definition?.rewards ?? {}), starlight: Number(starlight.value) } };
+        next.definition = { description: text.value.trim(), completion: { ...(value.definition?.completion ?? { mode: "narrative", when: null }), text: goal.value.trim() }, rewards: { ...(value.definition?.rewards ?? {}) } };
         await runtime.saveCharacterChild(next);
       } else if (value.kind === "character") {
         const previous = value.worldbook?.entries ?? [];
@@ -7388,33 +7443,6 @@ function mountCollectionEditor(container, { runtime, objectRef, field, value }) 
 Object.assign(module.exports,{mountCollectionEditor});
 },
 "src/reward-defaults.js":function(module, load){
-const DEFAULT_STARLIGHT_REWARD = 5;
-
-const STARLIGHT_VOUCHER_DESCRIPTION =
-  "APP任务奖励道具。VIP5及以上用户可在邂逅商店消耗本券，并以10000零花钱兑换1星光点；仅有零花钱但没有兑换券时不能兑换。";
-
-function starlightReward(items = []) {
-  return {
-    starlight: DEFAULT_STARLIGHT_REWARD,
-    items,
-  };
-}
-
-function starlightRewardAmount(starlight, items = []) {
-  return {
-    starlight,
-    items,
-  };
-}
-
-function starlightVoucher(quantity = 1) {
-  return {
-    name: "星光点兑换券",
-    description: STARLIGHT_VOUCHER_DESCRIPTION,
-    quantity,
-  };
-}
-
 function variableCondition(path, operator, value) {
   return {
     path,
@@ -7435,7 +7463,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "主角可疑度达到 30。",
       condition: "系统.主角可疑度 >= 30",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.主角可疑度", ">=", 30),
     },
     {
@@ -7444,7 +7472,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "主角可疑度达到 60。",
       condition: "系统.主角可疑度 >= 60",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.主角可疑度", ">=", 60),
     },
     {
@@ -7453,7 +7481,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "主角可疑度达到 100。",
       condition: "系统.主角可疑度 >= 100",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.主角可疑度", ">=", 100),
     },
     {
@@ -7462,7 +7490,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "持有零花钱达到 50000。",
       condition: "系统.持有零花钱 >= 50000",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.持有零花钱", ">=", 50000),
     },
     {
@@ -7471,7 +7499,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "持有零花钱达到 500000。",
       condition: "系统.持有零花钱 >= 500000",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.持有零花钱", ">=", 500000),
     },
     {
@@ -7480,7 +7508,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "MC能量上限达到 100。",
       condition: "系统.MC能量上限 >= 100",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.MC能量上限", ">=", 100),
     },
     {
@@ -7489,7 +7517,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "MC能量上限达到 500。",
       condition: "系统.MC能量上限 >= 500",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.MC能量上限", ">=", 500),
     },
     {
@@ -7498,7 +7526,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "MC能量上限达到 3000。",
       condition: "系统.MC能量上限 >= 3000",
       scope: "self",
-      reward: starlightReward(),
+      reward: { items: [] },
       variableCondition: variableCondition("系统.MC能量上限", ">=", 3000),
     },
     {
@@ -7507,7 +7535,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "阿宅好感度达到 100。",
       condition: "角色.阿宅.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.阿宅.状态.好感度", ">=", 100),
     },
     {
@@ -7516,7 +7544,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "犬冢夏美好感度达到 100。",
       condition: "角色.犬冢夏美.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.犬冢夏美.状态.好感度", ">=", 100),
     },
     {
@@ -7525,7 +7553,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "西园寺爱丽莎好感度达到 100。",
       condition: "角色.西园寺爱丽莎.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.西园寺爱丽莎.状态.好感度", ">=", 100),
     },
     {
@@ -7534,7 +7562,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "月咏深雪好感度达到 100。",
       condition: "角色.月咏深雪.状态.好感度 >= 100",
       scope: "role",
-      reward: starlightReward([starlightVoucher()]),
+      reward: { items: [] },
       variableCondition: variableCondition("角色.月咏深雪.状态.好感度", ">=", 100),
     },
     {
@@ -7543,7 +7571,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "完成警视厅线。",
       condition: "系统._警视厅线 >= 2",
       scope: "self",
-      reward: starlightRewardAmount(30),
+      reward: { items: [] },
       variableCondition: variableCondition("系统._警视厅线", ">=", 2),
     },
     {
@@ -7552,7 +7580,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "完成医院线。",
       condition: "系统._医院线 >= 2",
       scope: "self",
-      reward: starlightRewardAmount(30),
+      reward: { items: [] },
       variableCondition: variableCondition("系统._医院线", ">=", 2),
     },
     {
@@ -7561,7 +7589,7 @@ const DEFAULT_REWARD_DATABASE = {
       description: "完成隐藏线。",
       condition: "系统._灵异线 >= 2",
       scope: "self",
-      reward: starlightRewardAmount(30),
+      reward: { items: [] },
       variableCondition: variableCondition("系统._灵异线", ">=", 2),
     },
   ],
@@ -7589,7 +7617,7 @@ const DEFAULT_REWARD_DATABASE = {
     description: condition,
     condition,
     scope,
-    reward: starlightReward(),
+    reward: { items: [] },
   })).concat({
     id: "quest_naked_double_standard",
     title: "赤身裸体与裸体赤身",
@@ -7597,8 +7625,7 @@ const DEFAULT_REWARD_DATABASE = {
     condition: "让两个角色在公共场合都不穿衣服，但是指责对方不穿衣服不知廉耻。",
     scope: "other",
     reward: {
-      starlight: 0,
-      items: [starlightVoucher(2)],
+      items: [],
     },
   }, {
     id: "quest_orgasm_strongest",
@@ -7607,8 +7634,7 @@ const DEFAULT_REWARD_DATABASE = {
     condition: "让角色的快感值到达500后高潮。",
     scope: "other",
     reward: {
-      starlight: 0,
-      items: [starlightVoucher()],
+      items: [],
     },
   }),
 };
@@ -7617,32 +7643,7 @@ function buildDefaultRewardDatabase() {
   return JSON.parse(JSON.stringify(DEFAULT_REWARD_DATABASE));
 }
 
-Object.assign(module.exports,{DEFAULT_STARLIGHT_REWARD,STARLIGHT_VOUCHER_DESCRIPTION,DEFAULT_REWARD_DATABASE,buildDefaultRewardDatabase});
-},
-"src/object-manager/account.mjs":function(module, load){
-// Resource settlement belongs to this chat's object files, never to MVU.
-function createObjectRewardAccount(store) {
-  const snapshot = () => store.readJson("account/resources.json", { starlight: 0, items: {} });
-  return {
-    snapshot,
-    async apply(reward) {
-      const value = await snapshot();
-      value.starlight += Number(reward.starlight ?? 0);
-      for (const item of reward.items ?? []) {
-        const previous = value.items[item.name] ?? { quantity: 0, description: item.description ?? "" };
-        value.items[item.name] = { ...previous, quantity: previous.quantity + item.quantity };
-      }
-      await store.writeJson("account/resources.json", value);
-      return value;
-    },
-    async restoreIfUnchanged(before, written) {
-      if (JSON.stringify(await snapshot()) !== JSON.stringify(written)) throw new Error("object account changed; refusing reward compensation");
-      await store.writeJson("account/resources.json", before);
-    }
-  };
-}
-
-Object.assign(module.exports,{createObjectRewardAccount});
+Object.assign(module.exports,{DEFAULT_REWARD_DATABASE,buildDefaultRewardDatabase});
 },
 "src/object-manager/scene-view.mjs":function(module, load){
 const { registerSceneRoot,sceneRootFor,unregisterSceneRoot } = load("src/ui/scene-dom.mjs");
@@ -8638,7 +8639,7 @@ function paginateNotebookEntries(entries,{chapter,wrap,even=true,emptyText='暂�
   if(even)while(pages.length<2||pages.length%2)pages.push({title:chapter,chapter,kind:'collection',blocks:[],lines:[],emptyText:''});
   return pages;
 }
-const humanKeys={current:'当前',target:'目标',remaining:'剩余',count:'次数',money:'现金',starlight:'星光点',amount:'数量'};
+const humanKeys={current:'当前',target:'目标',remaining:'剩余',count:'次数',money:'现金',amount:'数量'};
 function valueLines(value){return notebookValueRows({label:'',value}).map(x=>{const label=x.label.replace(/^ \/ /,'').split(' / ').map(key=>humanKeys[key]??key).join(' / ');return(label?label+'：':'')+x.value;});}
 function designChildRecordPages(records,chapter,wrap){
   const entries=records.map(record=>{

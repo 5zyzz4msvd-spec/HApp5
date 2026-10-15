@@ -1,3 +1,4 @@
+import {normalizeObjectResources} from '../object-manager/account.mjs';
 import { STORY_EVENT_DEFINITIONS } from './story-event-catalog.mjs';
 import { evaluateCondition,normalizeCondition } from '../object-manager/conditions.mjs';
 import { normalizeCharacter,normalizeRef } from '../object-manager/contracts.mjs';
@@ -76,7 +77,7 @@ export function createStoryEventEngine({runtime,getContext=async()=>({}),getDefi
   return runtime.personnelTransaction(async()=>{
    const state=await store.readJson(STORY_STATE_FILE,emptyState()),history=await store.readJson(STORY_HISTORY_FILE,{}),receipt=[packet.date,packet.start,packet.end].join('|');
    if(state.receipts[receipt])return{alreadyCommitted:true};
-   const defs=new Map((await catalog()).map(x=>[x.id,x])),actors=await store.listObjects('character'),values=new Map(),resources=await store.readJson('account/resources.json',{starlight:0,items:{}}),slots=await store.getCharacterSlots(),completed=[];
+   const defs=new Map((await catalog()).map(x=>[x.id,x])),actors=await store.listObjects('character'),values=new Map(),resources=normalizeObjectResources(await store.readJson('account/resources.json',{items:{}})),slots=await store.getCharacterSlots(),completed=[];
    for(const cell of packet.cells)for(const action of cell.actions.filter(eventAction)){
     const d=defs.get(action.payload?.eventId);
     if(!d||action.id!=='story-event:'+d.id||!history[d.id]||history[d.id].date!==packet.date||history[d.id].index!==cell.index)throw Error('事件预约与已发送日程不一致');

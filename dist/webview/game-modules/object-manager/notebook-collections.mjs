@@ -19,7 +19,7 @@ export function paginateNotebookEntries(entries,{chapter,wrap,even=true,emptyTex
   if(even)while(pages.length<2||pages.length%2)pages.push({title:chapter,chapter,kind:'collection',blocks:[],lines:[],emptyText:''});
   return pages;
 }
-const humanKeys={current:'当前',target:'目标',remaining:'剩余',count:'次数',money:'现金',starlight:'星光点',amount:'数量'};
+const humanKeys={current:'当前',target:'目标',remaining:'剩余',count:'次数',money:'现金',amount:'数量'};
 function valueLines(value){return notebookValueRows({label:'',value}).map(x=>{const label=x.label.replace(/^ \/ /,'').split(' / ').map(key=>humanKeys[key]??key).join(' / ');return(label?label+'：':'')+x.value;});}
 export function designChildRecordPages(records,chapter,wrap){
   const entries=records.map(record=>{

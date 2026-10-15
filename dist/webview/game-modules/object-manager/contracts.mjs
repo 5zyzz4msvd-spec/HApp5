@@ -1,3 +1,4 @@
+import { withoutRetiredCurrency } from './account.mjs';
 import { normalizeCondition } from "./conditions.mjs";
 import { worldbookImplicitFields, worldbookRecursion, worldbookEffect } from "./worldbook-policy.mjs";
 import { normalizeStructure, defaultCharacterElements } from "./structure-schema.mjs";
@@ -111,6 +112,7 @@ function normalizeRefArray(value, kind) {
 }
 
 export function normalizeCharacter(value) {
+  value = withoutRetiredCurrency(value);
   if (!isPlainObject(value)) throw new Error("character must be an object");
   const id = assertObjectId(value.id, "character id");
   const name = String(value.name ?? "").trim();
@@ -261,7 +263,7 @@ export function normalizeCharacterChild(value, kind) {
     definition: {
       description: String(definition.description ?? "").trim(),
       completion: { mode, text: String(completion.text ?? "").trim(), when },
-      rewards: isPlainObject(definition.rewards) ? cloneValue(definition.rewards) : {},
+      rewards: isPlainObject(definition.rewards) ? withoutRetiredCurrency(definition.rewards) : {},
     },
     data: { completed: data.completed === true, claimed: data.claimed === true, progress: isPlainObject(data.progress) ? cloneValue(data.progress) : {}, claimReceipt: data.claimReceipt ? String(data.claimReceipt) : null },
     source,

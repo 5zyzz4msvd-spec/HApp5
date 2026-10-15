@@ -1,3 +1,4 @@
+import { withoutRetiredCurrency } from './account.mjs';
 import { MAX_REPLY_CHECKPOINTS, cloneValue, normalizeObject, normalizeRef, refKey } from "./contracts.mjs";
 import { applyObjectPatchEnvelope, normalizeObjectPatchEnvelope } from "./json-patch.mjs";
 import { normalizeTaskSlots } from "./tasks.mjs";
@@ -185,6 +186,16 @@ export class ChatObjectStore {
     if ((await this.driver.readText(this.path("slots/characters.json"))) === null) await this.writeJson("slots/characters.json", []);
     if ((await this.driver.readText(this.path("slots/tasks.json"))) === null) await this.writeJson("slots/tasks.json", []);
     if ((await this.driver.readText(this.path("revisions/index.json"))) === null) await this.writeJson("revisions/index.json", []);
+    if (!meta.retiredCurrencyRemoved) {
+      const writes = new Map();
+      for (const path of await this.driver.listTree(this.root + "/")) {
+        if (!path.endsWith(".json")) continue;
+        const raw = JSON.parse(await this.driver.readText(path)), clean = withoutRetiredCurrency(raw);
+        if (JSON.stringify(raw) !== JSON.stringify(clean)) writes.set(path.slice(this.root.length + 1), clean);
+      }
+      meta.retiredCurrencyRemoved = true; writes.set("meta.json", meta);
+      await this.applyFileBatch(writes);
+    }
     return { chatKey: this.chatKey, driver: this.driver.describe() };
   }
 

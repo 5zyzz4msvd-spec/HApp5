@@ -86,4 +86,4 @@ export const migrateCharacterCash=runtime=>runtime.personnelTransaction(()=>refr
 export function validateCharacterCashUpdate(actor,fieldId,value){
   if(actor.kind==='character'&&cashAmountField(actor)?.id===fieldId&&(!Number.isSafeInteger(value)||value<0))throw Error('人物现金必须为非负整数');
 }
-export const CHARACTER_CASH_RULE=`人物现金来自各自独立人物文件的现金属性，单位日元，表示当天随身可支配的钱而非家族或公司总资产。模型只能读取及结算当前余额，不得自行刷新或追加每日额度。钱包金额多不代表角色愿意给钱。索要、交易或催眠命令只有在剧情中实际交付后才结算；拒绝、越界失败、小游戏胜利但未交付均不转钱。交给user的实际金额不得超过该人物当前现金：同笔收入增加系统.持有零花钱并用ObjectUpdate等额减少该人物现金，只各结算一次；不得只给user加钱、扣成负数、凭空透支或拿星光点代替。user付给人物的钱同理等额记账。未入人物卡槽的现金不可更新。双胞胎同属一个人物文件，共用一份现金，不能各领取一次。`;
+export const CHARACTER_CASH_RULE=`人物现金来自各自独立人物文件的现金属性，单位日元，表示当天随身可支配的钱而非家族或公司总资产。模型只能读取及结算当前余额，不得自行刷新或追加每日额度。钱包金额多不代表角色愿意给钱。索要、交易或催眠命令只有在剧情中实际交付后才结算；拒绝、越界失败、小游戏胜利但未交付均不转钱。交给user的实际金额不得超过该人物当前现金：同笔收入增加系统.持有零花钱并用ObjectUpdate等额减少该人物现金，只各结算一次；不得只给user加钱、扣成负数或凭空透支。user付给人物的钱同理等额记账。未入人物卡槽的现金不可更新。双胞胎同属一个人物文件，共用一份现金，不能各领取一次。`;

@@ -120,8 +120,6 @@ export async function mountPhoneObjectPanel(container, { runtime, tab = "tasks",
     const text = field(form, value.kind === "character" ? "简介 / 知识说明" : "说明", value.summary ?? value.definition?.description ?? value.data?.description ?? "", true);
     const child = ["task", "achievement"].includes(value.kind);
     const goal = child ? field(form, "完成条件（剧情目标）", value.definition?.completion.text ?? "", true) : null;
-    const starlight = child ? field(form, "奖励星光点", value.definition?.rewards.starlight ?? 0) : null;
-    if (starlight) { starlight.type = "number"; starlight.min = "0"; starlight.step = "1"; }
     const aliases = value.kind === "character" ? field(form, "别名（逗号分隔）", (value.aliases ?? []).join("，")) : null;
     const mapScope = null;
     if (mapScope) { const label = make("label", "所属地图"); for (const [id, text] of [["world", "城市"], ["school", "校园"]]) { const option = make("option", text); option.value = id; option.selected = (value.data?.mapScope ?? "world") === id; mapScope.append(option); } label.append(mapScope); form.append(label); }
@@ -137,7 +135,7 @@ export async function mountPhoneObjectPanel(container, { runtime, tab = "tasks",
       if (!form.reportValidity()) return;
       const next = { ...value, name: name.value.trim() };
       if (child) {
-        next.definition = { description: text.value.trim(), completion: { ...(value.definition?.completion ?? { mode: "narrative", when: null }), text: goal.value.trim() }, rewards: { ...(value.definition?.rewards ?? {}), starlight: Number(starlight.value) } };
+        next.definition = { description: text.value.trim(), completion: { ...(value.definition?.completion ?? { mode: "narrative", when: null }), text: goal.value.trim() }, rewards: { ...(value.definition?.rewards ?? {}) } };
         await runtime.saveCharacterChild(next);
       } else if (value.kind === "character") {
         const previous = value.worldbook?.entries ?? [];
