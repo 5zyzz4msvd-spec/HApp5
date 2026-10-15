@@ -49306,7 +49306,7 @@ function mountScheduleScene(container, { assets, resolveFile, onSelect = () => {
         }
       }
     }
-    else if (changedLocation || !animate && selectedId !== transitionTarget) { epoch++; animation?.cancel(); transitionTarget = "";delete root.dataset.sceneMoving; paintActor(selected); }
+    else if (changedLocation || !animate && (selectedId !== transitionTarget || !selected)) { epoch++; animation?.cancel(); transitionTarget = "";delete root.dataset.sceneMoving; paintActor(selected); }
     else if (animate) animateActor(selected, direction);
     empty.hidden = multiple ? selectedIds.size > 0 : Boolean(selected); empty.textContent = multiple && actors.length ? "点击头像选择要显示的人物" : next.location ? "此时没有日程中的人物在这里" : "确认到达地点后显示人物";
     resize(); return { actors, selected };
