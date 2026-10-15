@@ -4178,6 +4178,12 @@ function validateResourceManifest(value){
  for(const f of value.files){if(typeof f.path!=='string'||f.path.startsWith('/')||f.path.includes('\\')||f.path.split('/').some(x=>!x||x==='.'||x==='..')||!/\.(png|jpe?g|webp|gif|svg|m4a|mp3|ogg|wav|mp4|webm|woff2?|json)$/i.test(f.path)||!/^[a-f0-9]{64}$/.test(f.sha256)||!Number.isSafeInteger(f.size)||f.size<1||f.size>64*1048576||seen.has(f.path))throw Error('资源清单包含无效文件');seen.add(f.path);total+=f.size;}
  if(total!==value.totalBytes||total>2*1024**3)throw Error('资源总大小错误');return value;
 }
+function remoteResourceUrls(input){
+ const url=new URL(input),match=url.pathname.match(/^\/gh\/([^/]+)\/([^/@]+)@([a-f0-9]{40})\/(.+)$/);
+ if(url.protocol!=='https:'||!['cdn.jsdelivr.net','testingcf.jsdelivr.net','fastly.jsdelivr.net'].includes(url.hostname)||!match)return [url.href];
+ const secondary=new URL(url);secondary.hostname=url.hostname==='testingcf.jsdelivr.net'?'cdn.jsdelivr.net':'testingcf.jsdelivr.net';
+ return [url.href,secondary.href,'https://raw.githubusercontent.com/'+match[1]+'/'+match[2]+'/'+match[3]+'/'+match[4]];
+}
 const hex=bytes=>[...new Uint8Array(bytes)].map(x=>x.toString(16).padStart(2,'0')).join('');
 function createResourceInstaller({manifest,remoteBase,host,authorize=()=>requireDistributionAccess(host),onProgress=()=>{},timeoutMs=60000}){
  validateResourceManifest(manifest);const context=()=>host.SillyTavern.getContext();
@@ -4196,9 +4202,14 @@ function createResourceInstaller({manifest,remoteBase,host,authorize=()=>require
  async function upload(name,data){const result=await request('/api/files/upload',{method:'POST',credentials:'same-origin',headers:headers(),body:JSON.stringify({name,data})});const expected=new URL('/user/files/'+name,host.location.href);if(new URL('/'+String(result.path??'').replace(/^\//,''),host.location.href).href!==expected.href)throw Error('本地资源保存路径不一致');}
  const base64=bytes=>{let binary='';const array=new Uint8Array(bytes);for(let i=0;i<array.length;i+=32768)binary+=String.fromCharCode(...array.subarray(i,i+32768));return host.btoa(binary);};
  const save=()=>{const saved=JSON.stringify(receipt);saveChain=saveChain.catch(()=>{}).then(()=>upload(RESOURCE_INDEX,base64(new TextEncoder().encode(saved))));return saveChain;};
+ let preferredSource=0;
+ async function remoteBytes(file){let failure;const sources=remoteResourceUrls(new URL(file.path,remoteBase).href),order=[preferredSource,...sources.map((_,i)=>i).filter(i=>i!==preferredSource)].filter(i=>i<sources.length);
+  for(const index of order)try{const bytes=await request(sources[index],{credentials:'omit',cache:'force-cache'},'arrayBuffer');if(bytes.byteLength!==file.size||hex(await host.crypto.subtle.digest('SHA-256',bytes))!==file.sha256)throw Error('文件校验未通过：'+file.path);preferredSource=index;return bytes;}catch(error){failure=error;}
+  throw failure;
+ }
  async function install(){if(running)return running;running=(async()=>{
   saveChain=saveChain.catch(()=>{});let cursor=0,failure=null;const pending=manifest.files.filter(f=>!completed.has(f.path));
-  async function worker(){while(!failure){const file=pending[cursor++];if(!file)return;try{authorize();const bytes=await request(new URL(file.path,remoteBase).href,{credentials:'omit',cache:'force-cache'},'arrayBuffer');if(bytes.byteLength!==file.size||hex(await host.crypto.subtle.digest('SHA-256',bytes))!==file.sha256)throw Error('文件校验未通过：'+file.path);await upload(resourceFileName(file),base64(bytes));completed.add(file.path);receipt.files[file.path]=file.sha256;notify();await save();}catch(error){failure=error;}}}
+  async function worker(){while(!failure){const file=pending[cursor++];if(!file)return;try{authorize();const bytes=await remoteBytes(file);await upload(resourceFileName(file),base64(bytes));completed.add(file.path);receipt.files[file.path]=file.sha256;notify();await save();}catch(error){failure=Error(file.path+'：'+error.message);}}}
   await Promise.all(Array.from({length:4},worker));await saveChain;if(failure)throw failure;if(completed.size!==manifest.count)throw Error('资源尚未完整保存');await save();return activate();
  })().finally(()=>{running=null;});return running;}
  function activate(){authorize();if(completed.size!==manifest.count)throw Error('资源未完整安装');const entries=manifest.files.map(f=>[f.path,localUrl(f)]);registerResourceMap(remoteBase,entries);return {revision:manifest.revision,count:manifest.count,entries};}
@@ -4213,7 +4224,7 @@ async function prepareRuntimeResources({remoteBase,win=globalThis,force=false}){
  let installer;const onProgress=value=>{progress.max=value.totalBytes;progress.value=value.bytes;status.textContent=value.complete+' / '+value.count+' 个文件 · '+(value.bytes/1048576).toFixed(1)+' / '+(value.totalBytes/1048576).toFixed(1)+' MB';};
  const promise=new Promise((resolve,reject)=>{
   let busy=false;
-  const run=async()=>{if(busy)return;busy=true;button.disabled=true;error.textContent='';try{requireDistributionAccess(win);if(!installer){const controller=new host.AbortController(),timer=host.setTimeout(()=>controller.abort(),20000);let response;try{response=await host.fetch(new URL('../resource-manifest.json',remoteBase).href,{signal:controller.signal,credentials:'omit',cache:'no-cache'});if(!response.ok)throw Error('资源清单暂时无法读取');const manifest=validateResourceManifest(await response.json());overlay.querySelector('[data-size]').textContent=manifest.count+' 个文件，约 '+Math.ceil(manifest.totalBytes/1048576)+' MB。只需下载一次，更新时仅补充变化的文件。';installer=createResourceInstaller({manifest,remoteBase,host,authorize:()=>requireDistributionAccess(win),onProgress});}finally{host.clearTimeout(timer);}if(await installer.verify()){const result=installer.activate();overlay.remove();resolve(result);return;}button.textContent='下载资源并开始';return;}
+  const run=async()=>{if(busy)return;busy=true;button.disabled=true;error.textContent='';try{requireDistributionAccess(win);if(!installer){let manifest,lastError;for(const url of remoteResourceUrls(new URL('../resource-manifest.json',remoteBase).href)){const controller=new host.AbortController(),timer=host.setTimeout(()=>controller.abort(),20000);try{const response=await host.fetch(url,{signal:controller.signal,credentials:'omit',cache:'no-cache',redirect:'error'});if(!response.ok)throw Error('资源清单暂时无法读取（'+response.status+'）');manifest=validateResourceManifest(await response.json());break;}catch(error){lastError=error;}finally{host.clearTimeout(timer);}}if(!manifest)throw lastError;overlay.querySelector('[data-size]').textContent=manifest.count+' 个文件，约 '+Math.ceil(manifest.totalBytes/1048576)+' MB。只需下载一次，更新时仅补充变化的文件。';installer=createResourceInstaller({manifest,remoteBase,host,authorize:()=>requireDistributionAccess(win),onProgress});if(await installer.verify()){const result=installer.activate();overlay.remove();resolve(result);return;}button.textContent='下载资源并开始';return;}
    button.textContent='正在下载…';const result=await installer.install();overlay.remove();resolve(result);
   }catch(cause){error.textContent=String(cause.message??cause);button.textContent=installer?'继续下载':'重试读取清单';}finally{busy=false;button.disabled=false;}};
   button.addEventListener('click',()=>void run());void run();
@@ -4222,7 +4233,7 @@ async function prepareRuntimeResources({remoteBase,win=globalThis,force=false}){
  host[key]={base:remoteBase,promise};try{return await promise;}catch(error){if(host[key]?.promise===promise)delete host[key];throw error;}
 }
 
-Object.assign(module.exports,{RESOURCE_INDEX,resourceFileName,validateResourceManifest,createResourceInstaller,prepareRuntimeResources});
+Object.assign(module.exports,{RESOURCE_INDEX,resourceFileName,validateResourceManifest,remoteResourceUrls,createResourceInstaller,prepareRuntimeResources});
 },
 "src/phone-v2/app-motion.mjs":function(module, load){
 const { waitMotion } = load("src/ui/serial-motion.mjs");
