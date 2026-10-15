@@ -22,8 +22,13 @@ function sourceProfile(state,userName){
 export async function ensureUserManagement(runtime,{legacyState={},userName=''}={}){
  return runtime.personnelTransaction(async()=>{
   const marker=await runtime.store.readJson(USER_MANAGEMENT_FILE,null),before=await runtime.store.getObject(USER_REF);
-  if(marker?.schema===2&&before?.ui?.userManagement===2)return before;
+  userName=String(userName??'').trim();
+  if(marker?.schema===2&&before?.ui?.userManagement===2){
+   if(userName&&before.name!==userName){before.name=userName;before.aliases=[...new Set([...before.aliases,'user','{{user}}',userName])];await runtime._writeLocalObjects([before]);return runtime.store.getObject(USER_REF);}
+   return before;
+  }
   const actor=before??normalizeCharacter({...USER_REF,name:userName||'{{user}}',elements:[],values:{}});
+  if(userName)actor.name=userName;
   const values={...actor.values},elements=[...actor.elements];
   const generic=elements.findIndex(x=>x.id==='runtime'&&x.elements?.length===3&&x.elements.every(f=>['affinity','alertness','cooperation'].includes(f.id)&&values[f.id]===0));
   if(actor.ui?.source==='builtin-object-template'&&generic>=0){for(const field of elements[generic].elements)delete values[field.id];elements.splice(generic,1);}

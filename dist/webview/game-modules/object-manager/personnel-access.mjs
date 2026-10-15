@@ -1,5 +1,8 @@
 export const INITIAL_KNOWN_PERSONNEL = Object.freeze(['西园寺爱丽莎','月咏深雪','犬冢夏美','阿宅','林安','织田信长 & 明智光秀']);
 export const SCOUT_REQUIRED_PERSONNEL = Object.freeze(['千杀百花','中村樱','白枢暗子']);
+export const SCOUTING_COMING_SOON = '未完待续';
+// Availability controls new commissions only; keep every candidate and saved dossier.
+export function scoutingAvailable(actor) { return SCOUT_REQUIRED_PERSONNEL.includes(actor?.name); }
 export function initiallyKnown(actor) {
   return INITIAL_KNOWN_PERSONNEL.includes(actor.name) || actor.id==='lin-an' || actor.id==='oda-nobunaga' ||
     ['织田信长&明智光秀','织田信长＆明智光秀','织田信长与明智光秀'].includes(actor.name);

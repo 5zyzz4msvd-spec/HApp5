@@ -26,14 +26,15 @@ export async function mountDetectiveNotebook(container, { snapshot, assets, reso
   const root = doc.createElement("section"); root.className = "dn-window"; root.setAttribute("role", "dialog"); root.setAttribute("aria-label", "林安的侦探笔记");
   const style = doc.createElement("style");
   style.textContent = NOTEBOOK_STYLE;
-  root.innerHTML = '<div class="dn-stage"><div class="dn-header"><strong>林安的侦探笔记</strong><input type="search" aria-label="搜索人物" placeholder="搜索人物"><button type="button" data-action="people" aria-pressed="true">笔记</button><button type="button" data-action="album" aria-pressed="false">收藏簿</button><button type="button" data-action="detective">委托</button><button type="button" data-action="scout" aria-pressed="false">物色簿</button><button type="button" data-action="close" aria-label="关闭笔记">×</button></div><div class="dn-book-unit"><div class="dn-book"><img alt="展开的侦探笔记"></div><div class="dn-pages"><canvas class="dn-page left"></canvas><canvas class="dn-page right"></canvas></div><canvas class="dn-curl"></canvas><div class="dn-bookmarks" aria-label="人物书签"></div><div class="dn-collection"><button data-action="previous-volume" aria-label="换上一本">‹</button><span></span><button data-action="next-volume" aria-label="换下一本">›</button></div><div class="dn-edge left" tabindex="0" role="button" aria-label="按住左页边缘拖动翻页"></div><div class="dn-edge right" tabindex="0" role="button" aria-label="按住右页边缘拖动翻页"></div><nav class="dn-chapters" aria-label="人物笔记章节"></nav><button class="dn-photo-favourite" data-action="favourite" aria-label="收藏当前人物">☆</button><button class="dn-photo-zone portrait" aria-label="选择胸像"></button><button class="dn-photo-zone standee" aria-label="选择全身立绘"></button><div class="dn-page-hits"></div><div class="dn-footer"><button data-action="previous-page" aria-label="上一页">‹</button><span class="dn-sr-number"></span><button data-action="next-page" aria-label="下一页">›</button></div><div class="dn-notice" role="status"></div><div class="dn-sr" aria-live="polite"></div></div></div>';
+  root.innerHTML = '<div class="dn-stage"><div class="dn-header"><strong>林安的侦探笔记</strong><input type="search" aria-label="搜索人物" placeholder="搜索人物"><button type="button" data-action="people" aria-pressed="true">人物</button><button type="button" data-action="user" aria-pressed="false"></button><button type="button" data-action="album" aria-pressed="false">收藏簿</button><button type="button" data-action="detective">委托</button><button type="button" data-action="scout" aria-pressed="false">物色簿</button><button type="button" data-action="close" aria-label="关闭笔记">×</button></div><div class="dn-book-unit"><div class="dn-book"><img alt="展开的侦探笔记"></div><div class="dn-pages"><canvas class="dn-page left"></canvas><canvas class="dn-page right"></canvas></div><canvas class="dn-curl"></canvas><div class="dn-bookmarks" aria-label="人物书签"></div><div class="dn-collection"><button data-action="previous-volume" aria-label="换上一本">‹</button><span></span><button data-action="next-volume" aria-label="换下一本">›</button></div><div class="dn-edge left" tabindex="0" role="button" aria-label="按住左页边缘拖动翻页"></div><div class="dn-edge right" tabindex="0" role="button" aria-label="按住右页边缘拖动翻页"></div><nav class="dn-chapters" aria-label="人物笔记章节"></nav><button class="dn-photo-favourite" data-action="favourite" aria-label="收藏当前人物">☆</button><button class="dn-photo-zone portrait" aria-label="选择胸像"></button><button class="dn-photo-zone standee" aria-label="选择全身立绘"></button><div class="dn-page-hits"></div><div class="dn-footer"><button data-action="previous-page" aria-label="上一页">‹</button><span class="dn-sr-number"></span><button data-action="next-page" aria-label="下一页">›</button></div><div class="dn-notice" role="status"></div><div class="dn-sr" aria-live="polite"></div></div></div>';
   root.prepend(style); container.append(root);
   const stage = root.querySelector(".dn-stage"), book = root.querySelector(".dn-book"), left = root.querySelector(".dn-page.left"), right = root.querySelector(".dn-page.right"), curlCanvas = root.querySelector(".dn-curl"), notice = root.querySelector(".dn-notice");
   stage.style.opacity="0";
-  const toolbar=root.querySelector(".dn-header");let toolbarDock={docked:false,destroy(){}};
+  const toolbar=root.querySelector(".dn-header"),collection=root.querySelector(".dn-collection");toolbar.insertBefore(collection,toolbar.querySelector('[data-action="close"]'));collection.setAttribute("aria-label","人物笔记切册");let toolbarDock={docked:false,destroy(){}};
   const floatingDrag=bindFloatingDrag(toolbar,stage,{visibleTop:()=>toolbarDock.docked?100*scale:0});
   const reduced = () => Boolean(win.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
   let scale = 1, data = await snapshot(), selected = "", volume = 0, spreadIndex = 0, album = false, query = "", pageModels = [], pageTextures = [], turn = null, frame = 0, epoch = 0, destroyed = false;
+  let userMode = false, peoplePosition = null, userSpread = 0;
   let bookSwap = 0, galleryView = null, galleryHost = null, scoutingView = null, scoutingHost = null, modeBusy = false;
   const bookSwitcher = notebookBookSwitcher(root, { reduced });
   let neighbours = {}, drag = null, idleTimer = 0; const bundleCache = new Map();
@@ -128,7 +129,7 @@ export async function mountDetectiveNotebook(container, { snapshot, assets, reso
     root.dataset.spreadIndex = String(index); root.dataset.pageCount = String(pageTextures.length);
     root.querySelector(".dn-sr").textContent = pageModels.slice(index * 2, index * 2 + 2).map((x) => `${x.title} ${x.name ?? ""} ${x.pending?'未完待续':x.locked ? "未记录" : x.lines?.join(" ") ?? ""}`).join("\n");
   }
-  function libraryRows() { return notebookVolumes(data.characters, { query, favouritesOnly: album, favourites: data.preferences.favourites ?? [] }).total ? data.characters.filter(x => (x.id !== "user" || x.userRecords) && (!album || data.preferences.favourites?.includes(x.id)) && (!query.trim() || [x.name, ...(x.aliases ?? [])].some(v => v.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())))) : []; }
+  function libraryRows() { if(userMode)return data.characters.filter(x=>x.userRecords);return notebookVolumes(data.characters, { query, favouritesOnly: album, favourites: data.preferences.favourites ?? [] }).total ? data.characters.filter(x => (x.id !== "user" && !x.userRecords) && (!album || data.preferences.favourites?.includes(x.id)) && (!query.trim() || [x.name, ...(x.aliases ?? [])].some(v => v.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())))) : []; }
   function bundleFor(actor) { if (!bundleCache.has(actor.id)) bundleCache.set(actor.id, buildPages(actor)); return bundleCache.get(actor.id); }
   async function primeNeighbours() {
     const token = epoch, id = selected, rows = libraryRows(); neighbours = {};
@@ -178,7 +179,7 @@ export async function mountDetectiveNotebook(container, { snapshot, assets, reso
       const t = duration ? Math.min(1, (now - started) / duration) : 1; drawTurn(start + (end - start) * (1 - Math.pow(1 - t, 3)));
       if (t < 1) frame = win.requestAnimationFrame(tick);
       else {
-        if (commit && current.boundary) { selected = current.next.actor.id; pageModels = current.next.models; pageTextures = current.next.textures; root.dataset.selectedActor = selected; volume = Math.floor(libraryRows().findIndex(x => x.id === selected) / 6); renderBookmarks(); }
+        if (commit && current.boundary) { selected = current.next.actor.id; pageModels = current.next.models; pageTextures = current.next.textures; root.dataset.selectedActor = selected; if(!userMode)volume = Math.floor(libraryRows().findIndex(x => x.id === selected) / 6); renderBookmarks(); }
         spreadIndex = commit ? current.target : spreadIndex; cancelTurn(); paint(); controls(); void primeNeighbours();
       }
     }
@@ -235,21 +236,21 @@ export async function mountDetectiveNotebook(container, { snapshot, assets, reso
   }
   function renderBookmarks() {
     const vol = notebookVolumes(data.characters, { query, favouritesOnly: album, favourites: data.preferences.favourites ?? [], volume }); volume = vol.index;
-    const tabs = root.querySelector(".dn-bookmarks"), rosterKey=vol.rows.map(x=>x.id).join("|"); const changed=tabs.dataset.key!==rosterKey; if(changed){tabs.dataset.key=rosterKey;tabs.replaceChildren();}
-    for (const actor of vol.rows.filter(x=>![...tabs.children].some(tab=>tab.dataset.id===x.id))) { const tab = doc.createElement("button"); tab.type = "button"; tab.className = "dn-tab"; tab.dataset.id = actor.id; tab.setAttribute("aria-current", String(actor.id === selected)); tab.setAttribute("aria-label", `打开${actor.name}笔记`); tab.draggable = actor.slotEligible!==false&&!actor.scoutingPending;
+    const rows=userMode?[]:vol.rows;const tabs = root.querySelector(".dn-bookmarks");tabs.hidden=userMode;const rosterKey=rows.map(x=>x.id).join("|"); const changed=tabs.dataset.key!==rosterKey; if(changed){tabs.dataset.key=rosterKey;tabs.replaceChildren();}
+    for (const actor of rows.filter(x=>![...tabs.children].some(tab=>tab.dataset.id===x.id))) { const tab = doc.createElement("button"); tab.type = "button"; tab.className = "dn-tab"; tab.dataset.id = actor.id; tab.setAttribute("aria-current", String(actor.id === selected)); tab.setAttribute("aria-label", `打开${actor.name}笔记`); tab.draggable = actor.slotEligible!==false&&!actor.scoutingPending;
       const skin = doc.createElement("img"); skin.className = "skin"; skin.alt = ""; skin.src = resolveFile(assets.bookmark); tab.append(skin);
       const asset = actorAsset(actor); if (actor.headUrl||asset?.head) { const face = doc.createElement("img"); face.className = "face"; face.alt = actor.name; face.src = actor.headUrl??resolveFile(asset.head); tab.append(face); } else { const initial = doc.createElement("span"); initial.className = "initial"; initial.textContent = actor.name.slice(-2); tab.append(initial); }
       tab.addEventListener("dragstart", (event) => { if (actor.scoutingPending||actor.slotEligible===false) { event.preventDefault(); return; } event.dataTransfer.setData("application/x-hypnoos-character", actor.id); }); tab.addEventListener("click", () => void selectActor(actor.id)); tabs.append(tab);
     }
     for(const tab of tabs.children){tab.setAttribute("aria-current",String(tab.dataset.id===selected));const actor=data.characters.find(x=>x.id===tab.dataset.id);if(actor?.headUrl){let face=tab.querySelector(".face");if(!face){face=doc.createElement("img");face.className="face";face.alt=actor.name;tab.querySelector(".initial")?.remove();tab.append(face);}face.src=actor.headUrl;}}
-    root.querySelector(".dn-collection span").textContent = `${album ? "收藏簿" : "人物笔记"} · 第${volume + 1}册 / ${vol.count}册`;
-    root.querySelector('[data-action="previous-volume"]').disabled = volume === 0; root.querySelector('[data-action="next-volume"]').disabled = volume + 1 >= vol.count;
+    collection.querySelector("span").textContent = `${volume + 1} / ${vol.count} 册`;
+    collection.querySelector('[data-action="previous-volume"]').disabled = volume === 0; collection.querySelector('[data-action="next-volume"]').disabled = volume + 1 >= vol.count;
   }
-  async function renderLibrary({ changeBook = false } = {}) {
+  async function renderLibrary({ changeBook = false, restoreSpread = 0 } = {}) {
     const token=++bookSwap,unit=root.querySelector('.dn-book-unit');
     const prepare=async()=>{
       renderBookmarks();const vol=notebookVolumes(data.characters,{query,favouritesOnly:album,favourites:data.preferences.favourites??[],volume});
-      const candidate=vol.rows.find(x=>x.id===selected)??vol.rows[0];await selectActor(candidate?.id??'',false);
+      const candidate=userMode?data.characters.find(x=>x.userRecords):vol.rows.find(x=>x.id===selected)??vol.rows[0];await selectActor(candidate?.id??'',false);if(restoreSpread){spreadIndex=Math.max(0,Math.min(restoreSpread,pageTextures.length/2-1));paint();controls();}syncBookTabs();
     };
     if(changeBook){cancelTurn();await bookSwitcher.swap({outgoing:unit,prepare});}
     else await prepare();
@@ -273,19 +274,26 @@ export async function mountDetectiveNotebook(container, { snapshot, assets, reso
         if(destroyed)return;scoutingView.destroy();scoutingView=null;scoutingHost.remove();scoutingHost=null;root.dataset.bookMode='people';input.value=query;input.placeholder='搜索人物';input.setAttribute('aria-label','搜索人物');syncBookTabs();controls();}
 
     }catch(error){notice.textContent=error.message;if(scoutingHost){scoutingView?.destroy();scoutingView=null;scoutingHost.remove();scoutingHost=null;}root.querySelector('.dn-book-unit').hidden=false;root.querySelector('.dn-book-unit').style.visibility='visible';root.querySelector('.dn-book-unit').inert=false;root.dataset.bookMode='people';input.value=query;input.placeholder='搜索人物';input.setAttribute('aria-label','搜索人物');syncBookTabs();delete root.dataset.bookChanging;}
-    finally{modeBusy=false;input.disabled=false;}
+    finally{modeBusy=false;input.disabled=userMode&&!scoutingView;}
   }
   function syncBookTabs(){
     const inScouting=Boolean(scoutingView);
-    for(const [action,current]of [['people',!inScouting&&!album],['album',!inScouting&&album],['scout',inScouting]])toolbar.querySelector(`[data-action="${action}"]`).setAttribute('aria-pressed',String(current));
+    const user=data.characters.find(x=>x.userRecords),userButton=toolbar.querySelector('[data-action="user"]');userButton.textContent=user?.name??'玩家';userButton.title=user?`${user.name}的笔记`:'玩家笔记';userButton.setAttribute('aria-label',user?`打开${user.name}自己的笔记`:'打开玩家自己的笔记');userButton.disabled=!user;collection.hidden=inScouting||userMode;toolbar.querySelector('input').disabled=userMode&&!inScouting;root.dataset.bookMode=inScouting?'scouting':userMode?'user':'people';
+    for(const [action,current]of [['people',!inScouting&&!userMode&&!album],['user',!inScouting&&userMode],['album',!inScouting&&!userMode&&album],['scout',inScouting]])toolbar.querySelector(`[data-action="${action}"]`).setAttribute('aria-pressed',String(current));
+    toolbar.closest('.routine-scene')?.dispatchEvent(new win.CustomEvent('hypno:toolbar-change')); 
   }
   async function selectBookTab(action){
     if(modeBusy||bookSwitcher.isBusy())return;
     if(action==='scout'){if(!scoutingView)await openScouting();syncBookTabs();return;}
-    const wantsAlbum=action==='album';
-    if(scoutingView){album=wantsAlbum;volume=wantsAlbum?0:volume;await openScouting();}
-    else if(album!==wantsAlbum){album=wantsAlbum;volume=0;await renderLibrary({changeBook:true});}
-    syncBookTabs();
+    const wantsUser=action==='user'&&(!userMode||Boolean(scoutingView));
+    if(wantsUser&&!data.characters.some(x=>x.userRecords))return;
+    let restoreSpread=0;
+    if(wantsUser&&!userMode){peoplePosition={selected,volume,album,query,spreadIndex};userMode=true;restoreSpread=userSpread;}
+    else if(!wantsUser&&userMode){userSpread=spreadIndex;userMode=false;if(peoplePosition){({selected,volume,album,query}=peoplePosition);restoreSpread=peoplePosition.spreadIndex;}if((action==='album'&&!album)||(action==='people'&&album)){album=action==='album';volume=0;restoreSpread=0;}}
+    else if(!wantsUser){const wantsAlbum=action==='album';if(album!==wantsAlbum){album=wantsAlbum;volume=0;}else if(!scoutingView){syncBookTabs();return;}}
+    if(scoutingView){await openScouting();if(restoreSpread){spreadIndex=Math.max(0,Math.min(restoreSpread,pageTextures.length/2-1));paint();controls();}}
+    else await renderLibrary({changeBook:true,restoreSpread});
+    toolbar.querySelector('input').value=query;syncBookTabs();
   }
   async function openDetective(kind='investigate',id=''){try{if(!onOpenDetective)throw Error('委托柜台接口未连接');await onOpenDetective(kind,id);}catch(error){notice.textContent=error.message;}}
   async function transact(work) { notice.textContent = ""; try { const id = selected, page = spreadIndex; await work(); data = await snapshot(); bundleCache.clear(); await renderLibrary(); if (selected === id) { spreadIndex = Math.min(page, pageTextures.length / 2 - 1); paint(); controls(); } } catch (error) { notice.textContent = error.message; } }
@@ -295,14 +303,14 @@ export async function mountDetectiveNotebook(container, { snapshot, assets, reso
     if(modeBusy&&action!=="close")return;
     if (action === "close") onClose();
     else if (action === "detective") void openDetective();
-    else if (['people','scout','album'].includes(action)) void selectBookTab(action);
-    else if (action.endsWith("volume")) { volume += action === "next-volume" ? 1 : -1; void renderLibrary({ changeBook: true }); }
+    else if (['people','scout','album','user'].includes(action)) void selectBookTab(action);
+    else if (action.endsWith("volume")&&!userMode&&!scoutingView&&!bookSwitcher.isBusy()) { volume += action === "next-volume" ? 1 : -1; void renderLibrary({ changeBook: true }); }
     else if (action.endsWith("page")) turnPage(action === "next-page" ? 1 : -1);
     else if (action === "favourite" && selected && !button.hidden) void transact(() => favourite(selected));
     else if (action === "investigate" && selected && investigate) void transact(() => investigate(selected));
   }));
   root.querySelectorAll('.dn-photo-zone').forEach(button=>button.addEventListener('click',()=>void showGallery(button.classList.contains('standee')?'standee':'portrait')));
-  const wanted = data.characters.find((x) => x.name === initialRole || x.id === initialRole); if (wanted) { selected = wanted.id; volume = Math.floor(data.characters.filter((x) => x.id !== "user" || x.userRecords).findIndex((x) => x.id === wanted.id) / 6); }
+  const wanted = data.characters.find((x) => x.name === initialRole || x.id === initialRole); if (wanted) { selected = wanted.id;userMode=Boolean(wanted.userRecords);if(!userMode)volume = Math.floor(libraryRows().findIndex((x) => x.id === wanted.id) / 6); }
   fit(); await renderLibrary(); syncBookTabs();win.addEventListener("resize", fit);doc.addEventListener("hypno:scene-fit",fit);
   const key = (event) => { if (scoutingView || modeBusy || event.target.tagName === "INPUT") return; if (event.key === "Escape") onClose(); if (event.key === "ArrowRight") turnPage(1); if (event.key === "ArrowLeft") turnPage(-1); }; root.addEventListener("keydown", key);toolbarDock=dockSceneToolbar(doc,toolbar);if(toolbarDock.docked)toolbar.addEventListener("keydown",key);fit();
   const view={ root, openScouting:()=>scoutingView?Promise.resolve():openScouting(), refresh: async () => { if(scoutingView){await scoutingView.refresh();return;} if (turn || root.dataset.bookChanging) return; const next = await snapshot(); if (JSON.stringify(next) === JSON.stringify(data)) return; const id = selected, page = spreadIndex; data = next; bundleCache.clear(); await renderLibrary(); if (selected === id) { spreadIndex = Math.min(page, pageTextures.length / 2 - 1); paint(); controls(); } }, resize: fit, inspectTurn(progress,direction=1) { if (progress <= 0) { cancelTurn(); paint(); return; } if (!turn) begin(direction); drawTurn(progress); }, destroy() { floatingDrag.destroy(); destroyed = true; bookSwitcher.destroy(); scoutingView?.destroy(); scoutingHost?.remove(); galleryView?.destroy(); galleryHost?.remove(); bookSwap++; cancelTurn(); curved?.destroy(); doc.removeEventListener("pointermove", dragMove); doc.removeEventListener("pointerup", releaseDrag); doc.removeEventListener("pointercancel", releaseDrag); win.removeEventListener("blur", releaseDrag); win.removeEventListener("resize", fit);doc.removeEventListener("hypno:scene-fit",fit); for (const url of urls) URL.revokeObjectURL(url); root.remove(); } };

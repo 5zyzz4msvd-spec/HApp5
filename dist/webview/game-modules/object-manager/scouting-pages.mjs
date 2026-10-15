@@ -1,3 +1,4 @@
+import {scoutingAvailable,SCOUTING_COMING_SOON} from './personnel-access.mjs';
 import {contentPolicyFieldApplicable} from '../safety/character-content-policy-client.mjs';
 export const SCOUTING_VOLUME_SIZE = 6;
 export const SCOUTING_SPREADS_PER_PERSON = 2;
@@ -13,4 +14,9 @@ export function scoutingNavigation(current, action, count) {
 export function scoutingFields(row, kind) {
   const fields=kind==='clothing'?row?.clothing:row?.information;
   return Object.entries(fields??{}).filter(([label])=>contentPolicyFieldApplicable(row,label)).map(([label,value])=>({label:label==='_年龄'?'年龄':label,value:String(value)}));
+}
+
+export function scoutingAction(row, price) {
+  const allowed = scoutingAvailable(row) && row?.scoutingAllowed !== false;
+  return {allowed, label:allowed ? `委托物色 · ¥${price}` : SCOUTING_COMING_SOON, reason:allowed ? '' : SCOUTING_COMING_SOON};
 }

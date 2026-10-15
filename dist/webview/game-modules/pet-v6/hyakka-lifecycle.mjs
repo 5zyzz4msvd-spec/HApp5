@@ -1,3 +1,4 @@
+import {assetUrl} from '../resources/asset-url.mjs';
 // Whole-character entrance/exit clips are model drawn. Only detached props and
 // spatial movement are animated here. This module can be passed as transitionHooks.
 export function createHyakkaLifecycle({root,sprite,assetBase,getManifest,motionPreference,onStage=()=>{}}){
@@ -10,7 +11,7 @@ export function createHyakkaLifecycle({root,sprite,assetBase,getManifest,motionP
  function cancel(reason='cancel'){epoch++;busy=false;clear();stage('idle');log(reason);}
  const alive=tag=>tag===epoch&&!destroyed;
  function pause(ms,tag){return new Promise(resolve=>{const id=win.setTimeout(()=>{timers.delete(id);resolve();},reduce.matches?0:ms);timers.set(id,resolve);}).then(()=>{if(!alive(tag))throw Error('lifecycle-cancelled');});}
- function picture(kind,file,x,y,initial={}){const el=doc.createElement('img');el.className='hx-'+kind;el.alt='';el.src=assetBase+file;el.style.left=x+'px';el.style.top=y+'px';Object.assign(el.style,initial);root.append(el);nodes.add(el);return el;}
+ function picture(kind,file,x,y,initial={}){const el=doc.createElement('img');el.className='hx-'+kind;el.alt='';el.src=assetUrl(assetBase,file);el.style.left=x+'px';el.style.top=y+'px';Object.assign(el.style,initial);root.append(el);nodes.add(el);return el;}
  function effect(el,keyframes,{duration=300,delay=0,easing='ease-out',remove=false}={}){if(reduce.matches){if(remove){nodes.delete(el);el.remove();}return;}const a=el.animate(keyframes,{duration,delay,easing,fill:'forwards'});animations.add(a);a.finished.catch(()=>{}).finally(()=>{if(remove){nodes.delete(el);el.remove();}});return a;}
  function plantDagger(file,x,y,i,tag){
   // Delayed blades must already be hidden above the ground before insertion.

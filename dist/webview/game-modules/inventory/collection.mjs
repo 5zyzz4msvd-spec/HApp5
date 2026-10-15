@@ -1,3 +1,4 @@
+import {resourceUrl} from '../resources/asset-url.mjs';
 import { dockSceneToolbar } from '../ui/scene-toolbar.mjs';
 import { surfaceLifecycle } from '../ui/surface-motion.mjs';
 import { bindFloatingDrag } from '../ui/floating-window.mjs';
@@ -25,7 +26,7 @@ function slotStyle(index){const point=collectionTrackPosition(index/8);return '-
 export function mountInventoryCollection(container,{getSnapshot,useItem,deleteItem,onClose,assetUrl,runnerFrames=null,roomImage=null,headImage=null,onSelect=()=>{}}){
  const doc=container.ownerDocument,win=doc.defaultView,root=doc.createElement('section');root.className='collection-window';root.dataset.opening='true';root.setAttribute('role','dialog');root.setAttribute('aria-label','圆桌收藏室');
  const runner=createCollectionRunner(),assetRoot=String(assetUrl??'').replace(/inventory\/[^/]+$/,'');
- const room=roomImage??assetRoot+'inventory/round-room-v2.png',head=headImage??assetRoot+'inventory/lin-an-top-head-v2.png';
+ const room=resourceUrl(roomImage??assetRoot+'inventory/round-room-v2.png'),head=resourceUrl(headImage??assetRoot+'inventory/lin-an-top-head-v2.png');
  for(const file of [room,head]){const image=new win.Image();image.src=file;}let raf=null,lastTime=null;
  const style=doc.createElement('style');style.textContent=COLLECTION_STYLE;const content=doc.createElement('div');content.style.cssText='display:contents';root.append(style,content);container.append(root);const toolbar=doc.createElement('header');toolbar.className='collection-heading';toolbar.innerHTML='<div><small>PERSONAL COLLECTION</small><h1>随身收藏</h1></div><button data-case-close aria-label="关闭收藏匣">×</button>';root.append(toolbar);const toolbarDock=dockSceneToolbar(doc,toolbar);
  let snapshot={items:[],writable:false,chatId:''},items=[],page=0,selectedName='',destroyed=false,epoch=0,dialog=false,note='',notice='',busy=false,initialized=false,drag=null;

@@ -157,6 +157,8 @@
     "game-modules/phone-v2/photos.mjs",
     "game-modules/phone-v2/style.mjs",
     "game-modules/phone-v2/user-photos.mjs",
+    "game-modules/resources/asset-url.mjs",
+    "game-modules/resources/local-install.mjs",
     "game-modules/reward-defaults.js",
     "game-modules/safety/character-content-policy-client.mjs",
     "game-modules/safety/character-content-policy-spec.mjs",

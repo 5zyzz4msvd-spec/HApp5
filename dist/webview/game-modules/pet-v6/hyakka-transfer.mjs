@@ -1,3 +1,4 @@
+import {assetUrl} from '../resources/asset-url.mjs';
 import {mountDesktopPet} from './desktop-pet.mjs';
 import {frameAt,clampPetPosition,decodePetImage} from './motion.mjs';
 import {createHyakkaLifecycle} from './hyakka-lifecycle.mjs';
@@ -8,8 +9,8 @@ export function mountDaggerTransfer(container,options={}){
  const doc=container.ownerDocument??container,win=doc.defaultView;
  const assetBase=options.assetBase??'/public/frontends/hypnosis-app/assets/';
  let manifest=null,lifecycle=null,alisaLifecycle=null;
- const artReady=(async()=>{const response=await win.fetch(assetBase+'pet/v6/manifest.json');if(!response.ok)throw Error('Transfer art manifest unavailable');manifest=await response.json();})();
- async function ensureStageArt(role){await artReady;const files=role==='hyakka'?['dagger','bladeSweep','groundSweep','smoke','smokeBomb'].map(name=>manifest.transfer[name]).filter(Boolean):['pet/v6/alisa-stage-cloth.png','pet/v6/alisa-stage-header.png'];await Promise.all(files.map(file=>decodePetImage(win,assetBase+file)));}
+ const artReady=(async()=>{const response=await win.fetch(assetUrl(assetBase,'pet/v6/manifest.json'));if(!response.ok)throw Error('Transfer art manifest unavailable');manifest=await response.json();})();
+ async function ensureStageArt(role){await artReady;const files=role==='hyakka'?['dagger','bladeSweep','groundSweep','smoke','smokeBomb'].map(name=>manifest.transfer[name]).filter(Boolean):['pet/v6/alisa-stage-cloth.png','pet/v6/alisa-stage-header.png'];await Promise.all(files.map(file=>decodePetImage(win,assetUrl(assetBase,file))));}
  const hook=kind=>async ctx=>{await ensureStageArt(ctx.role);if(ctx.signal?.aborted)return false;if(ctx.role==='hyakka'&&manifest.transfer.smoke)return lifecycle[kind](ctx);if(ctx.role==='alisa'&&manifest.characters.alisa?.lifecycle)return alisaLifecycle[kind](ctx);return options.transitionHooks?.[kind]?.(ctx);};
  const controller=mountDesktopPet(container,{...options,assetBase,transitionHooks:{prepare:ensureStageArt,enter:hook('enter'),exit:hook('exit')},initialCharacter:options.initialCharacter??'alisa',storageKey:options.storageKey??'hypno-pet-v6'});
  const root=controller.root,pet=controller.pet,sprite=root.querySelector('.dp-sprite'),ghost=root.querySelector('.dp-ghost');
@@ -50,7 +51,7 @@ export function mountDaggerTransfer(container,options={}){
  function clearEffects(){for(const [id,resolve]of timers){win.clearTimeout(id);resolve();}timers.clear();for(const a of animations)a.cancel();animations.clear();for(const el of nodes)el.remove();nodes.clear();}
  function stopGhost(){ghostClock=null;for(const a of ghost.getAnimations()){a.cancel();animations.delete(a);}ghost.dataset.visible='false';ghost.style.opacity='';ghost.style.filter='';ghost.style.removeProperty('translate');}
  function paintGhost(){if(!ghostClock)return;const c=clips()[ghostClock.name];if(!c)return;let value=frameAt(c,win.performance.now()-ghostClock.started);if(ghostClock.hold!=null)value.index=Math.min(value.index,ghostClock.hold);
-  ghost.style.backgroundImage=`url('${assetBase+c.file}')`;ghost.style.backgroundSize=`${c.columns*112}px ${c.rows*112}px`;ghost.style.backgroundPosition=`${-(value.index%c.columns)*112}px ${-Math.floor(value.index/c.columns)*112}px`;ghost.dataset.sourceIndex=c.sourceIndices[value.index];ghost.dataset.phase=ghostClock.name;
+  ghost.style.backgroundImage=`url('${assetUrl(assetBase,c.file)}')`;ghost.style.backgroundSize=`${c.columns*112}px ${c.rows*112}px`;ghost.style.backgroundPosition=`${-(value.index%c.columns)*112}px ${-Math.floor(value.index/c.columns)*112}px`;ghost.dataset.sourceIndex=c.sourceIndices[value.index];ghost.dataset.phase=ghostClock.name;
  }
  function tick(){raf=0;if(destroyed)return;paintGhost();if(ghostClock&&!doc.hidden)raf=win.requestAnimationFrame(tick);}
  function showGhost(name,target,hold=null){ghostClock={name,started:win.performance.now(),hold};ghost.dataset.visible='true';ghost.style.opacity='.68';ghost.style.filter='brightness(1.35) sepia(.15) drop-shadow(0 0 2px #f1ecff) drop-shadow(0 0 10px #9681ef)';ghost.style.setProperty('--dp-x',target.x+'px');ghost.style.setProperty('--dp-y',target.y+'px');paintGhost();if(!raf)raf=win.requestAnimationFrame(tick);}
@@ -59,7 +60,7 @@ export function mountDaggerTransfer(container,options={}){
  function flash(point){const star=node('hx-star',point.x+56,point.y+54);effect(star,[{opacity:0,scale:'.15',rotate:'-20deg'},{opacity:1,scale:'1.05',offset:.18},{opacity:0,scale:'1.8',rotate:'25deg'}],{duration:230});}
  function pathBlades(from,to){if(reduce.matches)return;const dx=to.x-from.x,dy=to.y-from.y,length=Math.hypot(dx,dy),angle=Math.atan2(dy,dx)*180/Math.PI;
   const core=node('hx-core',from.x+56,from.y+60);core.style.width=length+'px';core.style.rotate=angle+'deg';effect(core,[{opacity:0,scale:'0 1'},{opacity:1,scale:'1 2',offset:.2},{opacity:0,scale:'1 .1'}],{duration:230});
-  if(manifest.transfer.bladeSweep){for(let i=0;i<5;i++){const t=(i+.5)/5,el=doc.createElement('img');el.className='hx-arc';el.alt='';el.src=assetBase+manifest.transfer.bladeSweep;el.style.cssText=`left:${from.x+56+dx*t-100}px;top:${from.y+60+dy*t-60}px;width:200px;height:120px;rotate:${angle+(i%2?34:-34)}deg;`;root.append(el);nodes.add(el);effect(el,[{opacity:0,scale:'.25 .1'},{opacity:1,scale:'1.1 1',offset:.17},{opacity:.65,offset:.45},{opacity:0,scale:'1.35 .3'}],{duration:370,delay:i*32});}}
+  if(manifest.transfer.bladeSweep){for(let i=0;i<5;i++){const t=(i+.5)/5,el=doc.createElement('img');el.className='hx-arc';el.alt='';el.src=assetUrl(assetBase,manifest.transfer.bladeSweep);el.style.cssText=`left:${from.x+56+dx*t-100}px;top:${from.y+60+dy*t-60}px;width:200px;height:120px;rotate:${angle+(i%2?34:-34)}deg;`;root.append(el);nodes.add(el);effect(el,[{opacity:0,scale:'.25 .1'},{opacity:1,scale:'1.1 1',offset:.17},{opacity:.65,offset:.45},{opacity:0,scale:'1.35 .3'}],{duration:370,delay:i*32});}}
   for(let j=0;j<3;j++){const el=node('hx-streak',from.x+56,from.y+58+(j-1)*7);el.style.width=Math.max(60,length+28)+'px';el.style.rotate=angle+(j-1)*2+'deg';effect(el,[{opacity:0,scale:'.03 .4'},{opacity:1,scale:'1 1',offset:.22},{opacity:.7,offset:.48},{opacity:0,scale:'1.08 .1'}],{duration:330+j*28,delay:j*15,easing:'cubic-bezier(.14,.8,.2,1)'});}
   const count=Math.min(9,Math.max(3,Math.ceil(length/70)));
   for(let i=0;i<count;i++){const t=(i+1)/(count+1),el=node('hx-cut',from.x+56+dx*t,from.y+60+dy*t);el.style.width=45+(i%3)*17+'px';el.style.rotate=angle+(i%2?-42:42)+'deg';effect(el,[{opacity:0,scale:'.15 .3'},{opacity:1,scale:'1 1.15',offset:.25},{opacity:0,scale:'1.45 .08'}],{duration:260+i*14,delay:i*16});}
@@ -80,7 +81,7 @@ export function mountDaggerTransfer(container,options={}){
    showGhost('ghost-throw',route.target);
    controller.play('charge-finish');setStage('finish');ring(route.origin);await pause(195,tag);controller.play('throw-hold');log('charge-complete');setStage('flight');log('dagger-launched',{from:route.origin,to:route.target});
    const start={x:route.origin.x+56,y:route.origin.y+53},end={x:route.target.x+56,y:route.target.y+98},dx=end.x-start.x,dy=end.y-start.y,angle=Math.atan2(dy,dx)*180/Math.PI,flight=Math.round(160+Math.min(100,Math.hypot(dx,dy)*.16));
-   const dagger=doc.createElement('img');dagger.className='hx-dagger';dagger.alt='';dagger.src=assetBase+manifest.transfer.dagger;dagger.style.left=start.x-24+'px';dagger.style.top=start.y-7+'px';root.append(dagger);nodes.add(dagger);
+   const dagger=doc.createElement('img');dagger.className='hx-dagger';dagger.alt='';dagger.src=assetUrl(assetBase,manifest.transfer.dagger);dagger.style.left=start.x-24+'px';dagger.style.top=start.y-7+'px';root.append(dagger);nodes.add(dagger);
    effect(dagger,[{opacity:0,transform:`translate3d(0,0,0) rotate(${angle}deg)`,offset:0},{opacity:1,transform:`translate3d(${dx*.12}px,${dy*.12-8}px,0) rotate(${angle+45}deg)`,offset:.12},{opacity:1,transform:`translate3d(${dx*.55}px,${dy*.55-28}px,0) rotate(${angle+200}deg)`,offset:.55},{opacity:1,transform:`translate3d(${dx}px,${dy}px,0) rotate(${angle+360}deg)`}],{duration:flight,easing:'cubic-bezier(.25,.6,.3,1)',removeAfter:false});
    await pause(flight,tag);remove(dagger);log('dagger-arrived');flash(route.target);ring(route.target);
    await pause(60,tag);effect(sprite,[{opacity:1,filter:'brightness(1)'},{opacity:.6,filter:'brightness(3)',offset:.45},{opacity:0,filter:'brightness(5)'}],{duration:75,removeAfter:false});

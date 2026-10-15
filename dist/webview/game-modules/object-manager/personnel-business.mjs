@@ -1,5 +1,5 @@
 import {createPaintedScoutingProvider,PAINTED_SCOUTING_NAMES} from './scouting-candidate-provider.mjs';
-import { acquisitionState, slotEligible, scoutingRequired, scoutingCandidateEligible, SCOUT_REQUIRED_PERSONNEL } from './personnel-access.mjs';
+import { acquisitionState, slotEligible, scoutingRequired, scoutingCandidateEligible, scoutingAvailable, SCOUTING_COMING_SOON, SCOUT_REQUIRED_PERSONNEL } from './personnel-access.mjs';
 import { applyPersonnelInitials } from './personnel-initials.mjs';
 import { normalizeLocation } from './contracts.mjs';
 import { PERSONNEL_TIME_SLOTS, fixedPersonnelRows } from './personnel-time-grid.mjs';
@@ -125,7 +125,7 @@ export class PersonnelBusiness {
       const headRef=sharedAlbum.head?.[Number(imageSelection.head)||0];
       const information=Object.fromEntries(['姓名','性别','_年龄','年龄','社团或职业','身高','体重','三围'].filter(key=>candidate.information?.[key]!=null&&candidate.information[key]!=='').map(key=>[key,candidate.information[key]]));
       const clothing=Object.fromEntries(['头发','面部','上衣','下衣'].filter(key=>candidate.clothing?.[key]!=null).map(key=>[key,candidate.clothing[key]]));
-      candidateRows.push({information,clothing,id:candidate.id,name:candidate.name,portrait:candidate.portrait??null,standee:candidate.standee??null,info:candidate.info??{},media:{portraits:[...new Set([...(candidate.portraits??[]),candidate.portrait].filter(Boolean))]},sharedAlbum,imageSelection,headUrl:headRef?await this.media.url(headRef):candidate.head??null,photoSource:candidate.photoSource??null,sourceEvidence:candidate.sourceEvidence??null});
+      candidateRows.push({scoutingAllowed:scoutingAvailable(candidate),scoutingReason:scoutingAvailable(candidate)?'':SCOUTING_COMING_SOON,information,clothing,id:candidate.id,name:candidate.name,portrait:candidate.portrait??null,standee:candidate.standee??null,info:candidate.info??{},media:{portraits:[...new Set([...(candidate.portraits??[]),candidate.portrait].filter(Boolean))]},sharedAlbum,imageSelection,headUrl:headRef?await this.media.url(headRef):candidate.head??null,photoSource:candidate.photoSource??null,sourceEvidence:candidate.sourceEvidence??null});
     }
     return {active:state.active?{...state.active,progress:Math.max(0,Math.min(1,(stamp-state.active.startedAt)/(state.active.endsAt-state.active.startedAt)))}:null,last:state.history.at(-1)??null,balance:Number.isSafeInteger(balance)?balance:null,prices,characters:actors.filter(x=>x.id!=="user"&&acquisitionState(x)!=='unscouted').map(x=>({id:x.id,name:x.name,unlocked:personnelPermissions(x,permissionState).investigation&&dossiers[x.id]?.investigated===true,scoutingPending:acquisitionState(x)==='scouting',investigationAllowed:personnelPermissions(x,permissionState).investigation,permissionReason:personnelPermissions(x,permissionState).reason})),candidates:candidateRows,date:isoStoryDate(stamp),time:context.time};
   }
@@ -136,9 +136,11 @@ export class PersonnelBusiness {
     if(!actor||actor.id==='user')throw Error('请选择有效的调查对象');
     if(kind==='scout'&&this.environment?.paintedScoutingOnly===true&&!PAINTED_SCOUTING_NAMES.includes(actor.name))throw Error('该人物不在已绘可物色来源范围；请按其原登场规则处理');
     if(kind==='scout'&&!scoutingRequired(actor))throw Error('这个人物无需物色；登场后可直接委托调查');
-    if(kind==='scout'){const stored=(await this.store.listObjects('character')).find(x=>x.id===actor.id||x.name===actor.name);if(stored)actor=stored;}
+    if(kind==='scout'&&!scoutingAvailable(actor))throw Error(SCOUTING_COMING_SOON);
+    if(kind==='scout'){const stored=(await this.store.listObjects('character')).find(x=>x.id===actor.id||x.name===actor.name);if(stored)actor=stored;if(!scoutingAvailable(actor))throw Error(SCOUTING_COMING_SOON);}
     const price=(await this.quote(actor.name))[kind];if(!Number.isSafeInteger(price)||price<1)throw Error('收费文件金额无效');
     return this.runtime.personnelTransaction(async()=>{
+      if(kind==='scout'){const latest=await this.store.getObject(actor);if(!scoutingAvailable(latest??actor))throw Error(SCOUTING_COMING_SOON);}
       const context=await this.context();if(context.writable===false)throw Error('历史楼层不可受理委托');await this.recoverPayment();await this._tick(context);const stamp=storyStamp(context);
       if(kind==='investigate'){const decision=personnelPermissions(actor,await this.runtime.resolvePersonnelPermissions());if(!decision.investigation)throw Error(decision.reason);}
       const state=await this.store.readJson('services/detective.json',{active:null,history:[]});if(state.active)throw Error('林安正在工作，完成后才能接下一单');

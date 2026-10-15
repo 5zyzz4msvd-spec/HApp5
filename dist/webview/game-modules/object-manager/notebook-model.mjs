@@ -99,7 +99,7 @@ export function notebookStoryEventRows(history, actor){
 }
 export function notebookVolumes(characters, { query = "", favouritesOnly = false, favourites = [], volume = 0 } = {}) {
   const text = query.trim().toLocaleLowerCase();
-  const filtered = characters.filter((x) => (x.id !== "user" || x.userRecords) && (!favouritesOnly || favourites.includes(x.id)) && (!text || [x.name, ...(x.aliases ?? [])].some((value) => value.toLocaleLowerCase().includes(text))));
+  const filtered = characters.filter((x) => (x.id !== "user" && !x.userRecords) && (!favouritesOnly || favourites.includes(x.id)) && (!text || [x.name, ...(x.aliases ?? [])].some((value) => value.toLocaleLowerCase().includes(text))));
   const count = Math.max(1, Math.ceil(filtered.length / NOTEBOOK_VOLUME_SIZE));
   const index = Math.max(0, Math.min(count - 1, volume));
   return { rows: filtered.slice(index * NOTEBOOK_VOLUME_SIZE, (index + 1) * NOTEBOOK_VOLUME_SIZE), count, index, total: filtered.length };
@@ -111,7 +111,7 @@ export function notebookSlotPages(slots, page = 0) {
 }
 function childRefs(actor,kind){return[...(actor.refs?.[kind==='task'?'tasks':'achievements']??[]),...(actor.links??[]).filter(x=>x.mode==='owned'&&x.enabled!==false&&x.ref?.kind===kind).map(x=>x.ref)].filter((ref,index,list)=>list.findIndex(x=>x.id===ref.id)===index);}
 async function notebookChildRecords(runtime,actor,kind,taskSlots){const rows=[];for(const ref of childRefs(actor,kind)){const item=await runtime.store.getObject(ref);if(!item)throw Error('笔记子对象记录缺失');if(item.owner?.kind!=='character'||item.owner.id!==actor.id)throw Error('笔记子对象归属不一致');rows.push({id:item.id,name:item.name,description:item.definition.description,conditionText:item.definition.completion.text,rewards:item.definition.rewards,progress:item.data.progress,completed:item.data.completed,claimed:item.data.claimed,accepted:kind==='task'&&taskSlots.some(x=>x.ref.id===item.id&&x.owner.id===actor.id)});}return rows;}
-export async function notebookSnapshot(runtime, { service = null, context = null, storyEventHistory=null,playerResources=null,playerInventory=null,playerContext=null } = {}) {
+export async function notebookSnapshot(runtime, { service = null, context = null, storyEventHistory=null,playerResources=null,playerInventory=null,playerContext=null,userName="" } = {}) {
   const permissionState=await runtime.resolvePersonnelPermissions?.()??UNKNOWN_PERSONNEL_PERMISSIONS;
   const business = service ? await service.snapshot() : null;
   const dateOverrides = service && context ? await service.dayOverlays(context) : {};
@@ -125,7 +125,7 @@ export async function notebookSnapshot(runtime, { service = null, context = null
     const userRecords=actor.id==='user';
     if (actor.id === 'user'&&!userRecords || !notebookEligible(actor)) continue;
     const permissions=personnelPermissions(actor,permissionState),unlocked = userRecords || permissions.investigation&&dossiers[actor.id]?.investigated === true;
-    const record = { id: actor.id, name: userRecords?'我的记录':actor.name, aliases: actor.aliases, portrait: actor.ui.images?.find((x) => x.usage === "portrait") ?? null, unlocked, scoutingPending: acquisitionState(actor) === 'scouting', mounted: permissions.slot&&slotEligible(actor) && slots.some((x) => x.enabled !== false && x.ref.id === actor.id) };
+    const record = { id: actor.id, name: userRecords?(String(userName).trim()||(actor.name==='{{user}}'?'玩家':actor.name)):actor.name, aliases: actor.aliases, portrait: actor.ui.images?.find((x) => x.usage === "portrait") ?? null, unlocked, scoutingPending: acquisitionState(actor) === 'scouting', mounted: permissions.slot&&slotEligible(actor) && slots.some((x) => x.enabled !== false && x.ref.id === actor.id) };
     record.userRecords=Boolean(userRecords);record.acquisitionState = acquisitionState(actor); record.slotEligible = !userRecords&&permissions.slot&&slotEligible(actor);record.investigationAllowed=permissions.investigation;record.permissionReason=permissions.reason;
     record.eventsUnlocked=slotEligible(actor)&&notebookEventChapterAvailable(actor,storyHistory);
     record.affinityEvents=notebookStoryEventRows(storyHistory,actor);

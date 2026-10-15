@@ -13,4 +13,17 @@ export const NOTEBOOK_STYLE = `
 .dn-edge{position:absolute;z-index:12;top:176px;width:28px;height:514px;cursor:grab;touch-action:none}.dn-edge.left{left:245px;width:36px}.dn-edge.right{left:1157px}.dn-edge:active{cursor:grabbing}.dn-edge:focus-visible{outline:2px dashed #a28158;outline-offset:-10px}
 .dn-footer{position:absolute;left:271px;top:716px;width:867px;height:42px;display:flex;align-items:center;justify-content:space-between;z-index:18;color:#755b3d;white-space:nowrap;padding-top:4px}.dn-footer span{font:25px Georgia,serif;letter-spacing:.05em}.dn-footer button{font-size:26px;min-width:72px;height:44px;color:#856442}
 .dn-notice{position:absolute;left:300px;top:788px;width:816px;font-size:24px;color:#ffedcb;text-align:center;background:#463528ed;padding:10px;z-index:30;pointer-events:none;box-shadow:0 2px 10px #0003}.dn-notice:empty{display:none}.dn-photo-zone{position:absolute;left:279px;top:268px;width:402px;height:395px;z-index:12;cursor:pointer!important}.dn-photo-zone.standee{left:749px}.dn-photo-zone[hidden]{display:none}.dn-page-hits{position:absolute;inset:0;pointer-events:none;z-index:12}.dn-detail-hit{position:absolute;pointer-events:auto;cursor:pointer!important;background:none!important;border:0}.dn-chapter-row{position:relative;left:-8px;flex:none;width:84px;height:44px;display:flex;transition:left 300ms cubic-bezier(.15,.9,.2,1)}.dn-chapter-row[aria-current=true]{left:0}.dn-chapters .dn-chapter-row>button{padding-left:0;position:static;left:auto;flex:none}.dn-chapter-row.has-investigation>button:first-child{width:54px;padding-left:0;font-size:22px}.dn-chapters .dn-investigate-side{width:30px;font-size:19px;color:#9a664d;background:#e8cfa5;border-left:1px solid #b9936566;border-radius:0 4px 4px 0}.dn-chapter-row.has-investigation>button:first-child{border-radius:0}.dn-photo-zone:focus-visible,.dn-detail-hit:focus-visible{outline:2px dashed #a87b4e;outline-offset:-5px}.dn-sr-number{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.dn-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:pre-wrap}.dn-window button:focus-visible,.dn-window input:focus-visible{outline:2px solid #b48856;outline-offset:-3px}@media(prefers-reduced-motion:reduce){.dn-tab{transition:none}}
+
+/* Notebook library navigation belongs to the docked scene header. */
+.dn-header .dn-collection{position:static;left:auto;top:auto;width:auto;height:auto;gap:4px;flex:none;margin-left:auto;color:inherit}
+.dn-header .dn-collection[hidden],.dn-bookmarks[hidden]{display:none!important}
+.dn-header .dn-collection span{font-size:20px;letter-spacing:0;min-width:70px;text-align:center}
+.dn-header .dn-collection button{width:42px;min-width:42px;min-height:44px;font-size:25px}
+.dn-header .dn-collection+[data-action=close]{margin-left:0}
+.dn-header [data-action=user]{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dn-header:not([data-scene-toolbar]){left:96px;width:1120px;gap:8px}
+.dn-header:not([data-scene-toolbar]) strong{font-size:25px;width:225px}
+.dn-header:not([data-scene-toolbar]) input{width:135px;font-size:22px}
+.dn-header:not([data-scene-toolbar]) button{min-width:60px;font-size:22px}
+.dn-header[data-scene-toolbar] .dn-collection span{font:12px system-ui;min-width:58px}
 `;

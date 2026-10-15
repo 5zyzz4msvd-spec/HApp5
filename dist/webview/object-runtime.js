@@ -324,8 +324,13 @@ function sourceProfile(state,userName){
 async function ensureUserManagement(runtime,{legacyState={},userName=''}={}){
  return runtime.personnelTransaction(async()=>{
   const marker=await runtime.store.readJson(USER_MANAGEMENT_FILE,null),before=await runtime.store.getObject(USER_REF);
-  if(marker?.schema===2&&before?.ui?.userManagement===2)return before;
+  userName=String(userName??'').trim();
+  if(marker?.schema===2&&before?.ui?.userManagement===2){
+   if(userName&&before.name!==userName){before.name=userName;before.aliases=[...new Set([...before.aliases,'user','{{user}}',userName])];await runtime._writeLocalObjects([before]);return runtime.store.getObject(USER_REF);}
+   return before;
+  }
   const actor=before??normalizeCharacter({...USER_REF,name:userName||'{{user}}',elements:[],values:{}});
+  if(userName)actor.name=userName;
   const values={...actor.values},elements=[...actor.elements];
   const generic=elements.findIndex(x=>x.id==='runtime'&&x.elements?.length===3&&x.elements.every(f=>['affinity','alertness','cooperation'].includes(f.id)&&values[f.id]===0));
   if(actor.ui?.source==='builtin-object-template'&&generic>=0){for(const field of elements[generic].elements)delete values[field.id];elements.splice(generic,1);}
@@ -1940,6 +1945,9 @@ Object.assign(module.exports,{storyCalendar,resolveSceneLocation,actorsAtScene,c
 "src/object-manager/personnel-access.mjs":function(module, load){
 const INITIAL_KNOWN_PERSONNEL = Object.freeze(['西园寺爱丽莎','月咏深雪','犬冢夏美','阿宅','林安','织田信长 & 明智光秀']);
 const SCOUT_REQUIRED_PERSONNEL = Object.freeze(['千杀百花','中村樱','白枢暗子']);
+const SCOUTING_COMING_SOON = '未完待续';
+// Availability controls new commissions only; keep every candidate and saved dossier.
+function scoutingAvailable(actor) { return SCOUT_REQUIRED_PERSONNEL.includes(actor?.name); }
 function initiallyKnown(actor) {
   return INITIAL_KNOWN_PERSONNEL.includes(actor.name) || actor.id==='lin-an' || actor.id==='oda-nobunaga' ||
     ['织田信长&明智光秀','织田信长＆明智光秀','织田信长与明智光秀'].includes(actor.name);
@@ -1965,11 +1973,11 @@ function personnelLocationEligible(actor) {
 function notebookEligible(actor) { return acquisitionState(actor) !== 'unscouted'; }
 function slotEligible(actor) { return acquisitionState(actor) === 'scouted'; }
 
-Object.assign(module.exports,{INITIAL_KNOWN_PERSONNEL,SCOUT_REQUIRED_PERSONNEL,initiallyKnown,scoutingRequired,scoutingCandidateEligible,acquisitionState,personnelLocationEligible,notebookEligible,slotEligible});
+Object.assign(module.exports,{INITIAL_KNOWN_PERSONNEL,SCOUT_REQUIRED_PERSONNEL,SCOUTING_COMING_SOON,scoutingAvailable,initiallyKnown,scoutingRequired,scoutingCandidateEligible,acquisitionState,personnelLocationEligible,notebookEligible,slotEligible});
 },
 "src/object-manager/personnel-business.mjs":function(module, load){
 const {createPaintedScoutingProvider,PAINTED_SCOUTING_NAMES} = load("src/object-manager/scouting-candidate-provider.mjs");
-const { acquisitionState, slotEligible, scoutingRequired, scoutingCandidateEligible, SCOUT_REQUIRED_PERSONNEL } = load("src/object-manager/personnel-access.mjs");
+const { acquisitionState, slotEligible, scoutingRequired, scoutingCandidateEligible, scoutingAvailable, SCOUTING_COMING_SOON, SCOUT_REQUIRED_PERSONNEL } = load("src/object-manager/personnel-access.mjs");
 const { applyPersonnelInitials } = load("src/object-manager/personnel-initials.mjs");
 const { normalizeLocation } = load("src/object-manager/contracts.mjs");
 const { PERSONNEL_TIME_SLOTS, fixedPersonnelRows } = load("src/object-manager/personnel-time-grid.mjs");
@@ -2094,7 +2102,7 @@ class PersonnelBusiness {
       const headRef=sharedAlbum.head?.[Number(imageSelection.head)||0];
       const information=Object.fromEntries(['姓名','性别','_年龄','年龄','社团或职业','身高','体重','三围'].filter(key=>candidate.information?.[key]!=null&&candidate.information[key]!=='').map(key=>[key,candidate.information[key]]));
       const clothing=Object.fromEntries(['头发','面部','上衣','下衣'].filter(key=>candidate.clothing?.[key]!=null).map(key=>[key,candidate.clothing[key]]));
-      candidateRows.push({information,clothing,id:candidate.id,name:candidate.name,portrait:candidate.portrait??null,standee:candidate.standee??null,info:candidate.info??{},media:{portraits:[...new Set([...(candidate.portraits??[]),candidate.portrait].filter(Boolean))]},sharedAlbum,imageSelection,headUrl:headRef?await this.media.url(headRef):candidate.head??null,photoSource:candidate.photoSource??null,sourceEvidence:candidate.sourceEvidence??null});
+      candidateRows.push({scoutingAllowed:scoutingAvailable(candidate),scoutingReason:scoutingAvailable(candidate)?'':SCOUTING_COMING_SOON,information,clothing,id:candidate.id,name:candidate.name,portrait:candidate.portrait??null,standee:candidate.standee??null,info:candidate.info??{},media:{portraits:[...new Set([...(candidate.portraits??[]),candidate.portrait].filter(Boolean))]},sharedAlbum,imageSelection,headUrl:headRef?await this.media.url(headRef):candidate.head??null,photoSource:candidate.photoSource??null,sourceEvidence:candidate.sourceEvidence??null});
     }
     return {active:state.active?{...state.active,progress:Math.max(0,Math.min(1,(stamp-state.active.startedAt)/(state.active.endsAt-state.active.startedAt)))}:null,last:state.history.at(-1)??null,balance:Number.isSafeInteger(balance)?balance:null,prices,characters:actors.filter(x=>x.id!=="user"&&acquisitionState(x)!=='unscouted').map(x=>({id:x.id,name:x.name,unlocked:personnelPermissions(x,permissionState).investigation&&dossiers[x.id]?.investigated===true,scoutingPending:acquisitionState(x)==='scouting',investigationAllowed:personnelPermissions(x,permissionState).investigation,permissionReason:personnelPermissions(x,permissionState).reason})),candidates:candidateRows,date:isoStoryDate(stamp),time:context.time};
   }
@@ -2105,9 +2113,11 @@ class PersonnelBusiness {
     if(!actor||actor.id==='user')throw Error('请选择有效的调查对象');
     if(kind==='scout'&&this.environment?.paintedScoutingOnly===true&&!PAINTED_SCOUTING_NAMES.includes(actor.name))throw Error('该人物不在已绘可物色来源范围；请按其原登场规则处理');
     if(kind==='scout'&&!scoutingRequired(actor))throw Error('这个人物无需物色；登场后可直接委托调查');
-    if(kind==='scout'){const stored=(await this.store.listObjects('character')).find(x=>x.id===actor.id||x.name===actor.name);if(stored)actor=stored;}
+    if(kind==='scout'&&!scoutingAvailable(actor))throw Error(SCOUTING_COMING_SOON);
+    if(kind==='scout'){const stored=(await this.store.listObjects('character')).find(x=>x.id===actor.id||x.name===actor.name);if(stored)actor=stored;if(!scoutingAvailable(actor))throw Error(SCOUTING_COMING_SOON);}
     const price=(await this.quote(actor.name))[kind];if(!Number.isSafeInteger(price)||price<1)throw Error('收费文件金额无效');
     return this.runtime.personnelTransaction(async()=>{
+      if(kind==='scout'){const latest=await this.store.getObject(actor);if(!scoutingAvailable(latest??actor))throw Error(SCOUTING_COMING_SOON);}
       const context=await this.context();if(context.writable===false)throw Error('历史楼层不可受理委托');await this.recoverPayment();await this._tick(context);const stamp=storyStamp(context);
       if(kind==='investigate'){const decision=personnelPermissions(actor,await this.runtime.resolvePersonnelPermissions());if(!decision.investigation)throw Error(decision.reason);}
       const state=await this.store.readJson('services/detective.json',{active:null,history:[]});if(state.active)throw Error('林安正在工作，完成后才能接下一单');
@@ -2167,18 +2177,32 @@ class PersonnelBusiness {
 Object.assign(module.exports,{PERSONNEL_POLICY,storyStamp,isoStoryDate,overlayScheduleRows,firstAvailableAffinitySlot,validateAffinityDefinition,PersonnelBusiness});
 },
 "src/object-manager/scouting-candidate-provider.mjs":function(module, load){
+const {assetUrl} = load("src/resources/asset-url.mjs");
+const {scoutingAvailable,SCOUTING_COMING_SOON} = load("src/object-manager/personnel-access.mjs");
 const {PAINTED_SCOUTING_CATALOG} = load("src/game/painted-scouting-catalog.mjs");
 const {ordinaryCharacterSource,roleInitialData} = load("src/object-manager/character-source-metadata.mjs");
 const PAINTED_SCOUTING_NAMES=Object.freeze(PAINTED_SCOUTING_CATALOG.records.map(row=>row.name));
 function createPaintedScoutingProvider({assetBase='/public/frontends/hypnosis-app/assets/',catalog=PAINTED_SCOUTING_CATALOG}={}){
- const file=path=>typeof path==='string'&&path?assetBase+path:null;
- const rows=catalog.records.map(record=>{const role=structuredClone(record.role),assets=role.mediaAssets;Object.assign(role,{imageDataUrl:file(assets.portrait),images:(assets.portraits??[]).map(file),head:file(assets.head),portrait:file(assets.portrait),standee:file(assets.standees[0])});const initial=roleInitialData(role),facts=ordinaryCharacterSource(role,{initialData:initial});return{id:record.id,name:record.name,role,initialData:initial,portrait:role.portrait,portraits:role.images,head:role.head,standee:role.standee,information:initial.信息??facts.data.信息,clothing:facts.data.衣着,info:{gender:facts.gender,age:facts.age,identity:facts.identity,height:facts.height},sourceEvidence:structuredClone(record.source),photoSource:record.source.photoSource};});
+ const file=path=>typeof path==='string'&&path?assetUrl(assetBase,path):null;
+ const rows=catalog.records.map(record=>{const role=structuredClone(record.role),assets=role.mediaAssets;Object.assign(role,{imageDataUrl:file(assets.portrait),images:(assets.portraits??[]).map(file),head:file(assets.head),portrait:file(assets.portrait),standee:file(assets.standees[0])});const initial=roleInitialData(role),facts=ordinaryCharacterSource(role,{initialData:initial});return{id:record.id,name:record.name,scoutingAllowed:scoutingAvailable(record),scoutingReason:scoutingAvailable(record)?'':SCOUTING_COMING_SOON,role,initialData:initial,portrait:role.portrait,portraits:role.images,head:role.head,standee:role.standee,information:initial.信息??facts.data.信息,clothing:facts.data.衣着,info:{gender:facts.gender,age:facts.age,identity:facts.identity,height:facts.height},sourceEvidence:structuredClone(record.source),photoSource:record.source.photoSource};});
  const byId=new Map(rows.map(row=>[row.id,row])),byName=new Map(rows.map(row=>[row.name,row]));
  // Each returned definition is detached. Browsing has no runtime/store access.
  return{names:PAINTED_SCOUTING_NAMES,candidates:()=>structuredClone(rows),candidate:id=>{const row=byId.get(id);return row?structuredClone(row):null;},role:name=>{const row=byName.get(name);return row?structuredClone(row.role):null;}};
 }
 
 Object.assign(module.exports,{PAINTED_SCOUTING_NAMES,createPaintedScoutingProvider});
+},
+"src/resources/asset-url.mjs":function(module, load){
+const maps=new Map();
+function registerResourceMap(base,entries){maps.set(String(base),new Map(entries));}
+function resourceUrl(value){
+ const url=String(value??'');
+ for(const [base,entries]of maps)if(url.startsWith(base))return entries.get(url.slice(base.length))??url;
+ return url;
+}
+function assetUrl(base,file){return resourceUrl(String(base??'')+String(file??''));}
+
+Object.assign(module.exports,{registerResourceMap,resourceUrl,assetUrl});
 },
 "src/game/painted-scouting-catalog.mjs":function(module, load){
 /* Generated by scripts/build-painted-scouting-catalog.mjs. Source definitions and approved image references only; no acquisition, actors, slots or location installation. */
@@ -3384,6 +3408,7 @@ function mountFloatingWindow(container,{title,width=960,height=660,onClose}){
 Object.assign(module.exports,{sceneSurfaceRect,bindFloatingDrag,mountFloatingWindow});
 },
 "src/inventory/collection.mjs":function(module, load){
+const {resourceUrl} = load("src/resources/asset-url.mjs");
 const { dockSceneToolbar } = load("src/ui/scene-toolbar.mjs");
 const { surfaceLifecycle } = load("src/ui/surface-motion.mjs");
 const { bindFloatingDrag } = load("src/ui/floating-window.mjs");
@@ -3411,7 +3436,7 @@ function slotStyle(index){const point=collectionTrackPosition(index/8);return '-
 function mountInventoryCollection(container,{getSnapshot,useItem,deleteItem,onClose,assetUrl,runnerFrames=null,roomImage=null,headImage=null,onSelect=()=>{}}){
  const doc=container.ownerDocument,win=doc.defaultView,root=doc.createElement('section');root.className='collection-window';root.dataset.opening='true';root.setAttribute('role','dialog');root.setAttribute('aria-label','圆桌收藏室');
  const runner=createCollectionRunner(),assetRoot=String(assetUrl??'').replace(/inventory\/[^/]+$/,'');
- const room=roomImage??assetRoot+'inventory/round-room-v2.png',head=headImage??assetRoot+'inventory/lin-an-top-head-v2.png';
+ const room=resourceUrl(roomImage??assetRoot+'inventory/round-room-v2.png'),head=resourceUrl(headImage??assetRoot+'inventory/lin-an-top-head-v2.png');
  for(const file of [room,head]){const image=new win.Image();image.src=file;}let raf=null,lastTime=null;
  const style=doc.createElement('style');style.textContent=COLLECTION_STYLE;const content=doc.createElement('div');content.style.cssText='display:contents';root.append(style,content);container.append(root);const toolbar=doc.createElement('header');toolbar.className='collection-heading';toolbar.innerHTML='<div><small>PERSONAL COLLECTION</small><h1>随身收藏</h1></div><button data-case-close aria-label="关闭收藏匣">×</button>';root.append(toolbar);const toolbarDock=dockSceneToolbar(doc,toolbar);
  let snapshot={items:[],writable:false,chatId:''},items=[],page=0,selectedName='',destroyed=false,epoch=0,dialog=false,note='',notice='',busy=false,initialized=false,drag=null;
@@ -3515,6 +3540,7 @@ function appIcon(app){const extras=app.id==='calendar'?`<span class="ip-calendar
 Object.assign(module.exports,{phoneIcon,PHONE_APPS,appIcon});
 },
 "src/pet-v6/hyakka-transfer.mjs":function(module, load){
+const {assetUrl} = load("src/resources/asset-url.mjs");
 const {mountDesktopPet} = load("src/pet-v6/desktop-pet.mjs");
 const {frameAt,clampPetPosition,decodePetImage} = load("src/pet-v6/motion.mjs");
 const {createHyakkaLifecycle} = load("src/pet-v6/hyakka-lifecycle.mjs");
@@ -3524,8 +3550,8 @@ function mountDaggerTransfer(container,options={}){
  const doc=container.ownerDocument??container,win=doc.defaultView;
  const assetBase=options.assetBase??'/public/frontends/hypnosis-app/assets/';
  let manifest=null,lifecycle=null,alisaLifecycle=null;
- const artReady=(async()=>{const response=await win.fetch(assetBase+'pet/v6/manifest.json');if(!response.ok)throw Error('Transfer art manifest unavailable');manifest=await response.json();})();
- async function ensureStageArt(role){await artReady;const files=role==='hyakka'?['dagger','bladeSweep','groundSweep','smoke','smokeBomb'].map(name=>manifest.transfer[name]).filter(Boolean):['pet/v6/alisa-stage-cloth.png','pet/v6/alisa-stage-header.png'];await Promise.all(files.map(file=>decodePetImage(win,assetBase+file)));}
+ const artReady=(async()=>{const response=await win.fetch(assetUrl(assetBase,'pet/v6/manifest.json'));if(!response.ok)throw Error('Transfer art manifest unavailable');manifest=await response.json();})();
+ async function ensureStageArt(role){await artReady;const files=role==='hyakka'?['dagger','bladeSweep','groundSweep','smoke','smokeBomb'].map(name=>manifest.transfer[name]).filter(Boolean):['pet/v6/alisa-stage-cloth.png','pet/v6/alisa-stage-header.png'];await Promise.all(files.map(file=>decodePetImage(win,assetUrl(assetBase,file))));}
  const hook=kind=>async ctx=>{await ensureStageArt(ctx.role);if(ctx.signal?.aborted)return false;if(ctx.role==='hyakka'&&manifest.transfer.smoke)return lifecycle[kind](ctx);if(ctx.role==='alisa'&&manifest.characters.alisa?.lifecycle)return alisaLifecycle[kind](ctx);return options.transitionHooks?.[kind]?.(ctx);};
  const controller=mountDesktopPet(container,{...options,assetBase,transitionHooks:{prepare:ensureStageArt,enter:hook('enter'),exit:hook('exit')},initialCharacter:options.initialCharacter??'alisa',storageKey:options.storageKey??'hypno-pet-v6'});
  const root=controller.root,pet=controller.pet,sprite=root.querySelector('.dp-sprite'),ghost=root.querySelector('.dp-ghost');
@@ -3566,7 +3592,7 @@ function mountDaggerTransfer(container,options={}){
  function clearEffects(){for(const [id,resolve]of timers){win.clearTimeout(id);resolve();}timers.clear();for(const a of animations)a.cancel();animations.clear();for(const el of nodes)el.remove();nodes.clear();}
  function stopGhost(){ghostClock=null;for(const a of ghost.getAnimations()){a.cancel();animations.delete(a);}ghost.dataset.visible='false';ghost.style.opacity='';ghost.style.filter='';ghost.style.removeProperty('translate');}
  function paintGhost(){if(!ghostClock)return;const c=clips()[ghostClock.name];if(!c)return;let value=frameAt(c,win.performance.now()-ghostClock.started);if(ghostClock.hold!=null)value.index=Math.min(value.index,ghostClock.hold);
-  ghost.style.backgroundImage=`url('${assetBase+c.file}')`;ghost.style.backgroundSize=`${c.columns*112}px ${c.rows*112}px`;ghost.style.backgroundPosition=`${-(value.index%c.columns)*112}px ${-Math.floor(value.index/c.columns)*112}px`;ghost.dataset.sourceIndex=c.sourceIndices[value.index];ghost.dataset.phase=ghostClock.name;
+  ghost.style.backgroundImage=`url('${assetUrl(assetBase,c.file)}')`;ghost.style.backgroundSize=`${c.columns*112}px ${c.rows*112}px`;ghost.style.backgroundPosition=`${-(value.index%c.columns)*112}px ${-Math.floor(value.index/c.columns)*112}px`;ghost.dataset.sourceIndex=c.sourceIndices[value.index];ghost.dataset.phase=ghostClock.name;
  }
  function tick(){raf=0;if(destroyed)return;paintGhost();if(ghostClock&&!doc.hidden)raf=win.requestAnimationFrame(tick);}
  function showGhost(name,target,hold=null){ghostClock={name,started:win.performance.now(),hold};ghost.dataset.visible='true';ghost.style.opacity='.68';ghost.style.filter='brightness(1.35) sepia(.15) drop-shadow(0 0 2px #f1ecff) drop-shadow(0 0 10px #9681ef)';ghost.style.setProperty('--dp-x',target.x+'px');ghost.style.setProperty('--dp-y',target.y+'px');paintGhost();if(!raf)raf=win.requestAnimationFrame(tick);}
@@ -3575,7 +3601,7 @@ function mountDaggerTransfer(container,options={}){
  function flash(point){const star=node('hx-star',point.x+56,point.y+54);effect(star,[{opacity:0,scale:'.15',rotate:'-20deg'},{opacity:1,scale:'1.05',offset:.18},{opacity:0,scale:'1.8',rotate:'25deg'}],{duration:230});}
  function pathBlades(from,to){if(reduce.matches)return;const dx=to.x-from.x,dy=to.y-from.y,length=Math.hypot(dx,dy),angle=Math.atan2(dy,dx)*180/Math.PI;
   const core=node('hx-core',from.x+56,from.y+60);core.style.width=length+'px';core.style.rotate=angle+'deg';effect(core,[{opacity:0,scale:'0 1'},{opacity:1,scale:'1 2',offset:.2},{opacity:0,scale:'1 .1'}],{duration:230});
-  if(manifest.transfer.bladeSweep){for(let i=0;i<5;i++){const t=(i+.5)/5,el=doc.createElement('img');el.className='hx-arc';el.alt='';el.src=assetBase+manifest.transfer.bladeSweep;el.style.cssText=`left:${from.x+56+dx*t-100}px;top:${from.y+60+dy*t-60}px;width:200px;height:120px;rotate:${angle+(i%2?34:-34)}deg;`;root.append(el);nodes.add(el);effect(el,[{opacity:0,scale:'.25 .1'},{opacity:1,scale:'1.1 1',offset:.17},{opacity:.65,offset:.45},{opacity:0,scale:'1.35 .3'}],{duration:370,delay:i*32});}}
+  if(manifest.transfer.bladeSweep){for(let i=0;i<5;i++){const t=(i+.5)/5,el=doc.createElement('img');el.className='hx-arc';el.alt='';el.src=assetUrl(assetBase,manifest.transfer.bladeSweep);el.style.cssText=`left:${from.x+56+dx*t-100}px;top:${from.y+60+dy*t-60}px;width:200px;height:120px;rotate:${angle+(i%2?34:-34)}deg;`;root.append(el);nodes.add(el);effect(el,[{opacity:0,scale:'.25 .1'},{opacity:1,scale:'1.1 1',offset:.17},{opacity:.65,offset:.45},{opacity:0,scale:'1.35 .3'}],{duration:370,delay:i*32});}}
   for(let j=0;j<3;j++){const el=node('hx-streak',from.x+56,from.y+58+(j-1)*7);el.style.width=Math.max(60,length+28)+'px';el.style.rotate=angle+(j-1)*2+'deg';effect(el,[{opacity:0,scale:'.03 .4'},{opacity:1,scale:'1 1',offset:.22},{opacity:.7,offset:.48},{opacity:0,scale:'1.08 .1'}],{duration:330+j*28,delay:j*15,easing:'cubic-bezier(.14,.8,.2,1)'});}
   const count=Math.min(9,Math.max(3,Math.ceil(length/70)));
   for(let i=0;i<count;i++){const t=(i+1)/(count+1),el=node('hx-cut',from.x+56+dx*t,from.y+60+dy*t);el.style.width=45+(i%3)*17+'px';el.style.rotate=angle+(i%2?-42:42)+'deg';effect(el,[{opacity:0,scale:'.15 .3'},{opacity:1,scale:'1 1.15',offset:.25},{opacity:0,scale:'1.45 .08'}],{duration:260+i*14,delay:i*16});}
@@ -3596,7 +3622,7 @@ function mountDaggerTransfer(container,options={}){
    showGhost('ghost-throw',route.target);
    controller.play('charge-finish');setStage('finish');ring(route.origin);await pause(195,tag);controller.play('throw-hold');log('charge-complete');setStage('flight');log('dagger-launched',{from:route.origin,to:route.target});
    const start={x:route.origin.x+56,y:route.origin.y+53},end={x:route.target.x+56,y:route.target.y+98},dx=end.x-start.x,dy=end.y-start.y,angle=Math.atan2(dy,dx)*180/Math.PI,flight=Math.round(160+Math.min(100,Math.hypot(dx,dy)*.16));
-   const dagger=doc.createElement('img');dagger.className='hx-dagger';dagger.alt='';dagger.src=assetBase+manifest.transfer.dagger;dagger.style.left=start.x-24+'px';dagger.style.top=start.y-7+'px';root.append(dagger);nodes.add(dagger);
+   const dagger=doc.createElement('img');dagger.className='hx-dagger';dagger.alt='';dagger.src=assetUrl(assetBase,manifest.transfer.dagger);dagger.style.left=start.x-24+'px';dagger.style.top=start.y-7+'px';root.append(dagger);nodes.add(dagger);
    effect(dagger,[{opacity:0,transform:`translate3d(0,0,0) rotate(${angle}deg)`,offset:0},{opacity:1,transform:`translate3d(${dx*.12}px,${dy*.12-8}px,0) rotate(${angle+45}deg)`,offset:.12},{opacity:1,transform:`translate3d(${dx*.55}px,${dy*.55-28}px,0) rotate(${angle+200}deg)`,offset:.55},{opacity:1,transform:`translate3d(${dx}px,${dy}px,0) rotate(${angle+360}deg)`}],{duration:flight,easing:'cubic-bezier(.25,.6,.3,1)',removeAfter:false});
    await pause(flight,tag);remove(dagger);log('dagger-arrived');flash(route.target);ring(route.target);
    await pause(60,tag);effect(sprite,[{opacity:1,filter:'brightness(1)'},{opacity:.6,filter:'brightness(3)',offset:.45},{opacity:0,filter:'brightness(5)'}],{duration:75,removeAfter:false});
@@ -3626,6 +3652,7 @@ function mountDaggerTransfer(container,options={}){
 Object.assign(module.exports,{mountDaggerTransfer});
 },
 "src/pet-v6/desktop-pet.mjs":function(module, load){
+const {assetUrl} = load("src/resources/asset-url.mjs");
 const {phoneIcon} = load("src/phone-v2/icons.mjs");
 const {PET_CHARACTERS,PET_NAMES,clampPetPosition,stepDragSpring,chooseIdle,frameAt,legacyClips,clipDuration,dragGripForClip,anchoredPetPosition,continuousTurnDelta,impulseDragRotation,advanceClipClock,reversedMenuClip,decodePetImage,releasePetFlight,stepPetFlight,flightPetPosition,petFlightLandingPosition} = load("src/pet-v6/motion.mjs");
 function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/assets/',actions={},initialCharacter='alisa',storageKey='hypno-pet-v6',onCharacter=()=>{},transitionHooks={}}={}){
@@ -3659,7 +3686,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  function viewport(){const v=win.visualViewport;return {left:v?.offsetLeft??0,top:v?.offsetTop??0,width:v?.width??win.innerWidth,height:v?.height??win.innerHeight};}
  function save(){try{win.localStorage.setItem(storageKey,JSON.stringify({...position,role}));}catch{}}
  function move(next,{anchored=false}={}){const value=anchored?{...next}:clampPetPosition(next,viewport());if(value.x===position.x&&value.y===position.y&&pet.style.getPropertyValue('--dp-x'))return;position=value;pet.style.setProperty('--dp-x',position.x+'px');pet.style.setProperty('--dp-y',position.y+'px');}
- function updateClips(){const authored=manifest?.characters?.[role]?.clips;clips=authored?{}:legacyClips(role,assetBase);for(const [name,clip] of Object.entries(authored??{}))clips[name]={...clip,url:assetBase+clip.file};}
+ function updateClips(){const authored=manifest?.characters?.[role]?.clips;clips=authored?{}:legacyClips(role,assetBase);for(const [name,clip] of Object.entries(authored??{}))clips[name]={...clip,url:assetUrl(assetBase,clip.file)};}
  const textures=new Map(),textureTasks=new Map();
  const decode=clip=>{if(!textureTasks.has(clip.url))textureTasks.set(clip.url,(async()=>{await decodePetImage(win,clip.url);const image=new win.Image();image.className='dp-texture';image.alt='';image.draggable=false;image.decoding='sync';image.src=clip.url;await image.decode();textures.set(clip.url,image);return image;})().catch(error=>{textureTasks.delete(clip.url);throw error;}));return textureTasks.get(clip.url);};
  function currentGrip(index=painted){return dragGripForClip(manifest?.characters?.[role],activeClip??clips[state],Math.max(0,index));}
@@ -3730,7 +3757,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  function clearTimers(){for(const [id,resolve]of timers){win.clearTimeout(id);resolve();}timers.clear();}
  async function transition(kind,token){const handled=await transitionHooks[kind]?.({role,position:{...position},play,sprite,root,signal:transitionAbort?.signal});if(token!==transitionToken)return;if(!handled){play(kind);await animate(sprite,kind==='exit'?[{opacity:1,translate:'0 0'},{opacity:0,translate:'0 14px'}]:[{opacity:0,translate:'0 14px'},{opacity:1,translate:'0 0'}],{duration:Math.max(kind==='exit'?280:320,(clips[kind]?.durations??[]).reduce((a,b)=>a+b,0))});if(kind==='enter'&&token===transitionToken)play('idle');}}
  function cancelTransition(){if(!locked||!transitionAbort)return;transitionToken++;flight=null;const resolveFlight=flightFinish;flightFinish=null;resolveFlight?.(false);move(position);transitionAbort.abort();transitionAbort=null;clearTimers();landingStage='idle';for(const a of animations)a.cancel();animations.clear();locked=false;pet.disabled=false;sprite.style.visibility='';sprite.style.setProperty('--dp-angle','0rad');spring={angle:0,omega:0};sprite.style.opacity='';sprite.style.removeProperty('translate');play('idle');resetIdleDeadline(win.performance.now());}
- async function switchCharacter(){if(locked||drag)return;locked=true;closeMenu({immediate:true});const token=++transitionToken,next=role==='alisa'?'hyakka':'alisa';transitionAbort=new win.AbortController();const nextClips=manifest?.characters?.[next]?.clips?{}:legacyClips(next,assetBase);for(const [name,c]of Object.entries(manifest?.characters?.[next]?.clips??{}))nextClips[name]={...c,url:assetBase+c.file};
+ async function switchCharacter(){if(locked||drag)return;locked=true;closeMenu({immediate:true});const token=++transitionToken,next=role==='alisa'?'hyakka':'alisa';transitionAbort=new win.AbortController();const nextClips=manifest?.characters?.[next]?.clips?{}:legacyClips(next,assetBase);for(const [name,c]of Object.entries(manifest?.characters?.[next]?.clips??{}))nextClips[name]={...c,url:assetUrl(assetBase,c.file)};
   try{const preparing=Promise.all([...["idle","enter","exit","menu-open","menu-idle","drag","drag-hold"].filter(name=>nextClips[name]).map(name=>decode(nextClips[name])),transitionHooks.prepare?.(next)]);preparing.catch(()=>{});await transition('exit',token);if(token!==transitionToken)return;sprite.style.visibility='hidden';await preparing;if(token!==transitionToken)return;role=next;updateClips();pet.dataset.character=role;play('enter');pet.title=role==='alisa'?'抓住双马尾轻甩可连续旋转；滚轮或双指辅助':'拖动虚影选点，松开后瞬闪';onCharacter(role);await transition('enter',token);if(token===transitionToken){sprite.style.visibility='';save();void Promise.allSettled(Object.values(nextClips).map(decode));}}catch(error){if(token===transitionToken){sprite.style.visibility='';sprite.style.opacity='';play('idle');win.console.warn('[HypnoOS pet] 换人资源暂未就绪',error.message);}}finally{if(token===transitionToken){transitionAbort=null;locked=false;resetIdleDeadline(win.performance.now());wake();}}
  }
  pet.addEventListener('wheel',e=>{if(!drag?.moved||role!=='alisa')return;e.preventDefault();drag.manualAngle=(drag.manualAngle??spring.angle)-Math.max(-180,Math.min(180,e.deltaY))*.012;wake();},{signal,passive:false});pet.addEventListener('pointerdown',down,{signal});pet.addEventListener('pointermove',pointerMove,{signal});pet.addEventListener('pointerup',e=>{settledPromise=up(e);},{signal});pet.addEventListener('pointercancel',cancelDrag,{signal});pet.addEventListener('lostpointercapture',event=>{if(drag&&event.pointerId===drag.id)cancelDrag();else if(drag?.rotationPointer?.id===event.pointerId)drag.rotationPointer=null;},{signal});pet.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(suppressClick&&e.detail!==0&&win.performance.now()<=suppressClickUntil){suppressClick=false;return;}suppressClick=false;if(ring.hidden)openMenu();else closeMenu();},{signal});pet.addEventListener('contextmenu',e=>{e.preventDefault();openMenu();},{signal});
@@ -3740,7 +3767,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  doc.addEventListener('pointerup',e=>{if(drag&&(e.pointerId===drag.id||e.pointerId===drag.rotationPointer?.id))settledPromise=up(e);},{signal});
  doc.addEventListener('pointerdown',e=>{if(!e.composedPath().includes(root))closeMenu();},{signal});doc.addEventListener('visibilitychange',()=>{if(doc.hidden){cancelDrag();cancelTransition();closeMenu({immediate:true});win.cancelAnimationFrame(raf);raf=0;last=0;}else{started=win.performance.now();clock={...clock,at:started};resetIdleDeadline(started);wake();}},{signal});win.addEventListener('blur',()=>{closeMenu({immediate:true});cancelDrag();cancelTransition();},{signal});win.addEventListener('resize',()=>{cancelDrag();cancelTransition();move(position);closeMenu({immediate:true});},{signal});media.addEventListener('change',()=>{cancelDrag();cancelTransition();if(state.startsWith('menu-')){cancelMenuJump();play(ring.hidden?'idle':'menu-idle');}sprite.style.setProperty('--dp-angle','0rad');wake();},{signal});
  buildMenu();move(position);updateClips();pet.dataset.character=role;pet.title=role==='alisa'?'抓住双马尾轻甩可连续旋转；滚轮或双指辅助':'拖动虚影选点，松开后瞬闪';pet.disabled=true;resetIdleDeadline(win.performance.now());
- const ready=(async()=>{try{const response=await win.fetch(assetBase+'pet/v6/manifest.json');if(response.ok){manifest=await response.json();updateClips();}}catch{}await Promise.all(['idle','enter','exit','drag','drag-hold','landing','charge','blink','menu-open','menu-idle','menu-close'].filter(name=>clips[name]).map(name=>decode(clips[name])));if(destroyed)return;const warmBackground=async()=>{const other=role==='alisa'?'hyakka':'alisa',otherAuthored=manifest?.characters?.[other]?.clips??{};await Promise.allSettled([...Object.entries(otherAuthored).filter(([name])=>['idle','enter','exit','menu-open','menu-idle','drag','drag-hold'].includes(name)).map(([,clip])=>decode({...clip,url:assetBase+clip.file})),transitionHooks.prepare?.(other)]);if(!destroyed)await Promise.allSettled([...Object.values(clips),...Object.values(otherAuthored).map(clip=>({...clip,url:assetBase+clip.file}))].map(decode));};locked=true;const token=++transitionToken;transitionAbort=new win.AbortController();try{await transition('enter',token);}finally{if(token===transitionToken){transitionAbort=null;locked=false;pet.disabled=false;resetIdleDeadline(win.performance.now());wake();}}if(!destroyed)void warmBackground();})();
+ const ready=(async()=>{try{const response=await win.fetch(assetUrl(assetBase,'pet/v6/manifest.json'));if(response.ok){manifest=await response.json();updateClips();}}catch{}await Promise.all(['idle','enter','exit','drag','drag-hold','landing','charge','blink','menu-open','menu-idle','menu-close'].filter(name=>clips[name]).map(name=>decode(clips[name])));if(destroyed)return;const warmBackground=async()=>{const other=role==='alisa'?'hyakka':'alisa',otherAuthored=manifest?.characters?.[other]?.clips??{};await Promise.allSettled([...Object.entries(otherAuthored).filter(([name])=>['idle','enter','exit','menu-open','menu-idle','drag','drag-hold'].includes(name)).map(([,clip])=>decode({...clip,url:assetUrl(assetBase,clip.file)})),transitionHooks.prepare?.(other)]);if(!destroyed)await Promise.allSettled([...Object.values(clips),...Object.values(otherAuthored).map(clip=>({...clip,url:assetUrl(assetBase,clip.file)}))].map(decode));};locked=true;const token=++transitionToken;transitionAbort=new win.AbortController();try{await transition('enter',token);}finally{if(token===transitionToken){transitionAbort=null;locked=false;pet.disabled=false;resetIdleDeadline(win.performance.now());wake();}}if(!destroyed)void warmBackground();})();
  return {root,pet,ready,openMenu,closeMenu,switchCharacter,play,cancelDrag,cancelTransition,whenSettled:()=>settledPromise,place(next,{persist=false}={}){if(drag||locked)return;move(next);closeMenu({immediate:true});if(persist)save();},setActions(next){actions=next;buildMenu();},snapshot(){return {role,state,position:{...position},drag:drag?{moved:drag.moved,origin:{...drag.origin},target:{...drag.target},pointer:{...drag.pointer},grip:{...drag.grip},manualAngle:drag.manualAngle??null,rotationPointerId:drag.rotationPointer?.id??null}:null,landingStage,frameIndex:painted,textureFrameIndex:paintedTexture,clipElapsed:clock.elapsed,angle:spring.angle,omega:spring.omega,flight:flight?{...flight}:null,locked,menuOpen:!ring.hidden,menuAnimating:!!menuJump};},destroy(){destroyed=true;flight=null;flightFinish?.(false);flightFinish=null;clipFinish?.(false);clipFinish=null;for(const waiter of clipWaiters)waiter.resolve(false);clipWaiters=[];transitionToken++;transitionAbort?.abort();clearTimers();abort.abort();win.cancelAnimationFrame(raf);for(const a of animations)a.cancel();animations.clear();root.remove();}};
 }
 
@@ -3850,6 +3877,7 @@ function stepPetFlight(state,viewport,dt){
 Object.assign(module.exports,{decodePetImage,PET_CHARACTERS,PET_NAMES,clampPetPosition,impulseDragRotation,stepDragSpring,advanceClipClock,reversedMenuClip,clipDuration,dragGripForClip,anchoredPetPosition,continuousTurnDelta,chooseIdle,frameAt,legacyClips,releasePetFlight,flightPetPosition,petFlightLandingPosition,stepPetFlight});
 },
 "src/pet-v6/hyakka-lifecycle.mjs":function(module, load){
+const {assetUrl} = load("src/resources/asset-url.mjs");
 // Whole-character entrance/exit clips are model drawn. Only detached props and
 // spatial movement are animated here. This module can be passed as transitionHooks.
 function createHyakkaLifecycle({root,sprite,assetBase,getManifest,motionPreference,onStage=()=>{}}){
@@ -3862,7 +3890,7 @@ function createHyakkaLifecycle({root,sprite,assetBase,getManifest,motionPreferen
  function cancel(reason='cancel'){epoch++;busy=false;clear();stage('idle');log(reason);}
  const alive=tag=>tag===epoch&&!destroyed;
  function pause(ms,tag){return new Promise(resolve=>{const id=win.setTimeout(()=>{timers.delete(id);resolve();},reduce.matches?0:ms);timers.set(id,resolve);}).then(()=>{if(!alive(tag))throw Error('lifecycle-cancelled');});}
- function picture(kind,file,x,y,initial={}){const el=doc.createElement('img');el.className='hx-'+kind;el.alt='';el.src=assetBase+file;el.style.left=x+'px';el.style.top=y+'px';Object.assign(el.style,initial);root.append(el);nodes.add(el);return el;}
+ function picture(kind,file,x,y,initial={}){const el=doc.createElement('img');el.className='hx-'+kind;el.alt='';el.src=assetUrl(assetBase,file);el.style.left=x+'px';el.style.top=y+'px';Object.assign(el.style,initial);root.append(el);nodes.add(el);return el;}
  function effect(el,keyframes,{duration=300,delay=0,easing='ease-out',remove=false}={}){if(reduce.matches){if(remove){nodes.delete(el);el.remove();}return;}const a=el.animate(keyframes,{duration,delay,easing,fill:'forwards'});animations.add(a);a.finished.catch(()=>{}).finally(()=>{if(remove){nodes.delete(el);el.remove();}});return a;}
  function plantDagger(file,x,y,i,tag){
   // Delayed blades must already be hidden above the ground before insertion.
@@ -3910,6 +3938,7 @@ function createHyakkaLifecycle({root,sprite,assetBase,getManifest,motionPreferen
 Object.assign(module.exports,{createHyakkaLifecycle});
 },
 "src/pet-v6/alisa-lifecycle.mjs":function(module, load){
+const {assetUrl} = load("src/resources/asset-url.mjs");
 const {clipDuration} = load("src/pet-v6/motion.mjs");
 // The stage is independent ImageGen decoration. Character poses remain approved
 // whole-character strips; no limb or body transforms create new character poses.
@@ -3944,8 +3973,8 @@ function createAlisaLifecycle({root,sprite,assetBase='/public/frontends/hypnosis
   const mask=doc.createElement('span');mask.className='al-curtain-mask';
   const drop=doc.createElement('span');drop.className='al-curtain-drop';
   const back=doc.createElement('span');back.className='al-curtain-back';
-  const cloth=doc.createElement('img');cloth.className='al-curtain';cloth.alt='';cloth.src=assetBase+'pet/v6/alisa-stage-cloth.png';cloth.draggable=false;drop.append(back,cloth);mask.append(drop);
-  const header=doc.createElement('img');header.className='al-stage-header';header.alt='';header.src=assetBase+'pet/v6/alisa-stage-header.png';header.draggable=false;
+  const cloth=doc.createElement('img');cloth.className='al-curtain';cloth.alt='';cloth.src=assetUrl(assetBase,'pet/v6/alisa-stage-cloth.png');cloth.draggable=false;drop.append(back,cloth);mask.append(drop);
+  const header=doc.createElement('img');header.className='al-stage-header';header.alt='';header.src=assetUrl(assetBase,'pet/v6/alisa-stage-header.png');header.draggable=false;
   stageRoot.append(mask,header);return{stageRoot,cloth:drop};
  }
  async function finishClip(result,duration,tag){if(result?.then)await result;else await pause(duration,tag);assertAlive(tag);}
@@ -4050,6 +4079,8 @@ function normalizeHypnosisBatch(draft,snapshot) {
 Object.assign(module.exports,{hypnosisCommands,hypnosisCost,normalizeHypnosisRequest,hypnosisOrganTargetEligible,hypnosisBodyParts,normalizeHypnosisBatch});
 },
 "src/phone-v2/phone.mjs":function(module, load){
+const {prepareRuntimeResources} = load("src/resources/local-install.mjs");
+const {assetUrl,resourceUrl} = load("src/resources/asset-url.mjs");
 const {inspectDistributionContext,requireDistributionAccess} = load("src/distribution/access.mjs");
 const { animateIosApp } = load("src/phone-v2/app-motion.mjs");
 const { CREDIT } = load("src/game/credits.mjs");
@@ -4092,7 +4123,7 @@ async function mountIphone16Phone(container,{getSnapshot,stageHypnosis,getPhotos
 
 
  function leaveMusic(){musicView?.destroy();musicView=null;}
- const resolveMusicFile=file=>/^(?:https?:|blob:|data:|\/)/.test(file)?file:(snapshot.assetBase??win.__ST_GAME_ASSET_BASE__??'/public/frontends/hypnosis-app/assets/').replace(/\/?$/,'/')+file;
+ const resolveMusicFile=file=>resourceUrl(/^(?:https?:|blob:|data:|\/)/.test(file)?file:(snapshot.assetBase??win.__ST_GAME_ASSET_BASE__??'/public/frontends/hypnosis-app/assets/').replace(/\/?$/,'/')+file);
  function ensureMusicSession(){return musicSession??=createMusicSession({resolveFile:resolveMusicFile,cache:musicCache,audioFactory:()=>doc.createElement('audio'),urlApi:win.URL,win,onPlayback:(state,track)=>{if(!destroyed)musicIsland.update(state,track);}});}
  function home(){const date=dateParts(snapshot),people=present(snapshot);return `<section class="ip-home"><div class="ip-widgets"><button class="ip-widget ip-date-widget" data-open="calendar" aria-label="查看今天的日期"><small>${date.weekday}</small><div class="ip-widget-orb"></div><h2>${date.month}月${date.day}日</h2><p>${date.year}年 ${phoneIcon('calendar')}</p></button><button class="ip-widget people" data-scope="personal"><small>此刻与你同在</small><strong>${people.length}<span style="font-size:12px;font-weight:450;margin-left:4px">人</span></strong><p>${escape(snapshot.location?.name??'当前地点')}</p><div class="ip-mini-faces">${people.slice(0,3).map(p=>p.photo?`<img alt="${escape(p.name)}" src="${photoUrl(p.photo)}">`:`<i>${escape(p.name.slice(-1))}</i>`).join('')}</div></button></div><div class="ip-app-grid">${PHONE_APPS.filter(x=>!x.dock).map(app=>`<button class="ip-app" data-open="${app.id}" aria-label="打开${app.name}">${appIcon({...app,day:date.day,dayLabel:date.weekday})}<span>${app.name}</span></button>`).join('')}</div><div class="ip-home-bottom"><button class="ip-home-search" data-action="search">${phoneIcon('search')}搜索</button><nav class="ip-dock" aria-label="常用应用">${PHONE_APPS.filter(x=>x.dock).map(app=>`<button class="ip-app" data-open="${app.id}" aria-label="打开${app.name}">${appIcon(app)}<span>${app.name}</span></button>`).join('')}</nav></div></section>`;}
  function appSearch(){const apps=PHONE_APPS.filter(x=>!search||x.name.includes(search));return `<section class="ip-app-page"><div class="ip-scroll"><h1 class="ip-title">搜索</h1><label class="ip-search">${phoneIcon('search')}<input data-bind="search" aria-label="搜索应用" placeholder="搜索应用" value="${escape(search)}"></label>${apps.map(app=>`<button class="ip-simple-row" data-open="${app.id}" style="width:100%;border:0;background:none;text-align:left">${appIcon(app)}<span>${app.name}</span>${phoneIcon('chevron')}</button>`).join('')}</div></section>`;}
@@ -4102,7 +4133,7 @@ async function mountIphone16Phone(container,{getSnapshot,stageHypnosis,getPhotos
   if(appId==='clock'){const [hours,minutes]=String(snapshot.time??'10:40').split(':').map(Number);body=`<div class="ip-clock-face"><span class="ip-clock-digit" style="left:calc(50% - 8px);top:12px">12</span><span class="ip-clock-digit" style="right:15px;top:calc(50% - 8px)">3</span><span class="ip-clock-digit" style="bottom:12px;left:calc(50% - 5px)">6</span><span class="ip-clock-digit" style="left:15px;top:calc(50% - 8px)">9</span><i class="ip-clock-hand hour" style="transform:rotate(${hours%12*30+minutes*.5}deg)"></i><i class="ip-clock-hand" style="transform:rotate(${minutes*6}deg)"></i></div><h2 style="text-align:center;font-size:37px;font-weight:350;color:#8e749f">${escape(snapshot.time)}</h2><p class="ip-subtitle" style="text-align:center">${escape(snapshot.location?.name)}</p>`;}
   else if(appId==='calendar'){body=`<h2 style="font-size:24px;font-weight:450;color:#9d82ac;margin-top:30px">${date.year} 年 ${date.month} 月</h2><div class="ip-calendar-grid">${['日','一','二','三','四','五','六'].map(x=>`<span style="font-size:10px;color:#beacc8">${x}</span>`).join('')}${Array(date.first).fill('<span></span>').join('')}${Array.from({length:date.days},(_,i)=>`<span class="${i+1===date.day?'today':''}">${i+1}</span>`).join('')}</div><div class="ip-context-chip">${phoneIcon('location')}${escape(snapshot.location?.name??'当前地点')} · ${escape(snapshot.time)}</div>`;}
   else if(appId==='help'){body='<div class="ip-summary">个人催眠可复选在场人物，逐人计费与结算。<br>地点催眠包含封闭与开放空间，均为临时生效。<br>抵抗突破后仍需独立剧情判定。<br><br>操作写入日程，读完对话后推进。消息按当前聊天保存；给联系人发消息同样会加入日程。</div><h2 style="margin:28px 0 12px;font-size:19px;font-weight:600">感谢与署名</h2>'+PHONE_HELP_ACKNOWLEDGEMENTS.map(item=>`<section style="padding:12px 0;border-bottom:1px solid #dcd3e3"><strong style="font-size:12px;color:#9573a1">${escape(item.title)}</strong><p style="font-size:12px;line-height:1.9;color:#786581;overflow-wrap:anywhere">${escape(item.text)}</p></section>`).join('');}
-  else if(appId==='settings'){const access=inspectDistributionContext(win),canDownload=access.ok&&access.host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?.authorize?.(access.host.__ST_HYPNOOS_INTEGRITY_GATE_V1__.revision);body=`<div class="ip-simple-row">${phoneIcon('moon')}<span>外观</span><small>暮紫</small></div><button class="ip-simple-row" data-action="legacy" style="width:100%;background:none;border-left:0;border-right:0;border-top:0">${phoneIcon('settings')}<span>聊天与模型设置</span>${phoneIcon('chevron')}</button><div class="ip-simple-row">${phoneIcon('hypnosis')}<span>HypnoOS</span><small>完全免费</small></div>${canDownload?`<a class="ip-simple-row" data-action="resource-download" href="${escape(new URL('../pet-resources.zip',new URL(snapshot.assetBase??win.__ST_GAME_ASSET_BASE__??'/public/frontends/hypnosis-app/assets/',doc.baseURI)).href)}" download="桌宠本地资源包.zip" style="color:inherit;text-decoration:none">${phoneIcon('inventory')}<span>下载桌宠资源包</span>${phoneIcon('chevron')}</a><p class="ip-subtitle" style="margin:12px 0;line-height:1.8">可选的本地图片包。解压到酒馆当前用户的 user/files 目录，重载聊天后生效。未安装或文件不完整时继续使用 CDN。</p>`:''}`;}
+  else if(appId==='settings'){const access=inspectDistributionContext(win),canDownload=access.ok&&access.host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?.authorize?.(access.host.__ST_HYPNOOS_INTEGRITY_GATE_V1__.revision);body=`<div class="ip-simple-row">${phoneIcon('moon')}<span>外观</span><small>暮紫</small></div><button class="ip-simple-row" data-action="legacy" style="width:100%;background:none;border-left:0;border-right:0;border-top:0">${phoneIcon('settings')}<span>聊天与模型设置</span>${phoneIcon('chevron')}</button><div class="ip-simple-row">${phoneIcon('hypnosis')}<span>HypnoOS</span><small>完全免费</small></div>${canDownload?`<button type="button" class="ip-simple-row" data-action="resource-download" style="width:100%;border:0;background:none;color:inherit">${phoneIcon('inventory')}<span>检查并补充本地资源</span>${phoneIcon('chevron')}</button><p class="ip-subtitle" style="margin:12px 0;line-height:1.8">图片和音乐保存在当前酒馆用户的 user/files 目录。缺失或更新时仅下载需要补充的文件。</p>`:''}`;}
   else body=`<button class="ip-primary" data-action="legacy">打开${escape(app.name)}${phoneIcon('chevron')}</button>`;
   return `<section class="ip-app-page"><div class="ip-scroll"><p class="ip-kicker">HYPNOOS</p><h1 class="ip-title">${escape(app.name)}</h1><p class="ip-subtitle">${appId==='photos'?'保留下来的每一个瞬间。':appId==='clock'||appId==='calendar'?'当前故事时间':''}</p>${body||'<div class="ip-empty">暂无记录</div>'}<p class="ip-subtitle">${CREDIT}</p></div></section>`;
  }
@@ -4124,7 +4155,7 @@ async function mountIphone16Phone(container,{getSnapshot,stageHypnosis,getPhotos
  function go(next,id=appId,source=null){return motion.run(async()=>{if(destroyed||(next===route&&id===appId))return;const previous=route,previousApp=appId,origin=(source?.querySelector('.ip-app-icon')??source)?.getBoundingClientRect()??iconRect(id),kind=next==='home'?'close':previous==='home'||previous==='app-search'?'open':'push';appChanging=true;try{await animateIosApp(content,{kind,origin:kind==='close'?()=>iconRect(previousApp):origin,render(){if(previous==='legacy'){onHome();win.__ST_IPHONE16_LEGACY_ROOT__=null;}appId=id;route=next;if(next==='home')search='';render();}});}finally{appChanging=false;}});}
  async function launch(id,source=null){if(source)appOrigins.set(id,source.classList.contains('ip-widget')?'ip-widget':'ip-app');if(!PHONE_APPS.some(x=>x.id===id))return;if(['hypnosis','photos','music'].includes(id)){await go(id,id,source);return;}if(['clock','calendar','help','settings'].includes(id)){await go('simple',id,source);return;}await legacy(id,source);}
  async function legacy(id=appId,source=null){if(!openApp){notify('此应用尚未连接');return;}await go('legacy',id,source);if(destroyed||route!=='legacy'||appId!==id)return;try{await openApp(id,content.querySelector('.ip-legacy-slot'));}catch(error){if(!destroyed){route='simple';render();notify(error.message);}}}
- root.addEventListener('click',async event=>{const button=event.target.closest('[data-open],[data-route],[data-scope],[data-action],[data-detail]');if(!button||button.disabled)return;if(button.dataset.action==='resource-download'){try{requireDistributionAccess(win);}catch(error){event.preventDefault();notify(error.message);}return;}
+ root.addEventListener('click',async event=>{const button=event.target.closest('[data-open],[data-route],[data-scope],[data-action],[data-detail]');if(!button||button.disabled)return;if(button.dataset.action==='resource-download'){event.preventDefault();try{requireDistributionAccess(win);button.disabled=true;await prepareRuntimeResources({remoteBase:(snapshot.assetBase??win.__ST_GAME_ASSET_BASE__??'/public/frontends/hypnosis-app/assets/').replace(/\/?$/,'/'),win,force:true});notify('本地资源已完整准备');}catch(error){notify(error.message);}finally{button.disabled=false;}return;}
   if(button.dataset.open){await launch(button.dataset.open,button);return;}if(button.dataset.route){go(button.dataset.route);return;}if(button.dataset.scope){draft={...draft,scope:button.dataset.scope};search='';go('hypnosis','hypnosis',button);return;}
   if(button.dataset.action==='search'){search='';go('app-search');return;}
   if(button.dataset.action==='legacy'){await legacy();return;}
@@ -4135,6 +4166,63 @@ async function mountIphone16Phone(container,{getSnapshot,stageHypnosis,getPhotos
 }
 
 Object.assign(module.exports,{mountIphone16Phone});
+},
+"src/resources/local-install.mjs":function(module, load){
+const {requireDistributionAccess} = load("src/distribution/access.mjs");
+const {registerResourceMap} = load("src/resources/asset-url.mjs");
+const RESOURCE_INDEX='hypnoos-assets-index-v1.json';
+function resourceFileName(file){return 'hypnoos-asset-'+file.sha256+'.'+file.path.split('.').pop().toLowerCase();}
+function validateResourceManifest(value){
+ if(value?.schema!==1||!Array.isArray(value.files)||!value.files.length||value.count!==value.files.length||!/^[a-f0-9]{64}$/.test(value.revision))throw Error('资源清单格式错误');
+ const seen=new Set();let total=0;
+ for(const f of value.files){if(typeof f.path!=='string'||f.path.startsWith('/')||f.path.includes('\\')||f.path.split('/').some(x=>!x||x==='.'||x==='..')||!/\.(png|jpe?g|webp|gif|svg|m4a|mp3|ogg|wav|mp4|webm|woff2?|json)$/i.test(f.path)||!/^[a-f0-9]{64}$/.test(f.sha256)||!Number.isSafeInteger(f.size)||f.size<1||f.size>64*1048576||seen.has(f.path))throw Error('资源清单包含无效文件');seen.add(f.path);total+=f.size;}
+ if(total!==value.totalBytes||total>2*1024**3)throw Error('资源总大小错误');return value;
+}
+const hex=bytes=>[...new Uint8Array(bytes)].map(x=>x.toString(16).padStart(2,'0')).join('');
+function createResourceInstaller({manifest,remoteBase,host,authorize=()=>requireDistributionAccess(host),onProgress=()=>{},timeoutMs=60000}){
+ validateResourceManifest(manifest);const context=()=>host.SillyTavern.getContext();
+ const headers=()=>{const get=context()?.getRequestHeaders??host.getRequestHeaders;if(typeof get!=='function')throw Error('酒馆文件保存接口尚未就绪');return get();};
+ const indexUrl=new URL('/user/files/'+RESOURCE_INDEX,host.location.href).href;
+ const localUrl=file=>new URL('/user/files/'+resourceFileName(file),host.location.href).href;
+ let receipt={schema:1,revision:manifest.revision,files:{}},completed=new Set(),running=null,saveChain=Promise.resolve();
+ async function request(url,options={},read="json"){authorize();const controller=new host.AbortController(),timer=host.setTimeout(()=>controller.abort(),timeoutMs);try{const response=await host.fetch(url,{...options,signal:controller.signal,redirect:'error'});if(!response.ok)throw Error('资源请求失败（'+response.status+'）');return await response[read]();}finally{host.clearTimeout(timer);}}
+ const notify=()=>onProgress({complete:completed.size,count:manifest.count,bytes:manifest.files.reduce((n,f)=>n+(completed.has(f.path)?f.size:0),0),totalBytes:manifest.totalBytes});
+ async function verify(){
+  authorize();try{const saved=await request(indexUrl,{credentials:'same-origin',cache:'no-store'});if(saved?.schema===1&&saved.files&&typeof saved.files==='object')receipt={schema:1,revision:manifest.revision,files:saved.files};}catch{}
+  const candidates=manifest.files.filter(f=>receipt.files[f.path]===f.sha256);
+  for(let i=0;i<candidates.length;i+=100){const group=candidates.slice(i,i+100);const valid=await request('/api/files/verify',{method:'POST',credentials:'same-origin',headers:headers(),body:JSON.stringify({urls:group.map(f=>'user/files/'+resourceFileName(f))})});for(const file of group)if(valid['user/files/'+resourceFileName(file)]===true)completed.add(file.path);}
+  notify();return completed.size===manifest.count;
+ }
+ async function upload(name,data){const result=await request('/api/files/upload',{method:'POST',credentials:'same-origin',headers:headers(),body:JSON.stringify({name,data})});const expected=new URL('/user/files/'+name,host.location.href);if(new URL('/'+String(result.path??'').replace(/^\//,''),host.location.href).href!==expected.href)throw Error('本地资源保存路径不一致');}
+ const base64=bytes=>{let binary='';const array=new Uint8Array(bytes);for(let i=0;i<array.length;i+=32768)binary+=String.fromCharCode(...array.subarray(i,i+32768));return host.btoa(binary);};
+ const save=()=>{const saved=JSON.stringify(receipt);saveChain=saveChain.catch(()=>{}).then(()=>upload(RESOURCE_INDEX,base64(new TextEncoder().encode(saved))));return saveChain;};
+ async function install(){if(running)return running;running=(async()=>{
+  let cursor=0,failure=null;const pending=manifest.files.filter(f=>!completed.has(f.path));
+  async function worker(){while(!failure){const file=pending[cursor++];if(!file)return;try{authorize();const bytes=await request(new URL(file.path,remoteBase).href,{credentials:'omit',cache:'force-cache'},'arrayBuffer');if(bytes.byteLength!==file.size||hex(await host.crypto.subtle.digest('SHA-256',bytes))!==file.sha256)throw Error('文件校验未通过：'+file.path);await upload(resourceFileName(file),base64(bytes));completed.add(file.path);receipt.files[file.path]=file.sha256;notify();await save();}catch(error){failure=error;}}}
+  await Promise.all(Array.from({length:4},worker));await saveChain;if(failure)throw failure;if(completed.size!==manifest.count)throw Error('资源尚未完整保存');await save();return activate();
+ })().finally(()=>{running=null;});return running;}
+ function activate(){authorize();if(completed.size!==manifest.count)throw Error('资源未完整安装');const entries=manifest.files.map(f=>[f.path,localUrl(f)]);registerResourceMap(remoteBase,entries);return {revision:manifest.revision,count:manifest.count,entries};}
+ return{verify,install,activate,get complete(){return completed.size===manifest.count;}};
+}
+async function prepareRuntimeResources({remoteBase,win=globalThis,force=false}){
+ const host=requireDistributionAccess(win),key='__HYPNOOS_RESOURCE_INSTALL_V1__';
+ if(!force&&host[key]?.base===remoteBase){const installed=await host[key].promise;registerResourceMap(remoteBase,installed.entries);return installed;}
+ const doc=win.document,overlay=doc.createElement('section');overlay.className='hypnoos-resource-setup';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','首次启动资源下载');
+ overlay.innerHTML='<style>.hypnoos-resource-setup{position:fixed;inset:0;z-index:2147483500;display:grid;place-items:center;background:#12131fc9;backdrop-filter:blur(18px);color:#eee9f5;font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;padding:24px;box-sizing:border-box}.hr-card{width:min(470px,100%);padding:32px;border:1px solid #ffffff20;border-radius:28px;background:linear-gradient(145deg,#353044,#211f2c);box-shadow:0 24px 90px #0007;box-sizing:border-box}.hr-card small{color:#c9b9d9;letter-spacing:.16em}.hr-card h1{font-size:25px;margin:10px 0 16px}.hr-card p{color:#cec7d8;margin:12px 0}.hr-card progress{width:100%;height:8px;accent-color:#c4a6e0}.hr-card button{width:100%;border:0;border-radius:15px;padding:13px;background:#dbc4ef;color:#31283d;font:600 15px system-ui;margin-top:16px;cursor:pointer}.hr-card button:disabled{opacity:.6;cursor:wait}.hr-card [role=alert]{color:#f0b9bf;overflow-wrap:anywhere}.hr-card .hr-meta{font-size:12px;color:#a99bb9}</style><div class="hr-card"><small>WELCOME TO HYPNOOS</small><h1>先准备好你的世界</h1><p>首次启动需要下载图片和音乐。资源会保存在当前酒馆用户的配套资源目录，完成后才能进入游戏。</p><p data-size>正在读取资源清单…</p><progress max="1" value="0" aria-label="资源下载进度"></progress><p role="status">已有文件会自动检查；中断后可继续下载。</p><p role="alert"></p><p class="hr-meta">保存在酒馆 user/files 中，不包含聊天记录或角色状态。</p><button type="button" disabled>准备中</button></div>';
+ doc.body.append(overlay);const button=overlay.querySelector('button'),status=overlay.querySelector('[role=status]'),error=overlay.querySelector('[role=alert]'),progress=overlay.querySelector('progress');
+ let installer;const onProgress=value=>{progress.max=value.totalBytes;progress.value=value.bytes;status.textContent=value.complete+' / '+value.count+' 个文件 · '+(value.bytes/1048576).toFixed(1)+' / '+(value.totalBytes/1048576).toFixed(1)+' MB';};
+ const promise=new Promise((resolve,reject)=>{
+  let busy=false;
+  const run=async()=>{if(busy)return;busy=true;button.disabled=true;error.textContent='';try{requireDistributionAccess(win);if(!installer){const controller=new host.AbortController(),timer=host.setTimeout(()=>controller.abort(),20000);let response;try{response=await host.fetch(new URL('../resource-manifest.json',remoteBase).href,{signal:controller.signal,credentials:'omit',cache:'no-cache'});if(!response.ok)throw Error('资源清单暂时无法读取');const manifest=validateResourceManifest(await response.json());overlay.querySelector('[data-size]').textContent=manifest.count+' 个文件，约 '+Math.ceil(manifest.totalBytes/1048576)+' MB。只需下载一次，更新时仅补充变化的文件。';installer=createResourceInstaller({manifest,remoteBase,host,authorize:()=>requireDistributionAccess(win),onProgress});}finally{host.clearTimeout(timer);}if(await installer.verify()){const result=installer.activate();overlay.remove();resolve(result);return;}button.textContent='下载资源并开始';return;}
+   button.textContent='正在下载…';const result=await installer.install();overlay.remove();resolve(result);
+  }catch(cause){error.textContent=String(cause.message??cause);button.textContent=installer?'继续下载':'重试读取清单';}finally{busy=false;button.disabled=false;}};
+  button.addEventListener('click',()=>void run());void run();
+  win.addEventListener('pagehide',()=>{overlay.remove();reject(Error('资源准备页面已关闭'));},{once:true});
+ });
+ host[key]={base:remoteBase,promise};try{return await promise;}catch(error){if(host[key]?.promise===promise)delete host[key];throw error;}
+}
+
+Object.assign(module.exports,{RESOURCE_INDEX,resourceFileName,validateResourceManifest,createResourceInstaller,prepareRuntimeResources});
 },
 "src/phone-v2/app-motion.mjs":function(module, load){
 const { waitMotion } = load("src/ui/serial-motion.mjs");
@@ -8013,7 +8101,7 @@ function notebookStoryEventRows(history, actor){
 }
 function notebookVolumes(characters, { query = "", favouritesOnly = false, favourites = [], volume = 0 } = {}) {
   const text = query.trim().toLocaleLowerCase();
-  const filtered = characters.filter((x) => (x.id !== "user" || x.userRecords) && (!favouritesOnly || favourites.includes(x.id)) && (!text || [x.name, ...(x.aliases ?? [])].some((value) => value.toLocaleLowerCase().includes(text))));
+  const filtered = characters.filter((x) => (x.id !== "user" && !x.userRecords) && (!favouritesOnly || favourites.includes(x.id)) && (!text || [x.name, ...(x.aliases ?? [])].some((value) => value.toLocaleLowerCase().includes(text))));
   const count = Math.max(1, Math.ceil(filtered.length / NOTEBOOK_VOLUME_SIZE));
   const index = Math.max(0, Math.min(count - 1, volume));
   return { rows: filtered.slice(index * NOTEBOOK_VOLUME_SIZE, (index + 1) * NOTEBOOK_VOLUME_SIZE), count, index, total: filtered.length };
@@ -8025,7 +8113,7 @@ function notebookSlotPages(slots, page = 0) {
 }
 function childRefs(actor,kind){return[...(actor.refs?.[kind==='task'?'tasks':'achievements']??[]),...(actor.links??[]).filter(x=>x.mode==='owned'&&x.enabled!==false&&x.ref?.kind===kind).map(x=>x.ref)].filter((ref,index,list)=>list.findIndex(x=>x.id===ref.id)===index);}
 async function notebookChildRecords(runtime,actor,kind,taskSlots){const rows=[];for(const ref of childRefs(actor,kind)){const item=await runtime.store.getObject(ref);if(!item)throw Error('笔记子对象记录缺失');if(item.owner?.kind!=='character'||item.owner.id!==actor.id)throw Error('笔记子对象归属不一致');rows.push({id:item.id,name:item.name,description:item.definition.description,conditionText:item.definition.completion.text,rewards:item.definition.rewards,progress:item.data.progress,completed:item.data.completed,claimed:item.data.claimed,accepted:kind==='task'&&taskSlots.some(x=>x.ref.id===item.id&&x.owner.id===actor.id)});}return rows;}
-async function notebookSnapshot(runtime, { service = null, context = null, storyEventHistory=null,playerResources=null,playerInventory=null,playerContext=null } = {}) {
+async function notebookSnapshot(runtime, { service = null, context = null, storyEventHistory=null,playerResources=null,playerInventory=null,playerContext=null,userName="" } = {}) {
   const permissionState=await runtime.resolvePersonnelPermissions?.()??UNKNOWN_PERSONNEL_PERMISSIONS;
   const business = service ? await service.snapshot() : null;
   const dateOverrides = service && context ? await service.dayOverlays(context) : {};
@@ -8039,7 +8127,7 @@ async function notebookSnapshot(runtime, { service = null, context = null, story
     const userRecords=actor.id==='user';
     if (actor.id === 'user'&&!userRecords || !notebookEligible(actor)) continue;
     const permissions=personnelPermissions(actor,permissionState),unlocked = userRecords || permissions.investigation&&dossiers[actor.id]?.investigated === true;
-    const record = { id: actor.id, name: userRecords?'我的记录':actor.name, aliases: actor.aliases, portrait: actor.ui.images?.find((x) => x.usage === "portrait") ?? null, unlocked, scoutingPending: acquisitionState(actor) === 'scouting', mounted: permissions.slot&&slotEligible(actor) && slots.some((x) => x.enabled !== false && x.ref.id === actor.id) };
+    const record = { id: actor.id, name: userRecords?(String(userName).trim()||(actor.name==='{{user}}'?'玩家':actor.name)):actor.name, aliases: actor.aliases, portrait: actor.ui.images?.find((x) => x.usage === "portrait") ?? null, unlocked, scoutingPending: acquisitionState(actor) === 'scouting', mounted: permissions.slot&&slotEligible(actor) && slots.some((x) => x.enabled !== false && x.ref.id === actor.id) };
     record.userRecords=Boolean(userRecords);record.acquisitionState = acquisitionState(actor); record.slotEligible = !userRecords&&permissions.slot&&slotEligible(actor);record.investigationAllowed=permissions.investigation;record.permissionReason=permissions.reason;
     record.eventsUnlocked=slotEligible(actor)&&notebookEventChapterAvailable(actor,storyHistory);
     record.affinityEvents=notebookStoryEventRows(storyHistory,actor);
@@ -8332,14 +8420,15 @@ async function mountDetectiveNotebook(container, { snapshot, assets, resolveFile
   const root = doc.createElement("section"); root.className = "dn-window"; root.setAttribute("role", "dialog"); root.setAttribute("aria-label", "林安的侦探笔记");
   const style = doc.createElement("style");
   style.textContent = NOTEBOOK_STYLE;
-  root.innerHTML = '<div class="dn-stage"><div class="dn-header"><strong>林安的侦探笔记</strong><input type="search" aria-label="搜索人物" placeholder="搜索人物"><button type="button" data-action="people" aria-pressed="true">笔记</button><button type="button" data-action="album" aria-pressed="false">收藏簿</button><button type="button" data-action="detective">委托</button><button type="button" data-action="scout" aria-pressed="false">物色簿</button><button type="button" data-action="close" aria-label="关闭笔记">×</button></div><div class="dn-book-unit"><div class="dn-book"><img alt="展开的侦探笔记"></div><div class="dn-pages"><canvas class="dn-page left"></canvas><canvas class="dn-page right"></canvas></div><canvas class="dn-curl"></canvas><div class="dn-bookmarks" aria-label="人物书签"></div><div class="dn-collection"><button data-action="previous-volume" aria-label="换上一本">‹</button><span></span><button data-action="next-volume" aria-label="换下一本">›</button></div><div class="dn-edge left" tabindex="0" role="button" aria-label="按住左页边缘拖动翻页"></div><div class="dn-edge right" tabindex="0" role="button" aria-label="按住右页边缘拖动翻页"></div><nav class="dn-chapters" aria-label="人物笔记章节"></nav><button class="dn-photo-favourite" data-action="favourite" aria-label="收藏当前人物">☆</button><button class="dn-photo-zone portrait" aria-label="选择胸像"></button><button class="dn-photo-zone standee" aria-label="选择全身立绘"></button><div class="dn-page-hits"></div><div class="dn-footer"><button data-action="previous-page" aria-label="上一页">‹</button><span class="dn-sr-number"></span><button data-action="next-page" aria-label="下一页">›</button></div><div class="dn-notice" role="status"></div><div class="dn-sr" aria-live="polite"></div></div></div>';
+  root.innerHTML = '<div class="dn-stage"><div class="dn-header"><strong>林安的侦探笔记</strong><input type="search" aria-label="搜索人物" placeholder="搜索人物"><button type="button" data-action="people" aria-pressed="true">人物</button><button type="button" data-action="user" aria-pressed="false"></button><button type="button" data-action="album" aria-pressed="false">收藏簿</button><button type="button" data-action="detective">委托</button><button type="button" data-action="scout" aria-pressed="false">物色簿</button><button type="button" data-action="close" aria-label="关闭笔记">×</button></div><div class="dn-book-unit"><div class="dn-book"><img alt="展开的侦探笔记"></div><div class="dn-pages"><canvas class="dn-page left"></canvas><canvas class="dn-page right"></canvas></div><canvas class="dn-curl"></canvas><div class="dn-bookmarks" aria-label="人物书签"></div><div class="dn-collection"><button data-action="previous-volume" aria-label="换上一本">‹</button><span></span><button data-action="next-volume" aria-label="换下一本">›</button></div><div class="dn-edge left" tabindex="0" role="button" aria-label="按住左页边缘拖动翻页"></div><div class="dn-edge right" tabindex="0" role="button" aria-label="按住右页边缘拖动翻页"></div><nav class="dn-chapters" aria-label="人物笔记章节"></nav><button class="dn-photo-favourite" data-action="favourite" aria-label="收藏当前人物">☆</button><button class="dn-photo-zone portrait" aria-label="选择胸像"></button><button class="dn-photo-zone standee" aria-label="选择全身立绘"></button><div class="dn-page-hits"></div><div class="dn-footer"><button data-action="previous-page" aria-label="上一页">‹</button><span class="dn-sr-number"></span><button data-action="next-page" aria-label="下一页">›</button></div><div class="dn-notice" role="status"></div><div class="dn-sr" aria-live="polite"></div></div></div>';
   root.prepend(style); container.append(root);
   const stage = root.querySelector(".dn-stage"), book = root.querySelector(".dn-book"), left = root.querySelector(".dn-page.left"), right = root.querySelector(".dn-page.right"), curlCanvas = root.querySelector(".dn-curl"), notice = root.querySelector(".dn-notice");
   stage.style.opacity="0";
-  const toolbar=root.querySelector(".dn-header");let toolbarDock={docked:false,destroy(){}};
+  const toolbar=root.querySelector(".dn-header"),collection=root.querySelector(".dn-collection");toolbar.insertBefore(collection,toolbar.querySelector('[data-action="close"]'));collection.setAttribute("aria-label","人物笔记切册");let toolbarDock={docked:false,destroy(){}};
   const floatingDrag=bindFloatingDrag(toolbar,stage,{visibleTop:()=>toolbarDock.docked?100*scale:0});
   const reduced = () => Boolean(win.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
   let scale = 1, data = await snapshot(), selected = "", volume = 0, spreadIndex = 0, album = false, query = "", pageModels = [], pageTextures = [], turn = null, frame = 0, epoch = 0, destroyed = false;
+  let userMode = false, peoplePosition = null, userSpread = 0;
   let bookSwap = 0, galleryView = null, galleryHost = null, scoutingView = null, scoutingHost = null, modeBusy = false;
   const bookSwitcher = notebookBookSwitcher(root, { reduced });
   let neighbours = {}, drag = null, idleTimer = 0; const bundleCache = new Map();
@@ -8434,7 +8523,7 @@ async function mountDetectiveNotebook(container, { snapshot, assets, resolveFile
     root.dataset.spreadIndex = String(index); root.dataset.pageCount = String(pageTextures.length);
     root.querySelector(".dn-sr").textContent = pageModels.slice(index * 2, index * 2 + 2).map((x) => `${x.title} ${x.name ?? ""} ${x.pending?'未完待续':x.locked ? "未记录" : x.lines?.join(" ") ?? ""}`).join("\n");
   }
-  function libraryRows() { return notebookVolumes(data.characters, { query, favouritesOnly: album, favourites: data.preferences.favourites ?? [] }).total ? data.characters.filter(x => (x.id !== "user" || x.userRecords) && (!album || data.preferences.favourites?.includes(x.id)) && (!query.trim() || [x.name, ...(x.aliases ?? [])].some(v => v.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())))) : []; }
+  function libraryRows() { if(userMode)return data.characters.filter(x=>x.userRecords);return notebookVolumes(data.characters, { query, favouritesOnly: album, favourites: data.preferences.favourites ?? [] }).total ? data.characters.filter(x => (x.id !== "user" && !x.userRecords) && (!album || data.preferences.favourites?.includes(x.id)) && (!query.trim() || [x.name, ...(x.aliases ?? [])].some(v => v.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())))) : []; }
   function bundleFor(actor) { if (!bundleCache.has(actor.id)) bundleCache.set(actor.id, buildPages(actor)); return bundleCache.get(actor.id); }
   async function primeNeighbours() {
     const token = epoch, id = selected, rows = libraryRows(); neighbours = {};
@@ -8484,7 +8573,7 @@ async function mountDetectiveNotebook(container, { snapshot, assets, resolveFile
       const t = duration ? Math.min(1, (now - started) / duration) : 1; drawTurn(start + (end - start) * (1 - Math.pow(1 - t, 3)));
       if (t < 1) frame = win.requestAnimationFrame(tick);
       else {
-        if (commit && current.boundary) { selected = current.next.actor.id; pageModels = current.next.models; pageTextures = current.next.textures; root.dataset.selectedActor = selected; volume = Math.floor(libraryRows().findIndex(x => x.id === selected) / 6); renderBookmarks(); }
+        if (commit && current.boundary) { selected = current.next.actor.id; pageModels = current.next.models; pageTextures = current.next.textures; root.dataset.selectedActor = selected; if(!userMode)volume = Math.floor(libraryRows().findIndex(x => x.id === selected) / 6); renderBookmarks(); }
         spreadIndex = commit ? current.target : spreadIndex; cancelTurn(); paint(); controls(); void primeNeighbours();
       }
     }
@@ -8541,21 +8630,21 @@ async function mountDetectiveNotebook(container, { snapshot, assets, resolveFile
   }
   function renderBookmarks() {
     const vol = notebookVolumes(data.characters, { query, favouritesOnly: album, favourites: data.preferences.favourites ?? [], volume }); volume = vol.index;
-    const tabs = root.querySelector(".dn-bookmarks"), rosterKey=vol.rows.map(x=>x.id).join("|"); const changed=tabs.dataset.key!==rosterKey; if(changed){tabs.dataset.key=rosterKey;tabs.replaceChildren();}
-    for (const actor of vol.rows.filter(x=>![...tabs.children].some(tab=>tab.dataset.id===x.id))) { const tab = doc.createElement("button"); tab.type = "button"; tab.className = "dn-tab"; tab.dataset.id = actor.id; tab.setAttribute("aria-current", String(actor.id === selected)); tab.setAttribute("aria-label", `打开${actor.name}笔记`); tab.draggable = actor.slotEligible!==false&&!actor.scoutingPending;
+    const rows=userMode?[]:vol.rows;const tabs = root.querySelector(".dn-bookmarks");tabs.hidden=userMode;const rosterKey=rows.map(x=>x.id).join("|"); const changed=tabs.dataset.key!==rosterKey; if(changed){tabs.dataset.key=rosterKey;tabs.replaceChildren();}
+    for (const actor of rows.filter(x=>![...tabs.children].some(tab=>tab.dataset.id===x.id))) { const tab = doc.createElement("button"); tab.type = "button"; tab.className = "dn-tab"; tab.dataset.id = actor.id; tab.setAttribute("aria-current", String(actor.id === selected)); tab.setAttribute("aria-label", `打开${actor.name}笔记`); tab.draggable = actor.slotEligible!==false&&!actor.scoutingPending;
       const skin = doc.createElement("img"); skin.className = "skin"; skin.alt = ""; skin.src = resolveFile(assets.bookmark); tab.append(skin);
       const asset = actorAsset(actor); if (actor.headUrl||asset?.head) { const face = doc.createElement("img"); face.className = "face"; face.alt = actor.name; face.src = actor.headUrl??resolveFile(asset.head); tab.append(face); } else { const initial = doc.createElement("span"); initial.className = "initial"; initial.textContent = actor.name.slice(-2); tab.append(initial); }
       tab.addEventListener("dragstart", (event) => { if (actor.scoutingPending||actor.slotEligible===false) { event.preventDefault(); return; } event.dataTransfer.setData("application/x-hypnoos-character", actor.id); }); tab.addEventListener("click", () => void selectActor(actor.id)); tabs.append(tab);
     }
     for(const tab of tabs.children){tab.setAttribute("aria-current",String(tab.dataset.id===selected));const actor=data.characters.find(x=>x.id===tab.dataset.id);if(actor?.headUrl){let face=tab.querySelector(".face");if(!face){face=doc.createElement("img");face.className="face";face.alt=actor.name;tab.querySelector(".initial")?.remove();tab.append(face);}face.src=actor.headUrl;}}
-    root.querySelector(".dn-collection span").textContent = `${album ? "收藏簿" : "人物笔记"} · 第${volume + 1}册 / ${vol.count}册`;
-    root.querySelector('[data-action="previous-volume"]').disabled = volume === 0; root.querySelector('[data-action="next-volume"]').disabled = volume + 1 >= vol.count;
+    collection.querySelector("span").textContent = `${volume + 1} / ${vol.count} 册`;
+    collection.querySelector('[data-action="previous-volume"]').disabled = volume === 0; collection.querySelector('[data-action="next-volume"]').disabled = volume + 1 >= vol.count;
   }
-  async function renderLibrary({ changeBook = false } = {}) {
+  async function renderLibrary({ changeBook = false, restoreSpread = 0 } = {}) {
     const token=++bookSwap,unit=root.querySelector('.dn-book-unit');
     const prepare=async()=>{
       renderBookmarks();const vol=notebookVolumes(data.characters,{query,favouritesOnly:album,favourites:data.preferences.favourites??[],volume});
-      const candidate=vol.rows.find(x=>x.id===selected)??vol.rows[0];await selectActor(candidate?.id??'',false);
+      const candidate=userMode?data.characters.find(x=>x.userRecords):vol.rows.find(x=>x.id===selected)??vol.rows[0];await selectActor(candidate?.id??'',false);if(restoreSpread){spreadIndex=Math.max(0,Math.min(restoreSpread,pageTextures.length/2-1));paint();controls();}syncBookTabs();
     };
     if(changeBook){cancelTurn();await bookSwitcher.swap({outgoing:unit,prepare});}
     else await prepare();
@@ -8579,19 +8668,26 @@ async function mountDetectiveNotebook(container, { snapshot, assets, resolveFile
         if(destroyed)return;scoutingView.destroy();scoutingView=null;scoutingHost.remove();scoutingHost=null;root.dataset.bookMode='people';input.value=query;input.placeholder='搜索人物';input.setAttribute('aria-label','搜索人物');syncBookTabs();controls();}
 
     }catch(error){notice.textContent=error.message;if(scoutingHost){scoutingView?.destroy();scoutingView=null;scoutingHost.remove();scoutingHost=null;}root.querySelector('.dn-book-unit').hidden=false;root.querySelector('.dn-book-unit').style.visibility='visible';root.querySelector('.dn-book-unit').inert=false;root.dataset.bookMode='people';input.value=query;input.placeholder='搜索人物';input.setAttribute('aria-label','搜索人物');syncBookTabs();delete root.dataset.bookChanging;}
-    finally{modeBusy=false;input.disabled=false;}
+    finally{modeBusy=false;input.disabled=userMode&&!scoutingView;}
   }
   function syncBookTabs(){
     const inScouting=Boolean(scoutingView);
-    for(const [action,current]of [['people',!inScouting&&!album],['album',!inScouting&&album],['scout',inScouting]])toolbar.querySelector(`[data-action="${action}"]`).setAttribute('aria-pressed',String(current));
+    const user=data.characters.find(x=>x.userRecords),userButton=toolbar.querySelector('[data-action="user"]');userButton.textContent=user?.name??'玩家';userButton.title=user?`${user.name}的笔记`:'玩家笔记';userButton.setAttribute('aria-label',user?`打开${user.name}自己的笔记`:'打开玩家自己的笔记');userButton.disabled=!user;collection.hidden=inScouting||userMode;toolbar.querySelector('input').disabled=userMode&&!inScouting;root.dataset.bookMode=inScouting?'scouting':userMode?'user':'people';
+    for(const [action,current]of [['people',!inScouting&&!userMode&&!album],['user',!inScouting&&userMode],['album',!inScouting&&!userMode&&album],['scout',inScouting]])toolbar.querySelector(`[data-action="${action}"]`).setAttribute('aria-pressed',String(current));
+    toolbar.closest('.routine-scene')?.dispatchEvent(new win.CustomEvent('hypno:toolbar-change')); 
   }
   async function selectBookTab(action){
     if(modeBusy||bookSwitcher.isBusy())return;
     if(action==='scout'){if(!scoutingView)await openScouting();syncBookTabs();return;}
-    const wantsAlbum=action==='album';
-    if(scoutingView){album=wantsAlbum;volume=wantsAlbum?0:volume;await openScouting();}
-    else if(album!==wantsAlbum){album=wantsAlbum;volume=0;await renderLibrary({changeBook:true});}
-    syncBookTabs();
+    const wantsUser=action==='user'&&(!userMode||Boolean(scoutingView));
+    if(wantsUser&&!data.characters.some(x=>x.userRecords))return;
+    let restoreSpread=0;
+    if(wantsUser&&!userMode){peoplePosition={selected,volume,album,query,spreadIndex};userMode=true;restoreSpread=userSpread;}
+    else if(!wantsUser&&userMode){userSpread=spreadIndex;userMode=false;if(peoplePosition){({selected,volume,album,query}=peoplePosition);restoreSpread=peoplePosition.spreadIndex;}if((action==='album'&&!album)||(action==='people'&&album)){album=action==='album';volume=0;restoreSpread=0;}}
+    else if(!wantsUser){const wantsAlbum=action==='album';if(album!==wantsAlbum){album=wantsAlbum;volume=0;}else if(!scoutingView){syncBookTabs();return;}}
+    if(scoutingView){await openScouting();if(restoreSpread){spreadIndex=Math.max(0,Math.min(restoreSpread,pageTextures.length/2-1));paint();controls();}}
+    else await renderLibrary({changeBook:true,restoreSpread});
+    toolbar.querySelector('input').value=query;syncBookTabs();
   }
   async function openDetective(kind='investigate',id=''){try{if(!onOpenDetective)throw Error('委托柜台接口未连接');await onOpenDetective(kind,id);}catch(error){notice.textContent=error.message;}}
   async function transact(work) { notice.textContent = ""; try { const id = selected, page = spreadIndex; await work(); data = await snapshot(); bundleCache.clear(); await renderLibrary(); if (selected === id) { spreadIndex = Math.min(page, pageTextures.length / 2 - 1); paint(); controls(); } } catch (error) { notice.textContent = error.message; } }
@@ -8601,14 +8697,14 @@ async function mountDetectiveNotebook(container, { snapshot, assets, resolveFile
     if(modeBusy&&action!=="close")return;
     if (action === "close") onClose();
     else if (action === "detective") void openDetective();
-    else if (['people','scout','album'].includes(action)) void selectBookTab(action);
-    else if (action.endsWith("volume")) { volume += action === "next-volume" ? 1 : -1; void renderLibrary({ changeBook: true }); }
+    else if (['people','scout','album','user'].includes(action)) void selectBookTab(action);
+    else if (action.endsWith("volume")&&!userMode&&!scoutingView&&!bookSwitcher.isBusy()) { volume += action === "next-volume" ? 1 : -1; void renderLibrary({ changeBook: true }); }
     else if (action.endsWith("page")) turnPage(action === "next-page" ? 1 : -1);
     else if (action === "favourite" && selected && !button.hidden) void transact(() => favourite(selected));
     else if (action === "investigate" && selected && investigate) void transact(() => investigate(selected));
   }));
   root.querySelectorAll('.dn-photo-zone').forEach(button=>button.addEventListener('click',()=>void showGallery(button.classList.contains('standee')?'standee':'portrait')));
-  const wanted = data.characters.find((x) => x.name === initialRole || x.id === initialRole); if (wanted) { selected = wanted.id; volume = Math.floor(data.characters.filter((x) => x.id !== "user" || x.userRecords).findIndex((x) => x.id === wanted.id) / 6); }
+  const wanted = data.characters.find((x) => x.name === initialRole || x.id === initialRole); if (wanted) { selected = wanted.id;userMode=Boolean(wanted.userRecords);if(!userMode)volume = Math.floor(libraryRows().findIndex((x) => x.id === wanted.id) / 6); }
   fit(); await renderLibrary(); syncBookTabs();win.addEventListener("resize", fit);doc.addEventListener("hypno:scene-fit",fit);
   const key = (event) => { if (scoutingView || modeBusy || event.target.tagName === "INPUT") return; if (event.key === "Escape") onClose(); if (event.key === "ArrowRight") turnPage(1); if (event.key === "ArrowLeft") turnPage(-1); }; root.addEventListener("keydown", key);toolbarDock=dockSceneToolbar(doc,toolbar);if(toolbarDock.docked)toolbar.addEventListener("keydown",key);fit();
   const view={ root, openScouting:()=>scoutingView?Promise.resolve():openScouting(), refresh: async () => { if(scoutingView){await scoutingView.refresh();return;} if (turn || root.dataset.bookChanging) return; const next = await snapshot(); if (JSON.stringify(next) === JSON.stringify(data)) return; const id = selected, page = spreadIndex; data = next; bundleCache.clear(); await renderLibrary(); if (selected === id) { spreadIndex = Math.min(page, pageTextures.length / 2 - 1); paint(); controls(); } }, resize: fit, inspectTurn(progress,direction=1) { if (progress <= 0) { cancelTurn(); paint(); return; } if (!turn) begin(direction); drawTurn(progress); }, destroy() { floatingDrag.destroy(); destroyed = true; bookSwitcher.destroy(); scoutingView?.destroy(); scoutingHost?.remove(); galleryView?.destroy(); galleryHost?.remove(); bookSwap++; cancelTurn(); curved?.destroy(); doc.removeEventListener("pointermove", dragMove); doc.removeEventListener("pointerup", releaseDrag); doc.removeEventListener("pointercancel", releaseDrag); win.removeEventListener("blur", releaseDrag); win.removeEventListener("resize", fit);doc.removeEventListener("hypno:scene-fit",fit); for (const url of urls) URL.revokeObjectURL(url); root.remove(); } };
@@ -8669,7 +8765,7 @@ Object.assign(module.exports,{paginateNotebookEntries,designChildRecordPages,dra
 "src/object-manager/scouting-book.mjs":function(module, load){
 const { sceneSurfaceRect } = load("src/ui/floating-window.mjs");
 const { installSerialMotion } = load("src/ui/serial-motion.mjs");
-const { scoutingPageAt, scoutingNavigation, scoutingFields, SCOUTING_VOLUME_SIZE } = load("src/object-manager/scouting-pages.mjs");
+const { scoutingPageAt, scoutingNavigation, scoutingFields, scoutingAction, SCOUTING_VOLUME_SIZE } = load("src/object-manager/scouting-pages.mjs");
 const { mountCurvedPage } = load("src/object-manager/page-curl.mjs");
 const { drawNotebookPageButton } = load("src/object-manager/notebook-page-actions.mjs");
 const { notebookBookSwitcher } = load("src/object-manager/notebook-book-switch.mjs");
@@ -8724,14 +8820,14 @@ async function mountScoutingBook(container,{assets,resolveFile,serviceSnapshot,s
       for(const field of laidOut){ctx.font='20px "Songti SC",serif';ctx.fillStyle='#a08464';ctx.fillText(field.label,34,y,106);ctx.font=fontSize+'px "Songti SC",serif';ctx.fillStyle='#64492f';for(const [i,line]of field.lines.entries())ctx.fillText(line,148,y+i*(fontSize+5));y+=Math.max(1,field.lines.length)*(fontSize+5)+17;}
       if(!fields.length){ctx.font='25px "Songti SC",serif';ctx.fillStyle='#a08464';ctx.fillText('暂无公开资料',150,294);}
     }else if(!rows.length){ctx.fillStyle='#64492f';ctx.font='29px "Songti SC",serif';ctx.fillText('没有匹配的人选',82,300);}
-    if(row&&index%2===0){const price=state.prices[row.id]?.scout,label=`委托物色 · ¥${price}`;ctx.font='24px "Songti SC",serif';drawNotebookPageButton(ctx,{x:92,y:533,width:ctx.measureText(label).width+38,height:51,label,fontSize:24,disabled:state.writable===false||Boolean(state.active)||state.balance==null||state.balance<price});}
+    if(row&&index%2===0){const price=state.prices[row.id]?.scout,action=scoutingAction(row,price),label=action.label;ctx.font='24px "Songti SC",serif';drawNotebookPageButton(ctx,{x:92,y:533,width:ctx.measureText(label).width+38,height:51,label,fontSize:24,disabled:!action.allowed||state.writable===false||Boolean(state.active)||state.balance==null||state.balance<price});}
     drawNotebookPageButton(ctx,{x:index%2?351:26,y:561,width:72,height:44,label:index%2?'›':'‹',kind:'arrow',disabled:!rows.length||index===0||index===rows.length*4-1});
     ctx.font='22px Georgia,serif';ctx.textAlign='center';ctx.fillStyle='#a48a66';ctx.fillText(String(index+1),235,596);
     if(revision===rowsRevision)textures.set(index,canvas);return canvas;
   }
   function controls(){root.querySelector('.sb-cash').textContent=state?.balance==null?'现金未就绪':'¥ '+state.balance.toLocaleString();const job=root.querySelector('.sb-job');job.replaceChildren();if(state.active){job.append(doc.createTextNode(`林安正在${state.active.kind==='scout'?'物色':'调查'}${state.active.targetName} · ${state.active.days}天 · ${Math.floor(state.active.progress*100)}%`));const bar=doc.createElement('i'),fill=doc.createElement('b');fill.style.width=state.active.progress*100+'%';bar.append(fill);job.append(bar);}else job.textContent=state.accessReason||'林安：选好人选后，我就出发。每次只受理一项委托。';
     root.querySelector('.dn-collection span').textContent=`人选册 · ${Math.floor(spread/(SCOUTING_VOLUME_SIZE*2))+1} / ${Math.max(1,Math.ceil(rows.length/SCOUTING_VOLUME_SIZE))}`;root.querySelectorAll('[data-action]').forEach(b=>{const a=b.dataset.action;if(a==='previous-volume')b.disabled=Math.floor(spread/(SCOUTING_VOLUME_SIZE*2))===0;else if(a==='next-volume')b.disabled=Math.floor(spread/(SCOUTING_VOLUME_SIZE*2))>=Math.ceil(rows.length/SCOUTING_VOLUME_SIZE)-1;else if(a==='previous-page')b.disabled=Boolean(turn)||spread===0;else if(a==='next-page')b.disabled=Boolean(turn)||spread>=Math.max(0,rows.length*2-1);});
-    if(turn){for(const button of hits.querySelectorAll('button')){button.disabled=true;button.dataset.turnDisabled='true';}return;}hits.replaceChildren();const row=rows[Math.floor(spread/2)];if(row){if(spread%2===0)for(const mode of ['portrait','standee']){const button=doc.createElement('button');button.className='dn-photo-zone '+mode;button.setAttribute('aria-label',mode==='portrait'?'选择物色胸像':'选择物色全身立绘');button.addEventListener('click',()=>void showGallery(row.id,mode));hits.append(button);}const pay=doc.createElement('button'),price=state.prices[row.id]?.scout;pay.className='sb-pay';pay.style.left=`${SPINE-PW+92}px`;pay.textContent=`委托物色 · ¥${price}`;pay.setAttribute('aria-label',`物色${row.name}，${price}日元`);pay.disabled=busy||state.writable===false||Boolean(state.active)||state.balance==null||state.balance<price;pay.addEventListener('click',async()=>{if(busy)return;busy=true;controls();try{await scout(row.id);await refresh();await onChanged();}catch(e){root.querySelector('.dn-notice').textContent=e.message;}finally{busy=false;controls();}});hits.append(pay);}}
+    if(turn){for(const button of hits.querySelectorAll('button')){button.disabled=true;button.dataset.turnDisabled='true';}return;}hits.replaceChildren();const row=rows[Math.floor(spread/2)];if(row){if(spread%2===0)for(const mode of ['portrait','standee']){const button=doc.createElement('button');button.className='dn-photo-zone '+mode;button.setAttribute('aria-label',mode==='portrait'?'选择物色胸像':'选择物色全身立绘');button.addEventListener('click',()=>void showGallery(row.id,mode));hits.append(button);}const pay=doc.createElement('button'),price=state.prices[row.id]?.scout,action=scoutingAction(row,price);pay.className='sb-pay';pay.style.left=`${SPINE-PW+92}px`;pay.textContent=action.label;pay.setAttribute('aria-label',action.allowed?`物色${row.name}，${price}日元`:`${row.name}物色 · ${action.reason}`);pay.disabled=!action.allowed||busy||state.writable===false||Boolean(state.active)||state.balance==null||state.balance<price;pay.addEventListener('click',async()=>{if(busy||!scoutingAction(row,price).allowed)return;busy=true;controls();try{await scout(row.id);await refresh();await onChanged();}catch(e){root.querySelector('.dn-notice').textContent=e.message;}finally{busy=false;controls();}});hits.append(pay);}}
 
   function bookmarks(index=spread,nav=root.querySelector('.dn-bookmarks')){nav.replaceChildren();const first=Math.floor(index/(SCOUTING_VOLUME_SIZE*2))*SCOUTING_VOLUME_SIZE;for(const [i,row]of rows.slice(first,first+SCOUTING_VOLUME_SIZE).entries()){const button=doc.createElement('button');button.className='dn-tab';button.dataset.personIndex=String(first+i);button.setAttribute('aria-label','查看人选'+row.name);button.setAttribute('aria-current',String((first+i)===Math.floor(index/2)));const skin=doc.createElement('img');skin.className='skin';skin.src=resolveFile(assets.bookmark);button.title=row.name;button.append(skin);const asset=assets.characters.find(x=>x.name===row.name),headUrl=row.headUrl??row.head??(asset?.head?resolveFile(asset.head):null);if(headUrl){const head=doc.createElement('img');head.className='face';head.alt=row.name;head.src=headUrl;button.append(head);}else{const name=doc.createElement('span');name.className='initial';name.textContent=row.name.slice(-2);button.append(name);}button.addEventListener('click',()=>go((first+i)*2));nav.append(button);}}
   async function paint(){const token=++epoch,pair=await Promise.all([texture(spread*2),texture(spread*2+1)]);if(destroyed||token!==epoch)return;for(const [i,c]of [left,right].entries()){c.width=PW*2;c.height=PH*2;c.getContext('2d').drawImage(pair[i],0,0);}bookmarks();controls();root.dataset.visibleCandidate=rows[Math.floor(spread/2)]?.name??'';root.dataset.visibleKind=spread%2?'details':'photos';root.querySelector('.dn-sr-number').textContent=`${spread*2+1}—${spread*2+2} / ${rows.length*4}`;root.querySelector('.dn-sr').textContent=(scoutingPageAt(rows,spread*2).row?.name??'没有匹配的人选')+' '+(spread%2?scoutingFields(rows[Math.floor(spread/2)],'information').concat(scoutingFields(rows[Math.floor(spread/2)],'clothing')).map(x=>x.label+'：'+x.value).join('；'):'胸像与全身照');void Promise.all([spread*2-2,spread*2-1,spread*2+2,spread*2+3].filter(x=>x>=0&&x<Math.max(2,rows.length*4)).map(texture));}
@@ -8778,6 +8874,7 @@ async function mountScoutingBook(container,{assets,resolveFile,serviceSnapshot,s
 Object.assign(module.exports,{mountScoutingBook});
 },
 "src/object-manager/scouting-pages.mjs":function(module, load){
+const {scoutingAvailable,SCOUTING_COMING_SOON} = load("src/object-manager/personnel-access.mjs");
 const {contentPolicyFieldApplicable} = load("src/safety/character-content-policy-client.mjs");
 const SCOUTING_VOLUME_SIZE = 6;
 const SCOUTING_SPREADS_PER_PERSON = 2;
@@ -8795,7 +8892,12 @@ function scoutingFields(row, kind) {
   return Object.entries(fields??{}).filter(([label])=>contentPolicyFieldApplicable(row,label)).map(([label,value])=>({label:label==='_年龄'?'年龄':label,value:String(value)}));
 }
 
-Object.assign(module.exports,{SCOUTING_VOLUME_SIZE,SCOUTING_SPREADS_PER_PERSON,scoutingPageAt,scoutingNavigation,scoutingFields});
+function scoutingAction(row, price) {
+  const allowed = scoutingAvailable(row) && row?.scoutingAllowed !== false;
+  return {allowed, label:allowed ? `委托物色 · ¥${price}` : SCOUTING_COMING_SOON, reason:allowed ? '' : SCOUTING_COMING_SOON};
+}
+
+Object.assign(module.exports,{SCOUTING_VOLUME_SIZE,SCOUTING_SPREADS_PER_PERSON,scoutingPageAt,scoutingNavigation,scoutingFields,scoutingAction});
 },
 "src/object-manager/page-curl.mjs":function(module, load){
 // The same UVs sample both the generated paper and the rendered page content.
@@ -8981,6 +9083,19 @@ const NOTEBOOK_STYLE = `
 .dn-edge{position:absolute;z-index:12;top:176px;width:28px;height:514px;cursor:grab;touch-action:none}.dn-edge.left{left:245px;width:36px}.dn-edge.right{left:1157px}.dn-edge:active{cursor:grabbing}.dn-edge:focus-visible{outline:2px dashed #a28158;outline-offset:-10px}
 .dn-footer{position:absolute;left:271px;top:716px;width:867px;height:42px;display:flex;align-items:center;justify-content:space-between;z-index:18;color:#755b3d;white-space:nowrap;padding-top:4px}.dn-footer span{font:25px Georgia,serif;letter-spacing:.05em}.dn-footer button{font-size:26px;min-width:72px;height:44px;color:#856442}
 .dn-notice{position:absolute;left:300px;top:788px;width:816px;font-size:24px;color:#ffedcb;text-align:center;background:#463528ed;padding:10px;z-index:30;pointer-events:none;box-shadow:0 2px 10px #0003}.dn-notice:empty{display:none}.dn-photo-zone{position:absolute;left:279px;top:268px;width:402px;height:395px;z-index:12;cursor:pointer!important}.dn-photo-zone.standee{left:749px}.dn-photo-zone[hidden]{display:none}.dn-page-hits{position:absolute;inset:0;pointer-events:none;z-index:12}.dn-detail-hit{position:absolute;pointer-events:auto;cursor:pointer!important;background:none!important;border:0}.dn-chapter-row{position:relative;left:-8px;flex:none;width:84px;height:44px;display:flex;transition:left 300ms cubic-bezier(.15,.9,.2,1)}.dn-chapter-row[aria-current=true]{left:0}.dn-chapters .dn-chapter-row>button{padding-left:0;position:static;left:auto;flex:none}.dn-chapter-row.has-investigation>button:first-child{width:54px;padding-left:0;font-size:22px}.dn-chapters .dn-investigate-side{width:30px;font-size:19px;color:#9a664d;background:#e8cfa5;border-left:1px solid #b9936566;border-radius:0 4px 4px 0}.dn-chapter-row.has-investigation>button:first-child{border-radius:0}.dn-photo-zone:focus-visible,.dn-detail-hit:focus-visible{outline:2px dashed #a87b4e;outline-offset:-5px}.dn-sr-number{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.dn-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:pre-wrap}.dn-window button:focus-visible,.dn-window input:focus-visible{outline:2px solid #b48856;outline-offset:-3px}@media(prefers-reduced-motion:reduce){.dn-tab{transition:none}}
+
+/* Notebook library navigation belongs to the docked scene header. */
+.dn-header .dn-collection{position:static;left:auto;top:auto;width:auto;height:auto;gap:4px;flex:none;margin-left:auto;color:inherit}
+.dn-header .dn-collection[hidden],.dn-bookmarks[hidden]{display:none!important}
+.dn-header .dn-collection span{font-size:20px;letter-spacing:0;min-width:70px;text-align:center}
+.dn-header .dn-collection button{width:42px;min-width:42px;min-height:44px;font-size:25px}
+.dn-header .dn-collection+[data-action=close]{margin-left:0}
+.dn-header [data-action=user]{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dn-header:not([data-scene-toolbar]){left:96px;width:1120px;gap:8px}
+.dn-header:not([data-scene-toolbar]) strong{font-size:25px;width:225px}
+.dn-header:not([data-scene-toolbar]) input{width:135px;font-size:22px}
+.dn-header:not([data-scene-toolbar]) button{min-width:60px;font-size:22px}
+.dn-header[data-scene-toolbar] .dn-collection span{font:12px system-ui;min-width:58px}
 `;
 
 Object.assign(module.exports,{NOTEBOOK_STYLE});

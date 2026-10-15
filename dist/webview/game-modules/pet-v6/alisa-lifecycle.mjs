@@ -1,3 +1,4 @@
+import {assetUrl} from '../resources/asset-url.mjs';
 import {clipDuration} from './motion.mjs';
 
 // The stage is independent ImageGen decoration. Character poses remain approved
@@ -33,8 +34,8 @@ export function createAlisaLifecycle({root,sprite,assetBase='/public/frontends/h
   const mask=doc.createElement('span');mask.className='al-curtain-mask';
   const drop=doc.createElement('span');drop.className='al-curtain-drop';
   const back=doc.createElement('span');back.className='al-curtain-back';
-  const cloth=doc.createElement('img');cloth.className='al-curtain';cloth.alt='';cloth.src=assetBase+'pet/v6/alisa-stage-cloth.png';cloth.draggable=false;drop.append(back,cloth);mask.append(drop);
-  const header=doc.createElement('img');header.className='al-stage-header';header.alt='';header.src=assetBase+'pet/v6/alisa-stage-header.png';header.draggable=false;
+  const cloth=doc.createElement('img');cloth.className='al-curtain';cloth.alt='';cloth.src=assetUrl(assetBase,'pet/v6/alisa-stage-cloth.png');cloth.draggable=false;drop.append(back,cloth);mask.append(drop);
+  const header=doc.createElement('img');header.className='al-stage-header';header.alt='';header.src=assetUrl(assetBase,'pet/v6/alisa-stage-header.png');header.draggable=false;
   stageRoot.append(mask,header);return{stageRoot,cloth:drop};
  }
  async function finishClip(result,duration,tag){if(result?.then)await result;else await pause(duration,tag);assertAlive(tag);}
