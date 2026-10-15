@@ -717,7 +717,7 @@ export const STORY_CHARACTER_SOURCE_AUDIT = {
   "schema": 1,
   "frontend": "scripts/mirror-frontend.mjs",
   "package": "public/frontends/hypnosis-app/assets/encounter/orjenrn/package.json",
-  "frontendSha256": "4b33618c7141c2e99fa041a087d8e44c1362bf8cb610c630ea69844c53f1a106",
+  "frontendSha256": "43868bcc8aa6c08e70e3c9b8cef71ea382b85a359ce2c2af8f6d9081b8cc94eb",
   "packageSha256": "2ad160e004cc75496b225de43ed335edb41008e0e984ea2ef4fef33db8591f4f",
   "roles": {
     "九鬼真白": {
