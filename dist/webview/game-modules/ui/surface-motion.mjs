@@ -2,7 +2,7 @@ import { sceneRootFor } from './scene-dom.mjs';
 import { installSerialMotion,waitMotion } from './serial-motion.mjs';
 const running=new WeakMap();
 export function runSceneTransition(doc,action){return installSerialMotion(doc).run(action);}
-export async function animateSurface(node,enter,{duration=enter?260:200,distance=enter?-24:18}={}){
+export async function animateSurface(node,enter,{duration=enter?420:340,distance=enter?34:42}={}){
  if(!node?.isConnected)return;
  node.dataset.surfacePhase=enter?'enter':'leave';const win=node.ownerDocument.defaultView;
  if(win.matchMedia?.('(prefers-reduced-motion: reduce)').matches||!node.animate){node.style.opacity=enter?'1':'0';return;}

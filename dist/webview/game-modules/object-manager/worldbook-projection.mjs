@@ -9,6 +9,7 @@ import { HISTORICAL_COUNT_POLICY } from './historical-count-policy.mjs';
 import {locationHypnosisProjection} from './location-hypnosis.mjs';
 import {cashAmountField,CHARACTER_CASH_RULE} from './character-cash.mjs';
 import {CHARACTER_CLOTHING_RULE} from './character-clothing.mjs';
+import {acquisitionState} from './personnel-access.mjs';
 
 function stableHash(value) {
   const text = typeof value === "string" ? value : JSON.stringify(value);
@@ -151,6 +152,7 @@ export async function projectActiveCharacters({ chatKey, characters, allCharacte
   if(characters.some(x=>x.id!=='user'&&cashAmountField(x)))desired.push(makeManagedWorldbookEntry({chatKey,owner:{kind:'event',id:'character-cash-policy'},entry:{id:'character-cash-policy',comment:'人物现金结算',content:CHARACTER_CASH_RULE,constant:true,position:4,depth:0,order:9},projectionId:'character-cash-policy'}));
   if(context.personnelPolicy?.historicalOrgasmCounts&&characters.some(x=>contentPolicyContextApplicable(x,'historical-counts')))desired.push(makeManagedWorldbookEntry({chatKey,owner:{kind:'event',id:'historical-count-policy'},entry:{id:'historical-count-policy',comment:'人物历史次数口径',content:HISTORICAL_COUNT_POLICY,constant:true,position:4,depth:0,order:8},projectionId:'historical-count-policy'}));
   for (const raw of allCharacters) {
+    if(acquisitionState(raw)!=='scouted')continue;
     const character = normalizeCharacter(raw);
     if (mounted.has(character.id)) continue;
     for (const entry of materializeObjectKnowledge(character, { ...context, owner: character })) {

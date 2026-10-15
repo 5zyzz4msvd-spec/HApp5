@@ -5,6 +5,20 @@ import { normalizeCharacter } from "./contracts.mjs";
 import { sha256 } from "../workshop/task-package.mjs";
 import { prepareRoutineCatalog, installCharacterRoutine } from "./catalog-install.mjs";
 
+export async function appendEncounterWorldbook(actor,role){
+  const declared=Array.isArray(role.worldbookEntries)?role.worldbookEntries:Array.isArray(role.worldbook?.entries)?role.worldbook.entries:[];
+  const rows=[...declared],persona=role.personaEntry?.content??role.persona??role.personaContent;
+  if(persona&&!rows.some(row=>row.content===persona))rows.push({...role.personaEntry,comment:role.personaEntry?.comment??'[mvu_plot]'+actor.name+'人设',content:persona});
+  let added=0;
+  for(const [index,row]of rows.entries()){
+    if(typeof row?.content!=='string'||!row.content.trim())continue;
+    const id=row.content===persona?'imported-persona':'imported-worldbook-'+(await sha256(String(row.id??row.uid??row.comment??index))).slice(0,24);
+    if(actor.worldbook.entries.some(entry=>entry.id===id))continue;
+    actor.worldbook.entries.push({...structuredClone(row),id,key:row.key??row.keys??[actor.name,...(actor.aliases??[])],comment:row.comment??row.name??'[mvu_plot]'+actor.name+'资料',content:row.content});added++;
+  }
+  return added;
+}
+
 // Explicit import of a selected role definition, never of live MVU state.
 export async function encounterCharacterDraft(role, { initialData = null } = {}) {
   if (!role || !String(role.name ?? "").trim()) throw new Error("角色文件缺少名称");
@@ -12,7 +26,7 @@ export async function encounterCharacterDraft(role, { initialData = null } = {})
   const actor = normalizeCharacter({ kind: "character", id, name: role.name, aliases: Array.isArray(role.aliases) ? role.aliases : [], summary: role.intro ?? role.summary ?? "", ui: { source: "encounter-custom", images: [] } });
   for (const [key, source] of Object.entries({ gender: "gender", identity: "identity", appearance: "appearance", personality: "personality", background: "persona", behavior: "behaviorGuidance" })) actor.values[key] = String(role[source] ?? "");
   for (const key of ["age", "height"]) if (Number.isFinite(Number(role[key]))) actor.values[key] = Math.max(0, Number(role[key]));
-  if (role.personaEntry?.content || role.persona) actor.worldbook.entries.push({ id: "imported-persona", comment: "[mvu_plot]" + actor.name + "人设", key: [actor.name], constant: false, content: String(role.personaEntry?.content ?? role.persona) });
+  await appendEncounterWorldbook(actor,role);
   const declared=roleInitialData(role,initialData);await applyCharacterSourceMetadata(actor,role,{initialData:declared,initializing:true});await applyCharacterSourceMetadata(actor,role,{initialData:declared,ordinaryOnly:false,initializing:true});
   ensureCharacterCash(actor,{profile:role.cashProfile});ensureCharacterClothing(actor);return normalizeCharacter(actor);
 }
@@ -28,11 +42,11 @@ export async function importEncounterCharacter(runtime, source) {
   const id = `encounter-${(await sha256(String(role.id ?? role.name))).slice(0, 32)}`;
   const existing = await runtime.store.getObject({ kind: "character", id });
   await prepareRoutineCatalog(runtime);
-  if (existing) {const persona=existing.worldbook.entries.find(entry=>entry.id==='imported-persona'),sourcePersona=role.personaEntry?.content??role.persona??role.personaContent;const report=await applyCharacterSourceMetadata(existing,role,{initialData:roleInitialData(role,source.initialData),ordinaryOnly:Boolean(persona?.content&&sourcePersona&&persona.content!==sourcePersona)});if(report.added.length||report.filled.length)await runtime.saveCharacterDefinition(existing);return installCharacterRoutine(runtime,existing);}
+  if (existing) {const persona=existing.worldbook.entries.find(entry=>entry.id==='imported-persona'),sourcePersona=role.personaEntry?.content??role.persona??role.personaContent;const report=await applyCharacterSourceMetadata(existing,role,{initialData:roleInitialData(role,source.initialData),ordinaryOnly:Boolean(persona?.content&&sourcePersona&&persona.content!==sourcePersona)});const worldbookAdded=await appendEncounterWorldbook(existing,role);if(worldbookAdded||report.added.length||report.filled.length)await runtime.saveCharacterDefinition(existing);return installCharacterRoutine(runtime,existing);}
   const character = normalizeCharacter({ kind: "character", id, name: role.name, aliases: Array.isArray(role.aliases) ? role.aliases : String(role.aliases ?? "").split(/[,，]/).filter(Boolean), summary: role.intro ?? role.summary ?? "", ui: { template: "phone/profile", source: "encounter-custom", images: [] } });
   for (const [target, keys] of Object.entries({ gender: ["gender"], identity: ["identity"], appearance: ["appearance"], personality: ["personality", "habit"], background: ["socialConnection", "persona"], "first-encounter": ["firstEncounter", "encounterPrompt"], behavior: ["behaviorGuidance"] })) character.values[target] = keys.map((key) => String(role[key] ?? "")).filter(Boolean).join("\n");
   for (const [key, sourceKey] of [["age", "age"], ["height", "height"]]) if (Number.isFinite(Number(role[sourceKey])) && Number(role[sourceKey]) >= 0) character.values[key] = Number(role[sourceKey]);
-  if (role.personaEntry?.content) character.worldbook.entries.push({ id: "imported-persona", comment: `[mvu_plot]${character.name}角色设定`, content: String(role.personaEntry.content), constant: true });
+  await appendEncounterWorldbook(character,role);
   const custom = Array.isArray(role.personaFields) ? role.personaFields : [];
   if (custom.length) {
     character.elements.push({ id: "imported-fields", type: "group", label: "邂逅自定义设定", elements: custom.map((field, index) => ({ id: `custom-persona-${index}`, label: String(field.key ?? field.name ?? "设定"), type: "textarea", audience: "plot" })) });

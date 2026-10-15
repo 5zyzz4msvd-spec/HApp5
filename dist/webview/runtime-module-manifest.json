@@ -132,6 +132,7 @@
     "game-modules/pet-v6/hyakka-lifecycle.mjs",
     "game-modules/pet-v6/hyakka-transfer.mjs",
     "game-modules/pet-v6/motion.mjs",
+    "game-modules/phone-v2/app-motion.mjs",
     "game-modules/phone-v2/context.mjs",
     "game-modules/phone-v2/dom-patch.mjs",
     "game-modules/phone-v2/dynamic-island.mjs",

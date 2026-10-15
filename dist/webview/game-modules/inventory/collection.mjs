@@ -1,3 +1,4 @@
+import { dockSceneToolbar } from '../ui/scene-toolbar.mjs';
 import { surfaceLifecycle } from '../ui/surface-motion.mjs';
 import { bindFloatingDrag } from '../ui/floating-window.mjs';
 import { patchHtml } from '../phone-v2/dom-patch.mjs';
@@ -26,7 +27,7 @@ export function mountInventoryCollection(container,{getSnapshot,useItem,deleteIt
  const runner=createCollectionRunner(),assetRoot=String(assetUrl??'').replace(/inventory\/[^/]+$/,'');
  const room=roomImage??assetRoot+'inventory/round-room-v2.png',head=headImage??assetRoot+'inventory/lin-an-top-head-v2.png';
  for(const file of [room,head]){const image=new win.Image();image.src=file;}let raf=null,lastTime=null;
- const style=doc.createElement('style');style.textContent=COLLECTION_STYLE;const content=doc.createElement('div');content.style.cssText='display:contents';root.append(style,content);container.append(root);const toolbar=doc.createElement('header');toolbar.className='collection-heading';toolbar.innerHTML='<div><small>PERSONAL COLLECTION</small><h1>随身收藏</h1></div><button data-case-close aria-label="关闭收藏匣">×</button>';root.append(toolbar);const toolbarDock={docked:false,ready:Promise.resolve(),destroy(){}};toolbar.remove();
+ const style=doc.createElement('style');style.textContent=COLLECTION_STYLE;const content=doc.createElement('div');content.style.cssText='display:contents';root.append(style,content);container.append(root);const toolbar=doc.createElement('header');toolbar.className='collection-heading';toolbar.innerHTML='<div><small>PERSONAL COLLECTION</small><h1>随身收藏</h1></div><button data-case-close aria-label="关闭收藏匣">×</button>';root.append(toolbar);const toolbarDock=dockSceneToolbar(doc,toolbar);
  let snapshot={items:[],writable:false,chatId:''},items=[],page=0,selectedName='',destroyed=false,epoch=0,dialog=false,note='',notice='',busy=false,initialized=false,drag=null;
  const pages=()=>Math.max(1,Math.ceil(items.length/INVENTORY_PAGE_SIZE)),visible=()=>items.slice(page*8,page*8+8),selected=()=>items.find(x=>x.name===selectedName);
  const reduced=()=>win.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
