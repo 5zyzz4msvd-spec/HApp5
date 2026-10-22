@@ -42,7 +42,7 @@ const activeStore=runtime.store;
 async function readLiveState(){if(!liveHost)return{};const raw=await helper.getVariables?.({type:'message',message_id:'latest'});return raw?.stat_data??raw??{};}
 let liveState=await readLiveState();
 await ensureUserManagement(runtime,{legacyState:liveState,userName:liveHost?.SillyTavern?.getContext?.()?.name1??''});
-const storyEvents=createStoryEventEngine({runtime,getContext:async()=>({...context,suspicion:(await readUserManagement(runtime)).suspicion}),getDefinition:name=>STORY_CHARACTER_DEFINITIONS[name]});
+const storyEvents=createStoryEventEngine({runtime,getContext:async()=>({...context,system:(await readLiveState()).系统??{},suspicion:(await readUserManagement(runtime)).suspicion}),getDefinition:async name=>STORY_CHARACTER_DEFINITIONS[name]??await existingPersonnelRole(name)??paintedScoutingProvider.candidate(name)?.role});
 let storySchedule=null,storyWritable=()=>false,storyChanged=()=>{};
 const setStorySchedule=(getSchedule,writable,onChanged=()=>{})=>{storySchedule=getSchedule;storyWritable=writable;storyChanged=onChanged;};
 async function refreshStoryEvents(){const schedule=storySchedule?.();if(!schedule||!storyWritable())return[];const added=await storyEvents.reconcile(schedule,{writable:true});if(added.length)storyChanged();return added;}
