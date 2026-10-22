@@ -132,6 +132,7 @@
     "game-modules/object-manager/worldbook-policy.mjs",
     "game-modules/object-manager/worldbook-projection.mjs",
     "game-modules/pet-v6/alisa-lifecycle.mjs",
+    "game-modules/pet-v6/alisa-menu-registration.mjs",
     "game-modules/pet-v6/desktop-pet.mjs",
     "game-modules/pet-v6/hyakka-lifecycle.mjs",
     "game-modules/pet-v6/hyakka-transfer.mjs",

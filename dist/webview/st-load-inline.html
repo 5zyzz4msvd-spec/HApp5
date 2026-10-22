@@ -43987,6 +43987,7 @@ Object.assign(module.exports,{mountDaggerTransfer});
 },
 "src/pet-v6/desktop-pet.mjs":function(module, load){
 const {assetUrl} = load("src/resources/asset-url.mjs");
+const {alisaMenuRegistration} = load("src/pet-v6/alisa-menu-registration.mjs");
 const {phoneIcon} = load("src/phone-v2/icons.mjs");
 const {PET_CHARACTERS,PET_NAMES,clampPetPosition,stepDragSpring,chooseIdle,frameAt,legacyClips,clipDuration,dragGripForClip,anchoredPetPosition,impulseDragRotation,advanceClipClock,reversedMenuClip,decodePetImage,beginPetSettle,stepPetSettle} = load("src/pet-v6/motion.mjs");
 function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/assets/',actions={},initialCharacter='alisa',storageKey='hypno-pet-v6',onCharacter=()=>{},transitionHooks={}}={}){
@@ -44033,7 +44034,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
  function currentGrip(index=painted){return dragGripForClip(manifest?.characters?.[role],activeClip??clips[state],Math.max(0,activeClip?.frameIndices?.[index]??index));}
  function paintMotion(){sprite.style.setProperty('--dp-angle',spring.angle+'rad');const y=1+(spring.stretch??0);sprite.style.setProperty('--dp-scale-x',1/Math.sqrt(y));sprite.style.setProperty('--dp-scale-y',y);}
  function anchorDrag(index=painted){const grip=drag?.moved?drag:heldGrip;if(!grip||role!=='alisa')return;grip.grip=currentGrip(index);sprite.style.setProperty('--dp-pivot-x',grip.grip.x+'px');sprite.style.setProperty('--dp-pivot-y',grip.grip.y+'px');gripClip.style.left=grip.grip.x+'px';gripClip.style.top=grip.grip.y+'px';grip.target=anchoredPetPosition(grip.pointer,grip.grip);move(grip.target,{anchored:true});}
- function paint(index){const c=activeClip??clips[state];if(!c)return;if(index!==painted){painted=index;paintedTexture=c.frameIndices?.[index]??index;const x=-(paintedTexture%(c.columns??c.frames))*112,y=-Math.floor(paintedTexture/(c.columns??c.frames))*112*(c.frameHeight??256)/(c.frameWidth??256);sprite.style.backgroundPosition=`${x}px ${y}px`;texture.style.transform=`translate3d(${x}px,${y}px,0)`;for(const waiter of clipWaiters.filter(x=>x.index<=index))waiter.resolve(true);clipWaiters=clipWaiters.filter(x=>x.index>index);anchorDrag(index);}}
+ function paint(index){const c=activeClip??clips[state];if(!c)return;if(index!==painted){const register=role==='alisa'?alisaMenuRegistration(c,c.frameIndices?.[index]??index):{x:0,y:0},frameBox=root.querySelector('.dp-frame');frameBox.style.left=register.x+'px';frameBox.style.right=-register.x+'px';frameBox.style.top=((c.frameOffsetY??0)+register.y)+'px';painted=index;paintedTexture=c.frameIndices?.[index]??index;const x=-(paintedTexture%(c.columns??c.frames))*112,y=-Math.floor(paintedTexture/(c.columns??c.frames))*112*(c.frameHeight??256)/(c.frameWidth??256);sprite.style.backgroundPosition=`${x}px ${y}px`;texture.style.transform=`translate3d(${x}px,${y}px,0)`;for(const waiter of clipWaiters.filter(x=>x.index<=index))waiter.resolve(true);clipWaiters=clipWaiters.filter(x=>x.index>index);anchorDrag(index);}}
  function cancelMenuJump(){if(menuJump){menuJump.cancel();animations.delete(menuJump);menuJump=null;}}
  function play(name,now=win.performance.now(),override=null){if(!name.startsWith('menu-')){menuMotion=null;menuFrame.style.display='none';texture.style.opacity='1';sprite.dataset.menuBlend='false';}if(name!=='menu-open')cancelMenuJump();clipFinish?.(false);for(const waiter of clipWaiters)waiter.resolve(false);clipWaiters=[];state=clips[name]?name:'idle';pet.dataset.state=state;started=now;clock={elapsed:0,at:now};painted=-1;const c=activeClip=override??clips[state];sprite.style.backgroundImage=`url("${c.url}")`;sprite.style.backgroundSize=`${(c.columns??c.frames)*112}px ${(c.rows??1)*112}px`;if(textureUrl!==c.url){const nextTexture=textures.get(c.url)??doc.createElement('img');nextTexture.className='dp-texture';nextTexture.alt='';nextTexture.draggable=false;nextTexture.decoding='sync';texture.replaceWith(nextTexture);texture=nextTexture;textureUrl=c.url;}texture.style.opacity='1';if(texture.getAttribute('src')!==c.url)texture.src=c.url;texture.style.width=(c.columns??c.frames)*112+'px';const frameHeight=112*(c.frameHeight??256)/(c.frameWidth??256);texture.style.height=(c.rows??1)*frameHeight+'px';const frameBox=root.querySelector('.dp-frame');frameBox.style.top=(c.frameOffsetY??0)+'px';frameBox.style.height=frameHeight+'px';frameBox.style.bottom='auto';paint(0);wake();const completed=new Promise(resolve=>{clipFinish=resolve;});completed.atFrame=index=>painted>=index?Promise.resolve(true):new Promise(resolve=>clipWaiters.push({index,resolve}));return completed;}
  function setAlisaMenu(open,now=win.performance.now()){
@@ -44044,7 +44045,7 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
   const track=menuMotion,c=clips['menu-open'],distance=track.target-track.progress,step=dt*(c.frames-1)/.42;
   track.progress=Math.abs(distance)<=step?track.target:track.progress+Math.sign(distance)*step;
   const index=Math.floor(track.progress),next=Math.min(c.frames-1,index+1),f=track.progress-index,weight=f*f*(3-2*f);paint(index);texture.style.opacity=String(1-weight);
-  menuFrame.style.top=(c.frameOffsetY??0)+'px';menuFrame.style.height=112*(c.frameHeight??256)/(c.frameWidth??256)+'px';menuFrame.style.bottom='auto';menuFrame.style.display=weight?'block':'none';sprite.dataset.menuBlend='true';
+  const registration=alisaMenuRegistration(c,next);menuFrame.style.left=registration.x+'px';menuFrame.style.right=-registration.x+'px';menuFrame.style.top=((c.frameOffsetY??0)+registration.y)+'px';menuFrame.style.height=112*(c.frameHeight??256)/(c.frameWidth??256)+'px';menuFrame.style.bottom='auto';menuFrame.style.display=weight?'block':'none';sprite.dataset.menuBlend='true';
   if(menuTexture.getAttribute('src')!==c.url)menuTexture.src=c.url;menuTexture.style.width=(c.columns??c.frames)*112+'px';menuTexture.style.height=112*(c.frameHeight??256)/(c.frameWidth??256)+'px';menuTexture.style.transform=`translate3d(${-next*112}px,0,0)`;menuTexture.style.opacity=String(weight);
   if(track.progress===track.target){if(track.target===0){play('idle');resetIdleDeadline(win.performance.now());}else{state='menu-idle';pet.dataset.state=state;}}
  }
@@ -44123,6 +44124,21 @@ function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis-app/as
 }
 
 Object.assign(module.exports,{mountDesktopPet});
+},
+"src/pet-v6/alisa-menu-registration.mjs":function(module, load){
+// Ground anchors measured from the existing approved whole-character drawings.
+// These register the rendered tile; they do not alter or synthesize any pose.
+const ALISA_MENU_GROUND_ANCHORS=Object.freeze([
+ {x:127.5,y:267},{x:136,y:268},{x:137,y:267},
+ {x:120.5,y:267},{x:138,y:267},{x:120,y:267}
+]);
+function alisaMenuRegistration(clip,index,size=112){
+ if(clip?.file!=='pet/v6/alisa-v10-menu-open.png')return{x:0,y:0};
+ const anchor=ALISA_MENU_GROUND_ANCHORS[index],base=ALISA_MENU_GROUND_ANCHORS[0];if(!anchor)return{x:0,y:0};
+ return{x:(base.x-anchor.x)*size/256,y:(base.y-anchor.y)*size/256};
+}
+
+Object.assign(module.exports,{ALISA_MENU_GROUND_ANCHORS,alisaMenuRegistration});
 },
 "src/pet-v6/motion.mjs":function(module, load){
 const imagePools=new WeakMap();
