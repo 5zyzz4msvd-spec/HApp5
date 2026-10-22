@@ -6,7 +6,7 @@
     "alisa": {
       "name": "alisa",
       "source": "src/pet-v6/review-revisions/alisa-deep-landing-v11",
-      "status": "v13-menu-inbetweens-local-review",
+      "status": "v14-lower-inbetweens-local-review",
       "crop": [
         130,
         60,
@@ -138,23 +138,26 @@
           "frameOffsetY": -8.699029126213592
         },
         "menu-open": {
-          "file": "pet/v6/alisa-v13-menu-open.png",
-          "frames": 9,
-          "columns": 9,
+          "file": "pet/v6/alisa-v14-menu-open.png",
+          "frames": 12,
+          "columns": 12,
           "rows": 1,
           "durations": [
-            60,
-            60,
-            60,
-            60,
-            60,
-            60,
-            60,
-            60,
-            60
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            50
           ],
           "loop": false,
-          "sourceAction": "menu-v13",
+          "sourceAction": "menu-v14",
           "sourceIndices": [
             0,
             1,
@@ -164,17 +167,32 @@
             5,
             6,
             7,
-            8
+            8,
+            9,
+            10,
+            11
           ],
-          "sha256": "afcbf9ec5bec627b7f78cb434732ee0127807140c33ba8849e67161c3155f059",
+          "sha256": "741bc527b427de242f6c9a475fa792235c8b9d87cff32b82b7cf58b751705feb",
           "frameWidth": 256,
           "frameHeight": 273,
           "frameOffsetY": -8.699029126213592,
-          "transitionMs": 480,
+          "transitionMs": 550,
           "groundAnchors": [
             {
               "x": 127.5,
               "y": 267
+            },
+            {
+              "x": 132.4254143646409,
+              "y": 267.2872928176796
+            },
+            {
+              "x": 125.13259668508287,
+              "y": 267.2872928176796
+            },
+            {
+              "x": 121.79005524861878,
+              "y": 267.2872928176796
             },
             {
               "x": 136,
@@ -209,7 +227,7 @@
               "y": 267
             }
           ],
-          "visualSelection": "Original poses 0–3, four whole-character generated rising-arm inbetweens, exact original pose 5. Old pose 4 omitted to prevent a downward hand reversal."
+          "visualSelection": "Original pose 0, three whole-character waist-to-chest inbetweens, original poses 1–3, four rising-arm inbetweens, exact original pose 5. Old pose 4 omitted to prevent a downward hand reversal."
         },
         "menu-idle": {
           "file": "pet/v6/alisa-v12-menu-idle.png",
@@ -431,7 +449,7 @@
         "steadyMilliseconds": 9600,
         "status": "passed"
       },
-      "runtimeBundleHash": "bfd0293f0bc490564460bc3dfe1e4558f2d7c2763d03c87caf4d24ae31327ae3"
+      "runtimeBundleHash": "f03191ba6195dc49564dff46fe6c755a72d5548415d4137b65d2130bed1ddd0c"
     },
     "hyakka": {
       "source": "src/pet-v6/review-revisions/hyakka-menu-v7",

@@ -1,9 +1,9 @@
 // Generated from pet/v6 runtime PNG and JSON bytes by scripts/pet-resource-pack.mjs.
 export const PET_RESOURCE_REVISION=Object.freeze({
   "schema": 1,
-  "revision": "074b1d858b77c43b42e396f14fd392a04a80555d6d9b3bd97454731bd6fe6d0b",
-  "count": 61,
-  "totalBytes": 16851773,
+  "revision": "cd5c82627b785ca00afe6c91239a8e70e55bdf64a57a3dd5baae3358ee19bbd4",
+  "count": 62,
+  "totalBytes": 17375124,
   "files": [
     {
       "path": "pet/v6/alisa-blink.png",
@@ -119,6 +119,11 @@ export const PET_RESOURCE_REVISION=Object.freeze({
       "path": "pet/v6/alisa-v13-menu-open.png",
       "size": 393890,
       "sha256": "afcbf9ec5bec627b7f78cb434732ee0127807140c33ba8849e67161c3155f059"
+    },
+    {
+      "path": "pet/v6/alisa-v14-menu-open.png",
+      "size": 522899,
+      "sha256": "741bc527b427de242f6c9a475fa792235c8b9d87cff32b82b7cf58b751705feb"
     },
     {
       "path": "pet/v6/alisa-v8-drag-hold.png",
@@ -307,8 +312,8 @@ export const PET_RESOURCE_REVISION=Object.freeze({
     },
     {
       "path": "pet/v6/manifest.json",
-      "size": 26822,
-      "sha256": "0c933aa80e28fc142a0f6d13e1b68b1e3737408f88b3282a91901a44e1279390"
+      "size": 27274,
+      "sha256": "8999cc38740304b3720b74b76f189d1fbf40a6aefdce76bffbe0c3110228e8d4"
     }
   ]
 });
