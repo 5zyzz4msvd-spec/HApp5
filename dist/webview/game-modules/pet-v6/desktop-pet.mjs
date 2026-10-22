@@ -55,9 +55,9 @@ export function mountDesktopPet(container,{assetBase='/public/frontends/hypnosis
   menuMotion.target=open?clips['menu-open'].frames-1:0;state=open?'menu-open':'menu-close';pet.dataset.state=state;paintMenu(0);wake();
  }
  function paintMenu(dt){
-  const track=menuMotion,c=clips['menu-open'],distance=track.target-track.progress,step=dt*(c.frames-1)/.42;
+  const track=menuMotion,c=clips['menu-open'],distance=track.target-track.progress,step=dt*(c.frames-1)/((c.transitionMs??420)/1000);
   track.progress=Math.abs(distance)<=step?track.target:track.progress+Math.sign(distance)*step;
-  const index=Math.floor(track.progress),next=Math.min(c.frames-1,index+1),f=track.progress-index,weight=f*f*(3-2*f);paint(index);texture.style.opacity=String(1-weight);
+  const index=Math.floor(track.progress),next=Math.min(c.frames-1,index+1),weight=track.progress-index;paint(index);texture.style.opacity=String(1-weight);
   const registration=alisaMenuRegistration(c,next);menuFrame.style.left=registration.x+'px';menuFrame.style.right=-registration.x+'px';menuFrame.style.top=((c.frameOffsetY??0)+registration.y)+'px';menuFrame.style.height=112*(c.frameHeight??256)/(c.frameWidth??256)+'px';menuFrame.style.bottom='auto';menuFrame.style.display=weight?'block':'none';sprite.dataset.menuBlend='true';
   if(menuTexture.getAttribute('src')!==c.url)menuTexture.src=c.url;menuTexture.style.width=(c.columns??c.frames)*112+'px';menuTexture.style.height=112*(c.frameHeight??256)/(c.frameWidth??256)+'px';menuTexture.style.transform=`translate3d(${-next*112}px,0,0)`;menuTexture.style.opacity=String(weight);
   if(track.progress===track.target){if(track.target===0){play('idle');resetIdleDeadline(win.performance.now());}else{state='menu-idle';pet.dataset.state=state;}}
