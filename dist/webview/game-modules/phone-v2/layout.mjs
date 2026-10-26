@@ -1,7 +1,1 @@
-export function phoneFrame(orientation='portrait'){
- if(!['portrait','landscape'].includes(orientation))throw Error('未知手机方向');
- return orientation==='landscape'?{width:868,height:409,screenWidth:852,screenHeight:393}:{width:409,height:868,screenWidth:393,screenHeight:852};
-}
-export function fitPhone(viewport,orientation){const frame=phoneFrame(orientation);return{...frame,scale:Math.max(0,Math.min(viewport.width/(frame.width+6),viewport.height/(frame.height+6),1))};}
-
-export function phoneOverlayBounds({width,height,toolbarBottom=0,padding=12}){const top=Math.min(Math.max(0,toolbarBottom)+padding,Math.max(0,height-padding)),bottom=Math.max(top,height-padding);return{width:Math.max(0,width-padding*2),height:bottom-top,centerX:width/2,centerY:(top+bottom)/2};}
+function i(t="portrait"){if(!["portrait","landscape"].includes(t))throw Error("\u672A\u77E5\u624B\u673A\u65B9\u5411");return t==="landscape"?{width:868,height:409,screenWidth:852,screenHeight:393}:{width:409,height:868,screenWidth:393,screenHeight:852}}function o(t,h){const e=i(h);return{...e,scale:Math.max(0,Math.min(t.width/(e.width+6),t.height/(e.height+6),1))}}function c({width:t,height:h,toolbarBottom:e=0,padding:r=12}){const n=Math.min(Math.max(0,e)+r,Math.max(0,h-r)),a=Math.max(n,h-r);return{width:Math.max(0,t-r*2),height:a-n,centerX:t/2,centerY:(n+a)/2}}export{o as fitPhone,i as phoneFrame,c as phoneOverlayBounds};

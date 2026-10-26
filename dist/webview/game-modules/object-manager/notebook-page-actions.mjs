@@ -1,7 +1,1 @@
-export function drawNotebookPageButton(ctx,{x,y,width,height=50,label,kind='outline',disabled=false,fontSize=22}) {
-  ctx.save();ctx.globalAlpha=disabled?.25:1;
-  if(kind==='star'){ctx.fillStyle='#a57e44';ctx.font='38px "Songti SC",serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x+width/2,y+height/2);}
-  else if(kind==='arrow'){ctx.fillStyle='#856442';ctx.font='26px "Songti SC",serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x+width/2,y+height/2);}
-  else{ctx.fillStyle='#d6b68821';ctx.fillRect(x,y,width,height);ctx.strokeStyle='#a7835966';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.strokeRect(x+.5,y+.5,width-1,height-1);ctx.setLineDash([]);ctx.fillStyle='#98634e';ctx.font=fontSize+'px "Songti SC",serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x+width/2,y+height/2,width-20);}
-  ctx.restore();
-}
+function t(e,{x:i,y:n,width:l,height:f=50,label:o,kind:s="outline",disabled:r=!1,fontSize:a=22}){e.save(),e.globalAlpha=r?.25:1,s==="star"?(e.fillStyle="#a57e44",e.font='38px "Songti SC",serif',e.textAlign="center",e.textBaseline="middle",e.fillText(o,i+l/2,n+f/2)):s==="arrow"?(e.fillStyle="#856442",e.font='26px "Songti SC",serif',e.textAlign="center",e.textBaseline="middle",e.fillText(o,i+l/2,n+f/2)):(e.fillStyle="#d6b68821",e.fillRect(i,n,l,f),e.strokeStyle="#a7835966",e.lineWidth=1,e.setLineDash([4,4]),e.strokeRect(i+.5,n+.5,l-1,f-1),e.setLineDash([]),e.fillStyle="#98634e",e.font=a+'px "Songti SC",serif',e.textAlign="center",e.textBaseline="middle",e.fillText(o,i+l/2,n+f/2,l-20)),e.restore()}export{t as drawNotebookPageButton};

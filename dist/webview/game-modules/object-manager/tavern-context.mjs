@@ -1,11 +1,1 @@
-// Native SillyTavern exposes chat APIs through getContext(); older helpers may
-// also expose the same function directly on the namespace.
-export function hasTavernContext(view){
- return typeof view?.SillyTavern?.getContext==='function'||typeof view?.SillyTavern?.getCurrentChatId==='function';
-}
-export function readTavernChatId(view){
- const api=view?.SillyTavern;
- if(typeof api?.getCurrentChatId==='function')return String(api.getCurrentChatId()??'');
- const context=api?.getContext?.();
- return String(typeof context?.getCurrentChatId==='function'?context.getCurrentChatId()??'':context?.chatId??'');
-}
+function r(t){return typeof t?.SillyTavern?.getContext=="function"||typeof t?.SillyTavern?.getCurrentChatId=="function"}function o(t){const n=t?.SillyTavern;if(typeof n?.getCurrentChatId=="function")return String(n.getCurrentChatId()??"");const e=n?.getContext?.();return String(typeof e?.getCurrentChatId=="function"?e.getCurrentChatId()??"":e?.chatId??"")}export{r as hasTavernContext,o as readTavernChatId};

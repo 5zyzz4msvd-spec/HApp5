@@ -1,8 +1,1 @@
-const maps=new Map();
-export function registerResourceMap(base,entries){maps.set(String(base),new Map(entries));}
-export function resourceUrl(value){
- const url=String(value??'');
- for(const [base,entries]of maps)if(url.startsWith(base))return entries.get(url.slice(base.length))??url;
- return url;
-}
-export function assetUrl(base,file){return resourceUrl(String(base??'')+String(file??''));}
+const n=new Map;function A(e,t){n.set(String(e),new Map(t))}function i(e){const t=String(e??"");if(!/^(?:data:|blob:)/i.test(t)&&/(?:^|\/)pet\/v[0-5]\//i.test(t))return"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";for(const[r,s]of n)if(t.startsWith(r))return s.get(t.slice(r.length))??t;return t}function o(e,t){return i(String(e??"")+String(t??""))}export{o as assetUrl,A as registerResourceMap,i as resourceUrl};

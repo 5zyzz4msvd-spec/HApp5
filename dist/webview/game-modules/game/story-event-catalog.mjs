@@ -1,4 +1,1 @@
-export const STORY_EVENT_OUTPUT_CONTRACT=`事件只由前端规则预约尚未发送的空日程格，每个事件独占一格。条件可组合属性阈值、前置事件与互斥分支；分支在点击推进并完成准备结算后锁定，其余路线不再触发。阈值满足或预约不代表已发生；点击推进时先由脚本写入该区间事件的结果、物品、加入人物及解锁，再构建并发送剧情请求。story-event.payload.results为已结算结果，结合新加入人物的世界书演绎，禁止重复加物品、重复加入或重复修改这些结果；消息发送失败后保留已结算结果，重试不再发放。正文以本次玩家日程中story-event动作携带的少量hiddenPrompt为引导，结合世界书、人设及上下文自由演绎具体对话和动作，不逐字展示隐藏提示；只处理本格已指定事件，不自行创建事件、补旧好感链、修改事件记录或重复发奖。story-monitor与story-day-end只在警视厅线1已结算且线2未结算时生效：有内容的格伴随九鬼真白监视，当日最后格由她出现并殴打{{user}}；线2结算后终止。劣迹、改造和隐藏灵异线未完待续，不因旧变量、医院线2或警视厅线2开放。用户自己的事件与人物事件采用同一格预约机制；成就与任务仍由各自独立对象和奖励事务维护。`;
-
-export {STORY_EVENT_DEFINITIONS} from './story-event-definitions.generated.mjs';
-export const LOCKED_STORY_FEATURES=['劣迹','改造','隐藏灵异线'];
+import{SCRIPT_EVENT_RULE as T}from"./framework-rules.mjs";const _=T;import{STORY_EVENT_DEFINITIONS as r}from"./story-event-definitions.generated.mjs";const o=["\u52A3\u8FF9","\u6539\u9020","\u9690\u85CF\u7075\u5F02\u7EBF"];export{o as LOCKED_STORY_FEATURES,r as STORY_EVENT_DEFINITIONS,_ as STORY_EVENT_OUTPUT_CONTRACT};

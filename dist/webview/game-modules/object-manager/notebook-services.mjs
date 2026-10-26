@@ -1,9 +1,1 @@
-import {scoutingAvailable,SCOUTING_COMING_SOON} from './personnel-access.mjs';
-// Notebook views can browse services anywhere; accepting work uses fresh scene access.
-export function createNotebookServices({service,getAccess=()=>({writable:true})}){
- return{
-  serviceSnapshot:async()=>{const snapshot=await service.snapshot(),access=await getAccess();return{...snapshot,writable:access.writable!==false,accessReason:access.writable===false?access.reason||'当前不能办理委托':''};},
-  investigate:id=>submit('investigate',id),scout:id=>submit('scout',id)
- };
- async function submit(kind,id){const access=await getAccess();if(access.writable===false)throw Error(access.reason||'当前不能办理委托');if(kind==='scout'){const row=(await service.snapshot()).candidates?.find(candidate=>candidate.id===id);if(!scoutingAvailable(row)||row.scoutingAllowed===false)throw Error(SCOUTING_COMING_SOON);}return service.start(kind,id);}
-}
+import{scoutingAvailable as c,SCOUTING_COMING_SOON as l}from"./personnel-access.mjs";function u({service:s,getAccess:o=()=>({writable:!0})}){return{serviceSnapshot:async()=>{const t=await s.snapshot(),a=await o();return{...t,writable:a.writable!==!1,accessReason:a.writable===!1?a.reason||"\u5F53\u524D\u4E0D\u80FD\u529E\u7406\u59D4\u6258":""}},investigate:t=>e("investigate",t),scout:t=>e("scout",t)};async function e(t,a){const r=await o();if(r.writable===!1)throw Error(r.reason||"\u5F53\u524D\u4E0D\u80FD\u529E\u7406\u59D4\u6258");if(t==="scout"){const i=(await s.snapshot()).candidates?.find(n=>n.id===a);if(!c(i)||i.scoutingAllowed===!1)throw Error(l)}return s.start(t,a)}}export{u as createNotebookServices};

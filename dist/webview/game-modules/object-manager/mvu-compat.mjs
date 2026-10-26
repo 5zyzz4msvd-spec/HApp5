@@ -1,14 +1,1 @@
-import { cloneValue } from "./contracts.mjs";
-import { filterObjectAudience } from "./routing.mjs";
-
-export function filterEntriesForMvuAudience(entries, { updateMethod = "extra", isExtraAnalysis = false } = {}) {
-  return filterObjectAudience(Array.isArray(entries) ? entries : [], { mode: updateMethod, audience: isExtraAnalysis ? "update" : "plot" }).map(cloneValue);
-}
-
-export function extractLegacyJsonPatch(text) {
-  const source = String(text ?? "");
-  const wrappers = [...source.matchAll(/<UpdateVariable>\s*<JSONPatch>\s*([\s\S]*?)\s*<\/JSONPatch>\s*<\/UpdateVariable>/gi)];
-  if (wrappers.length !== 1) return [];
-  const parsed = JSON.parse(String(wrappers[0][1]).replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim());
-  return Array.isArray(parsed) ? parsed : [];
-}
+import{cloneValue as c}from"./contracts.mjs";import{filterObjectAudience as i}from"./routing.mjs";function o(r,{updateMethod:t="extra",isExtraAnalysis:e=!1}={}){return i(Array.isArray(r)?r:[],{mode:t,audience:e?"update":"plot"}).map(c)}function p(r){const e=[...String(r??"").matchAll(/<UpdateVariable>\s*<JSONPatch>\s*([\s\S]*?)\s*<\/JSONPatch>\s*<\/UpdateVariable>/gi)];if(e.length!==1)return[];const a=JSON.parse(String(e[0][1]).replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/i,"").trim());return Array.isArray(a)?a:[]}export{p as extractLegacyJsonPatch,o as filterEntriesForMvuAudience};

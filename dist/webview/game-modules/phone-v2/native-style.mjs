@@ -1,4 +1,4 @@
-export const PHONE_NATIVE_STYLE=`
+const e=`
 .phone16-root{color:#1c1c1e}.phone16-root button:focus-visible{outline:3px solid #007aff66}
 .ip-screen[data-theme=music]{background:#f2f2f7}.ip-screen[data-theme=music] .ip-status{color:#1c1c1e}
 .ip-device{background:linear-gradient(135deg,#babdc3,#484b51 25%,#131417 65%,#898d93);box-shadow:inset 0 0 0 1px #ffffffa0,inset 0 0 0 3px #111,0 22px 70px #00000030}
@@ -7,4 +7,4 @@ export const PHONE_NATIVE_STYLE=`
 .ip-app>span:last-child{font-size:12px;font-weight:400;letter-spacing:0;text-shadow:0 1px 3px #0003}.ip-app-icon{box-shadow:0 2px 4px #0001}.ip-home-search{font-size:12px;padding:6px 12px;background:#ffffff22}.ip-home-search .ip-icon{width:14px;height:14px}.ip-dock{border:0;background:#ffffff30;box-shadow:none;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
 .ip-screen[data-theme=default]{background:#f2f2f7}.ip-screen[data-theme=default] .ip-app-page{background:#f2f2f7}.ip-screen[data-theme=default] .ip-kicker{display:none}.ip-screen[data-theme=default] .ip-title{color:#1c1c1e;letter-spacing:-.7px;font-size:34px;font-weight:700}.ip-screen[data-theme=default] .ip-subtitle{font-size:15px;color:#8e8e93}.ip-screen[data-theme=default] .ip-simple-row{color:#1c1c1e;font-size:17px;min-height:52px}.ip-screen[data-theme=default] .ip-simple-row small{font-size:14px;color:#8e8e93}.ip-screen[data-theme=default] .ip-summary{color:#3a3a3c;font-size:16px;line-height:1.65}.ip-screen[data-theme=default] .ip-context-chip{background:#e5e5ea;color:#636366;font-size:13px}.ip-screen[data-theme=default] .ip-search{background:#e3e3e8;color:#8e8e93}.ip-screen[data-theme=default] .ip-search input{font-size:17px;color:#1c1c1e}
 .ip-global-controls{gap:8px}.ip-global-controls button{background:#ffffffb3;color:#3a3a3c;border:1px solid #3c3c4312;border-radius:18px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);font-size:13px;min-height:34px;padding:7px 13px}
-`;
+`;export{e as PHONE_NATIVE_STYLE};

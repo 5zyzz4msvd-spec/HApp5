@@ -1,15 +1,1 @@
-export const PHONE_MESSAGE_FILE = 'phone/messages.json';
-// ChatObjectStore supplies the chat-specific file root, backup and browser driver.
-export function phoneMessageFiles(store) {
- if (!store?.readJson || !store?.writeJson || !store.chatId) throw Error('手机消息需要独立聊天文件存储');
- return {
-  async read() {
-   const current = await store.readJson(PHONE_MESSAGE_FILE, null);
-   if (current) return current;
-   const previous = await store.readJson('ui/contact-chat.json', null);
-   if (previous) await store.writeJson(PHONE_MESSAGE_FILE, previous);
-   return previous;
-  },
-  write: value => store.writeJson(PHONE_MESSAGE_FILE, value),
- };
-}
+const e="phone/messages.json";function t(n){if(!n?.readJson||!n?.writeJson||!n.chatId)throw Error("\u624B\u673A\u6D88\u606F\u9700\u8981\u72EC\u7ACB\u804A\u5929\u6587\u4EF6\u5B58\u50A8");return{async read(){const r=await n.readJson(e,null);if(r)return r;const a=await n.readJson("ui/contact-chat.json",null);return a&&await n.writeJson(e,a),a},write:r=>n.writeJson(e,r)}}export{e as PHONE_MESSAGE_FILE,t as phoneMessageFiles};

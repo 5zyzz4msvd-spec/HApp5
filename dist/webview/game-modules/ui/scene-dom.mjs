@@ -1,4 +1,1 @@
-const scenes=new WeakMap();
-export function registerSceneRoot(doc,root){scenes.set(doc,root);}
-export function sceneRootFor(doc){const root=scenes.get(doc);return root?.isConnected?root:doc.querySelector('.routine-scene');}
-export function unregisterSceneRoot(doc,root){if(scenes.get(doc)===root)scenes.delete(doc);}
+const n=new WeakMap;function o(e,t){n.set(e,t)}function r(e){const t=n.get(e);return t?.isConnected?t:e.querySelector(".routine-scene")}function c(e,t){n.get(e)===t&&n.delete(e)}export{o as registerSceneRoot,r as sceneRootFor,c as unregisterSceneRoot};

@@ -2697,8 +2697,926 @@
       "cameraCalibration": "not claimed; artistic eye-level target only",
       "generationBatch": "navigation-backgrounds-v1",
       "rawUnmodified": true
+    },
+    {
+      "locationId": "place-d98db31a76cc2a2f1cad0db3",
+      "file": "scene-presence/backgrounds/locations-v1/company-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/company-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "f6224fde3b3f78e57c599751f5e02d95175288efc0b12a80160f6271c1ce67c7",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "company-office"
+    },
+    {
+      "locationId": "place-ba79e43e4b6ae46d86959e75",
+      "file": "scene-presence/backgrounds/locations-v1/police-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/police-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3f231eb57b0ad90fdf2656eb4f4897a0ba5cfd59f5ea226b45b5317050291447",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "police-office"
+    },
+    {
+      "locationId": "place-d7e7174ecf3041a489cb377d",
+      "file": "scene-presence/backgrounds/locations-v1/hospital.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a178258550f25abb52e7162cf48a54e855d162fcba7a573eb691182b6c44258b",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital"
+    },
+    {
+      "locationId": "place-17a9b219482e3fbd9102c907",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-0fb2b0926ad227c62f3fb038",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-eaedb4a80c49a778b4080453",
+      "file": "scene-presence/backgrounds/locations-v1/mansion.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/mansion.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "cebd75eabeff38773d205e8707962de2c0a75efdef44b4b67f2c1b9365d19522",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "mansion"
+    },
+    {
+      "locationId": "place-0a8114d33b06d2b0d72fe3fb",
+      "file": "scene-presence/backgrounds/locations-v1/school-courtyard.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-courtyard.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "e7d2db38b982a22ec21701dcc3c879bdff5db9bf3c991ceeeee41612b4db8dc3",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-courtyard"
+    },
+    {
+      "locationId": "place-b446c150442ed7534496be44",
+      "file": "scene-presence/backgrounds/locations-v1/library.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/library.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2b79d85b5cf0bf81cefffd8a85f60c84e8fb1e6db1780be25bf969b48a6c596f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "library"
+    },
+    {
+      "locationId": "place-0e9402c92ef7d57ff27dc17f",
+      "file": "scene-presence/backgrounds/locations-v1/sports-ground.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/sports-ground.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "c69d8df94aaabb9fce037009a93cdfa73a7f0a595a0ee3fb92b8ebf3a5a86295",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "sports-ground"
+    },
+    {
+      "locationId": "place-4df586f9c463820f4c256541",
+      "file": "scene-presence/backgrounds/locations-v1/pool.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/pool.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "29952a19ba849684d941b9d29b852b1965fc2f209008ad6071e6ad697dbf3b1a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "pool"
+    },
+    {
+      "locationId": "place-79f9494700c774fba5a43d54",
+      "file": "scene-presence/backgrounds/locations-v1/school-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "abe3821f0bcd7d05b0ded36db8ce2876d8a21b3e6984952c32a1861fc1d2cf4f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-office"
+    },
+    {
+      "locationId": "place-f3ddaa05df9cc9e81c2db736",
+      "file": "scene-presence/backgrounds/locations-v1/executive-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/executive-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a0db2d754dbdd5c0b1bcfce57f27c019d594f1d0c041a15c4816660dd2bb3ba2",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "executive-office"
+    },
+    {
+      "locationId": "place-273fb82e98dfee03669e8a30",
+      "file": "scene-presence/backgrounds/locations-v1/restroom.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/restroom.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2f3ce0fb01789cae8e4e06849e54bd26c14979e3e798503e7ca0c3c0f07cdc69",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "restroom"
+    },
+    {
+      "locationId": "place-a6b13e6935288e904c07c593",
+      "file": "scene-presence/backgrounds/locations-v1/school-corridor.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-corridor.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3763c898dd87dd151ed6b3736024f7766b8ea669f3ff38353eff02017612ec1d",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-corridor"
+    },
+    {
+      "locationId": "place-06d2821153ac334b8d595d97",
+      "file": "scene-presence/backgrounds/locations-v1/restroom.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/restroom.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2f3ce0fb01789cae8e4e06849e54bd26c14979e3e798503e7ca0c3c0f07cdc69",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "restroom"
+    },
+    {
+      "locationId": "place-5f5b383b03643f73cae424d3",
+      "file": "scene-presence/backgrounds/classroom.png",
+      "source": "src/art/hypnosis-app/v1/runtime/locations/classroom-2a-front-v2.png",
+      "width": 1920,
+      "height": 1080,
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "classroom",
+      "sha256": "d49ae980bf6c5df3b3509790257b6512bd4d53a0c0f33ea0567d736f7cf9b16e"
+    },
+    {
+      "locationId": "place-c2f0e94f53c5b94dbaa99e10",
+      "file": "scene-presence/backgrounds/classroom.png",
+      "source": "src/art/hypnosis-app/v1/runtime/locations/classroom-2a-front-v2.png",
+      "width": 1920,
+      "height": 1080,
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "classroom",
+      "sha256": "d49ae980bf6c5df3b3509790257b6512bd4d53a0c0f33ea0567d736f7cf9b16e"
+    },
+    {
+      "locationId": "place-9697b4f38f5314eae53f9c0a",
+      "file": "scene-presence/backgrounds/locations-v1/infirmary.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/infirmary.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "cc68da98b6af51544db620a0bd82aa21ede3c0f50eaecbe999b65fb327f4fb29",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "infirmary"
+    },
+    {
+      "locationId": "place-53ffb05f244dea582d7fed7d",
+      "file": "scene-presence/backgrounds/locations-v1/rooftop.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/rooftop.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "852e7811faa6a27ba486e8925fc2af4d912573ff2cb7060d9a28e84dc50d8b61",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "rooftop"
+    },
+    {
+      "locationId": "place-old-school",
+      "file": "scene-presence/backgrounds/locations-v1/old-school-exterior.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-school-exterior.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "9ad9f6e2556a189a9bd4e382e2001e4d791388762d35eaa99d19ab38dc1e448a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-school-exterior"
+    },
+    {
+      "locationId": "place-b1e397db3d93cf4f51c6805c",
+      "file": "scene-presence/backgrounds/locations-v1/old-school-exterior.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-school-exterior.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "9ad9f6e2556a189a9bd4e382e2001e4d791388762d35eaa99d19ab38dc1e448a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-school-exterior"
+    },
+    {
+      "locationId": "place-routine-53983477e4cf3e49dd95",
+      "file": "scene-presence/backgrounds/locations-v1/residential-street.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-street.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2018b83a0512d9c67e101a19af1fbd0a25a25be78ce33cbe86c168c4759c9f7c",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-street"
+    },
+    {
+      "locationId": "place-routine-080994ac94c9e1db0096",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-9813e1d73587480c57a7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-8bdd8effb788e3aa18d1",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c5bc8d9e2e63fbcce966",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-dc2080117e47f711d5e9",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-a860b858265b22dad3aa",
+      "file": "scene-presence/backgrounds/locations-v1/cafe.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/cafe.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "529aee5855bd846c940c86eb61d0dc2fa24859452cf1c6a9952e4d96378c6b04",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "cafe"
+    },
+    {
+      "locationId": "place-routine-55074443dcf4f8bd6a35",
+      "file": "scene-presence/backgrounds/locations-v1/convenience-store.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/convenience-store.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "0637d41dfa8456e44b71eb66a7e76c25272729eb1dfdc7fa8fad1b8813d1e6b5",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "convenience-store"
+    },
+    {
+      "locationId": "place-routine-7708db5295c6ff216a61",
+      "file": "scene-presence/backgrounds/locations-v1/park-garden.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/park-garden.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "202a4218212969f24c762e61481013a3341e961d39e156ddca8d6ff8c60e3294",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "park-garden"
+    },
+    {
+      "locationId": "place-routine-cd928e9e0330828b0872",
+      "file": "scene-presence/backgrounds/locations-v1/company-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/company-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "f6224fde3b3f78e57c599751f5e02d95175288efc0b12a80160f6271c1ce67c7",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "company-office"
+    },
+    {
+      "locationId": "place-routine-15aadd0ce23a6ab055c3",
+      "file": "scene-presence/backgrounds/locations-v1/executive-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/executive-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a0db2d754dbdd5c0b1bcfce57f27c019d594f1d0c041a15c4816660dd2bb3ba2",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "executive-office"
+    },
+    {
+      "locationId": "place-routine-727c52a80f44487313ec",
+      "file": "scene-presence/backgrounds/locations-v1/hospital-clinical.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital-clinical.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "1dfaa4102cef985074e5a5e62c0bf7197a9024dc64d73caa6e7d27e4c60ae478",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital-clinical"
+    },
+    {
+      "locationId": "place-routine-dee29474f75f1c7f8d20",
+      "file": "scene-presence/backgrounds/locations-v1/hospital-clinical.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital-clinical.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "1dfaa4102cef985074e5a5e62c0bf7197a9024dc64d73caa6e7d27e4c60ae478",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital-clinical"
+    },
+    {
+      "locationId": "place-routine-96b8f576c788b75e5918",
+      "file": "scene-presence/backgrounds/locations-v1/hospital-ward.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital-ward.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "587e287bfcd47f8d4707679dc8dfff119c080255dc5fb2b947af8959884f4f6f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital-ward"
+    },
+    {
+      "locationId": "place-routine-83f5f282706398efd7ca",
+      "file": "scene-presence/backgrounds/locations-v1/hospital.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a178258550f25abb52e7162cf48a54e855d162fcba7a573eb691182b6c44258b",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital"
+    },
+    {
+      "locationId": "place-routine-5ae58c394241ece391bc",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-1860ed7de0af47ee414c",
+      "file": "scene-presence/backgrounds/locations-v1/police-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/police-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3f231eb57b0ad90fdf2656eb4f4897a0ba5cfd59f5ea226b45b5317050291447",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "police-office"
+    },
+    {
+      "locationId": "place-routine-cd1c7b2b32e704685d42",
+      "file": "scene-presence/backgrounds/locations-v1/old-school.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-school.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2c22efe4ce80d74399dda3b99955269abcbbff623ed0eb2f0effc02b8c16159a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-school"
+    },
+    {
+      "locationId": "place-routine-139c0c3317cc01c0370a",
+      "file": "scene-presence/backgrounds/locations-v1/old-classroom.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-classroom.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "be03cc9e1a0f4a70f22bec489c84992a2eedbc4357f218cfa70ba5093b75fadd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-classroom"
+    },
+    {
+      "locationId": "place-routine-12c2411205b41731479e",
+      "file": "scene-presence/backgrounds/locations-v1/computer-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/computer-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "470cb798cb97ae1fd0e84c843c974601390a803b697f84714252bb29d3a72935",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "computer-room"
+    },
+    {
+      "locationId": "place-routine-d0991228e974b3433f0b",
+      "file": "scene-presence/backgrounds/locations-v1/gymnasium.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/gymnasium.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "6240abdf39f4ac8f14311790baa1091b01ffce424c512064189b9efe1f34e57c",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "gymnasium"
+    },
+    {
+      "locationId": "place-routine-b88d0883df136bde9857",
+      "file": "scene-presence/backgrounds/locations-v1/activity-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/activity-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "da928e5c63a8c84d315de747fd322ef7b07aa4e24e931181364fe1096b9ff752",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "activity-room"
+    },
+    {
+      "locationId": "place-routine-529fbc6518d5f4ef8c12",
+      "file": "scene-presence/backgrounds/locations-v1/music-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/music-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "437be8846c854cf44e1ac77b1416fa9e0699f291b3bf23717759a07111d3e0bc",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "music-room"
+    },
+    {
+      "locationId": "place-routine-24446f49616f7f04457d",
+      "file": "scene-presence/backgrounds/locations-v1/activity-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/activity-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "da928e5c63a8c84d315de747fd322ef7b07aa4e24e931181364fe1096b9ff752",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "activity-room"
+    },
+    {
+      "locationId": "place-routine-0f9b1c0d9f5dcb5c543c",
+      "file": "scene-presence/backgrounds/locations-v1/school-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "abe3821f0bcd7d05b0ded36db8ce2876d8a21b3e6984952c32a1861fc1d2cf4f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-office"
+    },
+    {
+      "locationId": "place-routine-23eeb69c681dfdb8eacc",
+      "file": "scene-presence/backgrounds/locations-v1/park-garden.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/park-garden.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "202a4218212969f24c762e61481013a3341e961d39e156ddca8d6ff8c60e3294",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "park-garden"
+    },
+    {
+      "locationId": "place-routine-e1cc6b073e2cf3198e1e",
+      "file": "scene-presence/backgrounds/locations-v1/science-preparation.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/science-preparation.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "4afc0b0462c0905d6255849a240a61f030420ae95208fc464c706a6e62b3bfe1",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "science-preparation"
+    },
+    {
+      "locationId": "place-routine-489b28f66006869bead7",
+      "file": "scene-presence/backgrounds/locations-v1/salon-studio.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/salon-studio.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "583961635e76f23f160c4fb51a9cf1a98a9df242ab8fc865b9408b8926689e31",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "salon-studio"
+    },
+    {
+      "locationId": "place-routine-fffd338d2a76720ed032",
+      "file": "scene-presence/backgrounds/locations-v1/tea-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/tea-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "664d07ae32673abe6362d40cdd3d55f0bda4b9a2168cdd6be49a76d687d8e09f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "tea-room"
+    },
+    {
+      "locationId": "place-routine-28424bc0794b19fedc8f",
+      "file": "scene-presence/backgrounds/locations-v1/company-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/company-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "f6224fde3b3f78e57c599751f5e02d95175288efc0b12a80160f6271c1ce67c7",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "company-office"
+    },
+    {
+      "locationId": "place-routine-da0daaba4b156961c049",
+      "file": "scene-presence/backgrounds/locations-v1/salon-studio.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/salon-studio.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "583961635e76f23f160c4fb51a9cf1a98a9df242ab8fc865b9408b8926689e31",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "salon-studio"
+    },
+    {
+      "locationId": "place-routine-55bb12211b643f5c84ff",
+      "file": "scene-presence/backgrounds/locations-v1/salon-studio.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/salon-studio.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "583961635e76f23f160c4fb51a9cf1a98a9df242ab8fc865b9408b8926689e31",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "salon-studio"
+    },
+    {
+      "locationId": "place-routine-773d7a362a18a77362e5",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-dc4707a259a8a39e3d30",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-ff625cb6ecf54cef8178",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c64da1009c1dc1e17c4f",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-ea466bb025b415f3a48c",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c610816785fbc0016129",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-51414ee867cfc1357686",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-e8d2783f4f4cccb1e8d2",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-b73544e8d7cf21ae670c",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-18681b83a7495098ca11",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-ba1490c26f6d6e9489b9",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-2685efcc20be81e6d1dc",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-d2b8e3fbfced9baf0dc4",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-5eca975b965d587a5916",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-0b153bf34f58a1402b7e",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-472948bd288d3eaaec4d",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-12df84b8ed28614493f3",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-d1f949d94a8d3e18632e",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-bd05026020471146bc83",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-3765202827e894e143b1",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-853a7c62dccd5476c13f",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-955ff713526f8ec22dc2",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-31eec12df8cda2bd3b9a",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-95359848f487370e5af7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-24e0d4e887015ba962f7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c5f2c8599f7659d1ffaa",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-f2f20e71b210b91c77b5",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-9b3e502de10d8663863f",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-0a9e6c360464e0ffbb26",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-4c8b8cbb74a18200dd64",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-21ffb1fa5bf0cc36617a",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-3218a3c6bdf94f814fd6",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-227eb472789bc10e74b7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c750bd4bc047844671ef",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-252868b454fa23f604da",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-b8514c67773055a1ab7d",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-12c40c4fca5ea36a3613",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-694fc9e17ce9531ee4f6a5af",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
     }
   ],
   "status": "local-scene-integration",
-  "note": "Approved character originals reused for display only; no editing or input to subsequent generation."
+  "note": "Approved character originals reused for display only; no editing or input to subsequent generation.",
+  "defaultBackground": {
+    "file": "scene-presence/backgrounds/quantum-space-v1.png",
+    "source": "src/art/hypnosis-app/v2/production/2026-10-22/quantum-space-v1/quantum-space-v1.png",
+    "width": 1672,
+    "height": 941,
+    "sha256": "3d733adfce1d62ad78f34c01db9e327ff5203427fef30516029506dd1f490630",
+    "purpose": "未上传地点图片、无明确地点的旁白与梦境默认背景"
+  }
 }

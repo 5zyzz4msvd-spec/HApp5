@@ -1,62 +1,11 @@
-import { patchHtml } from '../phone-v2/dom-patch.mjs';
-import { CREDIT } from './credits.mjs';
-import { locationExplorerModel, locationImageFile } from './location-explorer-model.mjs';
-import { LOCATION_EXPLORER_STYLE } from './location-explorer-style.mjs';
-
-const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-
-export async function mountLocationExplorer(container, { runtime, locationId='map-world', currentLocation=null, resolveFile=x=>x, onMove=async()=>{}, canMove=()=>true }) {
-  const doc = container.ownerDocument, root = doc.createElement('section'), style = doc.createElement('style');
-  root.className = 'location-explorer'; style.textContent = LOCATION_EXPLORER_STYLE; container.append(style, root);
-  let locations = await runtime.availableLocations(), selectedId = currentLocation?.id ?? locationId,
-    expanded = [], query = '', notice = '', moving = false, disposed = false;
-  const failedImages = new Set();
-  const model = (expandSelection=false) => locationExplorerModel(locations, { selectedId, currentId: currentLocation?.id, expanded, expandSelection });
-  expanded=[...model(true).expanded];
-
-  function treeRow(place, depth, state) {
-    const branch = place.children.length > 0, open = state.expanded.has(place.id);
-    return `<li id="location-node-${esc(place.id)}"><div class="location-tree-row" style="--depth:${depth}" data-selected="${state.selected?.id === place.id}">
-      ${branch ? `<button type="button" class="location-toggle" data-toggle="${esc(place.id)}" aria-expanded="${open}" aria-label="${open?'收起':'展开'}${esc(place.name)}">${open?'⌄':'›'}</button>` : '<span class="location-toggle-space"></span>'}
-      <button type="button" class="location-tree-choice" data-select="${esc(place.id)}" ${state.selected?.id===place.id?'aria-current="page"':''}><span>${esc(place.name)}</span>${currentLocation?.id===place.id?'<i class="location-current-dot" aria-label="当前位置"></i>':''}</button></div>
-      ${branch && open ? `<ul>${place.children.map(ref => treeRow(state.forest.nodes.get(ref.id).object, depth+1, state)).join('')}</ul>` : ''}</li>`;
-  }
-
-  function render() {
-    if (disposed) return;
-    const state = model(), target = state.selected; selectedId = target?.id; expanded = [...state.expanded];
-    const path = target ? state.path(target.id) : [], file = locationImageFile(target), image = failedImages.has(file) ? '' : file, parent = path.at(-2);
-    const rows = query.trim() ? state.search(query).map(place => `<li id="location-result-${esc(place.id)}" class="location-search-result"><button type="button" class="location-tree-choice" data-select="${esc(place.id)}" ${selectedId===place.id?'aria-current="page"':''}><span>${esc(place.name)}</span><small>${esc(state.path(place.id).map(x=>x.name).join(' › '))}</small></button></li>`).join('') : state.forest.roots.map(ref => treeRow(state.forest.nodes.get(ref.id).object,0,state)).join('');
-    patchHtml(root, `<aside class="location-index"><div class="location-index-heading"><small>PLACES</small><strong>地点目录</strong></div><label class="location-search"><input id="location-search" aria-label="搜索已开放地点" value="${esc(query)}" placeholder="搜索地点"><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></span></label><nav class="location-tree" aria-label="地点层级"><ul>${rows || '<li class="location-no-results">没有找到已开放地点</li>'}</ul></nav></aside>
-      <section class="location-reading"><nav class="location-path" aria-label="地点路径">${path.map(place=>`<button type="button" data-select="${esc(place.id)}" ${place.id===selectedId?'aria-current="page"':''}>${esc(place.name)}</button>`).join('<span aria-hidden="true">›</span>')}</nav>
-      <article class="location-description" aria-label="选中地点详情"><div class="location-selected-heading"><div><span class="location-category">${esc(target?.data?.category || '区域')}</span><h2>${esc(target?.name || '暂无开放地点')}</h2></div>${currentLocation?.id===selectedId?'<span class="location-current-label">你在这里</span>':''}</div>
-      <figure class="location-selected-picture">${image ? `<img id="location-selected-image" src="${esc(resolveFile(image))}" alt="${esc(target.name)}">` : `<div class="location-picture-empty"><span class="location-monogram" aria-hidden="true">${esc(target?.name?.slice(0,1) || '◇')}</span><small>地点图片待补全</small></div>`}</figure>
-      <p class="location-selected-description">${esc(target?.data?.description || '这里的资料尚未补全。')}</p>
-      ${target?.children.length?`<section class="location-within"><h3>这里包含 ${target.children.length} 处地点</h3><div class="location-within-list">${target.children.map(ref=>{const child=state.forest.nodes.get(ref.id).object;return `<button type="button" data-select="${esc(child.id)}">${esc(child.name)}<span aria-hidden="true">›</span></button>`;}).join('')}</div></section>`:''}
-      ${parent?`<button type="button" class="location-parent-link" data-select="${esc(parent.id)}">↑ 返回${esc(parent.name)}</button>`:''}</article>
-      <footer class="location-action"><p role="status">${esc(notice || (currentLocation?.id===selectedId?'当前所在地点':'选择地点查看资料，点击前往后才会移动'))}</p><button type="button" class="location-move" data-move ${!target||moving||!canMove()||currentLocation?.id===selectedId?'disabled':''}>${moving?'正在前往…':'前往这里 →'}</button></footer><div class="location-credit">${CREDIT}</div></section>`);
-  }
-
-  function onInput(event) { if (event.target.id==='location-search') { query=event.target.value; render(); } }
-  function onImageError(event) { if (event.target.id==='location-selected-image') { failedImages.add(locationImageFile(model().selected)); render(); } }
-  async function onClick(event) {
-    const button=event.target.closest('button'); if (!button || button.disabled) return;
-    if (button.dataset.toggle) {
-      const id=button.dataset.toggle, open=new Set(expanded); open.has(id)?open.delete(id):open.add(id); expanded=[...open]; render();
-    } else if (button.dataset.select) {
-      selectedId=button.dataset.select; expanded=[...model(true).expanded]; notice=''; query=''; render();
-    } else if (button.hasAttribute('data-move')) {
-      if (moving || !canMove()) return;
-      const id=selectedId; moving=true; render();
-      try {
-        const fresh=await runtime.availableLocations(), destination=fresh.find(place=>place.id===id);
-        if (!destination) throw Error('这个地点尚未开放');
-        if (disposed || !canMove()) return;
-        await onMove(destination); currentLocation=destination; locations=fresh; notice='已到达 '+destination.name;
-      } catch(error) { notice=error.message || '移动未完成'; }
-      finally { moving=false; render(); }
-    }
-  }
-  root.addEventListener('input',onInput);root.addEventListener('click',onClick);root.addEventListener('error',onImageError,true);render();
-  return { root, async refresh() {locations=await runtime.availableLocations();failedImages.clear();expanded=[...model(true).expanded];render();}, destroy() {disposed=true;root.removeEventListener('input',onInput);root.removeEventListener('click',onClick);root.removeEventListener('error',onImageError,true);root.remove();style.remove();} };
-}
+import{patchHtml as D}from"../phone-v2/dom-patch.mjs";import{CREDIT as N}from"./credits.mjs";import{locationExplorerModel as P,locationImageFile as R}from"./location-explorer-model.mjs";import{LOCATION_EXPLORER_STYLE as _}from"./location-explorer-style.mjs";const a=b=>String(b??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[m]);async function Y(b,{runtime:m,locationId:A="map-world",currentLocation:c=null,resolveFile:O=f=>f,onMove:T=async()=>{},canMove:w=()=>!0}){const f=b.ownerDocument,l=f.createElement("section"),E=f.createElement("style");l.className="location-explorer",E.textContent=_,b.append(E,l);let x=await m.availableLocations(),r=c?.id??A,u=[],g="",v="",h=!1,j=!1;const I=new Set,$=(e=!1)=>P(x,{selectedId:r,currentId:c?.id,expanded:u,expandSelection:e});u=[...$(!0).expanded];function L(e,t,n){const i=e.children.length>0,s=n.expanded.has(e.id);return`<li id="location-node-${a(e.id)}"><div class="location-tree-row" style="--depth:${t}" data-selected="${n.selected?.id===e.id}">
+      ${i?`<button type="button" class="location-toggle" data-toggle="${a(e.id)}" aria-expanded="${s}" aria-label="${s?"\u6536\u8D77":"\u5C55\u5F00"}${a(e.name)}">${s?"\u2304":"\u203A"}</button>`:'<span class="location-toggle-space"></span>'}
+      <button type="button" class="location-tree-choice" data-select="${a(e.id)}" ${n.selected?.id===e.id?'aria-current="page"':""}><span>${a(e.name)}</span>${c?.id===e.id?'<i class="location-current-dot" aria-label="\u5F53\u524D\u4F4D\u7F6E"></i>':""}</button></div>
+      ${i&&s?`<ul>${e.children.map(p=>L(n.forest.nodes.get(p.id).object,t+1,n)).join("")}</ul>`:""}</li>`}function d(){if(j)return;const e=$(),t=e.selected;r=t?.id,u=[...e.expanded];const n=t?e.path(t.id):[],i=R(t),s=I.has(i)?"":i,p=n.at(-2),q=g.trim()?e.search(g).map(o=>`<li id="location-result-${a(o.id)}" class="location-search-result"><button type="button" class="location-tree-choice" data-select="${a(o.id)}" ${r===o.id?'aria-current="page"':""}><span>${a(o.name)}</span><small>${a(e.path(o.id).map(y=>y.name).join(" \u203A "))}</small></button></li>`).join(""):e.forest.roots.map(o=>L(e.forest.nodes.get(o.id).object,0,e)).join("");D(l,`<aside class="location-index"><div class="location-index-heading"><small>PLACES</small><strong>\u5730\u70B9\u76EE\u5F55</strong></div><label class="location-search"><input id="location-search" aria-label="\u641C\u7D22\u5DF2\u5F00\u653E\u5730\u70B9" value="${a(g)}" placeholder="\u641C\u7D22\u5730\u70B9"><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></span></label><nav class="location-tree" aria-label="\u5730\u70B9\u5C42\u7EA7"><ul>${q||'<li class="location-no-results">\u6CA1\u6709\u627E\u5230\u5DF2\u5F00\u653E\u5730\u70B9</li>'}</ul></nav></aside>
+      <section class="location-reading"><nav class="location-path" aria-label="\u5730\u70B9\u8DEF\u5F84">${n.map(o=>`<button type="button" data-select="${a(o.id)}" ${o.id===r?'aria-current="page"':""}>${a(o.name)}</button>`).join('<span aria-hidden="true">\u203A</span>')}</nav>
+      <article class="location-description" aria-label="\u9009\u4E2D\u5730\u70B9\u8BE6\u60C5"><div class="location-selected-heading"><div><span class="location-category">${a(t?.data?.category||"\u533A\u57DF")}</span><h2>${a(t?.name||"\u6682\u65E0\u5F00\u653E\u5730\u70B9")}</h2></div>${c?.id===r?'<span class="location-current-label">\u4F60\u5728\u8FD9\u91CC</span>':""}</div>
+      <figure class="location-selected-picture">${s?`<img id="location-selected-image" src="${a(O(s))}" alt="${a(t.name)}">`:`<div class="location-picture-empty"><span class="location-monogram" aria-hidden="true">${a(t?.name?.slice(0,1)||"\u25C7")}</span><small>\u5730\u70B9\u56FE\u7247\u5F85\u8865\u5168</small></div>`}</figure>
+      <p class="location-selected-description">${a(t?.data?.description||"\u8FD9\u91CC\u7684\u8D44\u6599\u5C1A\u672A\u8865\u5168\u3002")}</p>
+      ${t?.children.length?`<section class="location-within"><h3>\u8FD9\u91CC\u5305\u542B ${t.children.length} \u5904\u5730\u70B9</h3><div class="location-within-list">${t.children.map(o=>{const y=e.forest.nodes.get(o.id).object;return`<button type="button" data-select="${a(y.id)}">${a(y.name)}<span aria-hidden="true">\u203A</span></button>`}).join("")}</div></section>`:""}
+      ${p?`<button type="button" class="location-parent-link" data-select="${a(p.id)}">\u2191 \u8FD4\u56DE${a(p.name)}</button>`:""}</article>
+      <footer class="location-action"><p role="status">${a(v||(c?.id===r?"\u5F53\u524D\u6240\u5728\u5730\u70B9":"\u9009\u62E9\u5730\u70B9\u67E5\u770B\u8D44\u6599\uFF0C\u70B9\u51FB\u524D\u5F80\u540E\u624D\u4F1A\u79FB\u52A8"))}</p><button type="button" class="location-move" data-move ${!t||h||!w()||c?.id===r?"disabled":""}>${h?"\u6B63\u5728\u524D\u5F80\u2026":"\u524D\u5F80\u8FD9\u91CC \u2192"}</button></footer><div class="location-credit">${N}</div></section>`)}function k(e){e.target.id==="location-search"&&(g=e.target.value,d())}function C(e){e.target.id==="location-selected-image"&&(I.add(R($().selected)),d())}async function S(e){const t=e.target.closest("button");if(!(!t||t.disabled)){if(t.dataset.toggle){const n=t.dataset.toggle,i=new Set(u);i.has(n)?i.delete(n):i.add(n),u=[...i],d()}else if(t.dataset.select)r=t.dataset.select,u=[...$(!0).expanded],v="",g="",d();else if(t.hasAttribute("data-move")){if(h||!w())return;const n=r;h=!0,d();try{const i=await m.availableLocations(),s=i.find(p=>p.id===n);if(!s)throw Error("\u8FD9\u4E2A\u5730\u70B9\u5C1A\u672A\u5F00\u653E");if(j||!w())return;await T(s),c=s,x=i,v="\u5DF2\u5230\u8FBE "+s.name}catch(i){v=i.message||"\u79FB\u52A8\u672A\u5B8C\u6210"}finally{h=!1,d()}}}}return l.addEventListener("input",k),l.addEventListener("click",S),l.addEventListener("error",C,!0),d(),{root:l,async refresh(){x=await m.availableLocations(),I.clear(),u=[...$(!0).expanded],d()},destroy(){j=!0,l.removeEventListener("input",k),l.removeEventListener("click",S),l.removeEventListener("error",C,!0),l.remove(),E.remove()}}}export{Y as mountLocationExplorer};

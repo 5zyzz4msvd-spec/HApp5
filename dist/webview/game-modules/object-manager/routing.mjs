@@ -1,11 +1,1 @@
-import { parseCommentRoute } from "./contracts.mjs";
-
-// Prefix-compatible routing implemented here, without loading MagVarUpdate.
-export function filterObjectAudience(entries, { mode = "follow", audience = "plot" } = {}) {
-  if (!["follow", "extra"].includes(mode) || !["plot", "update"].includes(audience)) throw new Error("invalid object update routing");
-  return entries.filter((entry) => {
-    if (mode === "follow") return true;
-    const route = entry.extra?.hypnoosObjectManager?.route ?? parseCommentRoute(entry.comment ?? entry.name);
-    return route === "both" || route === "shared" || route === audience;
-  });
-}
+import{parseCommentRoute as l}from"./contracts.mjs";function i(n,{mode:e="follow",audience:r="plot"}={}){if(!["follow","extra"].includes(e)||!["plot","update"].includes(r))throw new Error("invalid object update routing");return n.filter(t=>{if(e==="follow")return!0;const o=t.extra?.hypnoosObjectManager?.route??l(t.comment??t.name);return o==="both"||o==="shared"||o===r})}export{i as filterObjectAudience};

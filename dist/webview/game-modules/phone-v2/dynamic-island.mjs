@@ -1,53 +1,4 @@
-const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const note='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 2 8 5v12.2c-.7-.3-1.7-.3-2.6 0C3.2 18 2 19.9 2.7 21.4c.6 1.4 2.8 1.8 5 .9 1.9-.8 3-2.3 2.8-3.6V9l6.5-1.8v7c-.7-.3-1.7-.3-2.6 0-2.2.8-3.4 2.7-2.7 4.2.6 1.4 2.8 1.8 5 .9 1.9-.8 3-2.3 2.8-3.6V3c0-.8-.3-1.2-.5-1z"/></svg>';
-const pause='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.2"/><rect x="14" y="4" width="5" height="16" rx="1.2"/></svg>';
-const next='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 5.2c-.7-.5-1.7 0-1.7.9v11.8c0 .9 1 1.4 1.7.9l8.5-5.9c.6-.4.6-1.3 0-1.7zM14.1 5.2c-.7-.5-1.6 0-1.6.9v11.8c0 .9.9 1.4 1.6.9l8.2-5.9c.6-.4.6-1.3 0-1.7z"/></svg>';
-const expand='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-// No media/source metadata or filenames cross the island's display boundary.
-export function createIslandPlaybackState(onChange=()=>{}){
- let value=null,disposed=false;
- function update(snapshot,track){
-  if(disposed)return;
-  if(!snapshot?.playing||!track){value=null;onChange(value);return;}
-  value={playing:true,title:snapshot.trackId==='track-03'?'你的名字':String(track.title??'音乐'),artist:snapshot.trackId==='track-03'?'电影原声':String(track.artist??''),artwork:String(track.artwork??''),time:Math.max(0,Number(snapshot.time)||0)};
-  onChange({...value});
- }
- return {update,clear(){if(!disposed){value=null;onChange(null);}},snapshot:()=>value?{...value}:null,destroy(){if(disposed)return;value=null;onChange(null);disposed=true;}};
-}
-let islandPanelSequence=0;
-
-// The camera cutout is hardware. All music presentation lives in a sibling layer.
-export function mountMusicIsland(island,{onOpen=()=>{},onPause=()=>{},onNext=()=>{}}={}){
- const doc=island.ownerDocument,screen=island.closest('.ip-screen')??island.parentElement;
- if(!screen)throw Error('音乐覆盖层缺少手机屏幕');
- const body=doc.createElement('div');body.className='ip-island-music';body.hidden=true;
- body.setAttribute('aria-label','音乐状态与播放控制');screen.append(body);
- const panelId='ip-island-playback-'+(++islandPanelSequence);
- let expanded=false,signature='',destroyed=false,lastValue=null;
- function render(value){
-  if(destroyed)return;
-  lastValue=value;
-  if(!value){expanded=false;signature='';body.hidden=true;body.replaceChildren();delete body.dataset.music;delete body.dataset.expanded;return;}
-  body.hidden=false;body.dataset.music='playing';body.dataset.expanded=String(expanded);
-  const nextSignature=JSON.stringify([value.title,value.artist,value.artwork,expanded]);if(signature===nextSignature)return;signature=nextSignature;
-  const cover=value.artwork?`<img src="${esc(value.artwork)}" alt="${esc(value.title)}封面" draggable="false">`:note;
-  const wave='<span class="ip-island-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
-  body.innerHTML=`<div class="ip-island-compact"><button class="ip-island-open" data-island-open aria-label="正在播放${esc(value.title)}，打开音乐播放页"><span class="ip-island-cover">${cover}</span></button><span class="ip-island-camera-gap" aria-hidden="true"></span><button class="ip-island-expand" data-island-expand aria-controls="${panelId}" aria-expanded="${expanded}" aria-label="${expanded?'收起':'展开'}音乐播放控制">${wave}</button></div><div id="${panelId}" class="ip-island-panel" ${expanded?'':'hidden'}><div class="ip-island-expanded"><button class="ip-island-track" data-island-open aria-label="打开${esc(value.title)}播放界面"><span class="ip-island-cover">${cover}</span><span class="ip-island-titles"><strong>${esc(value.title)}</strong><small>${esc(value.artist)}</small></span></button><div class="ip-island-controls">${wave}<button data-island-pause aria-label="暂停音乐">${pause}</button><button data-island-next aria-label="下一首">${next}</button><button data-island-expand aria-label="收起音乐播放控制">${expand}</button></div></div></div>`;
- }
- const state=createIslandPlaybackState(render);
- function click(event){
-  const button=event.target.closest('[data-island-open],[data-island-pause],[data-island-next],[data-island-expand]');if(!button||!body.contains(button))return;event.stopPropagation();
-  if(button.hasAttribute('data-island-open')){if(expanded){expanded=false;render(lastValue);}onOpen();}
-  else if(button.hasAttribute('data-island-pause'))onPause();
-  else if(button.hasAttribute('data-island-next'))onNext();
-  else{expanded=!expanded;render(lastValue);}
- }
- body.addEventListener('click',click);
- return {update:state.update,clear:state.clear,snapshot:state.snapshot,destroy(){if(destroyed)return;state.destroy();destroyed=true;body.removeEventListener('click',click);body.remove();}};
-}
-
-export const DYNAMIC_ISLAND_STYLE=`
+const d=n=>String(n??"").replace(/[&<>"']/g,e=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[e]),v='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 2 8 5v12.2c-.7-.3-1.7-.3-2.6 0C3.2 18 2 19.9 2.7 21.4c.6 1.4 2.8 1.8 5 .9 1.9-.8 3-2.3 2.8-3.6V9l6.5-1.8v7c-.7-.3-1.7-.3-2.6 0-2.2.8-3.4 2.7-2.7 4.2.6 1.4 2.8 1.8 5 .9 1.9-.8 3-2.3 2.8-3.6V3c0-.8-.3-1.2-.5-1z"/></svg>',y='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.2"/><rect x="14" y="4" width="5" height="16" rx="1.2"/></svg>',k='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.2 5.2c-.7-.5-1.7 0-1.7.9v11.8c0 .9 1 1.4 1.7.9l8.5-5.9c.6-.4.6-1.3 0-1.7zM14.1 5.2c-.7-.5-1.6 0-1.6.9v11.8c0 .9.9 1.4 1.6.9l8.2-5.9c.6-.4.6-1.3 0-1.7z"/></svg>',$='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';function S(n=()=>{}){let e=null,r=!1;function c(p,s){if(!r){if(!p?.playing||!s){e=null,n(e);return}e={playing:!0,title:p.trackId==="track-03"?"\u4F60\u7684\u540D\u5B57":String(s.title??"\u97F3\u4E50"),artist:p.trackId==="track-03"?"\u7535\u5F71\u539F\u58F0":String(s.artist??""),artwork:String(s.artwork??""),time:Math.max(0,Number(p.time)||0)},n({...e})}}return{update:c,clear(){r||(e=null,n(null))},snapshot:()=>e?{...e}:null,destroy(){r||(e=null,n(null),r=!0)}}}let I=0;function M(n,{onOpen:e=()=>{},onPause:r=()=>{},onNext:c=()=>{}}={}){const p=n.ownerDocument,s=n.closest(".ip-screen")??n.parentElement;if(!s)throw Error("\u97F3\u4E50\u8986\u76D6\u5C42\u7F3A\u5C11\u624B\u673A\u5C4F\u5E55");const t=p.createElement("div");t.className="ip-island-music",t.hidden=!0,t.setAttribute("aria-label","\u97F3\u4E50\u72B6\u6001\u4E0E\u64AD\u653E\u63A7\u5236"),s.append(t);const f="ip-island-playback-"+ ++I;let a=!1,h="",x=!1,u=null;function g(i){if(x)return;if(u=i,!i){a=!1,h="",t.hidden=!0,t.replaceChildren(),delete t.dataset.music,delete t.dataset.expanded;return}t.hidden=!1,t.dataset.music="playing",t.dataset.expanded=String(a);const o=JSON.stringify([i.title,i.artist,i.artwork,a]);if(h===o)return;h=o;const w=i.artwork?`<img src="${d(i.artwork)}" alt="${d(i.title)}\u5C01\u9762" draggable="false">`:v,b='<span class="ip-island-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';t.innerHTML=`<div class="ip-island-compact"><button class="ip-island-open" data-island-open aria-label="\u6B63\u5728\u64AD\u653E${d(i.title)}\uFF0C\u6253\u5F00\u97F3\u4E50\u64AD\u653E\u9875"><span class="ip-island-cover">${w}</span></button><span class="ip-island-camera-gap" aria-hidden="true"></span><button class="ip-island-expand" data-island-expand aria-controls="${f}" aria-expanded="${a}" aria-label="${a?"\u6536\u8D77":"\u5C55\u5F00"}\u97F3\u4E50\u64AD\u653E\u63A7\u5236">${b}</button></div><div id="${f}" class="ip-island-panel" ${a?"":"hidden"}><div class="ip-island-expanded"><button class="ip-island-track" data-island-open aria-label="\u6253\u5F00${d(i.title)}\u64AD\u653E\u754C\u9762"><span class="ip-island-cover">${w}</span><span class="ip-island-titles"><strong>${d(i.title)}</strong><small>${d(i.artist)}</small></span></button><div class="ip-island-controls">${b}<button data-island-pause aria-label="\u6682\u505C\u97F3\u4E50">${y}</button><button data-island-next aria-label="\u4E0B\u4E00\u9996">${k}</button><button data-island-expand aria-label="\u6536\u8D77\u97F3\u4E50\u64AD\u653E\u63A7\u5236">${$}</button></div></div></div>`}const l=S(g);function m(i){const o=i.target.closest("[data-island-open],[data-island-pause],[data-island-next],[data-island-expand]");!o||!t.contains(o)||(i.stopPropagation(),o.hasAttribute("data-island-open")?(a&&(a=!1,g(u)),e()):o.hasAttribute("data-island-pause")?r():o.hasAttribute("data-island-next")?c():(a=!a,g(u)))}return t.addEventListener("click",m),{update:l.update,clear:l.clear,snapshot:l.snapshot,destroy(){x||(l.destroy(),x=!0,t.removeEventListener("click",m),t.remove())}}}const z=`
 .phone16-root .ip-island-music[hidden],.phone16-root .ip-island-panel[hidden]{display:none!important}
 .phone16-root .ip-island-music{position:absolute;inset:0;z-index:52;pointer-events:none;color:#fff}
 .phone16-root .ip-island-compact{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:190px;height:39px;display:flex;align-items:center;justify-content:space-between;padding:0 2px;background:#07070b;border-radius:24px;pointer-events:auto}
@@ -72,4 +23,4 @@ export const DYNAMIC_ISLAND_STYLE=`
 .phone16-root[data-orientation=landscape] .ip-island-open,.phone16-root[data-orientation=landscape] .ip-island-expand{width:35px;height:30px;min-height:30px}
 .phone16-root[data-orientation=landscape] .ip-island-panel{left:57px;top:40px;transform:none;width:300px;max-width:calc(100% - 90px)}
 @media(prefers-reduced-motion:reduce){.phone16-root .ip-island-wave i{animation:none}}
-`;
+`;export{z as DYNAMIC_ISLAND_STYLE,S as createIslandPlaybackState,M as mountMusicIsland};

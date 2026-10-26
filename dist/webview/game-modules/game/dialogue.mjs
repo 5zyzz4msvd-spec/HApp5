@@ -1,53 +1,24 @@
-import { sharedTwinSpeaker,sharedTwinCast } from './twin-presentation.mjs';
-// Plain text protocol. No model-produced HTML is executed.
-export const GALGAME_OUTPUT_CONTRACT=`新回复的所有正文使用下面格式，不加代码围栏。可连续输出多个地点段，每段地点决定该段背景，人物名单只列实际在场人物。正文不在演出外重复。
+import{parsePhoneMessages as N}from"./contact-chat.mjs";import{sharedTwinSpeaker as u,sharedTwinCast as S}from"./twin-presentation.mjs";const _=`\u6B63\u6587\u7EDF\u4E00\u5199\u5728<galgame>\u5185\uFF1A
 <galgame>
-[地点]稳定地点ID或完整地点名
-[在场]人物完整原名、人物完整原名
-[旁白]场景叙述
-[林安]
-[动作]整理桌上的资料。
-[想法]内心想法（可省略）
-[语言]台词原话（可省略）
-[地点]下一个地点
-[在场]该地点人物名单
-[旁白]下一段叙述
+[\u5730\u70B9]\u5B8C\u6574\u5730\u70B9\u540D
+[\u65F6\u95F4]HH:mm
+[\u5728\u573A]\u4EBA\u7269\u7532\u3001\u4EBA\u7269\u4E59
+\u573A\u666F\u53D9\u8FF0\u76F4\u63A5\u6210\u6BB5\u3002
+[\u4EBA\u7269\u7532]
+[\u52A8\u4F5C]\uFF08\u6574\u7406\u8D44\u6599\u3002\uFF09
+[\u60F3\u6CD5]\u5185\u5FC3\u60F3\u6CD5\u3002
+[\u8BED\u8A00]\u8BF4\u51FA\u53E3\u7684\u53F0\u8BCD\u3002
+[\u6211]
+[\u8BED\u8A00]\u73A9\u5BB6\u5DF2\u8F93\u5165\u6216\u5DF2\u9009\u62E9\u7684\u539F\u8BDD\u3002
+[\u77ED\u4FE1]{"name":"\u8054\u7CFB\u4EBA\u5B8C\u6574\u59D3\u540D","text":"\u77ED\u4FE1\u6B63\u6587","direction":"npc"}
 </galgame>
-人物标题直接用方括号包住完整原名，例如[林安]，独立成行；标题后用[动作]写人物动作，用[语言]写说出口的原话，[想法]只写内心。动作与语言分别标记，不在[语言]中混写舞台动作，不写成[人物]林安。更换说话人时重新写人物标题；同一人物可以连续出现多组动作、想法和语言。没有台词或动作时省略对应行，不生成占位内容。地点、在场、旁白、动作、语言等是控制项，不是人物名。既有首楼与历史正文保持原文，不要求重新改写。
-前端选择后续日程格只改变当前操作时间和人物位置，不代表已经发送或结算剧情。尚未发送的早先操作仍保留，不能因界面时间较晚而遗漏。只有收到<玩家日程>才逐格执行和结算。
-玩家输入的<玩家日程>是唯一行动结算清单。逐格读取cells中的actions、attachments、note及hiddenPrompt，时间只向前，不回溯。系统日期时间应推进到清单的date/end终点；crossDay=true则到下一日00:00，不额外跳日。第一格可从当前时分开始，不倒回整点。type=hypnosis时读取payload.requests：command.title/description决定原功能语义，scope/lifetime决定作用域和时效，targets/objectRef决定精确对象，minutes/number/partLabels/note决定参数，endTime是临时效果的绝对到期故事时间，不能延期或转永久。催眠命令在attachments附属格中，与同格正常actions和备注一起送出，但不占用正常空格。个人催眠的targets.resisted=true表示该目标抵抗成功，不可写催眠成功效果；resisted=false仅表示机制上的抵抗突破，仍需按人设、命令越界程度与剧情条件独立判定，越界依旧可以失败。旧结果没有resisted字段时沿用resistance.success。地点催眠的resistance.required=false，仅判断剧情门禁，未运行小游戏不代表自动成功。只对剧情实际成功的目标结算cost和效果；对象更新沿用原独立对象协议，不在MVU类变量中创建人物。地点规则写所选地点，开放常识可以选当前地点的祖先，封闭空间不可扩张。type=inventory按实际use/discard结果扣物品；type=investigation依人物文件价格安排调查，不因暂存开放档案。跨日只推进一次，上一日只读。
-角色手机回复另附<phone_messages>JSON数组，每项只有contactId/name/text，contactId必须沿用玩家消息携带的已知联系人ID；电话中的人物不因此进入当前地点。app-service操作只按其hiddenPrompt返回精确<AppServiceReceipt>，前端控制资源与升级，模型不直接扣同笔费用或写升级文件。
-所有可见正文都放入galgame，包括原先要求的固定收束尾段。固定标记可以留在旁白文本中，不能在块外另写可见剧情。
-织田信长和明智光秀是始终同行的双胞胎，名字都是代号；每次两人同时说完全一样的话，一句只输出一次。[在场]名单统一用“织田信长 & 明智光秀”，人物标题写[织田信长 & 明智光秀]，手机回复name也用这个共同名称。不得轮流发言、互相接话、拆开出现或分别移动。
-催眠APP不能对双胞胎或林安使用，范围功能也不能将她们作为受影响目标。双胞胎不可调查、不可加入人物卡槽。林安的调查与卡槽资格只由前端检查本地酒馆角色卡名单后开放，不能由剧情宣称或模型更新自行解锁；即使资格开放，催眠APP限制仍不解除。
-人物字段可重复形成连续对话；不得替user新增决定。变量更新协议继续放在块外，由原变量更新模型执行。小游戏结果只代表突破抵抗的技术门禁，剧情门禁仍独立判断人设、命令强度、条件、伦理边界和剧情阻力。失败不可写入成功效果；技术成功也不得自动接受极端要求，可拒绝、部分成功或延后，明确实际结果。`;
-
-export function parseDialogue(content,{location='',cast=[]}={}){
- const text=String(content??''),block=text.match(/<galgame>([\s\S]*?)<\/galgame>/i)?.[1];
- const frames=[];let place=location,people=sharedTwinCast(cast),speaker='',guide='',time='';
- if(block!==undefined){
-  const controls=new Set(['地点','时间','教程','在场','旁白','人物','动作','想法','语言']);
-  const reserved=new Set([...controls,'galgame','updatevariable','objectupdate','jsonpatch','phone_messages','appservicereceipt','玩家日程','人物演出','statusplaceholderimpl','analysis','thinking','update','system','assistant','user','系统','状态','信息','效果','衣着','库存','规则']);
-  const tags=[...block.matchAll(/【([^】\r\n]{1,80})】|\[([^\]\r\n]{1,80})\]/g)].flatMap(match=>{
-   const name=String(match[1]??match[2]).trim(),shortName=match[2]!==undefined&&!reserved.has(name.toLowerCase())&&Boolean(name)&&/^\s*(?:【(?:动作|想法|语言)】|\[(?:动作|想法|语言)\])/.test(block.slice(match.index+match[0].length));
-   return controls.has(name)||shortName?[{kind:shortName?'人物':name,name:shortName?name:'',start:match.index,end:match.index+match[0].length}]:[];
-  });
-  const fields=tags.map((tag,index)=>[null,tag.kind,tag.name||block.slice(tag.end,tags[index+1]?.start??block.length)]);
-  for(const [,kind,raw]of fields){const value=raw.trim();if(kind==='地点'){place=value;speaker='';people=[];}else if(kind==='时间')time=value;else if(kind==='教程')guide=value;else if(kind==='在场')people=sharedTwinCast(value.split(/[、,，]/).map(x=>x.trim()).filter(Boolean));else if(kind==='人物'){speaker=sharedTwinSpeaker(value);if(speaker&&!people.includes(speaker))people.push(speaker);}else if(value)frames.push({location:place,cast:[...people],speaker:kind==='旁白'?'':speaker,kind,text:value,guide,time});if(!['地点','时间','教程','在场','人物'].includes(kind))guide='';}
- }else{
-  // Old floors stay readable without leaking model variable/control blocks.
-  const legacy=text.replace(/<(?:UpdateVariable|JSONPatch|update|analysis|thinking|ObjectUpdate|phone_messages|AppServiceReceipt)[^>]*>[\s\S]*?<\/(?:UpdateVariable|JSONPatch|update|analysis|thinking|ObjectUpdate|phone_messages|AppServiceReceipt)>/gi,'').replace(/<StatusPlaceHolderImpl\s*\/>/g,'').replace(/<人物演出>[\s\S]*?<\/人物演出>/g,'').replace(/<[^>]+>/g,'').trim();
-  for(const paragraph of legacy.split(/\n\s*\n/).filter(Boolean))frames.push({location:place,cast:[...people],speaker:'',kind:'旁白',text:paragraph});
- }
- return frames;
-}
-export class DialoguePlayback{
- constructor(){this.floors=[];this.floorId='';this.index=0;this.completed=new Set();this.generating=false;this.closed=false;}
- ingest(floors){const previous=this.floors.at(-1);this.floors=floors.filter(x=>x.frames?.length);const latest=this.floors.at(-1);if(latest&&(!previous||previous.id!==latest.id||previous.signature!==latest.signature)){this.completed.delete(latest.id);this.floorId=latest.id;this.index=0;this.closed=false;}}
- get floor(){return this.floors.find(x=>x.id===this.floorId)??this.floors.at(-1);}
- get frame(){return this.floor?.frames[this.index];}
- get historical(){return this.floor?.id!==this.floors.at(-1)?.id;}
- get canAdvance(){const latest=this.floors.at(-1);return !this.generating&&(!latest||this.completed.has(latest.id));}
- next(){if(!this.floor)return;if(this.index<this.floor.frames.length-1)this.index++;else{this.completed.add(this.floor.id);this.closed=true;}}
- open(id,index=0){const floor=this.floors.find(x=>x.id===id);if(!floor)return;this.floorId=id;this.closed=false;this.index=Math.max(0,Math.min(index,floor.frames.length-1));}
-}
+\u63A7\u5236\u9879\u72EC\u7ACB\u6210\u884C\u3002\u5207\u6362\u53D1\u8A00\u8005\u65F6\u5199[\u5B8C\u6574\u59D3\u540D]\uFF0C\u5176\u540E\u5206\u522B\u7528[\u52A8\u4F5C]\u3001[\u60F3\u6CD5]\u3001[\u8BED\u8A00]\uFF1B\u5BF9\u5E94\u5185\u5BB9\u4E3A\u7A7A\u65F6\u7701\u7565\u3002\u73A9\u5BB6\u8BED\u8A00\u3001\u52A8\u4F5C\u4E0E\u60F3\u6CD5\u4F7F\u7528[\u6211]\u3002\u6C89\u9ED8\u5199\u4F5C[\u52A8\u4F5C]\uFF08\u6C89\u9ED8\uFF09\uFF0C\u65C1\u767D\u76F4\u63A5\u6210\u6BB5\u3002\u6362\u573A\u65F6\u91CD\u65B0\u586B\u5199\u5730\u70B9\u4E0E\u5728\u573A\u540D\u5355\uFF1B\u68A6\u5883\u6216\u7A7A\u573A\u5C06\u5730\u70B9\u5199\u4F5C\u201C\u68A6\u5883\u201D\u6216\u201C\u7A7A\u767D\u201D\uFF0C\u5728\u573A\u7559\u7A7A\uFF0C\u524D\u7AEF\u91C7\u7528\u9ED8\u8BA4\u80CC\u666F\u3002
+\u77ED\u4FE1\u5728\u53D1\u751F\u7684\u4F4D\u7F6E\u5199[\u77ED\u4FE1]\u5355\u884CJSON\uFF0Cname\u4E3A\u8054\u7CFB\u4EBA\u59D3\u540D\uFF1B\u6536\u5230\u7528direction:"npc"\uFF0C\u73A9\u5BB6\u5DF2\u786E\u5B9A\u53D1\u9001\u7684\u5185\u5BB9\u7528direction:"user"\u3002\u524D\u7AEF\u6309\u9605\u8BFB\u987A\u5E8F\u6253\u5F00\u4F1A\u8BDD\u5E76\u6F14\u51FA\u3002\u72EC\u7ACB\u624B\u673A\u56DE\u590D\u4E5F\u53EF\u5728galgame\u5916\u9644<phone_messages>[{"name":"\u8054\u7CFB\u4EBA\u59D3\u540D","text":"\u56DE\u590D\u5185\u5BB9"}]</phone_messages>\uFF0C\u4F1A\u8BDD\u4EBA\u7269\u4E0E\u73B0\u573A\u4EBA\u7269\u5206\u522B\u5904\u7406\u3002
+\u53CC\u80DE\u80CE\u7EDF\u4E00\u4F7F\u7528\u201C\u7EC7\u7530\u4FE1\u957F & \u660E\u667A\u5149\u79C0\u201D\uFF0C\u5171\u540C\u53D1\u8A00\u5199\u4E00\u4EFD\u3002\u72B6\u6001\u66F4\u65B0\u4E0E\u5E94\u7528\u529E\u7406\u56DE\u6267\u653E\u5728galgame\u5916\uFF0C\u683C\u5F0F\u91C7\u7528\u672C\u8F6E\u811A\u672C\u89C4\u5219\u3002`;function A(x,{location:r="",cast:d=[]}={}){const n=String(x??"");let i=n.match(/<galgame>([\s\S]*?)<\/galgame>/i)?.[1];const p=[];let f=r,c=S(d),l="",h="",g="";if(i!==void 0){i.includes("\u624B\u673A\u4E0A\u591A\u4E86\u4E2A\u6B63\u5728\u5B89\u88C5\u7684\u56FE\u6807")&&i.includes("\u53D1\u4EF6\u4EBA\uFF1A\u7EC7\u7530\u4FE1\u957F")&&(i=i.replace(/发件人：织田信长\s*&\s*明智光秀。+/g,"\u53D1\u4EF6\u4EBA\uFF1A\u7EC7\u7530\u4FE1\u957F & \u660E\u667A\u5149\u79C0\u3002"),i=i.replace(/(?:【旁白】|\[旁白\])\s*[“"]([^”"\n]+)[”"]([^\n]*)/g,(e,s,t)=>["\u6765\u5546\u4E1A\u8857\u4E66\u5E97\u4E8C\u697C\u3002","\u4E0D\u6765\u6740\u4E86\u4F60\u3002","\u8FD9\u662F\u4EC0\u4E48\u6574\u86CA\u5417\uFF1F"].includes(s)?"[\u77ED\u4FE1]"+JSON.stringify({name:"\u7EC7\u7530\u4FE1\u957F & \u660E\u667A\u5149\u79C0",text:s,direction:s==="\u8FD9\u662F\u4EC0\u4E48\u6574\u86CA\u5417\uFF1F"?"user":"npc"})+(t?`
+`+t:""):"[\u4EBA\u7269]"+(s.startsWith("\u65E9\u4E0A\u597D\uFF01\u7231\u4E3D\u838E")||s.startsWith("\u5440\uFF01\u7231\u4E3D\u838E")?"\u540C\u5B66\u4EEC":"\u6211")+`
+[\u8BED\u8A00]`+s+(t?`
+[\u4EBA\u7269]\u6211
+[\u52A8\u4F5C]`+t:"")),i=i.replace(/(?:【(?:语言|动作)】|\[(?:语言|动作)\])沉默/g,"[\u52A8\u4F5C]\uFF08\u4E24\u4EBA\u6C89\u9ED8\uFF0C\u6CA1\u6709\u8BF4\u8BDD\u3002\uFF09"));const a=i.split(`
+`);i=a.map((e,s)=>{const t=e.trim();return!t||/^(?:【(?:地点|时间|教程|在场|旁白|人物|动作|想法|语言|短信)】|\[(?:地点|时间|教程|在场|旁白|人物|动作|想法|语言|短信)\])/.test(t)||/^\[[^\]\r\n]{1,80}\]$/.test(t)&&/^\s*(?:【(?:动作|想法|语言)】|\[(?:动作|想法|语言)\])/.test(a.slice(s+1).join(`
+`))?e:"[\u65C1\u767D]"+e}).join(`
+`);const m=new Set(["\u5730\u70B9","\u65F6\u95F4","\u6559\u7A0B","\u5728\u573A","\u65C1\u767D","\u4EBA\u7269","\u52A8\u4F5C","\u60F3\u6CD5","\u8BED\u8A00","\u77ED\u4FE1"]),y=new Set([...m,"galgame","updatevariable","objectupdate","jsonpatch","phone_messages","appservicereceipt","\u73A9\u5BB6\u65E5\u7A0B","\u4EBA\u7269\u6F14\u51FA","statusplaceholderimpl","analysis","thinking","update","system","assistant","user","\u7CFB\u7EDF","\u72B6\u6001","\u4FE1\u606F","\u6548\u679C","\u8863\u7740","\u5E93\u5B58","\u89C4\u5219"]),k=[...i.matchAll(/【([^】\r\n]{1,80})】|\[([^\]\r\n]{1,80})\]/g)].flatMap(e=>{const s=String(e[1]??e[2]).trim(),t=e[2]!==void 0&&(!y.has(s.toLowerCase())||s==="\u6211"||s==="{{user}}")&&!!s&&/^\s*(?:【(?:动作|想法|语言)】|\[(?:动作|想法|语言)\])/.test(i.slice(e.index+e[0].length));return m.has(s)||t?[{kind:t?"\u4EBA\u7269":s,name:t?s:"",start:e.index,end:e.index+e[0].length}]:[]}),v=k.map((e,s)=>[null,e.kind,e.name||i.slice(e.end,k[s+1]?.start??i.length)]);for(const[,e,s]of v){const t=s.trim();if(e==="\u5730\u70B9")f=t,l="",c=[];else if(e==="\u65F6\u95F4")g=t;else if(e==="\u6559\u7A0B")h=t;else if(e==="\u5728\u573A")c=S(t.split(/[、,，]/).map(o=>o.trim()).filter(Boolean));else if(e==="\u4EBA\u7269")l=u(t),["{{user}}","\u6211"].includes(l)&&(l="\u6211"),l&&l!=="\u6211"&&!c.includes(l)&&c.push(l);else if(e==="\u77ED\u4FE1")try{const o=JSON.parse(t);typeof o.name=="string"&&typeof o.text=="string"&&o.text.trim()&&p.push({location:f,cast:[...c],speaker:o.direction==="user"?"\u6211":u(o.name),kind:"\u77ED\u4FE1",text:o.text,contactName:u(o.name),direction:o.direction==="user"?"user":"npc",guide:h,time:g})}catch{}else t&&p.push({location:f,cast:[...c],speaker:e==="\u65C1\u767D"?"":l,kind:e,text:t,guide:h,time:g});["\u5730\u70B9","\u65F6\u95F4","\u6559\u7A0B","\u5728\u573A","\u4EBA\u7269"].includes(e)||(h="")}}else{const a=n.replace(/<(?:UpdateVariable|JSONPatch|update|analysis|thinking|ObjectUpdate|phone_messages|AppServiceReceipt|状态更新|应用办理)[^>]*>[\s\S]*?<\/(?:UpdateVariable|JSONPatch|update|analysis|thinking|ObjectUpdate|phone_messages|AppServiceReceipt|状态更新|应用办理)>/gi,"").replace(/<StatusPlaceHolderImpl\s*\/>/g,"").replace(/<人物演出>[\s\S]*?<\/人物演出>/g,"").replace(/<[^>]+>/g,"").trim();for(const m of a.split(/\n\s*\n/).filter(Boolean))p.push({location:f,cast:[...c],speaker:"",kind:"\u65C1\u767D",text:m})}if(!p.some(a=>a.kind==="\u77ED\u4FE1"))for(const a of N(n))p.push({location:f,cast:[...c],speaker:a.direction==="user"?"\u6211":a.name,kind:"\u77ED\u4FE1",contactName:a.name,direction:a.direction,text:a.text,guide:"",time:g});return p}class j{constructor(){this.floors=[],this.floorId="",this.index=0,this.completed=new Set,this.generating=!1,this.closed=!1}ingest(r){const d=this.floors.at(-1);this.floors=r.filter(i=>i.frames?.length);const n=this.floors.at(-1);n&&(!d||d.id!==n.id||d.signature!==n.signature)&&(this.completed.delete(n.id),this.floorId=n.id,this.index=0,this.closed=!1)}get floor(){return this.floors.find(r=>r.id===this.floorId)??this.floors.at(-1)}get frame(){return this.floor?.frames[this.index]}get historical(){return this.floor?.id!==this.floors.at(-1)?.id}get canAdvance(){const r=this.floors.at(-1);return!this.generating&&(!r||this.completed.has(r.id))}next(){this.floor&&(this.index<this.floor.frames.length-1?this.index++:(this.completed.add(this.floor.id),this.closed=!0))}open(r,d=0){const n=this.floors.find(i=>i.id===r);n&&(this.floorId=r,this.closed=!1,this.index=Math.max(0,Math.min(d,n.frames.length-1)))}}export{j as DialoguePlayback,_ as GALGAME_OUTPUT_CONTRACT,A as parseDialogue};

@@ -1,15 +1,1 @@
-// Fields explicitly supported by the installed Tavern Helper 4.9.3 adapter.
-const IMPLICIT_DEFAULTS = { addMemo: true, matchPersonaDescription: false, matchCharacterDescription: false, matchCharacterPersonality: false, matchCharacterDepthPrompt: false, matchScenario: false, matchCreatorNotes: false, group: "", groupOverride: false, groupWeight: 100, caseSensitive: null, matchWholeWords: null, useGroupScoring: null, automationId: "", ignoreBudget: false, outletName: "", triggers: [], characterFilter: { isExclude: false, names: [], tags: [] } };
-export function worldbookImplicitFields(entry) {
-  return Object.fromEntries(Object.entries(IMPLICIT_DEFAULTS).map(([key, fallback]) => [key, structuredClone(Object.hasOwn(entry?.implicit ?? {}, key) ? entry.implicit[key] : Object.hasOwn(entry ?? {}, key) ? entry[key] : fallback)]));
-}
-export function worldbookRecursion(entry) {
-  const delay = entry.recursion?.delay_until ?? entry.delayUntilRecursion;
-  return { prevent_incoming: entry.recursion?.prevent_incoming ?? entry.excludeRecursion === true, prevent_outgoing: entry.recursion?.prevent_outgoing ?? entry.preventRecursion === true, delay_until: typeof delay === "number" && delay > 0 ? delay : null };
-}
-export function worldbookEffect(entry) {
-  return Object.fromEntries(["sticky", "cooldown", "delay"].map((key) => {
-    const value = entry.effect?.[key] ?? entry[key];
-    return [key, typeof value === "number" && value > 0 ? value : null];
-  }));
-}
+const o={addMemo:!0,matchPersonaDescription:!1,matchCharacterDescription:!1,matchCharacterPersonality:!1,matchCharacterDepthPrompt:!1,matchScenario:!1,matchCreatorNotes:!1,group:"",groupOverride:!1,groupWeight:100,caseSensitive:null,matchWholeWords:null,useGroupScoring:null,automationId:"",ignoreBudget:!1,outletName:"",triggers:[],characterFilter:{isExclude:!1,names:[],tags:[]}};function n(e){return Object.fromEntries(Object.entries(o).map(([t,r])=>[t,structuredClone(Object.hasOwn(e?.implicit??{},t)?e.implicit[t]:Object.hasOwn(e??{},t)?e[t]:r)]))}function i(e){const t=e.recursion?.delay_until??e.delayUntilRecursion;return{prevent_incoming:e.recursion?.prevent_incoming??e.excludeRecursion===!0,prevent_outgoing:e.recursion?.prevent_outgoing??e.preventRecursion===!0,delay_until:typeof t=="number"&&t>0?t:null}}function c(e){return Object.fromEntries(["sticky","cooldown","delay"].map(t=>{const r=e.effect?.[t]??e[t];return[t,typeof r=="number"&&r>0?r:null]}))}export{c as worldbookEffect,n as worldbookImplicitFields,i as worldbookRecursion};

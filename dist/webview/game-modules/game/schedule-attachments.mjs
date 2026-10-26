@@ -1,8 +1,1 @@
-export function hypnosisOutcome(action){
- const result=action?.payload?.resistance??{};
- if(result.required===false)return '待剧情判定';
- const targets=result.targets??[],passed=targets.filter(x=>x.resisted===false||x.defeated===true).length;
- if(passed&&passed<targets.length)return '部分突破，待剧情判定';
- return result.success?'抵抗突破，待剧情判定':'目标抵抗';
-}
-export function hypnosisAttachmentText(action){return (action?.payload?.resistance?.required===false?'地点催眠':'催眠')+' · '+hypnosisOutcome(action).replace('，待剧情判定','');}
+function a(e){const t=e?.payload?.resistance??{};if(t.required===!1)return"\u5F85\u5267\u60C5\u5224\u5B9A";const r=t.targets??[],s=r.filter(n=>n.resisted===!1||n.defeated===!0).length;return s&&s<r.length?"\u90E8\u5206\u7A81\u7834\uFF0C\u5F85\u5267\u60C5\u5224\u5B9A":t.success?"\u62B5\u6297\u7A81\u7834\uFF0C\u5F85\u5267\u60C5\u5224\u5B9A":"\u76EE\u6807\u62B5\u6297"}function u(e){return(e?.payload?.resistance?.required===!1?"\u5730\u70B9\u50AC\u7720":"\u50AC\u7720")+" \xB7 "+a(e).replace("\uFF0C\u5F85\u5267\u60C5\u5224\u5B9A","")}export{u as hypnosisAttachmentText,a as hypnosisOutcome};
