@@ -8,7 +8,7 @@
 }
 function inspectDistributionContext(start=globalThis){return r6f2(start);}
 function reportDistributionFailure(host,reason,options={}){
- try{const doc=host?.document;if(!doc?.body)return;if(doc.getElementById('hypnoos-distribution-error'))return;
+ try{const doc=host?.document;if(!doc?.body)return;if(doc.getElementById('hypnoos-distribution-error'))return;for(const abort of host.__ST_PERMISSION_RESOURCES__??[])try{abort();}catch{}host.__ST_PERMISSION_RESOURCES__?.clear();
  if(options.cleanup!==false&&!host.__ST_PERMISSION_REVOKING__){host.__ST_PERMISSION_REVOKING__=true;try{host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?.disposeAll?.();host.__ST_GAME_SHELL__?.destroy?.();const pending=host.__HYPNOOS_OBJECT_MANAGER_V1__?.destroy?.();pending?.catch?.(()=>{});}catch{}finally{host.__ST_PERMISSION_REVOKING__=false;}}
  for(const node of doc.querySelectorAll?.('.hypnoos-resource-setup,[data-hypnoos-owned="true"]')??[])node.remove();
  let status=doc.getElementById('hypnoos-distribution-error');if(status)return;status=doc.createElement('aside');status.id='hypnoos-distribution-error';status.setAttribute('role','alertdialog');status.setAttribute('aria-label','权限错误');status.setAttribute('aria-modal','true');status.style.cssText='position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#11121cb3;color:#fff;font:16px system-ui';
@@ -16,9 +16,9 @@ function reportDistributionFailure(host,reason,options={}){
  }catch{}
 }
 function requireDistributionAccess(start = globalThis) {
- const result=inspectDistributionContext(start),gate=result.host?.__ST_HYPNOOS_INTEGRITY_GATE_V1__;
- if(!result.ok||!gate?.authorize?.(gate.revision)){
-  const reason=result.ok?'角色卡完整性授权尚未通过。':result.reason;
+ const result=inspectDistributionContext(start);
+ if(!result.ok){
+  const reason=result.reason??'权限错误';
   reportDistributionFailure(result.host??start,reason);
   throw new Error('[HypnoOS 来源校验] '+reason);
  }
@@ -33,7 +33,7 @@ function requireDistributionAccess(start = globalThis) {
 }
 function inspectDistributionContext(start=globalThis){return r6f2(start);}
 function reportDistributionFailure(host,reason,options={}){
- try{const doc=host?.document;if(!doc?.body)return;if(doc.getElementById('hypnoos-distribution-error'))return;
+ try{const doc=host?.document;if(!doc?.body)return;if(doc.getElementById('hypnoos-distribution-error'))return;for(const abort of host.__ST_PERMISSION_RESOURCES__??[])try{abort();}catch{}host.__ST_PERMISSION_RESOURCES__?.clear();
  if(options.cleanup!==false&&!host.__ST_PERMISSION_REVOKING__){host.__ST_PERMISSION_REVOKING__=true;try{host.__ST_HYPNOOS_INTEGRITY_GATE_V1__?.disposeAll?.();host.__ST_GAME_SHELL__?.destroy?.();const pending=host.__HYPNOOS_OBJECT_MANAGER_V1__?.destroy?.();pending?.catch?.(()=>{});}catch{}finally{host.__ST_PERMISSION_REVOKING__=false;}}
  for(const node of doc.querySelectorAll?.('.hypnoos-resource-setup,[data-hypnoos-owned="true"]')??[])node.remove();
  let status=doc.getElementById('hypnoos-distribution-error');if(status)return;status=doc.createElement('aside');status.id='hypnoos-distribution-error';status.setAttribute('role','alertdialog');status.setAttribute('aria-label','权限错误');status.setAttribute('aria-modal','true');status.style.cssText='position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#11121cb3;color:#fff;font:16px system-ui';
@@ -41,9 +41,9 @@ function reportDistributionFailure(host,reason,options={}){
  }catch{}
 }
 function requireDistributionAccess(start = globalThis) {
- const result=inspectDistributionContext(start),gate=result.host?.__ST_HYPNOOS_INTEGRITY_GATE_V1__;
- if(!result.ok||!gate?.authorize?.(gate.revision)){
-  const reason=result.ok?'角色卡完整性授权尚未通过。':result.reason;
+ const result=inspectDistributionContext(start);
+ if(!result.ok){
+  const reason=result.reason??'权限错误';
   reportDistributionFailure(result.host??start,reason);
   throw new Error('[HypnoOS 来源校验] '+reason);
  }
