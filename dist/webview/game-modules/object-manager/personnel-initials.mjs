@@ -1,0 +1,1 @@
+import{migrateCharacterSourceMetadata as r}from"./character-metadata-migration.mjs";import{migrateCharacterCash as o}from"./character-cash.mjs";import{migrateCharacterClothing as e}from"./character-clothing.mjs";const n=async a=>{const t=await r(a);return await o(a),await e(a),t};export{n as applyPersonnelInitials};

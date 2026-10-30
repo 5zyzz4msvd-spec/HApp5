@@ -1,0 +1,1 @@
+const c="scene-presence/backgrounds/quantum-space-v1.png";function i(n,e=[]){return n?.ui?.sceneBackground||n?.ui?.locationImage?.file||e.find(o=>o.locationId===n?.id)?.file||c}export{c as DEFAULT_SCENE_BACKGROUND,i as sceneBackgroundFile};

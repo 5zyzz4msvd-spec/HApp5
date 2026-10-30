@@ -1,0 +1,1091 @@
+{
+  "schema": 1,
+  "portraitPage": "notebook/portraitPage.png",
+  "notesPage": "notebook/notesPage.png",
+  "spread": "notebook/spread.png",
+  "bookmark": "notebook/bookmark.png",
+  "slots": "notebook/slots.png",
+  "characters": [
+    {
+      "id": "inuzuka-natsumi",
+      "name": "犬冢夏美",
+      "head": "scene-presence/heads/inuzuka-natsumi.png",
+      "standees": [
+        "scene-presence/standees/inuzuka-natsumi.png"
+      ],
+      "portrait": "profiles/inuzuka-natsumi.png",
+      "portraits": [
+        "profiles/inuzuka-natsumi.png",
+        "profiles/inuzuka-natsumi-old.png"
+      ]
+    },
+    {
+      "id": "saionji-alisa",
+      "name": "西园寺爱丽莎",
+      "head": "scene-presence/heads/saionji-alisa.png",
+      "standees": [
+        "scene-presence/standees/saionji-alisa.png"
+      ],
+      "portrait": "profiles/saionji-alisa.png",
+      "portraits": [
+        "profiles/saionji-alisa.png",
+        "profiles/saionji-alisa-old.png"
+      ]
+    },
+    {
+      "id": "tsukuyomi-miyuki",
+      "name": "月咏深雪",
+      "head": "scene-presence/heads/tsukuyomi-miyuki.png",
+      "standees": [
+        "scene-presence/standees/tsukuyomi-miyuki.png"
+      ],
+      "portrait": "profiles/tsukuyomi-miyuki.png",
+      "portraits": [
+        "profiles/tsukuyomi-miyuki.png",
+        "profiles/tsukuyomi-miyuki-old.png"
+      ]
+    },
+    {
+      "id": "otaku-male",
+      "name": "阿宅",
+      "head": "scene-presence/heads/otaku-male.png",
+      "standees": [
+        "scene-presence/standees/otaku-male.png"
+      ],
+      "portrait": "profiles/otaku.png",
+      "portraits": [
+        "profiles/otaku.png"
+      ]
+    },
+    {
+      "id": "kuki-mashiro",
+      "name": "九鬼真白",
+      "head": "scene-presence/heads/kuki-mashiro.png",
+      "standees": [
+        "scene-presence/standees/kuki-mashiro.png"
+      ],
+      "portrait": "profiles/kuki-mashiro.png",
+      "portraits": [
+        "profiles/kuki-mashiro.png",
+        "profiles/kuki-mashiro-glasses-contempt.png",
+        "profiles/kuki-mashiro-odor-fan-dance.png",
+        "profiles/kuki-mashiro-prank-glasses.png"
+      ]
+    },
+    {
+      "id": "shirakusu-anko",
+      "name": "白枢暗子",
+      "head": "scene-presence/heads/shirakusu-anko.png",
+      "standees": [
+        "scene-presence/standees/shirakusu-anko.png"
+      ],
+      "portraits": [
+        "encounter/shirakusu-anko.png"
+      ],
+      "portrait": "encounter/shirakusu-anko.png"
+    },
+    {
+      "id": "inuzuka-honami",
+      "name": "犬冢穗波",
+      "head": "scene-presence/heads/inuzuka-honami.png",
+      "standees": [
+        "scene-presence/standees/inuzuka-honami.png"
+      ],
+      "portrait": "profiles/inuzuka-honami.png",
+      "portraits": [
+        "profiles/inuzuka-honami.png"
+      ]
+    },
+    {
+      "id": "amagi-sara",
+      "name": "天城纱良",
+      "head": "scene-presence/heads/amagi-sara.png",
+      "standees": [
+        "scene-presence/standees/amagi-sara.png"
+      ],
+      "portrait": "profiles/amagi-sara.png",
+      "portraits": [
+        "profiles/amagi-sara.png"
+      ]
+    },
+    {
+      "id": "nakamura-sakura",
+      "name": "中村樱",
+      "head": "scene-presence/heads/nakamura-sakura.png",
+      "standees": [
+        "scene-presence/standees/nakamura-sakura.png"
+      ],
+      "portraits": [
+        "encounter/nakamura-sakura.png"
+      ],
+      "portrait": "encounter/nakamura-sakura.png"
+    },
+    {
+      "id": "senkoro-momoka",
+      "name": "千杀百花",
+      "head": "scene-presence/heads/senkoro-momoka.png",
+      "standees": [
+        "scene-presence/standees/senkoro-momoka.png"
+      ],
+      "portraits": [
+        "encounter/senkoro-momoka.png",
+        "encounter/senkoro-momoka-school-uniform.png"
+      ],
+      "portrait": "encounter/senkoro-momoka.png"
+    },
+    {
+      "id": "miryuko",
+      "name": "弥留子",
+      "head": "scene-presence/heads/miryuko.png",
+      "standees": [
+        "scene-presence/standees/miryuko.png"
+      ],
+      "portrait": "profiles/miryuko.png",
+      "portraits": [
+        "profiles/miryuko.png"
+      ]
+    },
+    {
+      "id": "hacker-twins",
+      "name": "织田信长 & 明智光秀",
+      "head": "scene-presence/heads/hacker-twins-joint-v1.png",
+      "standees": [
+        "scene-presence/standees/hacker-twins-joint-v1.png"
+      ],
+      "presentationMode": "joint",
+      "ownerId": "oda-nobunaga",
+      "memberIds": [
+        "oda-nobunaga",
+        "akechi-mitsuhide"
+      ],
+      "memberNames": [
+        "织田信长",
+        "明智光秀"
+      ],
+      "portrait": "notebook/hacker-twins-joint-v1.png",
+      "portraits": [
+        "notebook/hacker-twins-joint-v1.png"
+      ]
+    },
+    {
+      "id": "lin-an",
+      "name": "林安",
+      "head": "notebook/lin-an-head.png",
+      "portrait": "notebook/lin-an-portrait.png",
+      "standees": [
+        "notebook/lin-an-standee.png"
+      ]
+    },
+    {
+      "id": "encounter-2a6b53376fd61959",
+      "name": "北田雪路",
+      "head": "scene-presence/encounters/heads/encounter-2a6b53376fd61959.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-2a6b53376fd61959.png"
+      ],
+      "portrait": "encounter/akashi-maho/role-01.png",
+      "portraits": [
+        "encounter/akashi-maho/role-01.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/akashi-maho/role-01.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "akashi-maho",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-2a6b53376fd61959-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-2a6b53376fd61959-standee.png",
+        "headSha256": "cf1a823e4c56d9a2a5bdf57901f3142ad2734cf3c387c964fe21f8cfa98fe253",
+        "standeeSha256": "e0e1b9fa7c3910d531d6327a842da3426ce67f8379c2cd201dc779ce9881bfcf"
+      }
+    },
+    {
+      "id": "encounter-97ec3379bf501a39",
+      "name": "萩生田梨果",
+      "head": "scene-presence/encounters/heads/encounter-97ec3379bf501a39.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-97ec3379bf501a39.png"
+      ],
+      "portrait": "encounter/akashi-maho/role-02.png",
+      "portraits": [
+        "encounter/akashi-maho/role-02.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/akashi-maho/role-02.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "akashi-maho",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-97ec3379bf501a39-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-97ec3379bf501a39-standee.png",
+        "headSha256": "6595e7d110c4378f0b3c02c422b520e5da3273aa2c756fb192b908f57303c2b6",
+        "standeeSha256": "d1c907dffa00404502c71eb18e5ca9b15db86939c45136a8b7ef372375d1ab0e"
+      }
+    },
+    {
+      "id": "encounter-77ebb75f374cbdef",
+      "name": "古河诗织",
+      "head": "scene-presence/encounters/heads/encounter-77ebb75f374cbdef.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-77ebb75f374cbdef.png"
+      ],
+      "portrait": "encounter/baikai/roles/古河诗织/古河诗织.png",
+      "portraits": [
+        "encounter/baikai/roles/古河诗织/古河诗织.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/古河诗织/古河诗织.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-77ebb75f374cbdef-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-77ebb75f374cbdef-standee.png",
+        "headSha256": "f942e803b7286a9e25329061c7f0fd00d0387b7cf53b01415a0204e248832dc9",
+        "standeeSha256": "26f9a3c3534820fd6735a0b57d4b7cff40d76cf06925f6dcf8b8c7998b18ae49"
+      }
+    },
+    {
+      "id": "encounter-55dd9c5242cf1329",
+      "name": "凯瑟琳",
+      "head": "scene-presence/encounters/heads/encounter-55dd9c5242cf1329.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-55dd9c5242cf1329.png"
+      ],
+      "portrait": "encounter/baikai/roles/凯瑟琳/凯瑟琳.png",
+      "portraits": [
+        "encounter/baikai/roles/凯瑟琳/凯瑟琳.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/凯瑟琳/凯瑟琳.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-55dd9c5242cf1329-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-55dd9c5242cf1329-standee.png",
+        "headSha256": "ca6e0dbcebf23e83ab490ce20ff68ceaad41335274ab4fea6de50e62b24ed3da",
+        "standeeSha256": "06e721120bba842cab6629ff530b6b478b8179d2a698e7b1562b516c4aac7b93"
+      }
+    },
+    {
+      "id": "encounter-ac0046cab3a00799",
+      "name": "林语薇",
+      "head": "scene-presence/encounters/heads/encounter-ac0046cab3a00799.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-ac0046cab3a00799.png"
+      ],
+      "portrait": "encounter/baikai/roles/林语薇/林语薇.png",
+      "portraits": [
+        "encounter/baikai/roles/林语薇/林语薇.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/林语薇/林语薇.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-ac0046cab3a00799-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-ac0046cab3a00799-standee.png",
+        "headSha256": "d67501a9b03f645585ed62414ec84b88251992ddc2155031de0826cca02fbea6",
+        "standeeSha256": "7e796cd4e61815cad5e03ba006132e9d1060b1002a98c1fb76c08d27554c6713"
+      }
+    },
+    {
+      "id": "encounter-f23e207f634f62e2",
+      "name": "浅仓步美",
+      "head": "scene-presence/encounters/heads/encounter-f23e207f634f62e2.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-f23e207f634f62e2.png"
+      ],
+      "portrait": "encounter/baikai/roles/浅仓步美/浅仓步美.png",
+      "portraits": [
+        "encounter/baikai/roles/浅仓步美/浅仓步美.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/浅仓步美/浅仓步美.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-f23e207f634f62e2-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-f23e207f634f62e2-standee.png",
+        "headSha256": "7230d01f3029989042abd0c36e952378cc3f6fa9fab16275bae47d57d57bb0a7",
+        "standeeSha256": "87ed1f5e7bd5485fa94995facd84786c5500506bc7a6be57b06ba3c4927e57b7"
+      }
+    },
+    {
+      "id": "encounter-07a3ba10d0a17eb8",
+      "name": "浅野绘里",
+      "head": "scene-presence/encounters/heads/encounter-07a3ba10d0a17eb8.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-07a3ba10d0a17eb8.png"
+      ],
+      "portrait": "encounter/baikai/roles/浅野绘里/浅野绘里.png",
+      "portraits": [
+        "encounter/baikai/roles/浅野绘里/浅野绘里.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/浅野绘里/浅野绘里.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-07a3ba10d0a17eb8-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-07a3ba10d0a17eb8-standee.png",
+        "headSha256": "5a16c43fb045866199dbf5c4d50175f4c8ae35394e6e7e1f9a2de7ac475648ca",
+        "standeeSha256": "c69c4bd3f52b679f0deb0ad430e64f176e68c6f421bdaa273edde0b89eb05e15"
+      }
+    },
+    {
+      "id": "encounter-04d16815d239379c",
+      "name": "神宫寺凛",
+      "head": "scene-presence/encounters/heads/encounter-04d16815d239379c.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-04d16815d239379c.png"
+      ],
+      "portrait": "encounter/baikai/roles/神宫寺凛/神宫寺凛.png",
+      "portraits": [
+        "encounter/baikai/roles/神宫寺凛/神宫寺凛.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/神宫寺凛/神宫寺凛.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-04d16815d239379c-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-04d16815d239379c-standee.png",
+        "headSha256": "005a4177c1688161802b033968157dc20e0a3c18141fdf2d3577440dd44ce616",
+        "standeeSha256": "df547aecd3ae95ea0b8a6997a43389ad1566c6248eec168c62b1c3c6ad68c250"
+      }
+    },
+    {
+      "id": "encounter-e91ce20c2c12b6c8",
+      "name": "神谷凛",
+      "head": "scene-presence/encounters/heads/encounter-e91ce20c2c12b6c8.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-e91ce20c2c12b6c8.png"
+      ],
+      "portrait": "encounter/baikai/roles/神谷凛/神谷凛.png",
+      "portraits": [
+        "encounter/baikai/roles/神谷凛/神谷凛.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/神谷凛/神谷凛.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-e91ce20c2c12b6c8-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-e91ce20c2c12b6c8-standee.png",
+        "headSha256": "aba15783bc5e970e37d12782d39be161880099efc08cc3492d70b155ca0b8029",
+        "standeeSha256": "3c9ce69611f4f19813a9bf3d458c103befedc27592a4cbf15bc405046f350b5f"
+      }
+    },
+    {
+      "id": "encounter-a2ce7f4cdc200477",
+      "name": "苏清寒",
+      "head": "scene-presence/encounters/heads/encounter-a2ce7f4cdc200477.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-a2ce7f4cdc200477.png"
+      ],
+      "portrait": "encounter/baikai/roles/苏清寒/苏清寒.png",
+      "portraits": [
+        "encounter/baikai/roles/苏清寒/苏清寒.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/苏清寒/苏清寒.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-a2ce7f4cdc200477-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-a2ce7f4cdc200477-standee.png",
+        "headSha256": "a04c17565c9ba8e208005d12c932d5e298ba6c47768d8bcc4e944cdc088c6d62",
+        "standeeSha256": "217632c904482a260d8cf0257ab75adf0a280aadbcb93fa52758263a9736eadb"
+      }
+    },
+    {
+      "id": "encounter-52d32d0a7cdaf62a",
+      "name": "天海真",
+      "head": "scene-presence/encounters/heads/encounter-52d32d0a7cdaf62a.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-52d32d0a7cdaf62a.png"
+      ],
+      "portrait": "encounter/baikai/roles/天海真/天海真.png",
+      "portraits": [
+        "encounter/baikai/roles/天海真/天海真.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/天海真/天海真.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-52d32d0a7cdaf62a-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-52d32d0a7cdaf62a-standee.png",
+        "headSha256": "dbf3f388ca50b55476ab714a0e752a540d4f2b8e981dc4022479dd8f5ba509c1",
+        "standeeSha256": "2ae01a24c19fd749107c0c13cfe4d7e5d5af30a853220b442d24d204f42febc9"
+      }
+    },
+    {
+      "id": "encounter-7accd86ac3eb6117",
+      "name": "天泽爱音",
+      "head": "scene-presence/encounters/heads/encounter-7accd86ac3eb6117.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-7accd86ac3eb6117.png"
+      ],
+      "portrait": "encounter/baikai/roles/天泽爱音/天泽爱音.png",
+      "portraits": [
+        "encounter/baikai/roles/天泽爱音/天泽爱音.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/天泽爱音/天泽爱音.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-7accd86ac3eb6117-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-7accd86ac3eb6117-standee.png",
+        "headSha256": "4359c7abef9b1fa4571dcb3b36a3dac3a8f8bb32d510e9120d3a531239352109",
+        "standeeSha256": "f750aa53a1410fbe4d8ff07a674e288dca7c88eb11a00be98ac8119de53f0314"
+      }
+    },
+    {
+      "id": "encounter-39d1a157f9f4d916",
+      "name": "西园寺美织",
+      "head": "scene-presence/encounters/heads/encounter-39d1a157f9f4d916.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-39d1a157f9f4d916.png"
+      ],
+      "portrait": "encounter/baikai/roles/西园寺美织/西园寺美织.png",
+      "portraits": [
+        "encounter/baikai/roles/西园寺美织/西园寺美织.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/西园寺美织/西园寺美织.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-39d1a157f9f4d916-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-39d1a157f9f4d916-standee.png",
+        "headSha256": "cd7e20a87b83a20a5c2050a7e5c36ac6ec79c27dfb30a67e6e3f963200f34537",
+        "standeeSha256": "0917942be09ee209a22fb4720ef78f4ebe93b6992a1f88272b540df53cfc853c"
+      }
+    },
+    {
+      "id": "encounter-ca83c7739c45eb6b",
+      "name": "夏沐",
+      "head": "scene-presence/encounters/heads/encounter-ca83c7739c45eb6b.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-ca83c7739c45eb6b.png"
+      ],
+      "portrait": "encounter/baikai/roles/夏沐/夏沐.png",
+      "portraits": [
+        "encounter/baikai/roles/夏沐/夏沐.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/夏沐/夏沐.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-ca83c7739c45eb6b-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-ca83c7739c45eb6b-standee.png",
+        "headSha256": "5fad758658957a86ca5ca523a4d0172f3b3346ed57fe3af87a3dac06300fa232",
+        "standeeSha256": "189e1f6272e7f0fb6a2992933f68893f57f3b469cbe06e961154a2b6014a361e"
+      }
+    },
+    {
+      "id": "encounter-6bcd1f4577c4100d",
+      "name": "夏织",
+      "head": "scene-presence/encounters/heads/encounter-6bcd1f4577c4100d.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-6bcd1f4577c4100d.png"
+      ],
+      "portrait": "encounter/baikai/roles/夏织/夏织.png",
+      "portraits": [
+        "encounter/baikai/roles/夏织/夏织.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/夏织/夏织.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-6bcd1f4577c4100d-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-6bcd1f4577c4100d-standee.png",
+        "headSha256": "1f096c737cd7e1c810c5a2f33fa2302021a10e8afb2c413e1ea16566fba73504",
+        "standeeSha256": "9b8d13dc66d35175049febd419a6b0fe64f6c49a968a59dcc977a1b9c88261da"
+      }
+    },
+    {
+      "id": "encounter-c9356419a553a1cb",
+      "name": "星野海",
+      "head": "scene-presence/encounters/heads/encounter-c9356419a553a1cb.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-c9356419a553a1cb.png"
+      ],
+      "portrait": "encounter/baikai/roles/星野海/星野海.png",
+      "portraits": [
+        "encounter/baikai/roles/星野海/星野海.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/星野海/星野海.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-c9356419a553a1cb-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-c9356419a553a1cb-standee.png",
+        "headSha256": "47508c9d37fedf846084599fbcdc01573c8f37e6352fc9e5f7b7e46175aca67a",
+        "standeeSha256": "a89bbc0d4abeb157a3dba08175f8fb27cc8367c5167a3ce9ba67e5f0e2d1f652"
+      }
+    },
+    {
+      "id": "encounter-1ef1638d177d829a",
+      "name": "星野千夏",
+      "head": "scene-presence/encounters/heads/encounter-1ef1638d177d829a.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-1ef1638d177d829a.png"
+      ],
+      "portrait": "encounter/baikai/roles/星野千夏/星野千夏.png",
+      "portraits": [
+        "encounter/baikai/roles/星野千夏/星野千夏.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/星野千夏/星野千夏.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-1ef1638d177d829a-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-1ef1638d177d829a-standee.png",
+        "headSha256": "07cd2f7e49b65a43a0ffcbc283fc59fa97aa963b8d72e130f87d96f26005d595",
+        "standeeSha256": "555a2d7a9da527a794804ba6588d2e1fb5d33efa4f3a9be808a6ee28f099be6a"
+      }
+    },
+    {
+      "id": "encounter-8efc69032fe0fe4c",
+      "name": "源薰子",
+      "head": "scene-presence/encounters/heads/encounter-8efc69032fe0fe4c.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-8efc69032fe0fe4c.png"
+      ],
+      "portrait": "encounter/baikai/roles/源薰子/源薰子.png",
+      "portraits": [
+        "encounter/baikai/roles/源薰子/源薰子.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/baikai/roles/源薰子/源薰子.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "baikai",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-8efc69032fe0fe4c-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-8efc69032fe0fe4c-standee.png",
+        "headSha256": "d5685edcb5a84902705604dd54962fd8f80e3b040699f6b1e45d53a0c4733e39",
+        "standeeSha256": "83a14d97d9ab0519f93dfbd67f52e9f7bc80cbe9aebcc53a8832318ab4aecb2f"
+      }
+    },
+    {
+      "id": "encounter-064db9003c338210",
+      "name": "桐生刹那",
+      "head": "scene-presence/encounters/heads/encounter-064db9003c338210.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-064db9003c338210.png"
+      ],
+      "portrait": "encounter/orjenrn/role-08.png",
+      "portraits": [
+        "encounter/orjenrn/role-08.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-08.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-064db9003c338210-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-064db9003c338210-standee.png",
+        "headSha256": "2e9229faa0128e84832ebf5fe35070c89d548c882b4a8bad9447b61db4e08c58",
+        "standeeSha256": "721d574b0b8454ebe649ba259ce876628f95644163f2a29121278fc6523df65d"
+      }
+    },
+    {
+      "id": "encounter-0dc77c0dfa0e6b67",
+      "name": "白石响",
+      "head": "scene-presence/encounters/heads/encounter-0dc77c0dfa0e6b67.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-0dc77c0dfa0e6b67.png"
+      ],
+      "portrait": "encounter/sdz-aser/roles/白石响/白石响.png",
+      "portraits": [
+        "encounter/sdz-aser/roles/白石响/白石响.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/sdz-aser/roles/白石响/白石响.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-0dc77c0dfa0e6b67-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-0dc77c0dfa0e6b67-standee.png",
+        "headSha256": "a608bed2ae7b40bb8030a10ee6ba8eb1bc6547af5ef66a76fce3a8d6d13b87e2",
+        "standeeSha256": "04d98bc8500d194a79029510608f73145b19407073778f69013df32e71fb83a1"
+      }
+    },
+    {
+      "id": "encounter-b3bf905f02a76688",
+      "name": "阿玛奈特",
+      "head": "scene-presence/encounters/heads/encounter-b3bf905f02a76688.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-b3bf905f02a76688.png"
+      ],
+      "portrait": "encounter/orjenrn/role-01.png",
+      "portraits": [
+        "encounter/orjenrn/role-01.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-01.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b3bf905f02a76688-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-b3bf905f02a76688-standee.png",
+        "headSha256": "a9bcf6fbde8b20d2e99cf4723906d202bc15a454522a75a0a36516d64e1994db",
+        "standeeSha256": "a98026b0f83ce7aa53d53b5f2a0ad309e731e217776b6cc02be0092c9cb621ab"
+      }
+    },
+    {
+      "id": "encounter-b2db19dc554e9eaa",
+      "name": "白鸟结衣",
+      "head": "scene-presence/encounters/heads/encounter-b2db19dc554e9eaa.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-b2db19dc554e9eaa.png"
+      ],
+      "portrait": "encounter/orjenrn/role-18.png",
+      "portraits": [
+        "encounter/orjenrn/role-18.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-18.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b2db19dc554e9eaa-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-b2db19dc554e9eaa-standee.png",
+        "headSha256": "2384526e3e488779975330268f3fbbebd8d8cebce31be1fd38d63a6036cda7af",
+        "standeeSha256": "7a5db43f79d1d8b5848a32fea1a9d3ee41bf7805563ede2265941c539b2850c2"
+      }
+    },
+    {
+      "id": "encounter-764cabc48e088e85",
+      "name": "德川喜广",
+      "head": "scene-presence/encounters/heads/encounter-764cabc48e088e85.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-764cabc48e088e85.png"
+      ],
+      "portrait": "encounter/orjenrn/role-19.png",
+      "portraits": [
+        "encounter/orjenrn/role-19.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-19.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-764cabc48e088e85-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-764cabc48e088e85-standee.png",
+        "headSha256": "86eaa7ce4a0cca5acd456198f54f02cea6130b1dbfce2ba1907ece1e94ff3b78",
+        "standeeSha256": "7fd4a0a1c0ef86b72a17d5b27c92399abebede91bf248a7e21180e744efaa506"
+      }
+    },
+    {
+      "id": "encounter-5878e65c790e3c59",
+      "name": "凤条瑠衣",
+      "head": "scene-presence/encounters/heads/encounter-5878e65c790e3c59.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-5878e65c790e3c59.png"
+      ],
+      "portrait": "encounter/orjenrn/role-20.png",
+      "portraits": [
+        "encounter/orjenrn/role-20.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-20.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-5878e65c790e3c59-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-5878e65c790e3c59-standee.png",
+        "headSha256": "92f82619595575ebf70399363f89c6fdfc977bf632b759562a3c9615276562f0",
+        "standeeSha256": "5078859c82ef0fdc221673b4c5a20b91e50c9924348e6b641fe253d4d834ea84"
+      }
+    },
+    {
+      "id": "encounter-6e30e22016b4d37b",
+      "name": "花开院椿",
+      "head": "scene-presence/encounters/heads/encounter-6e30e22016b4d37b.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-6e30e22016b4d37b.png"
+      ],
+      "portrait": "encounter/orjenrn/role-03.png",
+      "portraits": [
+        "encounter/orjenrn/role-03.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-03.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-6e30e22016b4d37b-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-6e30e22016b4d37b-standee.png",
+        "headSha256": "e97cbb10d884f8716a43eb55c8758d1103de4a6ceb727c30d0d43ed5f725acb2",
+        "standeeSha256": "232bb322503d92b5d5049a8f41a81fff62ea14152f396b0788befafa0c95fa0b"
+      }
+    },
+    {
+      "id": "encounter-0b771c68e778fdd3",
+      "name": "花崎诗织",
+      "head": "scene-presence/encounters/heads/encounter-0b771c68e778fdd3.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-0b771c68e778fdd3.png"
+      ],
+      "portrait": "encounter/orjenrn/role-04.png",
+      "portraits": [
+        "encounter/orjenrn/role-04.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-04.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-0b771c68e778fdd3-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-0b771c68e778fdd3-standee.png",
+        "headSha256": "2631c06f4d3c6d9ef1f71ec127938b8d9e218b318ddafcf5a3845ecd97bbb3e0",
+        "standeeSha256": "7a42700ea93c05358860a63f81f18c0e531c4080c69791f54a422648867e4075"
+      }
+    },
+    {
+      "id": "encounter-1600360ec82ab663",
+      "name": "九条凛音",
+      "head": "scene-presence/encounters/heads/encounter-1600360ec82ab663.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-1600360ec82ab663.png"
+      ],
+      "portrait": "encounter/orjenrn/role-21.png",
+      "portraits": [
+        "encounter/orjenrn/role-21.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-21.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-1600360ec82ab663-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-1600360ec82ab663-standee.png",
+        "headSha256": "52bd11d758287decc529ccfa190d9edba1f1e40bcce025e429f47352187d1544",
+        "standeeSha256": "5f25fc034480e4bcc4ce3ae1c15c7417872b7ce7ca5328912837391ca20976b8"
+      }
+    },
+    {
+      "id": "encounter-3346cda602c54efc",
+      "name": "九条樱",
+      "head": "scene-presence/encounters/heads/encounter-3346cda602c54efc.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-3346cda602c54efc.png"
+      ],
+      "portrait": "encounter/orjenrn/role-05.png",
+      "portraits": [
+        "encounter/orjenrn/role-05.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-05.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-3346cda602c54efc-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-3346cda602c54efc-standee.png",
+        "headSha256": "4b7dc67f7ab1df1e49a0ee8d1dcd9ce1bf5eb0272897a1bf602c4a13ae818d67",
+        "standeeSha256": "a6478a07ede5bf21d8285f298297cea2cc10c4a0e134b3f23b71f91ea5e709da"
+      }
+    },
+    {
+      "id": "encounter-7eb42f662d49e883",
+      "name": "奈幽",
+      "head": "scene-presence/encounters/heads/encounter-7eb42f662d49e883.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-7eb42f662d49e883.png"
+      ],
+      "portrait": "encounter/orjenrn/role-16.png",
+      "portraits": [
+        "encounter/orjenrn/role-16.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-16.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-7eb42f662d49e883-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-7eb42f662d49e883-standee.png",
+        "headSha256": "17b23b27d1e5ae32cbb08a37b08d728fea730d6560c68389b303457ad93622f2",
+        "standeeSha256": "df34ed9672c0fcc6df8e6f8bc306a9c622d54b8096328f75c44be9e755e1c356"
+      }
+    },
+    {
+      "id": "encounter-b28f5fbf21d4b618",
+      "name": "尼子纯",
+      "head": "scene-presence/encounters/heads/encounter-b28f5fbf21d4b618.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-b28f5fbf21d4b618.png"
+      ],
+      "portrait": "encounter/orjenrn/role-22.png",
+      "portraits": [
+        "encounter/orjenrn/role-22.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-22.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b28f5fbf21d4b618-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-b28f5fbf21d4b618-standee.png",
+        "headSha256": "fb9eef241cea4c82215a9fc89dcfc55826375fd9ab72e0eabd39b51014473bb8",
+        "standeeSha256": "7e2c9a6e99f867a27e468f6ae9db131fad6815a4835293cbeeef3d370f801746"
+      }
+    },
+    {
+      "id": "encounter-3d51d06757c02c01",
+      "name": "神乐坂艾米莉亚",
+      "head": "scene-presence/encounters/heads/encounter-3d51d06757c02c01.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-3d51d06757c02c01.png"
+      ],
+      "portrait": "encounter/orjenrn/role-06.png",
+      "portraits": [
+        "encounter/orjenrn/role-06.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-06.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-3d51d06757c02c01-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-3d51d06757c02c01-standee.png",
+        "headSha256": "b350fdf728386d308eb28b3eb574d3a1a312ad98edb77bf7f06b90933dfc8dfb",
+        "standeeSha256": "e9fc6f040e199432cfa40f47a6b2f50ce0671bff7178e26c43039de88c8c433b"
+      }
+    },
+    {
+      "id": "encounter-de9249f3709ccf8e",
+      "name": "藤乃静香",
+      "head": "scene-presence/encounters/heads/encounter-de9249f3709ccf8e.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-de9249f3709ccf8e.png"
+      ],
+      "portrait": "encounter/orjenrn/role-07.png",
+      "portraits": [
+        "encounter/orjenrn/role-07.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-07.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-de9249f3709ccf8e-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-de9249f3709ccf8e-standee.png",
+        "headSha256": "bc1f6dce2fc2773fb80287c3a9818ec9c7494d6c3733f0db9f89778eec139d28",
+        "standeeSha256": "3eb878f7617f3b29c7e82b76259621d349d0fb65b63bdbe5351b6c3ab5c175ac"
+      }
+    },
+    {
+      "id": "encounter-bdf07de03d895d52",
+      "name": "缇娅",
+      "head": "scene-presence/encounters/heads/encounter-bdf07de03d895d52.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-bdf07de03d895d52.png"
+      ],
+      "portrait": "encounter/orjenrn/role-17.png",
+      "portraits": [
+        "encounter/orjenrn/role-17.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-17.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-bdf07de03d895d52-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-bdf07de03d895d52-standee.png",
+        "headSha256": "f7ab2cd95c2e927c74620cc64d05ac453147d89be0e409821baf98f1d811841e",
+        "standeeSha256": "3008e6fc0f31c1e0e4da72e41dcaad9ddb18bb2f5046106b724bc6cf58cf995a"
+      }
+    },
+    {
+      "id": "encounter-fe61aa58c8b762c5",
+      "name": "小鸟游柚子",
+      "head": "scene-presence/encounters/heads/encounter-fe61aa58c8b762c5.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-fe61aa58c8b762c5.png"
+      ],
+      "portrait": "encounter/orjenrn/role-09.png",
+      "portraits": [
+        "encounter/orjenrn/role-09.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-09.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-fe61aa58c8b762c5-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-fe61aa58c8b762c5-standee.png",
+        "headSha256": "a4dcbee8e8e832a534d668deaa655820b340ff430165122217fe6743168e868f",
+        "standeeSha256": "f88b44335d0fc555e96d5aef6d2d01255062b1c97c50b80de5ffd5cc0c298815"
+      }
+    },
+    {
+      "id": "encounter-a264655b118468f4",
+      "name": "一之濑萤",
+      "head": "scene-presence/encounters/heads/encounter-a264655b118468f4.png",
+      "standees": [
+        "scene-presence/encounters/standees/encounter-a264655b118468f4.png"
+      ],
+      "portrait": "encounter/orjenrn/role-10.png",
+      "portraits": [
+        "encounter/orjenrn/role-10.png"
+      ],
+      "portraitKind": "source-bust",
+      "portraitFallback": false,
+      "artProvenance": {
+        "portraitSource": "original-package-bust",
+        "portraitFiles": [
+          "encounter/orjenrn/role-10.png"
+        ],
+        "catalog": "scene-presence/encounter-catalog.json",
+        "sourcePackage": "orjenrn",
+        "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-a264655b118468f4-head.png",
+        "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-a264655b118468f4-standee.png",
+        "headSha256": "9262e851dbd33bcfe4ff73596bced93285f37fb834c74258a153d7322690df11",
+        "standeeSha256": "2468596fa5cd7aada8a8b68197f1693c1a2bf4eed120cc55db357a731d42b44d"
+      }
+    }
+  ],
+  "closeCoverUsed": false
+}

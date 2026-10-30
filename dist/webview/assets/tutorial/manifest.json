@@ -1,0 +1,411 @@
+{
+  "schema": 1,
+  "generatedWith": "built-in imagegen",
+  "count": 12,
+  "assets": [
+    {
+      "id": "oda-nobunaga-standee",
+      "characterId": "oda-nobunaga",
+      "name": "织田信长",
+      "kind": "standee",
+      "action": null,
+      "heightCm": 160,
+      "asset": "scene-presence/standees/oda-nobunaga.png",
+      "url": "/frontends/hypnosis-app/assets/scene-presence/standees/oda-nobunaga.png",
+      "file": "public/frontends/hypnosis-app/assets/scene-presence/standees/oda-nobunaga.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/oda-nobunaga-standee.png",
+      "sha256": "366a4dac8cdddccd5558cef450377b4e7e974ad76cea7ebdc05e0e400ac42390",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alphaBounds": [
+        41,
+        17,
+        996,
+        1516
+      ],
+      "silhouetteBounds": [
+        312,
+        25,
+        741,
+        1510
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "alphaZeroFraction": 0.7748031616210938,
+      "qa": "accepted-full-visual-and-alpha-composite",
+      "prompt": "Completely NEW original raster asset. INPUT1 approved female-group drawing STYLE ONLY; INPUT2 height-board PROPORTIONS ONLY (165cm figure for normal skeleton, not identity or clothes). Refined anime outline hierarchy, warm restrained cel shading. TRUE transparent background with alpha ZERO outside exact silhouette, NO glow, halo, gradient, vignette, shadow, ground, text, labels or watermark. Fully clothed, ordinary nonsexual daily illustration, natural hands with five fingers. Do not use any old portrait, standee or candidate. Identity solely from text: Original Japanese 19-year-old woman, 160cm, identical twin sisters have the same delicate oval face, warm dark-brown eyes and soft chestnut chin-length rounded bob. This elder sister has a little half-up ponytail and peach star hair clip on her LEFT side. Cheerful warm smile, ivory cable-knit cardigan over peach blouse, navy ordinary above-knee A-line skirt, opaque cream tights and tan loafers, cream crossbody bag with strawberry charm. Plain smartphone held near waist, relaxed greeting with other hand. Looks cute, bright and welcoming, like a college student; no hacker or cyberpunk clues. FULL-BODY crown to both shoe soles with generous empty margins. Adult young-woman proportions, calm relaxed standing pose. Exact output is one isolated silhouette on a physically transparent PNG canvas. All empty pixels have alpha 0. No tinted background. Never put the subject on a vignette. NOT a design sheet, NOT two versions in one picture.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/p5-violet-finished-boards-v3/female-group.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/female-height-templates-v1/height-board.png"
+      ]
+    },
+    {
+      "id": "oda-nobunaga-head",
+      "characterId": "oda-nobunaga",
+      "name": "织田信长",
+      "kind": "head",
+      "action": null,
+      "heightCm": 160,
+      "asset": "scene-presence/heads/oda-nobunaga.png",
+      "url": "/frontends/hypnosis-app/assets/scene-presence/heads/oda-nobunaga.png",
+      "file": "public/frontends/hypnosis-app/assets/scene-presence/heads/oda-nobunaga.png",
+      "source": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/oda-nobunaga-head.png",
+      "sha256": "6738bb35e00258dd93e462222bfe658b52bbc4799c8cf543e724b3e86e20a8f8",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alphaBounds": [
+        58,
+        37,
+        1224,
+        1254
+      ],
+      "silhouetteBounds": [
+        62,
+        117,
+        1195,
+        1089
+      ],
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaZeroFraction": 0.44272872263302887,
+      "qa": "accepted main v30 cute simple head style",
+      "prompt": "Target face is unobstructed and plainly visible. Target has NO eyewear, NO spectacles, NO glasses, NO jewelry. Create ONE brand new transparent head-only chibi game UI icon in EXACTLY the same cute simple drawing style as the two supplied ACCEPTED EXISTING HEAD ICONS. Both images are STYLE ONLY, not the target identity. Target identity from text: 织田信长; same round chestnut short bob, warm dark-brown eyes, peach STAR clip on screen-left, small half-up ponytail; calm closed tiny mouth. Keep ONLY the target hairstyle, hair color and eye color; target-specific features are locked by its text. Match the reference rounded broad childlike CHIBI FACE geometry, almost no chin point, very large simple oval cartoon eyes with small single white highlight, minimal simple iris, tiny DOT nose and tiny single-line mouth. Clean warm dark outlines, simplified chunky hair locks, restrained 2-tone cel shading, no intricate strands, no rendered/painterly gradients, no glossy glass eyes, no detailed lashes, no realistic nose, no glitter, no skin shine. Pure HEAD ONLY. No neck, shoulders, collar, torso, chest, hands, props, costume or text. Accessories are from TARGET IDENTITY ONLY. If target text says glasses/spectacles, preserve those simple frames; otherwise NO GLASSES. NO EARRINGS or necklaces unless explicitly in target identity. The style references do NOT supply hair color, hairstyle, eye color, glasses, bows, jewelry or identity. Complete hair and ears with transparent margin all sides. The head is near-frontal like the accepted icons, friendly understated expression except target twins retain neutral tiny closed mouth. Actual clean zero-alpha transparent background, no glow, outline sticker border, scenery, shadow or watermark. Do not edit any previous candidate or standee.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/saionji-alisa.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/inuzuka-natsumi.png"
+      ]
+    },
+    {
+      "id": "akechi-mitsuhide-standee",
+      "characterId": "akechi-mitsuhide",
+      "name": "明智光秀",
+      "kind": "standee",
+      "action": null,
+      "heightCm": 160,
+      "asset": "scene-presence/standees/akechi-mitsuhide.png",
+      "url": "/frontends/hypnosis-app/assets/scene-presence/standees/akechi-mitsuhide.png",
+      "file": "public/frontends/hypnosis-app/assets/scene-presence/standees/akechi-mitsuhide.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/akechi-mitsuhide-standee.png",
+      "sha256": "e782b0d5b57dca461407b08f18f30d94906dc775f534553aad378701f9e606b0",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alphaBounds": [
+        33,
+        22,
+        988,
+        1520
+      ],
+      "silhouetteBounds": [
+        315,
+        26,
+        741,
+        1515
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "alphaZeroFraction": 0.7736492156982422,
+      "qa": "accepted-full-visual-and-alpha-composite",
+      "prompt": "Completely NEW original raster asset. INPUT1 approved female-group drawing STYLE ONLY; INPUT2 height-board PROPORTIONS ONLY (165cm figure for normal skeleton, not identity or clothes). Refined anime outline hierarchy, warm restrained cel shading. TRUE transparent background with alpha ZERO outside exact silhouette, NO glow, halo, gradient, vignette, shadow, ground, text, labels or watermark. Fully clothed, ordinary nonsexual daily illustration, natural hands with five fingers. Do not use any old portrait, standee or candidate. Identity solely from text: Original Japanese 19-year-old woman, 160cm, identical twin sisters have the same delicate oval face, warm dark-brown eyes and soft chestnut chin-length rounded bob. This younger sister has neat loose bob without half-up ponytail, blue crescent hair clip on her RIGHT side. Soft shy smile, pale mint cardigan over ivory blouse with small pale-blue ribbon, navy ordinary above-knee A-line skirt, opaque cream tights and tan loafers, cream crossbody bag with a blueberry charm. Holds closed small silver laptop like an ordinary college notebook with both hands at waist. Cute innocent friendly college student, no hacker or cyberpunk clues. FULL-BODY crown to both shoe soles with generous empty margins. Adult young-woman proportions, calm relaxed standing pose. Exact output is one isolated silhouette on a physically transparent PNG canvas. All empty pixels have alpha 0. No tinted background. Never put the subject on a vignette. NOT a design sheet, NOT two versions in one picture.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/p5-violet-finished-boards-v3/female-group.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/female-height-templates-v1/height-board.png"
+      ]
+    },
+    {
+      "id": "akechi-mitsuhide-head",
+      "characterId": "akechi-mitsuhide",
+      "name": "明智光秀",
+      "kind": "head",
+      "action": null,
+      "heightCm": 160,
+      "asset": "scene-presence/heads/akechi-mitsuhide.png",
+      "url": "/frontends/hypnosis-app/assets/scene-presence/heads/akechi-mitsuhide.png",
+      "file": "public/frontends/hypnosis-app/assets/scene-presence/heads/akechi-mitsuhide.png",
+      "source": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/akechi-mitsuhide-head.png",
+      "sha256": "341ad8258ba8ef4a79e9ddfe8609fa26170e4815b10636de5db87fbf465923d7",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alphaBounds": [
+        0,
+        63,
+        1237,
+        1246
+      ],
+      "silhouetteBounds": [
+        23,
+        108,
+        1234,
+        1071
+      ],
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaZeroFraction": 0.4324343917645353,
+      "qa": "accepted main v30 cute simple head style",
+      "prompt": "Target face is unobstructed and plainly visible. Target has NO eyewear, NO spectacles, NO glasses, NO jewelry. Create ONE brand new transparent head-only chibi game UI icon in EXACTLY the same cute simple drawing style as the two supplied ACCEPTED EXISTING HEAD ICONS. Both images are STYLE ONLY, not the target identity. Target identity from text: 明智光秀; same round chestnut short bob, warm dark-brown eyes, blue CRESCENT clip on screen-right, hair down; calm closed tiny mouth. Keep ONLY the target hairstyle, hair color and eye color; target-specific features are locked by its text. Match the reference rounded broad childlike CHIBI FACE geometry, almost no chin point, very large simple oval cartoon eyes with small single white highlight, minimal simple iris, tiny DOT nose and tiny single-line mouth. Clean warm dark outlines, simplified chunky hair locks, restrained 2-tone cel shading, no intricate strands, no rendered/painterly gradients, no glossy glass eyes, no detailed lashes, no realistic nose, no glitter, no skin shine. Pure HEAD ONLY. No neck, shoulders, collar, torso, chest, hands, props, costume or text. Accessories are from TARGET IDENTITY ONLY. If target text says glasses/spectacles, preserve those simple frames; otherwise NO GLASSES. NO EARRINGS or necklaces unless explicitly in target identity. The style references do NOT supply hair color, hairstyle, eye color, glasses, bows, jewelry or identity. Complete hair and ears with transparent margin all sides. The head is near-frontal like the accepted icons, friendly understated expression except target twins retain neutral tiny closed mouth. Actual clean zero-alpha transparent background, no glow, outline sticker border, scenery, shadow or watermark. Do not edit any previous candidate or standee.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/saionji-alisa.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/inuzuka-natsumi.png"
+      ]
+    },
+    {
+      "id": "lin-an-tutorial-welcome",
+      "characterId": "lin-an",
+      "name": "林安",
+      "kind": "mascot",
+      "action": "welcome",
+      "heightCm": 165,
+      "asset": "tutorial/lin-an-welcome.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/lin-an-welcome.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/lin-an-welcome.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/lin-an-tutorial-welcome.png",
+      "sha256": "0ca91abe416497502ab075e8f8a5c82acd733db314b0616863c42f2c781d2887",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alphaBounds": [
+        0,
+        0,
+        1023,
+        1536
+      ],
+      "silhouetteBounds": [
+        136,
+        2,
+        903,
+        1526
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "alphaZeroFraction": 0.5517253875732422,
+      "qa": "accepted-full-visual-and-alpha-composite",
+      "prompt": "Completely NEW original raster asset. INPUT1 approved female-group drawing STYLE ONLY; INPUT2 height-board PROPORTIONS ONLY (165cm figure for normal skeleton, not identity or clothes). Refined anime outline hierarchy, warm restrained cel shading. TRUE transparent background with alpha ZERO outside exact silhouette, NO glow, halo, gradient, vignette, shadow, ground, text, labels or watermark. Fully clothed, ordinary nonsexual daily illustration, natural hands with five fingers. Do not use any old portrait, standee or candidate. ORIGINAL 22-year-old Chinese woman Lin An / 林安, novice private detective. Black hair loosely pinned up, brown detective cap with black bow, brown tweed cape-coat over pale shirt, black bow tie, dark grey trousers, brown ankle boots. MAKE A FULL-BODY CHIBI TUTORIAL MASCOT, roughly 2.5-head tall cute cartoon proportions, complete hat and both boots, not an avatar or portrait. Friendly greeting, one hand waves naturally, broad confident smile. Consistent same character and same outfit across tutorial actions. Isolated SINGLE figure, no props except named notebook, no extra people. Exact output is one isolated silhouette on a physically transparent PNG canvas. All empty pixels have alpha 0. No tinted background. Never put the subject on a vignette. NOT a design sheet, NOT two versions in one picture.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/p5-violet-finished-boards-v3/female-group.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/female-height-templates-v1/height-board.png"
+      ]
+    },
+    {
+      "id": "lin-an-tutorial-point",
+      "characterId": "lin-an",
+      "name": "林安",
+      "kind": "mascot",
+      "action": "point",
+      "heightCm": 165,
+      "asset": "tutorial/lin-an-point.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/lin-an-point.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/lin-an-point.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/lin-an-tutorial-point.png",
+      "sha256": "c32ff0409539e95c054437eda9c00730285ea95e57447e57dc2a4fe5b931b97e",
+      "width": 1214,
+      "height": 1295,
+      "mode": "RGBA",
+      "alphaBounds": [
+        33,
+        0,
+        1176,
+        1295
+      ],
+      "silhouetteBounds": [
+        289,
+        3,
+        1046,
+        1291
+      ],
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaZeroFraction": 0.6867606368430091,
+      "qa": "accepted-full-visual-and-alpha-composite",
+      "prompt": "Completely NEW original raster asset. INPUT1 approved female-group drawing STYLE ONLY; INPUT2 height-board PROPORTIONS ONLY (165cm figure for normal skeleton, not identity or clothes). Refined anime outline hierarchy, warm restrained cel shading. TRUE transparent background with alpha ZERO outside exact silhouette, NO glow, halo, gradient, vignette, shadow, ground, text, labels or watermark. Fully clothed, ordinary nonsexual daily illustration, natural hands with five fingers. Do not use any old portrait, standee or candidate. ORIGINAL 22-year-old Chinese woman Lin An / 林安, novice private detective. Black hair loosely pinned up, brown detective cap with black bow, brown tweed cape-coat over pale shirt, black bow tie, dark grey trousers, brown ankle boots. MAKE A FULL-BODY CHIBI TUTORIAL MASCOT, roughly 2.5-head tall cute cartoon proportions, complete hat and both boots, not an avatar or portrait. Points sideways with one hand at a UI target, other hand rests on hip, confident explanatory smile. Consistent same character and same outfit across tutorial actions. Isolated SINGLE figure, no props except named notebook, no extra people. Exact output is one isolated silhouette on a physically transparent PNG canvas. All empty pixels have alpha 0. No tinted background. Never put the subject on a vignette. NOT a design sheet, NOT two versions in one picture.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/p5-violet-finished-boards-v3/female-group.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/female-height-templates-v1/height-board.png"
+      ]
+    },
+    {
+      "id": "lin-an-tutorial-think",
+      "characterId": "lin-an",
+      "name": "林安",
+      "kind": "mascot",
+      "action": "think",
+      "heightCm": 165,
+      "asset": "tutorial/lin-an-think.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/lin-an-think.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/lin-an-think.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/lin-an-tutorial-think.png",
+      "sha256": "361880804e42810ac2bfd8b69e057c5a179414041af5f5067145cfe03fb3ece4",
+      "width": 1145,
+      "height": 1373,
+      "mode": "RGBA",
+      "alphaBounds": [
+        0,
+        0,
+        1133,
+        1373
+      ],
+      "silhouetteBounds": [
+        315,
+        8,
+        884,
+        1357
+      ],
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "alphaZeroFraction": 0.6799638696380921,
+      "qa": "accepted-full-visual-and-alpha-composite",
+      "prompt": "Completely NEW original raster asset. INPUT1 approved female-group drawing STYLE ONLY; INPUT2 height-board PROPORTIONS ONLY (165cm figure for normal skeleton, not identity or clothes). Refined anime outline hierarchy, warm restrained cel shading. TRUE transparent background with alpha ZERO outside exact silhouette, NO glow, halo, gradient, vignette, shadow, ground, text, labels or watermark. Fully clothed, ordinary nonsexual daily illustration, natural hands with five fingers. Do not use any old portrait, standee or candidate. ORIGINAL 22-year-old Chinese woman Lin An / 林安, novice private detective. Black hair loosely pinned up, brown detective cap with black bow, brown tweed cape-coat over pale shirt, black bow tie, dark grey trousers, brown ankle boots. MAKE A FULL-BODY CHIBI TUTORIAL MASCOT, roughly 2.5-head tall cute cartoon proportions, complete hat and both boots, not an avatar or portrait. Holds a notebook, finger near chin, puzzled thoughtful face; no distorted fingers. Consistent same character and same outfit across tutorial actions. Isolated SINGLE figure, no props except named notebook, no extra people. Exact output is one isolated silhouette on a physically transparent PNG canvas. All empty pixels have alpha 0. No tinted background. Never put the subject on a vignette. NOT a design sheet, NOT two versions in one picture.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/p5-violet-finished-boards-v3/female-group.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/female-height-templates-v1/height-board.png"
+      ]
+    },
+    {
+      "id": "lin-an-tutorial-celebrate",
+      "characterId": "lin-an",
+      "name": "林安",
+      "kind": "mascot",
+      "action": "celebrate",
+      "heightCm": 165,
+      "asset": "tutorial/lin-an-celebrate.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/lin-an-celebrate.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/lin-an-celebrate.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/lin-an-tutorial-celebrate.png",
+      "sha256": "655a5b8e3a68f5945b5957c9b6ccf5f9c85cec4b7d91d671b5ea758b71966d77",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alphaBounds": [
+        0,
+        24,
+        1023,
+        1536
+      ],
+      "silhouetteBounds": [
+        137,
+        26,
+        898,
+        1506
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "alphaZeroFraction": 0.5751005808512369,
+      "qa": "accepted-full-visual-and-alpha-composite",
+      "prompt": "Completely NEW original raster asset. INPUT1 approved female-group drawing STYLE ONLY; INPUT2 height-board PROPORTIONS ONLY (165cm figure for normal skeleton, not identity or clothes). Refined anime outline hierarchy, warm restrained cel shading. TRUE transparent background with alpha ZERO outside exact silhouette, NO glow, halo, gradient, vignette, shadow, ground, text, labels or watermark. Fully clothed, ordinary nonsexual daily illustration, natural hands with five fingers. Do not use any old portrait, standee or candidate. ORIGINAL 22-year-old Chinese woman Lin An / 林安, novice private detective. Black hair loosely pinned up, brown detective cap with black bow, brown tweed cape-coat over pale shirt, black bow tie, dark grey trousers, brown ankle boots. MAKE A FULL-BODY CHIBI TUTORIAL MASCOT, roughly 2.5-head tall cute cartoon proportions, complete hat and both boots, not an avatar or portrait. Happy success pose, both fists lightly raised at shoulder level, eyes sparkling, small confident smile. Consistent same character and same outfit across tutorial actions. Isolated SINGLE figure, no props except named notebook, no extra people. Exact output is one isolated silhouette on a physically transparent PNG canvas. All empty pixels have alpha 0. No tinted background. Never put the subject on a vignette. NOT a design sheet, NOT two versions in one picture.",
+      "references": [
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/p5-violet-finished-boards-v3/female-group.png",
+        "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/style-lab/2026-10-11/female-height-templates-v1/height-board.png"
+      ]
+    },
+    {
+      "id": "school-gate",
+      "characterId": null,
+      "name": "学校后门",
+      "kind": "background",
+      "action": null,
+      "heightCm": null,
+      "asset": "tutorial/backgrounds/school-gate.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/backgrounds/school-gate.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/backgrounds/school-gate.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-backgrounds-v1/school-gate.png",
+      "sha256": "16d1cb3e379442e567453a4e7c8473ef6bda73e91a4717a5637d6eaf202eb0df",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alphaBounds": null,
+      "silhouetteBounds": null,
+      "alphaExtrema": null,
+      "alphaZeroFraction": null,
+      "qa": "accepted-scene-no-characters",
+      "prompt": "Create a BRAND NEW 16:9 wide visual-novel game environment, polished hand-painted anime background with restrained warm cel shading, believable real-room geometry, eye-level mild single-point perspective, no fisheye. Quiet Japanese private-school side gate near an old academic building after classes, ordinary paved walkway, modest brick wall, iron gate, trees, warm late afternoon daylight; school architecture, no dramatic deserted ruin. A complete composition, furniture and normal circulation space, not an empty stage. NO people, character silhouettes, text, labels, watermark or UI. Show complete environmental frame with normal detail. Match sophisticated warm anime character art, keep soft muted colors suitable behind semi-transparent dialogue boxes.",
+      "references": []
+    },
+    {
+      "id": "commercial-street",
+      "characterId": null,
+      "name": "商业街",
+      "kind": "background",
+      "action": null,
+      "heightCm": null,
+      "asset": "tutorial/backgrounds/commercial-street.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/backgrounds/commercial-street.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/backgrounds/commercial-street.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-backgrounds-v1/commercial-street.png",
+      "sha256": "bfa7b072b710e55b25933556546136b7d76bfc7b6d0c19213433b2cf4b41a0e9",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alphaBounds": null,
+      "silhouetteBounds": null,
+      "alphaExtrema": null,
+      "alphaZeroFraction": null,
+      "qa": "accepted-scene-no-characters",
+      "prompt": "Create a BRAND NEW 16:9 wide visual-novel game environment, polished hand-painted anime background with restrained warm cel shading, believable real-room geometry, eye-level mild single-point perspective, no fisheye. Friendly small Japanese shopping street in warm late-afternoon light, a corner with a bookshop and café entrance, mundane bicycles and potted plants, normal clean lived-in neighborhood, no neon cyberpunk signs. A complete composition, furniture and normal circulation space, not an empty stage. NO people, character silhouettes, text, labels, watermark or UI. Show complete environmental frame with normal detail. Match sophisticated warm anime character art, keep soft muted colors suitable behind semi-transparent dialogue boxes.",
+      "references": []
+    },
+    {
+      "id": "detective-office",
+      "characterId": null,
+      "name": "侦探事务所",
+      "kind": "background",
+      "action": null,
+      "heightCm": null,
+      "asset": "tutorial/backgrounds/detective-office.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/backgrounds/detective-office.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/backgrounds/detective-office.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-backgrounds-v1/detective-office.png",
+      "sha256": "9322a4b8eb41785cf18f7d0fc090163e8a1f977513a7bebf0c21fbf2f76095b2",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alphaBounds": null,
+      "silhouetteBounds": null,
+      "alphaExtrema": null,
+      "alphaZeroFraction": null,
+      "qa": "accepted-scene-no-characters",
+      "prompt": "Create a BRAND NEW 16:9 wide visual-novel game environment, polished hand-painted anime background with restrained warm cel shading, believable real-room geometry, eye-level mild single-point perspective, no fisheye. A modest novice private detective office rented near a shopping street. Old wooden desk, two visitor chairs, a bookcase, file cabinet, simple shaded desk lamp, window in side wall, inexpensive brown tweed coat on hook. Cozy slightly cluttered but believable workspace, no fantasy detective props or expensive mansion. A complete composition, furniture and normal circulation space, not an empty stage. NO people, character silhouettes, text, labels, watermark or UI. Show complete environmental frame with normal detail. Match sophisticated warm anime character art, keep soft muted colors suitable behind semi-transparent dialogue boxes.",
+      "references": []
+    },
+    {
+      "id": "twins-workshop",
+      "characterId": null,
+      "name": "双胞胎工作室",
+      "kind": "background",
+      "action": null,
+      "heightCm": null,
+      "asset": "tutorial/backgrounds/twins-workshop.png",
+      "url": "/frontends/hypnosis-app/assets/tutorial/backgrounds/twins-workshop.png",
+      "file": "public/frontends/hypnosis-app/assets/tutorial/backgrounds/twins-workshop.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-backgrounds-v1/twins-workshop.png",
+      "sha256": "b64dd995bf0bc59d34a2aae03a6a4c558d85f72af2d11ad5aa9b61f2b678836e",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alphaBounds": null,
+      "silhouetteBounds": null,
+      "alphaExtrema": null,
+      "alphaZeroFraction": null,
+      "qa": "accepted-scene-no-characters",
+      "prompt": "Create a BRAND NEW 16:9 wide visual-novel game environment, polished hand-painted anime background with restrained warm cel shading, believable real-room geometry, eye-level mild single-point perspective, no fisheye. An innocent-looking cozy upstairs room above a small bookshop café, two neat everyday laptop workstations, cream shelving, pale mint sofa, a peach cushion, mugs, plant on a windowsill, warm sunset light. Cute pleasant college-student study studio, NO ominous technology, hacker graphics, huge screens or cyberpunk motifs. A complete composition, furniture and normal circulation space, not an empty stage. NO people, character silhouettes, text, labels, watermark or UI. Show complete environmental frame with normal detail. Match sophisticated warm anime character art, keep soft muted colors suitable behind semi-transparent dialogue boxes.",
+      "references": []
+    }
+  ]
+}

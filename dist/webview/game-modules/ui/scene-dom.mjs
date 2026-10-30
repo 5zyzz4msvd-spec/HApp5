@@ -1,0 +1,1 @@
+const n=new WeakMap;function o(e,t){n.set(e,t)}function r(e){const t=n.get(e);return t?.isConnected?t:e.querySelector(".routine-scene")}function c(e,t){n.get(e)===t&&n.delete(e)}export{o as registerSceneRoot,r as sceneRootFor,c as unregisterSceneRoot};

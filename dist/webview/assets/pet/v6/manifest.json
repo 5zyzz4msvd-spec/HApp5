@@ -1,0 +1,1375 @@
+{
+  "schema": 1,
+  "generatedWith": "built-in ImageGen keyposes and inbetweens",
+  "runtimeCell": 256,
+  "characters": {
+    "alisa": {
+      "name": "alisa",
+      "source": "src/pet-v6/current/alisa",
+      "status": "current-accepted-2026-10-26",
+      "crop": [
+        130,
+        60,
+        570,
+        610
+      ],
+      "sharedScale": 0.4970873786407767,
+      "perFrameFit": false,
+      "idleVariantsPending": false,
+      "idleVariants": [
+        "idle"
+      ],
+      "dragHoldClip": "drag-hold",
+      "lifecycle": {
+        "winkMs": 460,
+        "heartMs": 460,
+        "curtainMs": 0,
+        "curtainDurationMs": 680
+      },
+      "clips": {
+        "idle": {
+          "file": "pet/v6/alisa-idle.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            11000,
+            65,
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "idle",
+          "sourceIndices": [
+            0,
+            1,
+            0
+          ],
+          "sha256": "9b63095c672fdd62fd4eb250cc6aa41283165aa71b74e70d339ad607cf785124",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592
+        },
+        "enter": {
+          "file": "pet/v6/alisa-enter.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            100,
+            100,
+            110,
+            85,
+            65,
+            220,
+            70,
+            80,
+            90,
+            100,
+            100,
+            110,
+            100,
+            100
+          ],
+          "loop": false,
+          "sourceAction": "enter",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "398224194df5dccba093c44b17ee969d89517d31b3a4b71516f1e95e0f3be388",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592
+        },
+        "exit": {
+          "file": "pet/v6/alisa-exit.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            70,
+            80,
+            85,
+            70,
+            75,
+            230,
+            60,
+            60,
+            85,
+            90,
+            90,
+            90,
+            90,
+            100
+          ],
+          "loop": false,
+          "sourceAction": "exit",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "ad85dfa5bb415992e0685e6111bd58d4c0439c5738ef278912e8716f71272e21",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592
+        },
+        "menu-open": {
+          "file": "pet/v6/alisa-menu-open.png",
+          "frames": 4,
+          "columns": 4,
+          "rows": 1,
+          "durations": [
+            65,
+            65,
+            85,
+            115
+          ],
+          "loop": false,
+          "sourceAction": "current-enter-wink",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "sha256": "68701b8b06a654f82e4b26953245a8de04f37d407c1c4d826578b309b513c350",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592,
+          "transitionMs": 330,
+          "hopMs": 500,
+          "heldWinkSourceFrame": 3,
+          "menuStyle": "hop-then-hold-wink"
+        },
+        "menu-idle": {
+          "file": "pet/v6/alisa-menu-idle.png",
+          "frames": 1,
+          "columns": 1,
+          "rows": 1,
+          "durations": [
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "current-enter-wink",
+          "sourceIndices": [
+            3
+          ],
+          "sha256": "1243efb5f27230c3c3513358584aa9250bc8558412239722af3fbb8e5ad3f779",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592,
+          "transitionMs": 330,
+          "hopMs": 500,
+          "heldWinkSourceFrame": 3,
+          "menuStyle": "hop-then-hold-wink"
+        },
+        "menu-close": {
+          "file": "pet/v6/alisa-menu-close.png",
+          "frames": 4,
+          "columns": 4,
+          "rows": 1,
+          "durations": [
+            80,
+            75,
+            75,
+            100
+          ],
+          "loop": false,
+          "sourceAction": "current-enter-wink",
+          "sourceIndices": [
+            3,
+            2,
+            1,
+            0
+          ],
+          "sha256": "45a0337cdbfeee57cf2213dc9b50164f9ee0b5d53d6df838f611a10e03181c67",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592,
+          "transitionMs": 330,
+          "hopMs": 500,
+          "heldWinkSourceFrame": 3,
+          "menuStyle": "hop-then-hold-wink"
+        },
+        "drag": {
+          "file": "pet/v6/alisa-drag.png",
+          "frames": 9,
+          "columns": 9,
+          "rows": 1,
+          "durations": [
+            45,
+            55,
+            55,
+            55,
+            55,
+            70,
+            55,
+            55,
+            90
+          ],
+          "loop": false,
+          "sourceAction": "drag",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "sha256": "5f81fe1071661deb2c26e7c537acb509b071ec149d764aff1c73090e2751c04b",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592,
+          "grips": [
+            {
+              "x": 55.0672,
+              "y": 31.9689,
+              "tileSize": 112
+            },
+            {
+              "x": 62.8964,
+              "y": 23.2699,
+              "tileSize": 112
+            },
+            {
+              "x": 63.1138,
+              "y": 16.3107,
+              "tileSize": 112
+            },
+            {
+              "x": 63.3313,
+              "y": 9.134,
+              "tileSize": 112
+            },
+            {
+              "x": 56.3721,
+              "y": -4.567,
+              "tileSize": 112
+            },
+            {
+              "x": 57.6769,
+              "y": -3.0447,
+              "tileSize": 112
+            },
+            {
+              "x": 56.5896,
+              "y": 0,
+              "tileSize": 112
+            },
+            {
+              "x": 57.8944,
+              "y": 1.0874,
+              "tileSize": 112
+            },
+            {
+              "x": 56.3721,
+              "y": 0.8699,
+              "tileSize": 112
+            }
+          ],
+          "holdFrame": 8
+        },
+        "drag-hold": {
+          "file": "pet/v6/alisa-drag-hold.png",
+          "frames": 1,
+          "columns": 1,
+          "rows": 1,
+          "durations": [
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "drag",
+          "sourceIndices": [
+            8
+          ],
+          "sha256": "323f49a86d4dcbf73fe239acbeeaaf45274ffea71e0f7c02056245b30ad4b88b",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592,
+          "grips": [
+            {
+              "x": 56.3721,
+              "y": 0.8699,
+              "tileSize": 112
+            }
+          ]
+        },
+        "landing": {
+          "file": "pet/v6/alisa-landing.png",
+          "frames": 16,
+          "columns": 16,
+          "rows": 1,
+          "durations": [
+            50,
+            50,
+            50,
+            50,
+            50,
+            50,
+            65,
+            75,
+            100,
+            55,
+            55,
+            60,
+            80,
+            85,
+            80,
+            90
+          ],
+          "loop": false,
+          "sourceAction": "covered-knees-crouch",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "sha256": "173f38245488a652016a59ca59f56fd0fca961da4ef121eb62b4bac174795d51",
+          "frameWidth": 256,
+          "frameHeight": 273,
+          "frameOffsetY": -8.699029126213592,
+          "frameColorGamma": {
+            "1": [
+              0.925,
+              0.915,
+              0.9
+            ],
+            "3": [
+              0.948,
+              0.93,
+              0.912
+            ],
+            "4": [
+              0.92,
+              0.91,
+              0.893
+            ]
+          }
+        }
+      },
+      "dragGrip": {
+        "x": 56.3721,
+        "y": 0.8699,
+        "tileSize": 112
+      },
+      "motionProvenance": "Whole-character ImageGen landing: ground contact, deep squat cushioning, gradual stand to exact original baseline. Drag and other action PNGs preserved from v10; menu-idle holds exact menu-open5 pose.",
+      "groundAnchor": {
+        "x": 56,
+        "y": 108.7378640776699,
+        "tileSize": 112
+      },
+      "identitySource": {
+        "gitCommit": "f655825",
+        "runtimeIdleSha256": "9b63095c672fdd62fd4eb250cc6aa41283165aa71b74e70d339ad607cf785124"
+      },
+      "menuHoldQA": {
+        "singleApprovedFrame": 5,
+        "pixelExactToOpenAndClose": true,
+        "steadyMilliseconds": 9600,
+        "status": "passed"
+      },
+      "runtimeBundleHash": "35d85f54818b13e3df88a193385b6dce982466372c559f54d99d4659cd572e04"
+    },
+    "hyakka": {
+      "source": "src/pet-v6/current/hyakka",
+      "status": "current-accepted-2026-10-26",
+      "crop": [
+        103,
+        107,
+        518,
+        520
+      ],
+      "sharedScale": 0.5397590361445783,
+      "perFrameFit": false,
+      "idleVariantsPending": false,
+      "clips": {
+        "idle": {
+          "file": "pet/v6/hyakka-idle.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            11000,
+            65,
+            1300
+          ],
+          "loop": true,
+          "sourceAction": "fixed-neutral-blink",
+          "sourceIndices": [
+            0,
+            1,
+            2
+          ],
+          "sha256": "cee64bc5ebdd1c6beda77d8eeafe69de8f6946a38cfe0f38033f5c3cb13c71eb"
+        },
+        "idle-look": {
+          "file": "pet/v6/hyakka-idle-look.png",
+          "frames": 4,
+          "columns": 4,
+          "rows": 1,
+          "durations": [
+            100,
+            450,
+            450,
+            340
+          ],
+          "loop": false,
+          "sourceAction": "look",
+          "sourceIndices": [
+            11,
+            2,
+            8,
+            11
+          ],
+          "sha256": "601ddb2260d423f32ca69430fff00e28e6d9dbd9fdc57c36c444496fde266c4c"
+        },
+        "idle-greet": {
+          "file": "pet/v6/hyakka-idle-greet.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            150,
+            90,
+            220
+          ],
+          "loop": false,
+          "sourceAction": "look",
+          "sourceIndices": [
+            11,
+            5,
+            11
+          ],
+          "sha256": "9fc4ec5647e4ef3b86e7ffc253568652916d23ad5074629f1af2d011f5a14893"
+        },
+        "enter": {
+          "file": "pet/v6/hyakka-enter.png",
+          "frames": 11,
+          "columns": 11,
+          "rows": 1,
+          "durations": [
+            180,
+            90,
+            70,
+            95,
+            85,
+            100,
+            100,
+            110,
+            100,
+            90,
+            180
+          ],
+          "loop": false,
+          "sourceAction": "enter",
+          "sourceIndices": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "19e5495604dcb819ff9e1408e83cb9adfe6a13042c327987b367c226634147e6"
+        },
+        "exit": {
+          "file": "pet/v6/hyakka-exit.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            100,
+            70,
+            90,
+            60,
+            60,
+            80,
+            70,
+            70,
+            70,
+            70,
+            70,
+            70,
+            70,
+            120
+          ],
+          "loop": false,
+          "sourceAction": "exit",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "769e1bc9b650236e0fcada1dbc31964f1b3ccc1fc89e94a94c0d2f8f5b6671be"
+        },
+        "charge": {
+          "file": "pet/v6/hyakka-charge.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            75,
+            90,
+            110
+          ],
+          "loop": false,
+          "sourceAction": "spin",
+          "sourceIndices": [
+            0,
+            1,
+            2
+          ],
+          "sha256": "97ab364ffb371187bbdee61029bcf5e100acfc894e28b797c6fc87f626bf0537",
+          "frameWidth": 256,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "handAnchors": [
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            },
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            },
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            }
+          ],
+          "bodyLift": [
+            0,
+            0,
+            0
+          ],
+          "holdLastFrame": true,
+          "holdFrame": 2
+        },
+        "charge-hold": {
+          "file": "pet/v6/hyakka-charge-hold.png",
+          "frames": 1,
+          "columns": 1,
+          "rows": 1,
+          "durations": [
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "spin",
+          "sourceIndices": [
+            2
+          ],
+          "sha256": "ee8f21fdb61f2f582876a9a0b146b2b429f50043bc06c09a7efbe02da19a7126",
+          "frameWidth": 256,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "handAnchors": [
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            }
+          ],
+          "bodyLift": [
+            0
+          ],
+          "holdLastFrame": true
+        },
+        "charge-finish": {
+          "file": "pet/v6/hyakka-charge-finish.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            60,
+            135,
+            65
+          ],
+          "loop": false,
+          "sourceAction": "spin",
+          "sourceIndices": [
+            2,
+            5,
+            8
+          ],
+          "sha256": "b3fba6a533d1815cb62f3af5f72bdf93a8e1bd4b12151610f1ea82684236ffdf",
+          "frameWidth": 256,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "handAnchors": [
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            },
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            },
+            {
+              "x": 56.21875,
+              "y": 56.4375,
+              "angle": -0.15
+            }
+          ],
+          "bodyLift": [
+            0,
+            -28,
+            -24
+          ],
+          "holdLastFrame": true,
+          "releaseFrame": 2,
+          "bodySpin": {
+            "start": 0,
+            "end": 15.707963267948966,
+            "duration": 195
+          },
+          "bodyFlight": {
+            "start": 0,
+            "end": -28,
+            "duration": 195
+          }
+        },
+        "blink": {
+          "file": "pet/v6/hyakka-landing.png",
+          "frames": 9,
+          "columns": 9,
+          "rows": 1,
+          "durations": [
+            60,
+            45,
+            45,
+            80,
+            65,
+            80,
+            80,
+            70,
+            120
+          ],
+          "loop": false,
+          "sourceAction": "body",
+          "sourceIndices": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "1e6a07424ac09bd4cda74234a5f4af79a830c627fe2ad645027dbbf53d247acb"
+        },
+        "arrival": {
+          "file": "pet/v6/hyakka-arrival.png",
+          "frames": 6,
+          "columns": 6,
+          "rows": 1,
+          "durations": [
+            80,
+            65,
+            80,
+            80,
+            70,
+            120
+          ],
+          "loop": false,
+          "sourceAction": "body",
+          "sourceIndices": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "da7ed9ebf609eafc594d322bdcbae0b83dec800af08028fe0751fec9c21e4678"
+        },
+        "ghost-aim": {
+          "file": "pet/v6/hyakka-ghost-aim.png",
+          "frames": 6,
+          "columns": 6,
+          "rows": 1,
+          "durations": [
+            50,
+            60,
+            80,
+            70,
+            70,
+            100
+          ],
+          "loop": false,
+          "sourceAction": "ghost",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "sha256": "803aa3ad04c3f68f6b8efeeca4655470c57e90e9a98564a64a2d1a90384d0394",
+          "holdFrame": 5
+        },
+        "ghost-throw": {
+          "file": "pet/v6/hyakka-ghost-throw.png",
+          "frames": 9,
+          "columns": 9,
+          "rows": 1,
+          "durations": [
+            35,
+            45,
+            45,
+            70,
+            50,
+            60,
+            50,
+            60,
+            60
+          ],
+          "loop": false,
+          "sourceAction": "ghost",
+          "sourceIndices": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "c390a429f72f5f1efb00e29fb7c4417d0a97f27474a77d3b5f7af85a690028e0"
+        },
+        "drag": {
+          "file": "pet/v6/hyakka-drag.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            55,
+            85,
+            100
+          ],
+          "loop": false,
+          "sourceAction": "body",
+          "sourceIndices": [
+            0,
+            1,
+            2
+          ],
+          "sha256": "81fd9e8d2b73b842b17731d5d26d050a1c6871fb7e66458222d3d95cfc358710",
+          "holdFrame": 2
+        },
+        "landing": {
+          "file": "pet/v6/hyakka-landing.png",
+          "frames": 9,
+          "columns": 9,
+          "rows": 1,
+          "durations": [
+            60,
+            45,
+            45,
+            80,
+            65,
+            80,
+            80,
+            70,
+            120
+          ],
+          "loop": false,
+          "sourceAction": "body",
+          "sourceIndices": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "1e6a07424ac09bd4cda74234a5f4af79a830c627fe2ad645027dbbf53d247acb"
+        },
+        "throw-hold": {
+          "file": "pet/v6/hyakka-throw-hold.png",
+          "frames": 2,
+          "columns": 2,
+          "rows": 1,
+          "durations": [
+            55,
+            180
+          ],
+          "loop": false,
+          "sourceAction": "spin",
+          "sourceIndices": [
+            8,
+            13
+          ],
+          "sha256": "f3c3645cdb7c094578a100c64ddd95c54ff96dd926d759b6911017e9da8a00ce",
+          "frameWidth": 256,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "handAnchors": [
+            {
+              "x": 56.21875,
+              "y": 56.4375,
+              "angle": -0.15
+            },
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -0.15
+            }
+          ],
+          "bodyLift": [
+            -24,
+            0
+          ],
+          "holdLastFrame": true,
+          "handoffHideBody": true,
+          "bodySpin": {
+            "start": 15.707963267948966,
+            "end": 18.84955592153876,
+            "duration": 140
+          },
+          "bodyFlight": {
+            "start": -28,
+            "end": 0,
+            "duration": 140
+          }
+        },
+        "idle-fold": {
+          "file": "pet/v6/hyakka-idle-fold.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            100,
+            80,
+            110,
+            85,
+            85,
+            600,
+            100,
+            100,
+            100,
+            90,
+            90,
+            100,
+            90,
+            140
+          ],
+          "loop": false,
+          "sourceAction": "fold",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "f649143a0721a860b9fc4eda54f4a4f49cff8155327b9c1ef806c2ea83e01eb4"
+        },
+        "idle-cloak": {
+          "file": "pet/v6/hyakka-idle-cloak.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            100,
+            80,
+            110,
+            85,
+            85,
+            600,
+            100,
+            100,
+            100,
+            90,
+            90,
+            100,
+            90,
+            140
+          ],
+          "loop": false,
+          "sourceAction": "cloak",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "bb7f0a9a733dd0cf77de55688bb325af9a745e7567e1d6376fd80145b7750280"
+        },
+        "idle-stretch": {
+          "file": "pet/v6/hyakka-idle-stretch.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            100,
+            80,
+            110,
+            85,
+            85,
+            600,
+            100,
+            100,
+            100,
+            90,
+            90,
+            100,
+            90,
+            140
+          ],
+          "loop": false,
+          "sourceAction": "stretch",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "329fae6cff5368f92c6d2be48c341c780a095b911a11e024e343ab1a3713f819"
+        },
+        "menu-open": {
+          "file": "pet/v6/hyakka-menu-open.png",
+          "frames": 12,
+          "columns": 12,
+          "rows": 1,
+          "durations": [
+            60,
+            65,
+            70,
+            60,
+            60,
+            70,
+            60,
+            60,
+            70,
+            75,
+            85,
+            180
+          ],
+          "loop": false,
+          "sourceAction": "click",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "sha256": "62978728dd17780d8722ab2034ea651673a537562f176a8c451a3924d4de4e08",
+          "jumpLiftPx": 42,
+          "rotationDegrees": [
+            0,
+            0,
+            0,
+            90,
+            135,
+            180,
+            225,
+            315,
+            360,
+            360,
+            360,
+            360
+          ]
+        },
+        "menu-idle": {
+          "file": "pet/v6/hyakka-menu-idle.png",
+          "frames": 14,
+          "columns": 14,
+          "rows": 1,
+          "durations": [
+            1200,
+            250,
+            500,
+            35,
+            30,
+            65,
+            35,
+            45,
+            500,
+            250,
+            300,
+            600,
+            250,
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "battle-idle",
+          "sourceIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "sha256": "e3f1a7fedad7520fdff1e16e5e9a7c547abc7af3100f3713f380ad8ee51ad2d5"
+        },
+        "menu-close": {
+          "file": "pet/v6/hyakka-menu-close.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            70,
+            100,
+            140
+          ],
+          "loop": false,
+          "sourceAction": "click",
+          "sourceIndices": [
+            11,
+            12,
+            13
+          ],
+          "sha256": "9a5b85916f6f1e28d57b3211ccc2882329400e6f2cded2de1bf0b6267ff18e37"
+        },
+        "charge-await-0": {
+          "file": "pet/v6/hyakka-charge-await-0.png",
+          "frames": 1,
+          "columns": 1,
+          "rows": 1,
+          "durations": [
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "spin",
+          "sourceIndices": [
+            0
+          ],
+          "sha256": "43d32b99506bc58fb47beac5a8feca4c35241d9543a1941eeafc80ddee22b833",
+          "frameWidth": 256,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "handAnchors": [
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            }
+          ],
+          "bodyLift": [
+            0
+          ],
+          "holdLastFrame": true
+        },
+        "charge-await-1": {
+          "file": "pet/v6/hyakka-charge-await-1.png",
+          "frames": 1,
+          "columns": 1,
+          "rows": 1,
+          "durations": [
+            1000
+          ],
+          "loop": true,
+          "sourceAction": "spin",
+          "sourceIndices": [
+            1
+          ],
+          "sha256": "f0ca7ac11c6017397f6982cfbdcf10d66e154652ec04abd8db0aec1a3068dc95",
+          "frameWidth": 256,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "handAnchors": [
+            {
+              "x": 56.0,
+              "y": 66.0625,
+              "angle": -1.0
+            }
+          ],
+          "bodyLift": [
+            0
+          ],
+          "holdLastFrame": true
+        },
+        "entry-descent": {
+          "file": "pet/v6/hyakka-entry-descent.png",
+          "frames": 3,
+          "columns": 3,
+          "rows": 1,
+          "durations": [
+            110,
+            90,
+            140
+          ],
+          "loop": false,
+          "sourceAction": "entry-cape-v7",
+          "sourceIndices": [
+            0,
+            1,
+            2
+          ],
+          "sha256": "b1c51aaf1f822e24753052221b7c3f51c5e996def08d7ebbdfbb24556f2fe0ac",
+          "frameWidth": 320,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "holdLastFrame": true,
+          "displayWidth": 140.0,
+          "frameOffsetX": -14.0
+        },
+        "entry-sweep": {
+          "file": "pet/v6/hyakka-entry-sweep.png",
+          "frames": 16,
+          "columns": 8,
+          "rows": 2,
+          "durations": [
+            85,
+            70,
+            70,
+            70,
+            75,
+            90,
+            85,
+            90,
+            100,
+            320,
+            85,
+            95,
+            90,
+            90,
+            85,
+            140
+          ],
+          "loop": false,
+          "sourceAction": "entry-cape-v7",
+          "sourceIndices": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ],
+          "sha256": "81aa8d13374ad1c41f3a4ba5e7f16f6a5b022a323780c76a6160b1cb68e89b5d",
+          "frameWidth": 320,
+          "frameHeight": 256,
+          "frameOffsetY": 0,
+          "holdLastFrame": true,
+          "sweepBeginFrame": 1,
+          "sweepEndFrame": 6,
+          "backGlanceFrame": 9,
+          "activeLimb": "anatomical-right leg: front screen-left, rear screen-right",
+          "anchorLimb": "anatomical-left supporting leg",
+          "displayWidth": 140.0,
+          "frameOffsetX": -14.0
+        }
+      },
+      "visualLimitations": [
+        "Model-edited eyelids retain slight source redraw differences during the65ms blink; fixed neutral is exact at both endpoints."
+      ],
+      "ordinaryIdle": "Exact baseline held, one model-edited 65ms blink, exact baseline return.",
+      "idleVariants": [
+        "idle-fold",
+        "idle-cloak",
+        "idle-stretch"
+      ],
+      "menuMotion": "One model-drawn upright-axis jump/spin on click, crouched breathing/blink while ring visible, exact neutral recovery on close.",
+      "menuMotionPending": false,
+      "identitySource": {
+        "gitCommit": "f655825",
+        "runtimeIdleSha256": "cee64bc5ebdd1c6beda77d8eeafe69de8f6946a38cfe0f38033f5c3cb13c71eb"
+      },
+      "runtimeBundleHash": "98b319bf89a8fef7ab2e8612ecfe3e7f410ebd6c01032c326797df4a05ee4d82"
+    }
+  },
+  "transfer": {
+    "dagger": "pet/v6/hyakka-dagger.png",
+    "throwEmitMs": 125,
+    "arrivalMs": 495,
+    "flow": [
+      "independent-ghost-guide",
+      "body-charge-finish",
+      "one-dagger-origin-to-target",
+      "teleport-with-cross-slashes-shards",
+      "arrival",
+      "idle"
+    ],
+    "bladeSweep": "pet/v6/hyakka-blade-sweep.png",
+    "smoke": "pet/v6/hyakka-smoke.png",
+    "smokeBomb": "pet/v6/hyakka-smoke-bomb.png",
+    "direction": "target only controls independent flight; upright charge then three rapid aerial turns, no target-facing flip or pitch",
+    "exitEmitMs": 380,
+    "entrance": [
+      "eight-independent-daggers",
+      "three-point-landing",
+      "same-leg-sweep",
+      "rise-to-rear-glance",
+      "self-turn-front-idle"
+    ],
+    "exit": [
+      "screen-left-hand-smoke-bomb-toss",
+      "smoke-cover",
+      "disappear"
+    ],
+    "groundSweep": "pet/v6/hyakka-ground-sweep.png",
+    "entryDescentMs": 340,
+    "entrySweepMs": 1640,
+    "handDagger": {
+      "file": "pet/v6/hyakka-dagger.png",
+      "width": 42,
+      "height": 8.421875,
+      "gripX": 9.66,
+      "gripY": 4.2109375
+    },
+    "daggerGeometry": {
+      "width": 32,
+      "height": 6.416666666666667
+    },
+    "spinAfterimage": {
+      "file": "pet/v6/hyakka-charge-finish.png",
+      "columns": 3,
+      "frame": 1
+    },
+    "releaseHand": "front gloved hand of fixed coiled spin silhouette; no held dagger during charge",
+    "throwStyle": "upright-horizontal-yaw-spin-with-elliptical-afterimages",
+    "entryDaggerRing": {
+      "x": 48,
+      "y": 18
+    },
+    "entrySweepOrder": [
+      4,
+      3,
+      2,
+      1,
+      0,
+      7,
+      6,
+      5
+    ],
+    "entrySweepClip": "entry-sweep",
+    "entryDescentClip": "entry-descent",
+    "entryVisualRevision": "single-rear-cape-v7",
+    "entryVisualEndpoint": 17
+  },
+  "stageBundle": {
+    "source": "src/pet-v6/current/stage/texture-manifest.json",
+    "sha256": "59f64e6825f1c3c39ee0693000bb6907bd4e760a0f4478b97acab3f6058d75e6",
+    "files": [
+      "pet/v6/alisa-stage-cloth.png",
+      "pet/v6/alisa-stage-header.png"
+    ]
+  }
+}

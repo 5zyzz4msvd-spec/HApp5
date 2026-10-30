@@ -1,0 +1,1 @@
+const r=8;function e(n){return(n??[]).filter(t=>t&&String(t.name??"").trim()&&Number.isFinite(Number(t.count))&&Number(t.count)>0).map(t=>({name:String(t.name),count:Math.floor(Number(t.count)),description:String(t.description??"")})).filter(t=>t.count>0)}export{r as INVENTORY_PAGE_SIZE,e as inventoryItems};

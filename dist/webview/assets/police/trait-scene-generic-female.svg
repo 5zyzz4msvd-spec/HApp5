@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="64%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.68" stop-color="#f3f3f3"/>
+      <stop offset="1" stop-color="#dedede"/>
+    </radialGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="0.25"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <g fill="#050505" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft)">
+    <!-- neutral user silhouette -->
+    <g>
+      <ellipse cx="235" cy="263" rx="51" ry="61"/>
+      <path d="M188 326c31-21 75-22 111 0 34 86 29 226 20 342-2 23-3 43-3 61l-82 7-78-10c4-123-3-278 32-400z"/>
+      <path d="M171 388c-38 49-67 117-76 201 11 12 29 13 41 3 15-64 41-116 76-158z"/>
+      <path d="M300 390c85 34 151 66 223 88 8-10 14-25 10-39-67-25-134-57-205-99z"/>
+      <path d="M232 726c-15 115-24 244-22 342 14 12 44 12 58 0 12-97 27-204 42-329z"/>
+      <path d="M314 725c22 112 42 228 56 342 15 11 45 9 58-4-4-100-15-222-40-339z"/>
+    </g>
+    <!-- generic target girl: long twin tails, bangs hairclip, 165cm slim -->
+    <g>
+      <ellipse cx="590" cy="262" rx="49" ry="58"/>
+      <path d="M542 249c24-35 72-42 105-9 11 19 13 42 5 65-12-33-35-51-67-52-20-1-34 5-43 18z"/>
+      <path d="M552 305c-38 33-68 130-56 244 7 67 17 128 6 199 34 23 142 22 177-1-13-72-2-135 5-204 12-113-20-207-57-238-23 19-52 20-75 0z"/>
+      <path d="M539 333c-51 53-84 115-107 188 8 15 24 22 40 18 28-61 58-109 96-149z"/>
+      <path d="M645 332c55 42 101 93 135 156-5 17-20 27-37 25-36-46-75-83-120-115z"/>
+      <path d="M531 744c-23 100-34 211-36 313 14 13 43 14 59 2 17-98 33-200 51-305z"/>
+      <path d="M646 744c20 104 37 207 53 306 16 13 45 11 59-2-3-103-16-213-40-313z"/>
+      <path d="M540 316c-62 95-82 217-91 343-31-91-25-252 62-371z"/>
+      <path d="M642 315c68 91 91 216 98 344 33-89 25-248-62-371z"/>
+      <path d="M563 206c18-13 53-13 76 0"/>
+      <path d="M548 220c15 8 33 12 55 13"/>
+      <path d="M619 219l34-9" stroke-width="5"/>
+      <path d="M628 207l23 17" stroke-width="5"/>
+    </g>
+    <!-- Kuki assistant silhouette -->
+    <g>
+      <ellipse cx="948" cy="258" rx="47" ry="56"/>
+      <path d="M903 304c24-21 66-24 95-2 43 88 42 241 28 372-29 24-123 23-153-2-10-129-9-280 30-368z"/>
+      <path d="M990 252c42 41 45 111 20 159 54-29 77-112 25-173z"/>
+      <path d="M910 334c-65 35-115 84-151 154 6 17 23 27 40 23 38-51 81-88 131-115z"/>
+      <path d="M1007 360c-50 40-111 73-180 99-6 15 0 31 11 42 76-19 142-49 202-93z"/>
+      <path d="M905 672c-17 120-24 255-21 388 15 12 43 12 58 0 13-112 28-231 45-359z"/>
+      <path d="M997 672c19 123 35 244 48 358 14 12 43 12 58 0 1-132-8-269-29-389z"/>
+      <path d="M898 438h118M898 530h126M879 670h149"/>
+      <path d="M914 342l40 46 41-47"/>
+    </g>
+  </g>
+  <g>
+    <rect x="755" y="438" width="71" height="127" rx="13" fill="#080808" stroke="#ffffff" stroke-width="5"/>
+    <rect x="765" y="452" width="51" height="96" rx="7" fill="#7e22ce"/>
+    <path d="M790 501c-35-8-31-45 2-45 43 0 46 62-1 73-63 15-82-75-16-94 84-24 127 88 43 135" fill="none" stroke="#f5d0fe" stroke-width="7" stroke-linecap="round"/>
+    <path d="M793 503c-18-3-19-25-1-28 24-5 38 25 11 40-37 21-72-25-42-57 46-49 126 13 88 78" fill="none" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>

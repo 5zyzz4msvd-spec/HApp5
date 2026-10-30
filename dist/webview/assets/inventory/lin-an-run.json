@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "character": "林安",
+  "frameCount": 4,
+  "artworkMethod": "image_gen whole-character redraw",
+  "reference": "public/frontends/hypnosis-app/assets/tutorial/lin-an-point.png",
+  "approvedSheet": "src/art/hypnosis-app/v2/inventory/2026-10-14/lin-an-run-v1/source-sheet.png",
+  "nativeFacing": "screen-right",
+  "leftFacing": "CSS scaleX(-1), complete frame",
+  "coordinateSpace": "screen-space",
+  "activeLimb": "two alternating legs",
+  "carriedProp": "notebook remains with near arm",
+  "previewBackground": "#FFFFFF",
+  "cellSplit": {
+    "columns": 4,
+    "cellWidth": 543,
+    "sharedCropY": [
+      100,
+      654
+    ],
+    "individualScaleOrWarp": false
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source": "src/art/hypnosis-app/v2/inventory/2026-10-14/lin-an-run-v1/run-00.png",
+      "asset": "inventory/lin-an-run-00.png",
+      "durationMs": 100,
+      "sha256": "377361ce42aeee78e4b6fb34ccef8823648c36c5f601bcadf6cecffae542edb3",
+      "bounds": [
+        107,
+        53,
+        457,
+        492
+      ],
+      "size": [
+        543,
+        554
+      ]
+    },
+    {
+      "index": 1,
+      "source": "src/art/hypnosis-app/v2/inventory/2026-10-14/lin-an-run-v1/run-01.png",
+      "asset": "inventory/lin-an-run-01.png",
+      "durationMs": 100,
+      "sha256": "eb22bb03aa7365e32d3748e9fe76c44d95ce15ba9f117e96e25e410b1750bdfa",
+      "bounds": [
+        130,
+        60,
+        433,
+        500
+      ],
+      "size": [
+        543,
+        554
+      ]
+    },
+    {
+      "index": 2,
+      "source": "src/art/hypnosis-app/v2/inventory/2026-10-14/lin-an-run-v1/run-02.png",
+      "asset": "inventory/lin-an-run-02.png",
+      "durationMs": 100,
+      "sha256": "9d32435943969f96d8a01460f4ba1994d48416a3f91097edd1c711d13b8b1a7c",
+      "bounds": [
+        84,
+        53,
+        422,
+        488
+      ],
+      "size": [
+        543,
+        554
+      ]
+    },
+    {
+      "index": 3,
+      "source": "src/art/hypnosis-app/v2/inventory/2026-10-14/lin-an-run-v1/run-03.png",
+      "asset": "inventory/lin-an-run-03.png",
+      "durationMs": 100,
+      "sha256": "b4b6843ee449692d627977b29f81e40273a98f1a79b12f1189f067b41c1b6117",
+      "bounds": [
+        90,
+        53,
+        420,
+        498
+      ],
+      "size": [
+        543,
+        554
+      ]
+    }
+  ],
+  "generationNotes": "Four whole-character run poses drawn together. Two rejected 2x2 drafts stayed in the image generator cache; approved horizontal row has safe gutters. Only shared rectangular crop and packing used.",
+  "sourceManifest": "src/art/hypnosis-app/v2/inventory/2026-10-14/lin-an-run-v1/manifest.json"
+}

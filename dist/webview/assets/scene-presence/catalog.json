@@ -1,0 +1,3622 @@
+{
+  "schema": 1,
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "characters": [
+    {
+      "id": "inuzuka-natsumi",
+      "name": "犬冢夏美",
+      "heightCm": 148,
+      "head": "scene-presence/heads/inuzuka-natsumi.png",
+      "standee": "scene-presence/standees/inuzuka-natsumi.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/inuzuka-natsumi.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/natsumi-honami-distinct-poses-v25/inuzuka-natsumi.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          256,
+          15,
+          861,
+          1506
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "64927f90c0db200f603a908f474752d60714fe6a268289a1e55d6ce032dd0778",
+      "standeeSha256": "0fd0b4c61f5379a6b395439811376ec047686db8ec9315331858803988c49afd"
+    },
+    {
+      "id": "saionji-alisa",
+      "name": "西园寺爱丽莎",
+      "heightCm": 168,
+      "head": "scene-presence/heads/saionji-alisa.png",
+      "standee": "scene-presence/standees/saionji-alisa.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/saionji-alisa.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/momoka-alisa-height-board-v23/saionji-alisa.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          219,
+          14,
+          821,
+          1515
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "66a3f0cbc4f5c5b90fc13092c1d88f7b69ed5d197ae57484c812fc9c3f8062e1",
+      "standeeSha256": "3cca10f7d06cec20a96a237b21daf65b4d4370f5dc05c9fc7aae9c437442ab65"
+    },
+    {
+      "id": "tsukuyomi-miyuki",
+      "name": "月咏深雪",
+      "heightCm": 168,
+      "head": "scene-presence/heads/tsukuyomi-miyuki.png",
+      "standee": "scene-presence/standees/tsukuyomi-miyuki.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/tsukuyomi-miyuki.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/miyuki-mashiro-sara-short-skirt-hands-v27/tsukuyomi-miyuki.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          277,
+          12,
+          795,
+          1524
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "c9c62c3756cb436512fbc29db0cbb85ca29111a706c852687ed17eb0430b9b78",
+      "standeeSha256": "1d740b53b3a00d302a6c88d57ed70dd8433539334db3adfea96966434af53715"
+    },
+    {
+      "id": "otaku-male",
+      "name": "阿宅",
+      "heightCm": 171,
+      "head": "scene-presence/heads/otaku-male.png",
+      "standee": "scene-presence/standees/otaku-male.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/otaku-male.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/otaku-male-height-board-v31/otaku-male.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          290,
+          18,
+          792,
+          1518
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "f59200e36a48fdb1df41e71cc9d72b068c16f97929d2e3648ab7e94238ade56f",
+      "standeeSha256": "d09af0a2840a76cace2200410f198e988e7b8e764f9d40428dc7180603e49085"
+    },
+    {
+      "id": "kuki-mashiro",
+      "name": "九鬼真白",
+      "heightCm": 164,
+      "head": "scene-presence/heads/kuki-mashiro.png",
+      "standee": "scene-presence/standees/kuki-mashiro.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/kuki-mashiro.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/miyuki-mashiro-sara-short-skirt-hands-v27/kuki-mashiro.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          326,
+          6,
+          771,
+          1515
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "4b4a7971fed25467b9a3c23b70c881b64d08bb43cd87a7b715ed2a599be6cd18",
+      "standeeSha256": "08ee1b71325971050a4934e12d9979527304325631e3668d1efed6239e76189b"
+    },
+    {
+      "id": "shirakusu-anko",
+      "name": "白枢暗子",
+      "heightCm": 160,
+      "head": "scene-presence/heads/shirakusu-anko.png",
+      "standee": "scene-presence/standees/shirakusu-anko.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/shirakusu-anko.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/anko-miryuko-sakura-height-board-v28/shirakusu-anko.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          252,
+          11,
+          772,
+          1519
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "5c45c470dd574743d30417e0d0b225e4f3e6b557e4ccf153424d8edc9afcc861",
+      "standeeSha256": "6fd0a7a72a6c2cc781ca45d5ab1ed5b057fc67913da75cd3b22faa85176c0c59"
+    },
+    {
+      "id": "inuzuka-honami",
+      "name": "犬冢穗波",
+      "heightCm": 148,
+      "head": "scene-presence/heads/inuzuka-honami.png",
+      "standee": "scene-presence/standees/inuzuka-honami.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/inuzuka-honami.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/honami-sara-refinement-v33/inuzuka-honami.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          234,
+          12,
+          791,
+          1523
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "generationBatch": "honami-sara-refinement-v33",
+      "headSha256": "894652da7fedcb60b65511f300d6ca986fecb3ce65b74a8bac501e6dd2a78bc9",
+      "standeeSha256": "2c4752ecce4f5d32f2c6f89df516650e0c024df15d9760c6e4512133bd549668"
+    },
+    {
+      "id": "amagi-sara",
+      "name": "天城纱良",
+      "heightCm": 204,
+      "head": "scene-presence/heads/amagi-sara.png",
+      "standee": "scene-presence/standees/amagi-sara.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/amagi-sara.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/honami-sara-refinement-v33/amagi-sara.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          337,
+          6,
+          701,
+          1526
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "generationBatch": "honami-sara-refinement-v33",
+      "headSha256": "eb236102122fab35a0be2843cc18002cfc0c4211ec38f15704d5f1af2723d43d",
+      "standeeSha256": "9cc0c0dbfff35bd4f12d2d578f57d09dafd5bd75d7b6eb9853ec809e0f3f0104"
+    },
+    {
+      "id": "nakamura-sakura",
+      "name": "中村樱",
+      "heightCm": 170,
+      "head": "scene-presence/heads/nakamura-sakura.png",
+      "standee": "scene-presence/standees/nakamura-sakura.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/nakamura-sakura.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/anko-miryuko-sakura-height-board-v28/nakamura-sakura.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          292,
+          4,
+          719,
+          1523
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "755d2973bed154e885cfa7e31ebb7245300471f8e12b783df400cccf90a2a181",
+      "standeeSha256": "cf1caa0871069955da08541513a4b664d345447426c5bc5fc39b47579825ab3b"
+    },
+    {
+      "id": "senkoro-momoka",
+      "name": "千杀百花",
+      "heightCm": 149,
+      "head": "scene-presence/heads/senkoro-momoka.png",
+      "standee": "scene-presence/standees/senkoro-momoka.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/senkoro-momoka.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/momoka-alisa-height-board-v23/senkoro-momoka.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          287,
+          34,
+          935,
+          1513
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "289812464f7b23b36791282a283ead1e11e08edb35ae256ca6f9b0e52999f861",
+      "standeeSha256": "173cc96225fa6cbc49563d37d9d4cf76082228394340eaa2e7808c930d8934d6"
+    },
+    {
+      "id": "miryuko",
+      "name": "弥留子",
+      "heightCm": 180,
+      "head": "scene-presence/heads/miryuko.png",
+      "standee": "scene-presence/standees/miryuko.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/chibi-heads-simple-v30/miryuko.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/anko-miryuko-sakura-height-board-v28/miryuko.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          146,
+          3,
+          922,
+          1527
+        ]
+      },
+      "placement": "uniform-whole-image-scale; display framing only, not measured scene-camera calibration",
+      "headSha256": "0a718e27ea233e315d0c1e5c7ecb1dfaa075d6eea1177d6cc7eda3a84bd6678b",
+      "standeeSha256": "4d00e535bc98ef758ac41f6f98e561456ab2847b60d1c80ad4cc51753f006141"
+    },
+    {
+      "id": "hacker-twins",
+      "ownerId": "oda-nobunaga",
+      "name": "织田信长 & 明智光秀",
+      "presentationMode": "joint",
+      "memberCount": 2,
+      "memberIds": [
+        "oda-nobunaga",
+        "akechi-mitsuhide"
+      ],
+      "memberNames": [
+        "织田信长",
+        "明智光秀"
+      ],
+      "heightCm": 160,
+      "head": "scene-presence/heads/hacker-twins-joint-v1.png",
+      "standee": "scene-presence/standees/hacker-twins-joint-v1.png",
+      "portrait": "notebook/hacker-twins-joint-v1.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-13/twins-joint-v1/head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/twins-joint-v1/standee.png",
+      "portraitSource": "src/art/hypnosis-app/v2/production/2026-10-13/twins-joint-v1/portrait.png",
+      "generationBatch": "twins-joint-v1",
+      "geometry": {
+        "width": 1182,
+        "height": 1330,
+        "bounds": [
+          286,
+          33,
+          928,
+          1299
+        ],
+        "transparentPixels": 1064700
+      },
+      "placement": "one joint image, whole-pair uniform scale; member heights160cm each; no per-member crop or transform",
+      "headPresentation": {
+        "fit": "contain",
+        "shape": "wide",
+        "members": 2
+      },
+      "legacySingleAssetsRetained": true,
+      "headSha256": "9bba546ba8b93c16b3a5541cf4dd7788e64084664d2b7bfb201d288f82c74161",
+      "standeeSha256": "7c7c99b44059a61303da014313769154943ac9bdb3b617c2877ea1e1e0cc8264",
+      "portraitSha256": "a697af18a3d3954240665e8502eaf131810573f781b76a0dd2e3eed8954245a3"
+    },
+    {
+      "id": "oda-nobunaga",
+      "name": "织田信长",
+      "heightCm": 160,
+      "head": "scene-presence/heads/oda-nobunaga.png",
+      "standee": "scene-presence/standees/oda-nobunaga.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/oda-nobunaga-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/oda-nobunaga-standee.png",
+      "legacyPresentationOnly": true,
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          312,
+          25,
+          741,
+          1510
+        ],
+        "transparentPixels": 1218660
+      },
+      "headSha256": "6738bb35e00258dd93e462222bfe658b52bbc4799c8cf543e724b3e86e20a8f8",
+      "standeeSha256": "366a4dac8cdddccd5558cef450377b4e7e974ad76cea7ebdc05e0e400ac42390"
+    },
+    {
+      "id": "akechi-mitsuhide",
+      "name": "明智光秀",
+      "heightCm": 160,
+      "head": "scene-presence/heads/akechi-mitsuhide.png",
+      "standee": "scene-presence/standees/akechi-mitsuhide.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/akechi-mitsuhide-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/tutorial-art-v1/akechi-mitsuhide-standee.png",
+      "legacyPresentationOnly": true,
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          315,
+          26,
+          741,
+          1515
+        ],
+        "transparentPixels": 1216845
+      },
+      "headSha256": "341ad8258ba8ef4a79e9ddfe8609fa26170e4815b10636de5db87fbf465923d7",
+      "standeeSha256": "e782b0d5b57dca461407b08f18f30d94906dc775f534553aad378701f9e606b0"
+    },
+    {
+      "id": "encounter-2a6b53376fd61959",
+      "name": "北田雪路",
+      "packages": [
+        "akashi-maho",
+        "orjenrn"
+      ],
+      "heightCm": 156,
+      "sourceHeightCm": 156,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-2a6b53376fd61959.png",
+      "standee": "scene-presence/encounters/standees/encounter-2a6b53376fd61959.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-2a6b53376fd61959-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-2a6b53376fd61959-standee.png",
+      "headSha256": "cf1a823e4c56d9a2a5bdf57901f3142ad2734cf3c387c964fe21f8cfa98fe253",
+      "standeeSha256": "e0e1b9fa7c3910d531d6327a842da3426ce67f8379c2cd201dc779ce9881bfcf",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          246,
+          12,
+          787,
+          1514
+        ],
+        "rawAlphaBounds": [
+          25,
+          1,
+          996,
+          1520
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1178440,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          75,
+          88,
+          1186,
+          1215
+        ],
+        "rawAlphaBounds": [
+          0,
+          86,
+          1224,
+          1218
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 654816,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "three-quarter facing left, holds a closed sketchbook against the left hip, right hand rests loosely on its spine, feet close but one angled outward",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-97ec3379bf501a39",
+      "name": "萩生田梨果",
+      "packages": [
+        "akashi-maho",
+        "orjenrn"
+      ],
+      "heightCm": 154,
+      "sourceHeightCm": 154,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-97ec3379bf501a39.png",
+      "standee": "scene-presence/encounters/standees/encounter-97ec3379bf501a39.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-97ec3379bf501a39-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-97ec3379bf501a39-standee.png",
+      "headSha256": "6595e7d110c4378f0b3c02c422b520e5da3273aa2c756fb192b908f57303c2b6",
+      "standeeSha256": "d1c907dffa00404502c71eb18e5ca9b15db86939c45136a8b7ef372375d1ab0e",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          297,
+          17,
+          831,
+          1505
+        ],
+        "rawAlphaBounds": [
+          55,
+          14,
+          976,
+          1507
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1167470,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          42,
+          54,
+          1220,
+          1108
+        ],
+        "rawAlphaBounds": [
+          0,
+          51,
+          1223,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 673732,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "slight forward leaning curious stance, camera in both hands at waist, left foot a half-step forward, head tilted right",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-77ebb75f374cbdef",
+      "name": "古河诗织",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 152,
+      "sourceHeightCm": 152,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-77ebb75f374cbdef.png",
+      "standee": "scene-presence/encounters/standees/encounter-77ebb75f374cbdef.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-77ebb75f374cbdef-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-77ebb75f374cbdef-standee.png",
+      "headSha256": "f942e803b7286a9e25329061c7f0fd00d0387b7cf53b01415a0204e248832dc9",
+      "standeeSha256": "26f9a3c3534820fd6735a0b57d4b7cff40d76cf06925f6dcf8b8c7998b18ae49",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          334,
+          13,
+          738,
+          1520
+        ],
+        "rawAlphaBounds": [
+          41,
+          6,
+          984,
+          1522
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1223441,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          56,
+          110,
+          1206,
+          1135
+        ],
+        "rawAlphaBounds": [
+          0,
+          9,
+          1214,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 673109,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "upright facing slightly right, open book held at lower chest with elbows close, right toe slightly turned inward",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-55dd9c5242cf1329",
+      "name": "凯瑟琳",
+      "packages": [
+        "baikai",
+        "orjenrn"
+      ],
+      "heightCm": 172,
+      "sourceHeightCm": 172,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-55dd9c5242cf1329.png",
+      "standee": "scene-presence/encounters/standees/encounter-55dd9c5242cf1329.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-55dd9c5242cf1329-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-55dd9c5242cf1329-standee.png",
+      "headSha256": "ca6e0dbcebf23e83ab490ce20ff68ceaad41335274ab4fea6de50e62b24ed3da",
+      "standeeSha256": "06e721120bba842cab6629ff530b6b478b8179d2a698e7b1562b516c4aac7b93",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          211,
+          12,
+          797,
+          1515
+        ],
+        "rawAlphaBounds": [
+          57,
+          1,
+          848,
+          1518
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1122223,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          61,
+          114,
+          1209,
+          1199
+        ],
+        "rawAlphaBounds": [
+          0,
+          33,
+          1212,
+          1204
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 752853,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "weight on left leg, right palm gently opens to explain, left hand holds lesson folder at her side",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-ac0046cab3a00799",
+      "name": "林语薇",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 160,
+      "sourceHeightCm": 160,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-ac0046cab3a00799.png",
+      "standee": "scene-presence/encounters/standees/encounter-ac0046cab3a00799.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-ac0046cab3a00799-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-ac0046cab3a00799-standee.png",
+      "headSha256": "d67501a9b03f645585ed62414ec84b88251992ddc2155031de0826cca02fbea6",
+      "standeeSha256": "7e796cd4e61815cad5e03ba006132e9d1060b1002a98c1fb76c08d27554c6713",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          248,
+          20,
+          778,
+          1518
+        ],
+        "rawAlphaBounds": [
+          25,
+          17,
+          1005,
+          1522
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1090857,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          33,
+          72,
+          1230,
+          1197
+        ],
+        "rawAlphaBounds": [
+          0,
+          36,
+          1234,
+          1228
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 651099,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "soft three-quarter greeting, both hands cup a small closed notebook at waist, shoulders relaxed, ankles uncrossed",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-f23e207f634f62e2",
+      "name": "浅仓步美",
+      "packages": [
+        "baikai",
+        "orjenrn"
+      ],
+      "heightCm": 158,
+      "sourceHeightCm": 158,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-f23e207f634f62e2.png",
+      "standee": "scene-presence/encounters/standees/encounter-f23e207f634f62e2.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-f23e207f634f62e2-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-f23e207f634f62e2-standee.png",
+      "headSha256": "7230d01f3029989042abd0c36e952378cc3f6fa9fab16275bae47d57d57bb0a7",
+      "standeeSha256": "87ed1f5e7bd5485fa94995facd84786c5500506bc7a6be57b06ba3c4927e57b7",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          326,
+          15,
+          796,
+          1518
+        ],
+        "rawAlphaBounds": [
+          53,
+          12,
+          976,
+          1521
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1214340,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          80,
+          113,
+          1175,
+          1159
+        ],
+        "rawAlphaBounds": [
+          0,
+          35,
+          1234,
+          1220
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 795099,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "turning gently toward viewer, left hand catches shoulder bag strap, right hand rests beside skirt, one foot behind",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-07a3ba10d0a17eb8",
+      "name": "浅野绘里",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 165,
+      "sourceHeightCm": 165,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-07a3ba10d0a17eb8.png",
+      "standee": "scene-presence/encounters/standees/encounter-07a3ba10d0a17eb8.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-07a3ba10d0a17eb8-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-07a3ba10d0a17eb8-standee.png",
+      "headSha256": "5a16c43fb045866199dbf5c4d50175f4c8ae35394e6e7e1f9a2de7ac475648ca",
+      "standeeSha256": "c69c4bd3f52b679f0deb0ad430e64f176e68c6f421bdaa273edde0b89eb05e15",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          246,
+          3,
+          748,
+          1527
+        ],
+        "rawAlphaBounds": [
+          49,
+          0,
+          984,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1192189,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          57,
+          94,
+          1211,
+          1203
+        ],
+        "rawAlphaBounds": [
+          54,
+          83,
+          1213,
+          1205
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 669324,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "one hand lightly tucks a loose hair strand beside ear, other arm carries a slim drawing folder, calm asymmetrical stance",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-04d16815d239379c",
+      "name": "神宫寺凛",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 172,
+      "sourceHeightCm": 172,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-04d16815d239379c.png",
+      "standee": "scene-presence/encounters/standees/encounter-04d16815d239379c.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-04d16815d239379c-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-04d16815d239379c-standee.png",
+      "headSha256": "005a4177c1688161802b033968157dc20e0a3c18141fdf2d3577440dd44ce616",
+      "standeeSha256": "df547aecd3ae95ea0b8a6997a43389ad1566c6248eec168c62b1c3c6ad68c250",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          104,
+          10,
+          915,
+          1508
+        ],
+        "rawAlphaBounds": [
+          0,
+          0,
+          1004,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 923564,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          53,
+          48,
+          1242,
+          1208
+        ],
+        "rawAlphaBounds": [
+          50,
+          39,
+          1253,
+          1210
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 662624,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "balanced wide grounded stance, wooden practice sword held safely down at her side with one hand, other hand on belt",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-e91ce20c2c12b6c8",
+      "name": "神谷凛",
+      "packages": [
+        "baikai",
+        "orjenrn"
+      ],
+      "heightCm": 168,
+      "sourceHeightCm": 168,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-e91ce20c2c12b6c8.png",
+      "standee": "scene-presence/encounters/standees/encounter-e91ce20c2c12b6c8.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-e91ce20c2c12b6c8-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-e91ce20c2c12b6c8-standee.png",
+      "headSha256": "aba15783bc5e970e37d12782d39be161880099efc08cc3492d70b155ca0b8029",
+      "standeeSha256": "3c9ce69611f4f19813a9bf3d458c103befedc27592a4cbf15bc405046f350b5f",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          286,
+          18,
+          723,
+          1509
+        ],
+        "rawAlphaBounds": [
+          65,
+          16,
+          980,
+          1516
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1224212,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          31,
+          120,
+          1226,
+          1135
+        ],
+        "rawAlphaBounds": [
+          28,
+          118,
+          1232,
+          1137
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 698682,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "three-quarter left, left hand sets a closed folder against ribs, right fingers adjust glasses, feet staggered",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-a2ce7f4cdc200477",
+      "name": "苏清寒",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 172,
+      "sourceHeightCm": 172,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-a2ce7f4cdc200477.png",
+      "standee": "scene-presence/encounters/standees/encounter-a2ce7f4cdc200477.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-a2ce7f4cdc200477-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-a2ce7f4cdc200477-standee.png",
+      "headSha256": "a04c17565c9ba8e208005d12c932d5e298ba6c47768d8bcc4e944cdc088c6d62",
+      "standeeSha256": "217632c904482a260d8cf0257ab75adf0a280aadbcb93fa52758263a9736eadb",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          240,
+          12,
+          722,
+          1518
+        ],
+        "rawAlphaBounds": [
+          43,
+          10,
+          1004,
+          1520
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1191246,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          97,
+          76,
+          1157,
+          1211
+        ],
+        "rawAlphaBounds": [
+          41,
+          53,
+          1170,
+          1230
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 671057,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "strict frontal posture, arms folded neatly at mid torso, left foot subtly forward, chin lowered thoughtfully",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-52d32d0a7cdaf62a",
+      "name": "天海真",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 170,
+      "sourceHeightCm": 170,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-52d32d0a7cdaf62a.png",
+      "standee": "scene-presence/encounters/standees/encounter-52d32d0a7cdaf62a.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-52d32d0a7cdaf62a-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-52d32d0a7cdaf62a-standee.png",
+      "headSha256": "dbf3f388ca50b55476ab714a0e752a540d4f2b8e981dc4022479dd8f5ba509c1",
+      "standeeSha256": "2ae01a24c19fd749107c0c13cfe4d7e5d5af30a853220b442d24d204f42febc9",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          292,
+          20,
+          770,
+          1512
+        ],
+        "rawAlphaBounds": [
+          41,
+          17,
+          998,
+          1520
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1181594,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          77,
+          129,
+          1218,
+          1087
+        ],
+        "rawAlphaBounds": [
+          0,
+          33,
+          1220,
+          1200
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 795390,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "easy step to the right, one hand loosely inside trouser pocket, other hand lifts a small manga book, playful half smile",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-7accd86ac3eb6117",
+      "name": "天泽爱音",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 158,
+      "sourceHeightCm": 158,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-7accd86ac3eb6117.png",
+      "standee": "scene-presence/encounters/standees/encounter-7accd86ac3eb6117.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-7accd86ac3eb6117-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-7accd86ac3eb6117-standee.png",
+      "headSha256": "4359c7abef9b1fa4571dcb3b36a3dac3a8f8bb32d510e9120d3a531239352109",
+      "standeeSha256": "f750aa53a1410fbe4d8ff07a674e288dca7c88eb11a00be98ac8119de53f0314",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          273,
+          12,
+          778,
+          1489
+        ],
+        "rawAlphaBounds": [
+          45,
+          6,
+          1010,
+          1520
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1168597,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          74,
+          89,
+          1237,
+          1177
+        ],
+        "rawAlphaBounds": [
+          21,
+          87,
+          1239,
+          1234
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 695369,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "cheerful small wave beside face with right hand, left hand holds bag strap, right heel lightly lifted without jumping",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-39d1a157f9f4d916",
+      "name": "西园寺美织",
+      "packages": [
+        "baikai",
+        "orjenrn"
+      ],
+      "heightCm": 166,
+      "sourceHeightCm": 166,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-39d1a157f9f4d916.png",
+      "standee": "scene-presence/encounters/standees/encounter-39d1a157f9f4d916.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-39d1a157f9f4d916-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-39d1a157f9f4d916-standee.png",
+      "headSha256": "cd7e20a87b83a20a5c2050a7e5c36ac6ec79c27dfb30a67e6e3f963200f34537",
+      "standeeSha256": "0917942be09ee209a22fb4720ef78f4ebe93b6992a1f88272b540df53cfc853c",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          310,
+          13,
+          733,
+          1515
+        ],
+        "rawAlphaBounds": [
+          33,
+          0,
+          1010,
+          1519
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1193306,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          103,
+          56,
+          1148,
+          1144
+        ],
+        "rawAlphaBounds": [
+          101,
+          54,
+          1200,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 766447,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "elegant three-quarter right, fingers gently rest over wrist before waist, ankles offset, chin confidently raised",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-ca83c7739c45eb6b",
+      "name": "夏沐",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 168,
+      "sourceHeightCm": 168,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-ca83c7739c45eb6b.png",
+      "standee": "scene-presence/encounters/standees/encounter-ca83c7739c45eb6b.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-ca83c7739c45eb6b-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-ca83c7739c45eb6b-standee.png",
+      "headSha256": "5fad758658957a86ca5ca523a4d0172f3b3346ed57fe3af87a3dac06300fa232",
+      "standeeSha256": "189e1f6272e7f0fb6a2992933f68893f57f3b469cbe06e961154a2b6014a361e",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          215,
+          8,
+          838,
+          1508
+        ],
+        "rawAlphaBounds": [
+          49,
+          0,
+          1008,
+          1518
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1040833,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          59,
+          82,
+          1232,
+          1205
+        ],
+        "rawAlphaBounds": [
+          57,
+          21,
+          1236,
+          1212
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 660563,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "left hand checks a cloth swatch at chest height, right hand supports a compact design portfolio, easy grounded stance",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-6bcd1f4577c4100d",
+      "name": "夏织",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 165,
+      "sourceHeightCm": 165,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-6bcd1f4577c4100d.png",
+      "standee": "scene-presence/encounters/standees/encounter-6bcd1f4577c4100d.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-6bcd1f4577c4100d-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-6bcd1f4577c4100d-standee.png",
+      "headSha256": "1f096c737cd7e1c810c5a2f33fa2302021a10e8afb2c413e1ea16566fba73504",
+      "standeeSha256": "9b8d13dc66d35175049febd419a6b0fe64f6c49a968a59dcc977a1b9c88261da",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          351,
+          31,
+          779,
+          1500
+        ],
+        "rawAlphaBounds": [
+          57,
+          29,
+          954,
+          1502
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1232215,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          54,
+          79,
+          1202,
+          1206
+        ],
+        "rawAlphaBounds": [
+          52,
+          41,
+          1232,
+          1208
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 668991,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "hands hold a folded small handkerchief before waist, body angled left, one knee relaxed, attentive gentle smile",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-c9356419a553a1cb",
+      "name": "星野海",
+      "packages": [
+        "baikai",
+        "orjenrn"
+      ],
+      "heightCm": 172,
+      "sourceHeightCm": 172,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-c9356419a553a1cb.png",
+      "standee": "scene-presence/encounters/standees/encounter-c9356419a553a1cb.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-c9356419a553a1cb-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-c9356419a553a1cb-standee.png",
+      "headSha256": "47508c9d37fedf846084599fbcdc01573c8f37e6352fc9e5f7b7e46175aca67a",
+      "standeeSha256": "a89bbc0d4abeb157a3dba08175f8fb27cc8367c5167a3ce9ba67e5f0e2d1f652",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          248,
+          17,
+          799,
+          1510
+        ],
+        "rawAlphaBounds": [
+          73,
+          15,
+          978,
+          1518
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1128714,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          48,
+          107,
+          1215,
+          1111
+        ],
+        "rawAlphaBounds": [
+          0,
+          65,
+          1218,
+          1230
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 738233,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "relaxed athlete stance, one hand holds goggles by side, other hand brushes short fringe, feet shoulder-width apart",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-1ef1638d177d829a",
+      "name": "星野千夏",
+      "packages": [
+        "baikai"
+      ],
+      "heightCm": 165,
+      "sourceHeightCm": 165,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-1ef1638d177d829a.png",
+      "standee": "scene-presence/encounters/standees/encounter-1ef1638d177d829a.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-1ef1638d177d829a-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-1ef1638d177d829a-standee.png",
+      "headSha256": "07cd2f7e49b65a43a0ffcbc283fc59fa97aa963b8d72e130f87d96f26005d595",
+      "standeeSha256": "555a2d7a9da527a794804ba6588d2e1fb5d33efa4f3a9be808a6ee28f099be6a",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          253,
+          6,
+          900,
+          1509
+        ],
+        "rawAlphaBounds": [
+          55,
+          0,
+          1008,
+          1519
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1214113,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          90,
+          51,
+          1152,
+          1184
+        ],
+        "rawAlphaBounds": [
+          59,
+          49,
+          1200,
+          1230
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 693161,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "dancer-like upright balance with heels grounded, left hand slightly extends palm down, right hand gathers a closed school bag",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-8efc69032fe0fe4c",
+      "name": "源薰子",
+      "packages": [
+        "baikai",
+        "orjenrn"
+      ],
+      "heightCm": 168,
+      "sourceHeightCm": 168,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-8efc69032fe0fe4c.png",
+      "standee": "scene-presence/encounters/standees/encounter-8efc69032fe0fe4c.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-8efc69032fe0fe4c-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-8efc69032fe0fe4c-standee.png",
+      "headSha256": "d5685edcb5a84902705604dd54962fd8f80e3b040699f6b1e45d53a0c4733e39",
+      "standeeSha256": "83a14d97d9ab0519f93dfbd67f52e9f7bc80cbe9aebcc53a8832318ab4aecb2f",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          295,
+          15,
+          742,
+          1510
+        ],
+        "rawAlphaBounds": [
+          33,
+          13,
+          982,
+          1516
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1157975,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          65,
+          135,
+          1207,
+          1126
+        ],
+        "rawAlphaBounds": [
+          37,
+          23,
+          1210,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 787268,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "one hand carries clipboard at hip, other hand touches temple with a tired smile, shoulders gently sloped",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-064db9003c338210",
+      "name": "桐生刹那",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 172,
+      "sourceHeightCm": 172,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-064db9003c338210.png",
+      "standee": "scene-presence/encounters/standees/encounter-064db9003c338210.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-064db9003c338210-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-064db9003c338210-standee.png",
+      "headSha256": "2e9229faa0128e84832ebf5fe35070c89d548c882b4a8bad9447b61db4e08c58",
+      "standeeSha256": "721d574b0b8454ebe649ba259ce876628f95644163f2a29121278fc6523df65d",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          271,
+          6,
+          809,
+          1525
+        ],
+        "rawAlphaBounds": [
+          0,
+          0,
+          1004,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1156424,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          75,
+          89,
+          1218,
+          1210
+        ],
+        "rawAlphaBounds": [
+          72,
+          39,
+          1221,
+          1212
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 716973,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "alert three-quarter turn, feet apart, one hand near belt and other hand relaxed down, watchful level gaze",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-0dc77c0dfa0e6b67",
+      "name": "白石响",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 163,
+      "sourceHeightCm": 163,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-0dc77c0dfa0e6b67.png",
+      "standee": "scene-presence/encounters/standees/encounter-0dc77c0dfa0e6b67.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-0dc77c0dfa0e6b67-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-0dc77c0dfa0e6b67-standee.png",
+      "headSha256": "a608bed2ae7b40bb8030a10ee6ba8eb1bc6547af5ef66a76fce3a8d6d13b87e2",
+      "standeeSha256": "04d98bc8500d194a79029510608f73145b19407073778f69013df32e71fb83a1",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          199,
+          10,
+          819,
+          1496
+        ],
+        "rawAlphaBounds": [
+          23,
+          0,
+          956,
+          1504
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1111280,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          70,
+          114,
+          1203,
+          1151
+        ],
+        "rawAlphaBounds": [
+          68,
+          71,
+          1205,
+          1156
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 742400,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "friendly leaning greeting, left forearm supports a small tote, right hand forms a simple V beside temple, weight on rear leg",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-b3bf905f02a76688",
+      "name": "阿玛奈特",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 170,
+      "sourceHeightCm": 170,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-b3bf905f02a76688.png",
+      "standee": "scene-presence/encounters/standees/encounter-b3bf905f02a76688.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b3bf905f02a76688-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-b3bf905f02a76688-standee.png",
+      "headSha256": "a9bcf6fbde8b20d2e99cf4723906d202bc15a454522a75a0a36516d64e1994db",
+      "standeeSha256": "a98026b0f83ce7aa53d53b5f2a0ad309e731e217776b6cc02be0092c9cb621ab",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          96,
+          12,
+          942,
+          1520
+        ],
+        "rawAlphaBounds": [
+          0,
+          9,
+          1012,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 895116,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          8,
+          110,
+          1246,
+          1170
+        ],
+        "rawAlphaBounds": [
+          0,
+          23,
+          1248,
+          1174
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 668525,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "dignified stance angled right, left hand gently extends open in invitation, right hand gathers scarf near chest",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-b2db19dc554e9eaa",
+      "name": "白鸟结衣",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 158,
+      "sourceHeightCm": 158,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-b2db19dc554e9eaa.png",
+      "standee": "scene-presence/encounters/standees/encounter-b2db19dc554e9eaa.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b2db19dc554e9eaa-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-b2db19dc554e9eaa-standee.png",
+      "headSha256": "2384526e3e488779975330268f3fbbebd8d8cebce31be1fd38d63a6036cda7af",
+      "standeeSha256": "7a5db43f79d1d8b5848a32fea1a9d3ee41bf7805563ede2265941c539b2850c2",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          340,
+          22,
+          722,
+          1512
+        ],
+        "rawAlphaBounds": [
+          39,
+          17,
+          994,
+          1517
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1185788,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          96,
+          68,
+          1166,
+          1232
+        ],
+        "rawAlphaBounds": [
+          69,
+          21,
+          1236,
+          1236
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 765532,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "polite slight bow with hands neatly layered in front of obi, feet close and pointed slightly left",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-764cabc48e088e85",
+      "name": "德川喜广",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 185,
+      "sourceHeightCm": 185,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-764cabc48e088e85.png",
+      "standee": "scene-presence/encounters/standees/encounter-764cabc48e088e85.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-764cabc48e088e85-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-764cabc48e088e85-standee.png",
+      "headSha256": "86eaa7ce4a0cca5acd456198f54f02cea6130b1dbfce2ba1907ece1e94ff3b78",
+      "standeeSha256": "7fd4a0a1c0ef86b72a17d5b27c92399abebede91bf248a7e21180e744efaa506",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          287,
+          10,
+          812,
+          1519
+        ],
+        "rawAlphaBounds": [
+          24,
+          0,
+          994,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1167509,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          81,
+          137,
+          1206,
+          1130
+        ],
+        "rawAlphaBounds": [
+          0,
+          134,
+          1224,
+          1174
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 768674,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "standing obliquely right, left hand in trouser pocket, right hand holds closed mobile at his side, level straight shoulders",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-5878e65c790e3c59",
+      "name": "凤条瑠衣",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 172,
+      "sourceHeightCm": 172,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-5878e65c790e3c59.png",
+      "standee": "scene-presence/encounters/standees/encounter-5878e65c790e3c59.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-5878e65c790e3c59-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-5878e65c790e3c59-standee.png",
+      "headSha256": "92f82619595575ebf70399363f89c6fdfc977bf632b759562a3c9615276562f0",
+      "standeeSha256": "5078859c82ef0fdc221673b4c5a20b91e50c9924348e6b641fe253d4d834ea84",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          353,
+          15,
+          901,
+          1517
+        ],
+        "rawAlphaBounds": [
+          139,
+          12,
+          910,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1192419,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          149,
+          45,
+          1104,
+          1157
+        ],
+        "rawAlphaBounds": [
+          0,
+          43,
+          1222,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 804164,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "calm poised balance, right hand softly touches opposite elbow, left forearm horizontal at waist, one foot turned out",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-6e30e22016b4d37b",
+      "name": "花开院椿",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 165,
+      "sourceHeightCm": 165,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-6e30e22016b4d37b.png",
+      "standee": "scene-presence/encounters/standees/encounter-6e30e22016b4d37b.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-6e30e22016b4d37b-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-6e30e22016b4d37b-standee.png",
+      "headSha256": "e97cbb10d884f8716a43eb55c8758d1103de4a6ceb727c30d0d43ed5f725acb2",
+      "standeeSha256": "232bb322503d92b5d5049a8f41a81fff62ea14152f396b0788befafa0c95fa0b",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          215,
+          10,
+          906,
+          1524
+        ],
+        "rawAlphaBounds": [
+          0,
+          0,
+          1002,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1010050,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          15,
+          73,
+          1242,
+          1222
+        ],
+        "rawAlphaBounds": [
+          0,
+          29,
+          1246,
+          1224
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 729177,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "one hand touches brim of straw hat, other holds a tiny potted seedling low beside hip, lightly turned stance",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-0b771c68e778fdd3",
+      "name": "花崎诗织",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 158,
+      "sourceHeightCm": 158,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-0b771c68e778fdd3.png",
+      "standee": "scene-presence/encounters/standees/encounter-0b771c68e778fdd3.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-0b771c68e778fdd3-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-0b771c68e778fdd3-standee.png",
+      "headSha256": "2631c06f4d3c6d9ef1f71ec127938b8d9e218b318ddafcf5a3845ecd97bbb3e0",
+      "standeeSha256": "7a42700ea93c05358860a63f81f18c0e531c4080c69791f54a422648867e4075",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          271,
+          12,
+          754,
+          1519
+        ],
+        "rawAlphaBounds": [
+          57,
+          10,
+          892,
+          1521
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1180752,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          78,
+          104,
+          1202,
+          1187
+        ],
+        "rawAlphaBounds": [
+          0,
+          23,
+          1234,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 702316,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "holds two library books in crossed forearms near waist, turns face toward viewer with curious slight head tilt",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-1600360ec82ab663",
+      "name": "九条凛音",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 168,
+      "sourceHeightCm": 168,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-1600360ec82ab663.png",
+      "standee": "scene-presence/encounters/standees/encounter-1600360ec82ab663.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-1600360ec82ab663-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-1600360ec82ab663-standee.png",
+      "headSha256": "52bd11d758287decc529ccfa190d9edba1f1e40bcce025e429f47352187d1544",
+      "standeeSha256": "5f25fc034480e4bcc4ce3ae1c15c7417872b7ce7ca5328912837391ca20976b8",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          318,
+          17,
+          695,
+          1520
+        ],
+        "rawAlphaBounds": [
+          25,
+          15,
+          922,
+          1522
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1174364,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          96,
+          51,
+          1164,
+          1182
+        ],
+        "rawAlphaBounds": [
+          93,
+          33,
+          1200,
+          1190
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 680470,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "straight dignified posture facing left, hands relaxed inside kimono sleeve openings before waist, calm unsmiling gaze",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-3346cda602c54efc",
+      "name": "九条樱",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 165,
+      "sourceHeightCm": null,
+      "heightAuthoringNote": "Qualitative source; reference height is illustration guidance only",
+      "head": "scene-presence/encounters/heads/encounter-3346cda602c54efc.png",
+      "standee": "scene-presence/encounters/standees/encounter-3346cda602c54efc.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-3346cda602c54efc-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-3346cda602c54efc-standee.png",
+      "headSha256": "4b7dc67f7ab1df1e49a0ee8d1dcd9ce1bf5eb0272897a1bf602c4a13ae818d67",
+      "standeeSha256": "a6478a07ede5bf21d8285f298297cea2cc10c4a0e134b3f23b71f91ea5e709da",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          247,
+          14,
+          775,
+          1518
+        ],
+        "rawAlphaBounds": [
+          25,
+          11,
+          1004,
+          1522
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1145675,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          41,
+          112,
+          1216,
+          1234
+        ],
+        "rawAlphaBounds": [
+          38,
+          57,
+          1220,
+          1237
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 633991,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "one hand grips slim school bag in front of knee, other hand lightly touches blazer lapel, shy inward shoulder turn",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-7eb42f662d49e883",
+      "name": "奈幽",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 156,
+      "sourceHeightCm": 156,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-7eb42f662d49e883.png",
+      "standee": "scene-presence/encounters/standees/encounter-7eb42f662d49e883.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-7eb42f662d49e883-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-7eb42f662d49e883-standee.png",
+      "headSha256": "17b23b27d1e5ae32cbb08a37b08d728fea730d6560c68389b303457ad93622f2",
+      "standeeSha256": "df34ed9672c0fcc6df8e6f8bc306a9c622d54b8096328f75c44be9e755e1c356",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          216,
+          9,
+          825,
+          1506
+        ],
+        "rawAlphaBounds": [
+          35,
+          0,
+          978,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1068114,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          42,
+          96,
+          1221,
+          1214
+        ],
+        "rawAlphaBounds": [
+          40,
+          93,
+          1223,
+          1218
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 670463,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "gentle three-quarter turn, right hand gathers sleeve at wrist, left hand rests over obi, serene expression",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-b28f5fbf21d4b618",
+      "name": "尼子纯",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 173,
+      "sourceHeightCm": 173,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-b28f5fbf21d4b618.png",
+      "standee": "scene-presence/encounters/standees/encounter-b28f5fbf21d4b618.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-b28f5fbf21d4b618-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-b28f5fbf21d4b618-standee.png",
+      "headSha256": "fb9eef241cea4c82215a9fc89dcfc55826375fd9ab72e0eabd39b51014473bb8",
+      "standeeSha256": "7e2c9a6e99f867a27e468f6ae9db131fad6815a4835293cbeeef3d370f801746",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          303,
+          17,
+          732,
+          1508
+        ],
+        "rawAlphaBounds": [
+          25,
+          15,
+          1004,
+          1514
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1207561,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          71,
+          114,
+          1187,
+          1106
+        ],
+        "rawAlphaBounds": [
+          0,
+          96,
+          1189,
+          1206
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 759807,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "hands loosely tucked into jacket pockets, feet staggered, torso tipped a little right with dry amused smile",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-3d51d06757c02c01",
+      "name": "神乐坂艾米莉亚",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 142,
+      "sourceHeightCm": 142,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-3d51d06757c02c01.png",
+      "standee": "scene-presence/encounters/standees/encounter-3d51d06757c02c01.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-3d51d06757c02c01-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-3d51d06757c02c01-standee.png",
+      "headSha256": "b350fdf728386d308eb28b3eb574d3a1a312ad98edb77bf7f06b90933dfc8dfb",
+      "standeeSha256": "e9fc6f040e199432cfa40f47a6b2f50ce0671bff7178e26c43039de88c8c433b",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          192,
+          24,
+          776,
+          1511
+        ],
+        "rawAlphaBounds": [
+          0,
+          15,
+          1004,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1016301,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          7,
+          150,
+          1247,
+          1133
+        ],
+        "rawAlphaBounds": [
+          0,
+          57,
+          1254,
+          1166
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 654004,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "small confident scientist stance, hands support a closed clipboard at waist, head tilted inquisitively, no adult anatomy",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-de9249f3709ccf8e",
+      "name": "藤乃静香",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 168,
+      "sourceHeightCm": 168,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-de9249f3709ccf8e.png",
+      "standee": "scene-presence/encounters/standees/encounter-de9249f3709ccf8e.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-de9249f3709ccf8e-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-de9249f3709ccf8e-standee.png",
+      "headSha256": "bc1f6dce2fc2773fb80287c3a9818ec9c7494d6c3733f0db9f89778eec139d28",
+      "standeeSha256": "3eb878f7617f3b29c7e82b76259621d349d0fb65b63bdbe5351b6c3ab5c175ac",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          274,
+          17,
+          775,
+          1503
+        ],
+        "rawAlphaBounds": [
+          33,
+          14,
+          1010,
+          1518
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1131548,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          65,
+          77,
+          1196,
+          1204
+        ],
+        "rawAlphaBounds": [
+          21,
+          35,
+          1199,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 724663,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "turned slightly left while holding stethoscope loosely at waist, other arm cradles a folder, kindly reassuring smile",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-bdf07de03d895d52",
+      "name": "缇娅",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 12,
+      "sourceHeightCm": 12,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-bdf07de03d895d52.png",
+      "standee": "scene-presence/encounters/standees/encounter-bdf07de03d895d52.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-bdf07de03d895d52-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-bdf07de03d895d52-standee.png",
+      "headSha256": "f7ab2cd95c2e927c74620cc64d05ac453147d89be0e409821baf98f1d811841e",
+      "standeeSha256": "3008e6fc0f31c1e0e4da72e41dcaad9ddb18bb2f5046106b724bc6cf58cf995a",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          182,
+          21,
+          942,
+          1500
+        ],
+        "rawAlphaBounds": [
+          0,
+          9,
+          1024,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 881030,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          42,
+          82,
+          1221,
+          1187
+        ],
+        "rawAlphaBounds": [
+          39,
+          37,
+          1223,
+          1191
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 681913,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "floating upright with both complete boots visible, right palm raised as if presenting a tiny blue data cube, left hand relaxed",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-fe61aa58c8b762c5",
+      "name": "小鸟游柚子",
+      "packages": [
+        "orjenrn",
+        "sdz-aser"
+      ],
+      "heightCm": 156,
+      "sourceHeightCm": 156,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-fe61aa58c8b762c5.png",
+      "standee": "scene-presence/encounters/standees/encounter-fe61aa58c8b762c5.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-fe61aa58c8b762c5-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-fe61aa58c8b762c5-standee.png",
+      "headSha256": "a4dcbee8e8e832a534d668deaa655820b340ff430165122217fe6743168e868f",
+      "standeeSha256": "f88b44335d0fc555e96d5aef6d2d01255062b1c97c50b80de5ffd5cc0c298815",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          280,
+          17,
+          764,
+          1494
+        ],
+        "rawAlphaBounds": [
+          33,
+          15,
+          988,
+          1501
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1173158,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          65,
+          75,
+          1190,
+          1094
+        ],
+        "rawAlphaBounds": [
+          0,
+          19,
+          1218,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 755830,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "camera hanging from strap, left hand lifts small interview notepad, right hand points pen down, quick half-step stance",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "encounter-a264655b118468f4",
+      "name": "一之濑萤",
+      "packages": [
+        "orjenrn"
+      ],
+      "heightCm": 156,
+      "sourceHeightCm": 156,
+      "heightAuthoringNote": null,
+      "head": "scene-presence/encounters/heads/encounter-a264655b118468f4.png",
+      "standee": "scene-presence/encounters/standees/encounter-a264655b118468f4.png",
+      "headSource": "/Volumes/SN5000/codex/sillytarven-front/src/art/hypnosis-app/v2/production/2026-10-13/chibi-heads-matched-v3/encounter-a264655b118468f4-head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-13/encounter-complete-v2/encounter-a264655b118468f4-standee.png",
+      "headSha256": "9262e851dbd33bcfe4ff73596bced93285f37fb834c74258a153d7322690df11",
+      "standeeSha256": "2468596fa5cd7aada8a8b68197f1693c1a2bf4eed120cc55db357a731d42b44d",
+      "headStyle": "accepted-main-v30-cute-simple",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "mode": "RGBA",
+        "bounds": [
+          290,
+          15,
+          783,
+          1512
+        ],
+        "rawAlphaBounds": [
+          87,
+          13,
+          1004,
+          1536
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 1156992,
+        "alphaExtrema": [
+          0,
+          254
+        ]
+      },
+      "headGeometry": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "bounds": [
+          51,
+          82,
+          1204,
+          1192
+        ],
+        "rawAlphaBounds": [
+          41,
+          47,
+          1207,
+          1254
+        ],
+        "boundsThreshold": 16,
+        "transparentPixels": 654456,
+        "alphaExtrema": [
+          0,
+          255
+        ]
+      },
+      "pose": "hunched shyly a little, hands loosely hold hoodie cuffs before waist, feet together with one toe angled inward",
+      "placement": "uniform whole-image scale from source or explicitly labelled illustration height; original PNG pixels unchanged"
+    },
+    {
+      "id": "lin-an",
+      "name": "林安",
+      "heightCm": 165,
+      "head": "notebook/lin-an-head.png",
+      "standee": "notebook/lin-an-standee.png",
+      "headSource": "src/art/hypnosis-app/v2/production/2026-10-11/lin-an-detective-v32/head.png",
+      "standeeSource": "src/art/hypnosis-app/v2/production/2026-10-11/lin-an-detective-v32/standee.png",
+      "geometry": {
+        "width": 1024,
+        "height": 1536,
+        "bounds": [
+          140,
+          0,
+          986,
+          1523
+        ],
+        "transparentPixels": 969615
+      }
+    }
+  ],
+  "backgrounds": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "locationId": "place-0e46dddca6f00d76e476c0fe",
+      "file": "scene-presence/backgrounds/classroom.png",
+      "source": "existing-classroom-background",
+      "cameraCalibration": "not-claimed"
+    },
+    {
+      "locationId": "map-world",
+      "name": "城市",
+      "file": "scene-presence/backgrounds/navigation-city-v1.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/navigation-backgrounds-v1/city.png",
+      "sha256": "408e9537baa6549491aa400edfa57e761033648b89034adcf7573a46d261cef8",
+      "width": 1672,
+      "height": 941,
+      "status": "ready",
+      "cameraCalibration": "not claimed; artistic eye-level target only",
+      "generationBatch": "navigation-backgrounds-v1",
+      "rawUnmodified": true
+    },
+    {
+      "locationId": "map-school",
+      "name": "私立斋明学园",
+      "file": "scene-presence/backgrounds/navigation-campus-v1.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/navigation-backgrounds-v1/campus.png",
+      "sha256": "741e3b1e224cd3d1ce29fe198585135661186b43d02f94a71d00c39a34ac3bb1",
+      "width": 1672,
+      "height": 941,
+      "status": "ready",
+      "cameraCalibration": "not claimed; artistic eye-level target only",
+      "generationBatch": "navigation-backgrounds-v1",
+      "rawUnmodified": true
+    },
+    {
+      "locationId": "place-teaching-building",
+      "name": "教学楼",
+      "file": "scene-presence/backgrounds/navigation-teaching-building-v1.png",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-13/navigation-backgrounds-v1/teaching-building.png",
+      "sha256": "857caaba60516e94b02bc0ae48dd32d95236014daa6f6333d430059c3359f0bc",
+      "width": 1672,
+      "height": 941,
+      "status": "ready",
+      "cameraCalibration": "not claimed; artistic eye-level target only",
+      "generationBatch": "navigation-backgrounds-v1",
+      "rawUnmodified": true
+    },
+    {
+      "locationId": "place-d98db31a76cc2a2f1cad0db3",
+      "file": "scene-presence/backgrounds/locations-v1/company-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/company-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "f6224fde3b3f78e57c599751f5e02d95175288efc0b12a80160f6271c1ce67c7",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "company-office"
+    },
+    {
+      "locationId": "place-ba79e43e4b6ae46d86959e75",
+      "file": "scene-presence/backgrounds/locations-v1/police-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/police-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3f231eb57b0ad90fdf2656eb4f4897a0ba5cfd59f5ea226b45b5317050291447",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "police-office"
+    },
+    {
+      "locationId": "place-d7e7174ecf3041a489cb377d",
+      "file": "scene-presence/backgrounds/locations-v1/hospital.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a178258550f25abb52e7162cf48a54e855d162fcba7a573eb691182b6c44258b",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital"
+    },
+    {
+      "locationId": "place-17a9b219482e3fbd9102c907",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-0fb2b0926ad227c62f3fb038",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-eaedb4a80c49a778b4080453",
+      "file": "scene-presence/backgrounds/locations-v1/mansion.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/mansion.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "cebd75eabeff38773d205e8707962de2c0a75efdef44b4b67f2c1b9365d19522",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "mansion"
+    },
+    {
+      "locationId": "place-0a8114d33b06d2b0d72fe3fb",
+      "file": "scene-presence/backgrounds/locations-v1/school-courtyard.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-courtyard.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "e7d2db38b982a22ec21701dcc3c879bdff5db9bf3c991ceeeee41612b4db8dc3",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-courtyard"
+    },
+    {
+      "locationId": "place-b446c150442ed7534496be44",
+      "file": "scene-presence/backgrounds/locations-v1/library.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/library.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2b79d85b5cf0bf81cefffd8a85f60c84e8fb1e6db1780be25bf969b48a6c596f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "library"
+    },
+    {
+      "locationId": "place-0e9402c92ef7d57ff27dc17f",
+      "file": "scene-presence/backgrounds/locations-v1/sports-ground.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/sports-ground.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "c69d8df94aaabb9fce037009a93cdfa73a7f0a595a0ee3fb92b8ebf3a5a86295",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "sports-ground"
+    },
+    {
+      "locationId": "place-4df586f9c463820f4c256541",
+      "file": "scene-presence/backgrounds/locations-v1/pool.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/pool.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "29952a19ba849684d941b9d29b852b1965fc2f209008ad6071e6ad697dbf3b1a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "pool"
+    },
+    {
+      "locationId": "place-79f9494700c774fba5a43d54",
+      "file": "scene-presence/backgrounds/locations-v1/school-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "abe3821f0bcd7d05b0ded36db8ce2876d8a21b3e6984952c32a1861fc1d2cf4f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-office"
+    },
+    {
+      "locationId": "place-f3ddaa05df9cc9e81c2db736",
+      "file": "scene-presence/backgrounds/locations-v1/executive-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/executive-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a0db2d754dbdd5c0b1bcfce57f27c019d594f1d0c041a15c4816660dd2bb3ba2",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "executive-office"
+    },
+    {
+      "locationId": "place-273fb82e98dfee03669e8a30",
+      "file": "scene-presence/backgrounds/locations-v1/restroom.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/restroom.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2f3ce0fb01789cae8e4e06849e54bd26c14979e3e798503e7ca0c3c0f07cdc69",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "restroom"
+    },
+    {
+      "locationId": "place-a6b13e6935288e904c07c593",
+      "file": "scene-presence/backgrounds/locations-v1/school-corridor.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-corridor.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3763c898dd87dd151ed6b3736024f7766b8ea669f3ff38353eff02017612ec1d",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-corridor"
+    },
+    {
+      "locationId": "place-06d2821153ac334b8d595d97",
+      "file": "scene-presence/backgrounds/locations-v1/restroom.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/restroom.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2f3ce0fb01789cae8e4e06849e54bd26c14979e3e798503e7ca0c3c0f07cdc69",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "restroom"
+    },
+    {
+      "locationId": "place-5f5b383b03643f73cae424d3",
+      "file": "scene-presence/backgrounds/classroom.png",
+      "source": "src/art/hypnosis-app/v1/runtime/locations/classroom-2a-front-v2.png",
+      "width": 1920,
+      "height": 1080,
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "classroom",
+      "sha256": "d49ae980bf6c5df3b3509790257b6512bd4d53a0c0f33ea0567d736f7cf9b16e"
+    },
+    {
+      "locationId": "place-c2f0e94f53c5b94dbaa99e10",
+      "file": "scene-presence/backgrounds/classroom.png",
+      "source": "src/art/hypnosis-app/v1/runtime/locations/classroom-2a-front-v2.png",
+      "width": 1920,
+      "height": 1080,
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "classroom",
+      "sha256": "d49ae980bf6c5df3b3509790257b6512bd4d53a0c0f33ea0567d736f7cf9b16e"
+    },
+    {
+      "locationId": "place-9697b4f38f5314eae53f9c0a",
+      "file": "scene-presence/backgrounds/locations-v1/infirmary.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/infirmary.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "cc68da98b6af51544db620a0bd82aa21ede3c0f50eaecbe999b65fb327f4fb29",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "infirmary"
+    },
+    {
+      "locationId": "place-53ffb05f244dea582d7fed7d",
+      "file": "scene-presence/backgrounds/locations-v1/rooftop.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/rooftop.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "852e7811faa6a27ba486e8925fc2af4d912573ff2cb7060d9a28e84dc50d8b61",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "rooftop"
+    },
+    {
+      "locationId": "place-old-school",
+      "file": "scene-presence/backgrounds/locations-v1/old-school-exterior.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-school-exterior.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "9ad9f6e2556a189a9bd4e382e2001e4d791388762d35eaa99d19ab38dc1e448a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-school-exterior"
+    },
+    {
+      "locationId": "place-b1e397db3d93cf4f51c6805c",
+      "file": "scene-presence/backgrounds/locations-v1/old-school-exterior.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-school-exterior.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "9ad9f6e2556a189a9bd4e382e2001e4d791388762d35eaa99d19ab38dc1e448a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-school-exterior"
+    },
+    {
+      "locationId": "place-routine-53983477e4cf3e49dd95",
+      "file": "scene-presence/backgrounds/locations-v1/residential-street.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-street.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2018b83a0512d9c67e101a19af1fbd0a25a25be78ce33cbe86c168c4759c9f7c",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-street"
+    },
+    {
+      "locationId": "place-routine-080994ac94c9e1db0096",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-9813e1d73587480c57a7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-8bdd8effb788e3aa18d1",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c5bc8d9e2e63fbcce966",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-dc2080117e47f711d5e9",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-a860b858265b22dad3aa",
+      "file": "scene-presence/backgrounds/locations-v1/cafe.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/cafe.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "529aee5855bd846c940c86eb61d0dc2fa24859452cf1c6a9952e4d96378c6b04",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "cafe"
+    },
+    {
+      "locationId": "place-routine-55074443dcf4f8bd6a35",
+      "file": "scene-presence/backgrounds/locations-v1/convenience-store.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/convenience-store.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "0637d41dfa8456e44b71eb66a7e76c25272729eb1dfdc7fa8fad1b8813d1e6b5",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "convenience-store"
+    },
+    {
+      "locationId": "place-routine-7708db5295c6ff216a61",
+      "file": "scene-presence/backgrounds/locations-v1/park-garden.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/park-garden.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "202a4218212969f24c762e61481013a3341e961d39e156ddca8d6ff8c60e3294",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "park-garden"
+    },
+    {
+      "locationId": "place-routine-cd928e9e0330828b0872",
+      "file": "scene-presence/backgrounds/locations-v1/company-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/company-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "f6224fde3b3f78e57c599751f5e02d95175288efc0b12a80160f6271c1ce67c7",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "company-office"
+    },
+    {
+      "locationId": "place-routine-15aadd0ce23a6ab055c3",
+      "file": "scene-presence/backgrounds/locations-v1/executive-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/executive-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a0db2d754dbdd5c0b1bcfce57f27c019d594f1d0c041a15c4816660dd2bb3ba2",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "executive-office"
+    },
+    {
+      "locationId": "place-routine-727c52a80f44487313ec",
+      "file": "scene-presence/backgrounds/locations-v1/hospital-clinical.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital-clinical.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "1dfaa4102cef985074e5a5e62c0bf7197a9024dc64d73caa6e7d27e4c60ae478",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital-clinical"
+    },
+    {
+      "locationId": "place-routine-dee29474f75f1c7f8d20",
+      "file": "scene-presence/backgrounds/locations-v1/hospital-clinical.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital-clinical.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "1dfaa4102cef985074e5a5e62c0bf7197a9024dc64d73caa6e7d27e4c60ae478",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital-clinical"
+    },
+    {
+      "locationId": "place-routine-96b8f576c788b75e5918",
+      "file": "scene-presence/backgrounds/locations-v1/hospital-ward.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital-ward.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "587e287bfcd47f8d4707679dc8dfff119c080255dc5fb2b947af8959884f4f6f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital-ward"
+    },
+    {
+      "locationId": "place-routine-83f5f282706398efd7ca",
+      "file": "scene-presence/backgrounds/locations-v1/hospital.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/hospital.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "a178258550f25abb52e7162cf48a54e855d162fcba7a573eb691182b6c44258b",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "hospital"
+    },
+    {
+      "locationId": "place-routine-5ae58c394241ece391bc",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-1860ed7de0af47ee414c",
+      "file": "scene-presence/backgrounds/locations-v1/police-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/police-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "3f231eb57b0ad90fdf2656eb4f4897a0ba5cfd59f5ea226b45b5317050291447",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "police-office"
+    },
+    {
+      "locationId": "place-routine-cd1c7b2b32e704685d42",
+      "file": "scene-presence/backgrounds/locations-v1/old-school.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-school.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "2c22efe4ce80d74399dda3b99955269abcbbff623ed0eb2f0effc02b8c16159a",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-school"
+    },
+    {
+      "locationId": "place-routine-139c0c3317cc01c0370a",
+      "file": "scene-presence/backgrounds/locations-v1/old-classroom.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/old-classroom.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "be03cc9e1a0f4a70f22bec489c84992a2eedbc4357f218cfa70ba5093b75fadd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "old-classroom"
+    },
+    {
+      "locationId": "place-routine-12c2411205b41731479e",
+      "file": "scene-presence/backgrounds/locations-v1/computer-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/computer-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "470cb798cb97ae1fd0e84c843c974601390a803b697f84714252bb29d3a72935",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "computer-room"
+    },
+    {
+      "locationId": "place-routine-d0991228e974b3433f0b",
+      "file": "scene-presence/backgrounds/locations-v1/gymnasium.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/gymnasium.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "6240abdf39f4ac8f14311790baa1091b01ffce424c512064189b9efe1f34e57c",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "gymnasium"
+    },
+    {
+      "locationId": "place-routine-b88d0883df136bde9857",
+      "file": "scene-presence/backgrounds/locations-v1/activity-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/activity-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "da928e5c63a8c84d315de747fd322ef7b07aa4e24e931181364fe1096b9ff752",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "activity-room"
+    },
+    {
+      "locationId": "place-routine-529fbc6518d5f4ef8c12",
+      "file": "scene-presence/backgrounds/locations-v1/music-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/music-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "437be8846c854cf44e1ac77b1416fa9e0699f291b3bf23717759a07111d3e0bc",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "music-room"
+    },
+    {
+      "locationId": "place-routine-24446f49616f7f04457d",
+      "file": "scene-presence/backgrounds/locations-v1/activity-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/activity-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "da928e5c63a8c84d315de747fd322ef7b07aa4e24e931181364fe1096b9ff752",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "activity-room"
+    },
+    {
+      "locationId": "place-routine-0f9b1c0d9f5dcb5c543c",
+      "file": "scene-presence/backgrounds/locations-v1/school-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/school-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "abe3821f0bcd7d05b0ded36db8ce2876d8a21b3e6984952c32a1861fc1d2cf4f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "school-office"
+    },
+    {
+      "locationId": "place-routine-23eeb69c681dfdb8eacc",
+      "file": "scene-presence/backgrounds/locations-v1/park-garden.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/park-garden.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "202a4218212969f24c762e61481013a3341e961d39e156ddca8d6ff8c60e3294",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "park-garden"
+    },
+    {
+      "locationId": "place-routine-e1cc6b073e2cf3198e1e",
+      "file": "scene-presence/backgrounds/locations-v1/science-preparation.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/science-preparation.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "4afc0b0462c0905d6255849a240a61f030420ae95208fc464c706a6e62b3bfe1",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "science-preparation"
+    },
+    {
+      "locationId": "place-routine-489b28f66006869bead7",
+      "file": "scene-presence/backgrounds/locations-v1/salon-studio.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/salon-studio.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "583961635e76f23f160c4fb51a9cf1a98a9df242ab8fc865b9408b8926689e31",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "salon-studio"
+    },
+    {
+      "locationId": "place-routine-fffd338d2a76720ed032",
+      "file": "scene-presence/backgrounds/locations-v1/tea-room.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/tea-room.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "664d07ae32673abe6362d40cdd3d55f0bda4b9a2168cdd6be49a76d687d8e09f",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "tea-room"
+    },
+    {
+      "locationId": "place-routine-28424bc0794b19fedc8f",
+      "file": "scene-presence/backgrounds/locations-v1/company-office.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/company-office.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "f6224fde3b3f78e57c599751f5e02d95175288efc0b12a80160f6271c1ce67c7",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "company-office"
+    },
+    {
+      "locationId": "place-routine-da0daaba4b156961c049",
+      "file": "scene-presence/backgrounds/locations-v1/salon-studio.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/salon-studio.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "583961635e76f23f160c4fb51a9cf1a98a9df242ab8fc865b9408b8926689e31",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "salon-studio"
+    },
+    {
+      "locationId": "place-routine-55bb12211b643f5c84ff",
+      "file": "scene-presence/backgrounds/locations-v1/salon-studio.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/salon-studio.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "583961635e76f23f160c4fb51a9cf1a98a9df242ab8fc865b9408b8926689e31",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "salon-studio"
+    },
+    {
+      "locationId": "place-routine-773d7a362a18a77362e5",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-dc4707a259a8a39e3d30",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-ff625cb6ecf54cef8178",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c64da1009c1dc1e17c4f",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-ea466bb025b415f3a48c",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c610816785fbc0016129",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-51414ee867cfc1357686",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-e8d2783f4f4cccb1e8d2",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-b73544e8d7cf21ae670c",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-18681b83a7495098ca11",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-ba1490c26f6d6e9489b9",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-2685efcc20be81e6d1dc",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-d2b8e3fbfced9baf0dc4",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-5eca975b965d587a5916",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-0b153bf34f58a1402b7e",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-472948bd288d3eaaec4d",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-12df84b8ed28614493f3",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-d1f949d94a8d3e18632e",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-bd05026020471146bc83",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-3765202827e894e143b1",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-853a7c62dccd5476c13f",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-955ff713526f8ec22dc2",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-31eec12df8cda2bd3b9a",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-95359848f487370e5af7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-24e0d4e887015ba962f7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c5f2c8599f7659d1ffaa",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-f2f20e71b210b91c77b5",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-9b3e502de10d8663863f",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-0a9e6c360464e0ffbb26",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-4c8b8cbb74a18200dd64",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-21ffb1fa5bf0cc36617a",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-3218a3c6bdf94f814fd6",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-227eb472789bc10e74b7",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-c750bd4bc047844671ef",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-252868b454fa23f604da",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-b8514c67773055a1ab7d",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-routine-12c40c4fca5ea36a3613",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    },
+    {
+      "locationId": "place-694fc9e17ce9531ee4f6a5af",
+      "file": "scene-presence/backgrounds/locations-v1/residential-living.webp",
+      "source": "src/art/hypnosis-app/v2/production/2026-10-23/location-backgrounds-v1/runtime/residential-living.webp",
+      "width": 1672,
+      "height": 941,
+      "sha256": "5283c0b788c0ef52c39104f52f3fb3b5cff50eb6d4323beceee79b5b261422bd",
+      "cameraCalibration": "not-claimed",
+      "reuseGroup": "residential-living"
+    }
+  ],
+  "status": "local-scene-integration",
+  "note": "Approved character originals reused for display only; no editing or input to subsequent generation.",
+  "defaultBackground": {
+    "file": "scene-presence/backgrounds/quantum-space-v1.png",
+    "source": "src/art/hypnosis-app/v2/production/2026-10-22/quantum-space-v1/quantum-space-v1.png",
+    "width": 1672,
+    "height": 941,
+    "sha256": "3d733adfce1d62ad78f34c01db9e327ff5203427fef30516029506dd1f490630",
+    "purpose": "未上传地点图片、无明确地点的旁白与梦境默认背景"
+  }
+}
